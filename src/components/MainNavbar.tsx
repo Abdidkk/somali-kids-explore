@@ -27,19 +27,19 @@ const MainNavbar = () => {
           {!isMobile && (
             <nav className="hidden md:flex items-center space-x-8">
               <Link to="/" className="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">
-                Home
+                Hjem
               </Link>
               <Link to="/" className="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">
-                Features
+                Funktioner
               </Link>
               <Link to="/" className="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">
-                Pricing
+                Priser
               </Link>
               <Link to="/" className="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">
-                About
+                Om Os
               </Link>
               <Link to="/" className="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">
-                Contact
+                Kontakt
               </Link>
             </nav>
           )}
@@ -47,9 +47,9 @@ const MainNavbar = () => {
           <div className="flex items-center">
             <div className="hidden md:flex items-center space-x-3">
               <Button variant="outline" className="border-gray-300">
-                Log In
+                Log Ind
               </Button>
-              <Button>Sign Up</Button>
+              <Button>Tilmeld</Button>
             </div>
 
             {/* Mobile menu button */}
@@ -59,7 +59,7 @@ const MainNavbar = () => {
                 className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-purple-600 hover:bg-gray-100 focus:outline-none"
                 onClick={toggleMenu}
               >
-                <span className="sr-only">Open main menu</span>
+                <span className="sr-only">Åbn hovedmenu</span>
                 {isMenuOpen ? (
                   <X className="block h-6 w-6" aria-hidden="true" />
                 ) : (
@@ -80,42 +80,42 @@ const MainNavbar = () => {
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50"
               onClick={() => setIsMenuOpen(false)}
             >
-              Home
+              Hjem
             </Link>
             <Link
               to="/"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50"
               onClick={() => setIsMenuOpen(false)}
             >
-              Features
+              Funktioner
             </Link>
             <Link
               to="/"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50"
               onClick={() => setIsMenuOpen(false)}
             >
-              Pricing
+              Priser
             </Link>
             <Link
               to="/"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50"
               onClick={() => setIsMenuOpen(false)}
             >
-              About
+              Om Os
             </Link>
             <Link
               to="/"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50"
               onClick={() => setIsMenuOpen(false)}
             >
-              Contact
+              Kontakt
             </Link>
             <div className="pt-4 flex flex-col space-y-3">
               <Button variant="outline" className="w-full justify-center">
-                Log In
+                Log Ind
               </Button>
               <Button className="w-full justify-center">
-                Sign Up
+                Tilmeld
               </Button>
             </div>
           </div>

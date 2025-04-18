@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Brain, Calendar, Coffee, GraduationCap, Languages, Palette, Play, Users } from "lucide-react";
@@ -13,21 +12,21 @@ const Index = () => {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
             <div className="lg:w-1/2 space-y-6">
               <h1 className="text-4xl md:text-5xl font-bold text-purple-900">
-                <span className="text-orange-500">Dugsi</span> Learning Platform
+                <span className="text-orange-500">Dugsi</span> Danish-Somali Learning
               </h1>
               <p className="text-xl text-gray-700">
-                A fun and interactive way for children to learn Somali language and culture through engaging activities, games, and lessons.
+                En sjov og interaktiv måde for børn at lære somalisk sprog gennem dansk. Perfekt til tosprogede familier og kulturel læring.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button size="lg" className="bg-purple-600 hover:bg-purple-700">
-                  Start Free Trial
+                  Start Gratis Prøve
                 </Button>
                 <Button variant="outline" size="lg">
-                  Learn More
+                  Lær Mere
                 </Button>
               </div>
               <p className="text-sm text-gray-500">
-                24-hour free trial. No credit card required.
+                24-timers gratis prøveperiode. Intet kreditkort påkrævet.
               </p>
             </div>
             <div className="lg:w-1/2">
@@ -50,42 +49,42 @@ const Index = () => {
       <section className="py-16 px-4 bg-white md:px-8 lg:px-16">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Learning Made Fun</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Læring Gjort Sjovt</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Explore our interactive learning content designed specifically for children
+              Udforsk vores interaktive læringsindhold designet specielt til børn der lærer somalisk gennem dansk
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <FeatureCard 
               icon={<Languages className="h-10 w-10 text-purple-500" />}
-              title="Alphabet Learning"
-              description="Learn Somali letters with visual aids, audio pronunciation, and interactive tracing activities"
+              title="Alfabet Læring"
+              description="Lær somaliske bogstaver med visuelle hjælpemidler og lydudtale på dansk"
             />
             <FeatureCard 
               icon={<GraduationCap className="h-10 w-10 text-blue-500" />}
-              title="Numbers & Counting"
-              description="Master counting, addition, and subtraction basics in Somali for foundational math skills"
+              title="Tal & Regning"
+              description="Mestre tælling og grundlæggende matematik på somalisk med dansk forklaring"
             />
             <FeatureCard 
               icon={<Palette className="h-10 w-10 text-pink-500" />}
-              title="Colors & Shapes"
-              description="Recognize and name colors and shapes using visual examples to build vocabulary"
+              title="Farver & Former"
+              description="Genkend og navngiv farver og former på somalisk gennem danske oversættelser"
             />
             <FeatureCard 
               icon={<Users className="h-10 w-10 text-yellow-500" />}
-              title="Family & Relationships"
-              description="Learn Somali terms for family members and understand relationship dynamics"
+              title="Familie & Relationer"
+              description="Lær somaliske ord for familiemedlemmer med dansk oversættelse"
             />
             <FeatureCard 
               icon={<Calendar className="h-10 w-10 text-green-500" />}
-              title="Calendar & Time"
-              description="Understand Somali terminology for days, months, seasons, and telling time"
+              title="Kalender & Tid"
+              description="Forstå somalisk terminologi for dage og måneder med dansk reference"
             />
             <FeatureCard 
               icon={<BookOpen className="h-10 w-10 text-orange-500" />}
-              title="Cultural Lessons"
-              description="Explore Somali proverbs, traditional songs, and cultural storytelling"
+              title="Kulturelle Lektioner"
+              description="Udforsk somaliske ordsprog og kulturelle fortællinger med dansk forklaring"
             />
           </div>
         </div>
@@ -95,7 +94,7 @@ const Index = () => {
       <section className="py-16 px-4 bg-purple-50 md:px-8 lg:px-16">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">How It Works</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Sådan Fungerer Det</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -103,22 +102,22 @@ const Index = () => {
               <div className="flex justify-center items-center w-20 h-20 mx-auto mb-4 rounded-full bg-orange-100 text-orange-500">
                 <Coffee className="h-10 w-10" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">1. Create an Account</h3>
-              <p className="text-gray-600">Sign up and create parent and child profiles</p>
+              <h3 className="text-xl font-semibold mb-2">1. Opret en Konto</h3>
+              <p className="text-gray-600">Tilmeld dig og opret forældre- og børneprofiler</p>
             </div>
             <div className="text-center">
               <div className="flex justify-center items-center w-20 h-20 mx-auto mb-4 rounded-full bg-purple-100 text-purple-500">
                 <Play className="h-10 w-10" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">2. Start Learning</h3>
-              <p className="text-gray-600">Access interactive lessons, games, and quizzes</p>
+              <h3 className="text-xl font-semibold mb-2">2. Start Læring</h3>
+              <p className="text-gray-600">Få adgang til interaktive lektioner og quizzer</p>
             </div>
             <div className="text-center">
               <div className="flex justify-center items-center w-20 h-20 mx-auto mb-4 rounded-full bg-blue-100 text-blue-500">
                 <Brain className="h-10 w-10" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">3. Track Progress</h3>
-              <p className="text-gray-600">Monitor achievements and learning milestones</p>
+              <h3 className="text-xl font-semibold mb-2">3. Følg Fremskridt</h3>
+              <p className="text-gray-600">Overvåg præstationer og læringsmål</p>
             </div>
           </div>
         </div>
@@ -128,81 +127,81 @@ const Index = () => {
       <section className="py-16 px-4 bg-white md:px-8 lg:px-16">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Subscription Plans</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Abonnementsplaner</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Choose the plan that works best for your family
+              Vælg den plan der passer bedst til din familie
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Card className="border-2 hover:border-purple-300 transition-all">
               <CardHeader>
-                <CardTitle className="text-2xl">Monthly Plan</CardTitle>
+                <CardTitle className="text-2xl">Månedlig Plan</CardTitle>
                 <div className="mt-4">
-                  <span className="text-4xl font-bold">$9.99</span>
-                  <span className="text-gray-500 ml-2">/month</span>
+                  <span className="text-4xl font-bold">79 kr</span>
+                  <span className="text-gray-500 ml-2">/måned</span>
                 </div>
-                <CardDescription className="mt-2">Perfect for short-term learning</CardDescription>
+                <CardDescription className="mt-2">Perfekt til kortvarig læring</CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
                   <li className="flex items-center">
                     <div className="mr-2 h-5 w-5 text-green-500">✓</div>
-                    <span>Full access to all learning content</span>
+                    <span>Fuld adgang til alt læringsindhold</span>
                   </li>
                   <li className="flex items-center">
                     <div className="mr-2 h-5 w-5 text-green-500">✓</div>
-                    <span>Interactive games and quizzes</span>
+                    <span>Interaktive spil og quizzer</span>
                   </li>
                   <li className="flex items-center">
                     <div className="mr-2 h-5 w-5 text-green-500">✓</div>
-                    <span>Progress tracking</span>
+                    <span>Fremskridtssporing</span>
                   </li>
                   <li className="flex items-center">
                     <div className="mr-2 h-5 w-5 text-green-500">✓</div>
-                    <span>Cancel anytime</span>
+                    <span>Opsig når som helst</span>
                   </li>
                 </ul>
-                <Button className="w-full mt-6 bg-purple-600 hover:bg-purple-700">Subscribe Now</Button>
+                <Button className="w-full mt-6 bg-purple-600 hover:bg-purple-700">Abonnér Nu</Button>
               </CardContent>
             </Card>
 
             <Card className="border-2 border-purple-300 shadow-lg">
               <CardHeader>
-                <div className="bg-orange-500 text-white text-sm font-semibold py-1 px-3 rounded-full w-fit mb-2">BEST VALUE</div>
-                <CardTitle className="text-2xl">Annual Plan</CardTitle>
+                <div className="bg-orange-500 text-white text-sm font-semibold py-1 px-3 rounded-full w-fit mb-2">BEDSTE VÆRDI</div>
+                <CardTitle className="text-2xl">Årlig Plan</CardTitle>
                 <div className="mt-4">
-                  <span className="text-4xl font-bold">$89.99</span>
-                  <span className="text-gray-500 ml-2">/year</span>
+                  <span className="text-4xl font-bold">699 kr</span>
+                  <span className="text-gray-500 ml-2">/år</span>
                 </div>
-                <CardDescription className="mt-2">Save 25% compared to monthly</CardDescription>
+                <CardDescription className="mt-2">Spar 25% i forhold til månedlig</CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
                   <li className="flex items-center">
                     <div className="mr-2 h-5 w-5 text-green-500">✓</div>
-                    <span>All monthly plan features</span>
+                    <span>Alle månedlige planfunktioner</span>
                   </li>
                   <li className="flex items-center">
                     <div className="mr-2 h-5 w-5 text-green-500">✓</div>
-                    <span>Priority customer support</span>
+                    <span>Prioriteret kundesupport</span>
                   </li>
                   <li className="flex items-center">
                     <div className="mr-2 h-5 w-5 text-green-500">✓</div>
-                    <span>Early access to new content</span>
+                    <span>Tidlig adgang til nyt indhold</span>
                   </li>
                   <li className="flex items-center">
                     <div className="mr-2 h-5 w-5 text-green-500">✓</div>
-                    <span>25% savings on yearly plan</span>
+                    <span>25% besparelse på årlig plan</span>
                   </li>
                 </ul>
-                <Button className="w-full mt-6 bg-orange-500 hover:bg-orange-600">Subscribe Now</Button>
+                <Button className="w-full mt-6 bg-orange-500 hover:bg-orange-600">Abonnér Nu</Button>
               </CardContent>
             </Card>
           </div>
 
           <div className="text-center mt-8 text-gray-600">
-            <p>All plans start with a 24-hour free trial. No credit card required.</p>
+            <p>Alle planer starter med en 24-timers gratis prøveperiode. Intet kreditkort påkrævet.</p>
           </div>
         </div>
       </section>
@@ -212,25 +211,25 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-lg font-semibold mb-4">Dugsi Learning</h3>
-              <p className="text-gray-600">Making Somali language learning fun and accessible for children worldwide.</p>
+              <h3 className="text-lg font-semibold mb-4">Dugsi Læring</h3>
+              <p className="text-gray-600">Gør somalisk sproglæring sjovt og tilgængeligt for danske børn.</p>
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+              <h3 className="text-lg font-semibold mb-4">Hurtige Links</h3>
               <ul className="space-y-2">
-                <li><Link to="/" className="text-gray-600 hover:text-purple-600">Home</Link></li>
-                <li><Link to="/" className="text-gray-600 hover:text-purple-600">Features</Link></li>
-                <li><Link to="/" className="text-gray-600 hover:text-purple-600">Pricing</Link></li>
-                <li><Link to="/" className="text-gray-600 hover:text-purple-600">About Us</Link></li>
+                <li><Link to="/" className="text-gray-600 hover:text-purple-600">Hjem</Link></li>
+                <li><Link to="/" className="text-gray-600 hover:text-purple-600">Funktioner</Link></li>
+                <li><Link to="/" className="text-gray-600 hover:text-purple-600">Priser</Link></li>
+                <li><Link to="/" className="text-gray-600 hover:text-purple-600">Om Os</Link></li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Support</h3>
               <ul className="space-y-2">
                 <li><Link to="/" className="text-gray-600 hover:text-purple-600">FAQ</Link></li>
-                <li><Link to="/" className="text-gray-600 hover:text-purple-600">Contact Us</Link></li>
-                <li><Link to="/" className="text-gray-600 hover:text-purple-600">Privacy Policy</Link></li>
-                <li><Link to="/" className="text-gray-600 hover:text-purple-600">Terms of Service</Link></li>
+                <li><Link to="/" className="text-gray-600 hover:text-purple-600">Kontakt Os</Link></li>
+                <li><Link to="/" className="text-gray-600 hover:text-purple-600">Privatlivspolitik</Link></li>
+                <li><Link to="/" className="text-gray-600 hover:text-purple-600">Servicevilkår</Link></li>
               </ul>
             </div>
             <div>
@@ -255,7 +254,7 @@ const Index = () => {
             </div>
           </div>
           <div className="border-t border-gray-200 mt-8 pt-8 text-center">
-            <p className="text-gray-500">&copy; {new Date().getFullYear()} Dugsi Learning Platform. All rights reserved.</p>
+            <p className="text-gray-500">&copy; {new Date().getFullYear()} Dugsi Læringsplatform. Alle rettigheder forbeholdes.</p>
           </div>
         </div>
       </footer>
