@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 
 const languages = [
@@ -101,8 +100,6 @@ const LanguageSelectionModal: React.FC<LanguageSelectionModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 bg-black/20 backdrop-blur flex items-center justify-center animate-fade-in">
       <div className="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 p-8 flex flex-col items-center relative">
-        <h2 className="text-xl md:text-2xl font-bold mb-1 text-center text-purple-700">Vælg sprogpar</h2>
-        <p className="mb-6 text-gray-600 text-center text-base">Hvilket sprog vil du lære somalisk fra?</p>
         <div className="flex flex-col gap-5 w-full">
           {languages.map((option) => (
             <button
@@ -138,7 +135,6 @@ export function useLanguageSelection() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    // Tjek om valgt sprog findes i localStorage
     const stored = window.localStorage.getItem(LOCAL_STORAGE_KEY);
     if (stored) {
       setSelectedLang(stored);
