@@ -1,9 +1,10 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+
+const HERO_BLUE = "#4CA6FE";
 
 const MainNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,9 +19,12 @@ const MainNavbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex-shrink-0 flex items-center">
-              <span className="text-2xl font-bold text-purple-600">Dugsi</span>
-            </Link>
+            <span
+              className="text-2xl font-bold"
+              style={{ color: HERO_BLUE }}
+            >
+              Dugsi
+            </span>
           </div>
 
           {/* Desktop Navigation */}

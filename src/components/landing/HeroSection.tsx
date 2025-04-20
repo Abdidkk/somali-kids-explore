@@ -1,14 +1,20 @@
 
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import SomaliFlag from "./SomaliFlag";
+
+const HERO_BLUE = "#4CA6FE";
 
 const HeroSection = () => {
   return (
-    <section className="bg-gradient-to-b from-purple-100 to-white py-16 px-4 md:px-8 lg:px-16">
+    <section className="bg-gradient-to-b from-purple-100 to-white py-16 px-4 md:px-8 lg:px-16 relative">
+      {/* Somalisk flag oppe i venstre hjørne */}
+      <div className="absolute left-0 top-0 mt-6 ml-6 z-10">
+        <SomaliFlag />
+      </div>
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
           <div className="lg:w-1/2 space-y-6">
-            <h1 className="text-4xl md:text-5xl font-bold text-purple-900">
+            <h1 className="text-4xl md:text-5xl font-bold" style={{ color: HERO_BLUE }}>
               <span className="text-orange-500">Dugsi</span> Danish-Somali Learning
             </h1>
             <p className="text-xl text-gray-700">
