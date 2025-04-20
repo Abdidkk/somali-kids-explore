@@ -1,4 +1,3 @@
-
 import { Brain, Coffee, Play } from "lucide-react";
 
 // Nye, mere illustrative billeder - midlertidigt brugt Unsplash
@@ -144,7 +143,7 @@ const HowItWorksSection = () => {
 
         {/* Opdateret sektion med store illustrationer som punkter */}
         <div className="bg-white rounded-lg shadow-md p-6 md:p-10 max-w-2xl mx-auto">
-          <h3 className="text-2xl font-bold mb-7 text-purple-700 text-center">
+          <h3 className="text-2xl font-bold mb-7 text-black text-center">
             Hvorfor er det vigtigt at lære sit <span className="text-purple-600">modersmål?</span>
           </h3>
           <ul className="space-y-12">
