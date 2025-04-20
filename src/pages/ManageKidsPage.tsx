@@ -27,7 +27,11 @@ const ManageKidsPage = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-purple-100 via-white to-white px-4 py-12 animate-fade-in">
       <div className="w-full max-w-md bg-white rounded-xl shadow-xl px-8 py-10 border border-purple-100">
-        <h1 className="text-2xl font-bold mb-5 text-center text-purple-600">Børneprofiler</h1>
+        <h1 className="text-2xl font-bold mb-3 text-center text-purple-600">Børneprofiler</h1>
+        <div className="mb-5 text-center text-purple-700 bg-purple-50 rounded py-2 px-4 border border-purple-200 font-medium">
+          Hver børneprofil koster <span className="font-bold">15 kr/md.</span> ekstra.<br />
+          (Eller 135 kr/år hvis du har årlig betaling)
+        </div>
         <div className="mb-6">
           <div className="flex gap-2">
             <input

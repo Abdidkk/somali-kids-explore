@@ -29,6 +29,10 @@ export default function ChoosePlanPage() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-purple-100 via-white to-white px-4 py-12 animate-fade-in">
       <div className="w-full max-w-md bg-white rounded-xl shadow-xl px-8 py-10 border border-purple-100">
         <h1 className="text-2xl font-bold mb-5 text-center text-purple-600">Vælg dit abonnement</h1>
+        <div className="mb-6 text-center text-purple-700 bg-purple-50 rounded py-3 px-4 border border-purple-200 font-medium">
+          OBS: Hver børneprofil koster <span className="font-bold">15 kr/md.</span> ekstra.<br />
+          (Ved årlig betaling: 135 kr/år pr. børneprofil)
+        </div>
         <div className="space-y-6">
           {plans.map((p) => (
             <div key={p.value} className="rounded-lg border border-purple-200 p-5 flex flex-col items-center bg-purple-50">
