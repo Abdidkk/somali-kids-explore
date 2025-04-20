@@ -140,6 +140,14 @@ const ManageKidsPage = () => {
             >
               <Apple size={22} /> Betal med Apple Pay
             </Button>
+            <Button
+              className="w-full bg-[#0095DA] hover:bg-[#007bbd] text-white font-semibold flex items-center justify-center gap-2 py-3 text-base"
+              type="button"
+              disabled
+            >
+              {/* No mobilepay icon available, only text */}
+              Betal med MobilePay
+            </Button>
           </div>
           <p className="text-xs text-gray-400 text-center mt-3">
             (Prototype: Betaling er ikke aktiveret)
