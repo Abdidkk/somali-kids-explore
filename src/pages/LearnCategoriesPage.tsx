@@ -1,10 +1,21 @@
 
 import { learningCategories } from "@/data/learningCategories";
 import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function LearnCategoriesPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white flex flex-col items-center py-10 animate-fade-in">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white flex flex-col items-center py-10 animate-fade-in relative">
+      {/* Avatar øverst til højre */}
+      <div className="absolute right-8 top-8 z-10 flex items-center space-x-2">
+        <Avatar className="w-14 h-14 ring-2 ring-vivid-purple ring-offset-2 ring-offset-white shadow-lg">
+          <AvatarImage
+            src="https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?auto=format&fit=facearea&w=96&h=96&facepad=3"
+            alt="Barnets billede"
+          />
+          <AvatarFallback>Barn</AvatarFallback>
+        </Avatar>
+      </div>
       <h1 className="text-3xl font-bold text-purple-600 mb-6 text-center">Læringskategorier</h1>
       <p className="text-lg text-gray-700 max-w-xl mb-8 text-center">
         Vælg en kategori og begynd at lære nye ting på dansk og somali!
