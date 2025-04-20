@@ -9,7 +9,7 @@ const bulletImages = [
     bg: "bg-[#FDE1D3]",
   },
   {
-    src: "https://images.unsplash.com/photo-1458071103677-270ed5661cfc?w=800&q=80",
+    src: "/lovable-uploads/6ec9d492-46d1-4558-9e1d-92abc8dc7ebc.png",
     alt: "Gruppe børn i dialog – Kommunikation & Fællesskab",
     bg: "bg-[#D3E4FD]",
   },
