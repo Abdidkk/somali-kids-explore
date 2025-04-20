@@ -2,20 +2,25 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Mail, Lock, User, LogIn, Facebook } from "lucide-react";
+import { Mail, Lock, User, Facebook } from "lucide-react";
 import SomaliFlag from "@/components/landing/SomaliFlag";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SocialLoginButton from "@/components/SocialLoginButton";
 
 const HERO_BLUE = "#4CA6FE";
 
 export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => setLoading(false), 1000);
+    setTimeout(() => {
+      setLoading(false);
+      // Efter signup send til abonnementvalg
+      navigate("/choose-plan");
+    }, 1000);
   };
 
   return (

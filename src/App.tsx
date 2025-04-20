@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,6 +8,8 @@ import NotFound from "./pages/NotFound";
 import MainNavbar from "./components/MainNavbar";
 import LogInPage from "./pages/LogInPage";
 import SignUpPage from "./pages/SignUpPage";
+import ChoosePlanPage from "./pages/ChoosePlanPage";
+import ManageKidsPage from "./pages/ManageKidsPage";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +24,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<LogInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/choose-plan" element={<ChoosePlanPage />} />
+          <Route path="/admin-kids" element={<ManageKidsPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
