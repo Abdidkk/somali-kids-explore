@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 const Footer = () => {
   return <footer className="py-12 px-4 md:px-8 lg:px-16 mt-auto bg-blue-500">
@@ -14,6 +15,7 @@ const Footer = () => {
               
               <li><Link to="/" className="text-gray-600 hover:text-purple-600">Priser</Link></li>
               <li><Link to="/" className="text-gray-600 hover:text-purple-600">Om Os</Link></li>
+              <li><Link to="/kontakt" className="text-gray-600 hover:text-purple-600">Kontakt os</Link></li>
             </ul>
           </div>
           <div>

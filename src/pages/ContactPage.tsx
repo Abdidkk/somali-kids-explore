@@ -1,0 +1,125 @@
+
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/hooks/use-toast";
+import { Mail, Phone, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
+
+const primary = "#9b87f5";
+
+export default function ContactPage() {
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [sending, setSending] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSending(true);
+
+    setTimeout(() => {
+      setSending(false);
+      setForm({ name: "", email: "", message: "" });
+      toast({
+        title: "Besked sendt!",
+        description: "Tak for din henvendelse. Vi vender tilbage hurtigst muligt.",
+      });
+    }, 1200);
+  };
+
+  return (
+    <div className="bg-gradient-to-b from-[#E5DEFF] via-white to-white min-h-screen py-12 px-4 flex flex-col items-center">
+      <div className="w-full max-w-xl mb-8">
+        <Link to="/" className="text-vivid-purple hover:underline">&larr; Til forsiden</Link>
+        <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2" style={{ color: primary }}>
+          Kontakt os
+        </h1>
+        <p className="text-gray-700 text-base mb-6">
+          Har du spørgsmål, brug for support eller vil du bare sige hej? Udfyld formularen eller brug kontaktoplysningerne nedenfor, så svarer vi hurtigst muligt!
+        </p>
+      </div>
+      <div className="grid gap-8 md:grid-cols-2 w-full max-w-4xl">
+        {/* Kontaktoplysninger */}
+        <Card className="bg-soft-purple/70 border-0 shadow-lg">
+          <CardContent className="flex flex-col gap-6 py-8 px-8">
+            <div className="flex items-center gap-3">
+              <Mail className="text-vivid-purple w-6 h-6" />
+              <span className="text-base text-gray-700">kontakt@dugsi.dk</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <Phone className="text-vivid-purple w-6 h-6" />
+              <span className="text-base text-gray-700">+45 12 34 56 78</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <MapPin className="text-vivid-purple w-6 h-6" />
+              <span className="text-base text-gray-700">København, Danmark</span>
+            </div>
+          </CardContent>
+        </Card>
+        {/* Kontaktformular */}
+        <Card className="border-0 shadow-lg">
+          <CardContent className="py-8 px-8">
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+              <div>
+                <label htmlFor="name" className="block text-gray-800 font-medium mb-1">
+                  Navn
+                </label>
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  placeholder="Dit navn"
+                  value={form.name}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="email" className="block text-gray-800 font-medium mb-1">
+                  E-mail
+                </label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="din@email.dk"
+                  value={form.email}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="message" className="block text-gray-800 font-medium mb-1">
+                  Besked
+                </label>
+                <Textarea
+                  id="message"
+                  name="message"
+                  required
+                  minLength={10}
+                  placeholder="Hvordan kan vi hjælpe dig?"
+                  value={form.message}
+                  onChange={handleChange}
+                  className="min-h-[90px]"
+                />
+              </div>
+              <Button
+                type="submit"
+                variant="default"
+                className="mt-1 font-bold"
+                disabled={sending}
+              >
+                {sending ? "Sender..." : "Send besked"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
