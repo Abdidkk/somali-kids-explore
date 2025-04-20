@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,16 @@ import { Menu, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const HERO_BLUE = "#4CA6FE";
+
+const navLinks = [
+  { label: "Hjem", to: "/" },
+  { label: "Om Os", to: "/" },
+  { label: "Kontakt", to: "/" },
+];
+
+const highlightClass =
+  "relative px-3 py-2 text-sm font-medium rounded transition-all " +
+  "text-white bg-[#4CA6FE] hover:bg-[#377dc1] shadow hover:scale-105";
 
 const MainNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,22 +40,19 @@ const MainNavbar = () => {
 
           {/* Desktop Navigation */}
           {!isMobile && (
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link to="/" className="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">
-                Hjem
-              </Link>
-              <Link to="/" className="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">
-                Funktioner
-              </Link>
-              <Link to="/" className="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">
-                Priser
-              </Link>
-              <Link to="/" className="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">
-                Om Os
-              </Link>
-              <Link to="/" className="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">
-                Kontakt
-              </Link>
+            <nav className="hidden md:flex items-center space-x-4">
+              {navLinks.map((link, i) => (
+                <Link
+                  to={link.to}
+                  key={link.label}
+                  className={highlightClass}
+                  style={{
+                    marginLeft: i > 0 ? 6 : 0,
+                  }}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
           )}
 
@@ -79,41 +87,16 @@ const MainNavbar = () => {
       {isMobile && isMenuOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white shadow-lg">
-            <Link
-              to="/"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Hjem
-            </Link>
-            <Link
-              to="/"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Funktioner
-            </Link>
-            <Link
-              to="/"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Priser
-            </Link>
-            <Link
-              to="/"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Om Os
-            </Link>
-            <Link
-              to="/"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-gray-50"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Kontakt
-            </Link>
+            {navLinks.map((link) => (
+              <Link
+                to={link.to}
+                key={link.label}
+                className={highlightClass + " block w-full text-center mb-2"}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
             <div className="pt-4 flex flex-col space-y-3">
               <Button variant="outline" className="w-full justify-center">
                 Log Ind
@@ -130,3 +113,4 @@ const MainNavbar = () => {
 };
 
 export default MainNavbar;
+
