@@ -10,6 +10,7 @@ import LogInPage from "./pages/LogInPage";
 import SignUpPage from "./pages/SignUpPage";
 import ChoosePlanPage from "./pages/ChoosePlanPage";
 import ManageKidsPage from "./pages/ManageKidsPage";
+import CongratulationsPage from "./pages/CongratulationsPage";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/choose-plan" element={<ChoosePlanPage />} />
           <Route path="/admin-kids" element={<ManageKidsPage />} />
+          <Route path="/congratulations" element={<CongratulationsPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
