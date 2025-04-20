@@ -6,7 +6,16 @@ import { Menu, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import SomaliFlag from "@/components/landing/SomaliFlag";
 const HERO_BLUE = "#4CA6FE";
-
+const navLinks = [{
+  label: "Hjem",
+  to: "/"
+}, {
+  label: "Om Os",
+  to: "/"
+}, {
+  label: "Kontakt",
+  to: "/"
+}];
 const highlightClass = "relative px-3 py-2 text-sm font-semibold rounded transition-all " + "text-white bg-[#4CA6FE] hover:bg-[#1575ad] hover:scale-105 shadow ring-1 ring-[#4CA6FE]/60 hover:ring-[#4CA6FE]";
 const MainNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -30,9 +39,16 @@ const MainNavbar = () => {
         </div>
 
         {/* Desktop Navigation */}
-        {/* Removed navLinks */}
         {!isMobile && <nav className="hidden md:flex items-center space-x-4">
-            {/* No navigation links to render */}
+            {navLinks.map((link) => (
+              <Link
+                to={link.to}
+                key={link.label}
+                className={highlightClass}
+              >
+                {link.label}
+              </Link>
+            ))}
           </nav>}
 
         <div className="flex items-center">
@@ -56,7 +72,9 @@ const MainNavbar = () => {
       {/* Mobile menu, show/hide based on menu state */}
       {isMobile && isMenuOpen && <div className="md:hidden bg-white shadow-lg">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {/* No navLinks for mobile */}
+            {navLinks.map(link => <Link to={link.to} key={link.label} className={highlightClass + " block w-full text-center mb-2 shadow-sm"} onClick={() => setIsMenuOpen(false)}>
+                {link.label}
+              </Link>)}
             <div className="pt-4 flex flex-col space-y-3">
               <Button variant="outline" className="w-full justify-center border-gray-300 hover:border-[#4CA6FE] hover:text-[#4CA6FE]">
                 Log Ind

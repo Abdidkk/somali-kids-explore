@@ -29,7 +29,7 @@ const VideoSection = () => {
         className="text-2xl md:text-3xl font-extrabold mb-4 text-center"
         style={{ color: HERO_BLUE, letterSpacing: 1 }}
       >
-        Dugsi
+        Se hvordan Dugsi virker!
       </h2>
       <p className="text-md md:text-lg text-center mb-6 text-gray-700">
         Se denne korte video for at lære, hvordan børn og familier let kan fordybe sig i det somaliske sprog på en sjov måde.
@@ -68,4 +68,3 @@ const VideoSection = () => {
 };
 
 export default VideoSection;
-
