@@ -1,6 +1,8 @@
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { Apple, Google } from "lucide-react";
 
 interface Kid {
   id: string;
@@ -12,6 +14,11 @@ const ManageKidsPage = () => {
   const [kids, setKids] = useState<Kid[]>([]);
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
+
+  // Dummy state for prototype (ingen rigtig betaling)
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardCvc, setCardCvc] = useState("");
 
   const handleAdd = () => {
     if (!name || !age) return;
@@ -71,6 +78,64 @@ const ManageKidsPage = () => {
               </li>
             ))}
           </ul>
+        </div>
+
+        {/* --- NYT: Betalingsoplysninger --- */}
+        <div className="mt-10">
+          <h2 className="text-lg font-semibold text-purple-700 mb-3">Betalingsoplysninger</h2>
+          <div className="space-y-3">
+            <Input
+              type="text"
+              placeholder="Kortnummer"
+              value={cardNumber}
+              onChange={e => setCardNumber(e.target.value)}
+              className="bg-purple-50 focus:bg-white"
+              maxLength={19}
+              autoComplete="cc-number"
+              inputMode="numeric"
+            />
+            <div className="flex gap-3">
+              <Input
+                type="text"
+                placeholder="Udløbsdato (MM/ÅÅ)"
+                value={cardExpiry}
+                onChange={e => setCardExpiry(e.target.value)}
+                className="bg-purple-50 focus:bg-white"
+                maxLength={5}
+                autoComplete="cc-exp"
+                inputMode="numeric"
+              />
+              <Input
+                type="text"
+                placeholder="CVC"
+                value={cardCvc}
+                onChange={e => setCardCvc(e.target.value)}
+                className="bg-purple-50 focus:bg-white"
+                maxLength={4}
+                autoComplete="cc-csc"
+                inputMode="numeric"
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-3 mt-5">
+            <Button
+              className="w-full bg-[#4285F4] hover:bg-[#357ae8] text-white font-semibold flex items-center justify-center gap-2 py-3 text-base"
+              type="button"
+              disabled
+            >
+              <Google size={22} /> Betal med Google Pay
+            </Button>
+            <Button
+              className="w-full bg-black hover:bg-neutral-800 text-white font-semibold flex items-center justify-center gap-2 py-3 text-base"
+              type="button"
+              disabled
+            >
+              <Apple size={22} /> Betal med Apple Pay
+            </Button>
+          </div>
+          <p className="text-xs text-gray-400 text-center mt-3">
+            (Prototype: Betaling er ikke aktiveret)
+          </p>
         </div>
       </div>
     </div>
