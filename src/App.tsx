@@ -16,6 +16,9 @@ import LearnCategoriesPage from "./pages/LearnCategoriesPage";
 import ContactPage from "./pages/ContactPage";
 import AboutPage from "./pages/AboutPage";
 import SubjectsPage from "./pages/SubjectsPage";
+import PricingPage from "./pages/PricingPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import TermsOfServicePage from "./pages/TermsOfServicePage";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +41,9 @@ const App = () => (
           <Route path="/kontakt" element={<ContactPage />} />
           <Route path="/om-os" element={<AboutPage />} />
           <Route path="/fag" element={<SubjectsPage />} />
+          <Route path="/priser" element={<PricingPage />} />
+          <Route path="/privatlivspolitik" element={<PrivacyPolicyPage />} />
+          <Route path="/servicevilkaar" element={<TermsOfServicePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
