@@ -1,17 +1,15 @@
 
 import HeroSection from "@/components/landing/HeroSection";
-import FeatureSection from "@/components/landing/FeatureSection";
+import VideoSection from "@/components/landing/VideoSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
-import PricingSection from "@/components/landing/PricingSection";
 import Footer from "@/components/landing/Footer";
 
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <HeroSection />
-      <FeatureSection />
+      <VideoSection />
       <HowItWorksSection />
-      <PricingSection />
       <Footer />
     </div>
   );
