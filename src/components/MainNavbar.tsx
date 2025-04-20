@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import SomaliFlag from "@/components/landing/SomaliFlag";
+import { Link } from "react-router-dom";
 
 const HERO_BLUE = "#4CA6FE";
 
@@ -33,7 +34,23 @@ const MainNavbar = () => {
         </div>
 
         <div className="flex items-center">
-          {/* Log ind og tilmeld knapper fjernet her */}
+          {/* Desktop knapper: Log ind & Tilmeld */}
+          {!isMobile && (
+            <div className="flex gap-2">
+              <Link
+                to="/login"
+                className="px-4 py-2 rounded-md font-medium text-[#4CA6FE] hover:bg-[#4CA6FE]/10 transition"
+              >
+                Log ind
+              </Link>
+              <Link
+                to="/signup"
+                className="px-4 py-2 rounded-md font-medium text-white bg-[#4CA6FE] hover:bg-[#238dde] transition"
+              >
+                Opret bruger
+              </Link>
+            </div>
+          )}
           {isMobile && (
             <button
               type="button"
@@ -51,12 +68,25 @@ const MainNavbar = () => {
         </div>
       </div>
 
-      {/* Mobilmenuen uden knapper */}
+      {/* Mobilmenuen inkl. Log ind & Tilmeld knapper */}
       {isMobile && isMenuOpen && (
         <div className="md:hidden bg-white shadow-lg">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <div className="pt-4 flex flex-col space-y-3">
-              {/* Log Ind og Tilmeld knapperne er fjernet */}
+              <Link
+                to="/login"
+                className="px-4 py-2 rounded-md font-medium text-[#4CA6FE] hover:bg-[#4CA6FE]/10 transition text-center"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Log ind
+              </Link>
+              <Link
+                to="/signup"
+                className="px-4 py-2 rounded-md font-medium text-white bg-[#4CA6FE] hover:bg-[#238dde] transition text-center"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Opret bruger
+              </Link>
             </div>
           </div>
         </div>
