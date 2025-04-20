@@ -5,7 +5,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-slate-50">
           <div>
             <h3 className="text-lg font-semibold mb-4">Dugsi Læring</h3>
-            <p className="text-gray-600">Gør somalisk sproglæring sjovt og tilgængeligt for danske børn.</p>
+            <p className="text-gray-600">Gør somalisk sproglæring sjovt og tilgængeligt for danske-somaliske børn.</p>
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">Hurtige Links</h3>
