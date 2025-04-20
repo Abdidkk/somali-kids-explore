@@ -5,21 +5,21 @@ import {
   Users, House, Activity, MessageSquare, Music, BookOpen
 } from "lucide-react";
 
-// Soft pastel colors (see useful context)
+// Unikke neddæmpede pastel-farver til hver kategori
 const categoryColors = [
-  "#F2FCE2", // Soft Green
-  "#FFDEE2", // Soft Pink
-  "#D3E4FD", // Soft Blue
-  "#FEC6A1", // Soft Orange
-  "#FEF7CD", // Soft Yellow
-  "#E5DEFF", // Soft Purple
-  "#FDE1D3", // Soft Peach
-  "#F1F0FB", // Soft Gray
-  "#D3E4FD", // Soft Blue
-  "#FFD6E0", // Another Soft Pink
-  "#E5DEFF", // Another Soft Purple
-  "#FDE1D3", // Soft Peach
-  "#FFDEE2", // Soft Pink
+  "#E9E3FC", // Alfabet - blid lilla
+  "#FFEFF1", // Farver - blid rosa
+  "#DBF3FA", // Tal - blid blå
+  "#FBF1DE", // Mad - neddæmpet orange/gul
+  "#FFFBE0", // Dyr - lys gul
+  "#E5FAF1", // Geografi - pastel grøn/turkis
+  "#E7F0FB", // Kalender - blålig pastel
+  "#FDE4F2", // Familie og venner - svag pink/lilla
+  "#E5E8ED", // Ord (hus) - grålig blå pastel
+  "#FFF2EB", // Daglige aktiviteter - blid orange
+  "#E6F5F8", // Sætninger - lyseblå/cyan
+  "#F9EAF6", // Kulturelt indhold - pink/lilla
+  "#FDF5E3", // Læse bøger - creme/gul
 ];
 
 const featureData = [
@@ -29,22 +29,22 @@ const featureData = [
     description: "Somaliske bogstaver og udtale.",
   },
   {
-    icon: <Palette className="h-10 w-10 text-pink-500" />,
+    icon: <Palette className="h-10 w-10 text-pink-400" />,
     title: "Farver",
     description: "Navne og genkendelse.",
   },
   {
-    icon: <Calculator className="h-10 w-10 text-blue-500" />,
+    icon: <Calculator className="h-10 w-10 text-blue-400" />,
     title: "Tal",
     description: "Optælling og grundlæggende matematik.",
   },
   {
-    icon: <Carrot className="h-10 w-10 text-orange-500" />,
+    icon: <Carrot className="h-10 w-10 text-orange-400" />,
     title: "Mad",
     description: "Ordforråd for frugter og grøntsager.",
   },
   {
-    icon: <PawPrint className="h-10 w-10 text-yellow-500" />,
+    icon: <PawPrint className="h-10 w-10 text-yellow-400" />,
     title: "Dyr",
     description: "Somaliske navne og deres egenskaber.",
   },
@@ -54,22 +54,22 @@ const featureData = [
     description: "Lære om lande og regioner, inklusive somalisk-specifik geografi.",
   },
   {
-    icon: <Calendar className="h-10 w-10 text-lime-500" />,
+    icon: <Calendar className="h-10 w-10 text-blue-500" />,
     title: "Kalender",
     description: "Forstå somalisk terminologi for dage, måneder og årstider.",
   },
   {
-    icon: <Users className="h-10 w-10 text-blue-400" />,
+    icon: <Users className="h-10 w-10 text-purple-400" />,
     title: "Familie og venner",
     description: "Opbygge ordforråd omkring relationer og sociale dynamikker.",
   },
   {
-    icon: <House className="h-10 w-10 text-violet-500" />,
+    icon: <House className="h-10 w-10 text-gray-400" />,
     title: "Ord",
     description: "Ordforråd med fokus på genstande i et hus, såsom stol, fjernsyn og sofa.",
   },
   {
-    icon: <Activity className="h-10 w-10 text-red-400" />,
+    icon: <Activity className="h-10 w-10 text-orange-300" />,
     title: "Daglige aktiviteter",
     description: "Sætninger og udtryk for almindelige opgaver.",
   },
@@ -79,12 +79,12 @@ const featureData = [
     description: "Strukturerede somaliske sætninger til kommunikationsøvelse.",
   },
   {
-    icon: <Music className="h-10 w-10 text-fuchsia-600" />,
+    icon: <Music className="h-10 w-10 text-pink-400" />,
     title: "Kulturelt indhold",
     description: "Udforske somalisk kulturarv gennem fortællinger, sange og traditioner.",
   },
   {
-    icon: <BookOpen className="h-10 w-10 text-orange-400" />,
+    icon: <BookOpen className="h-10 w-10 text-yellow-500" />,
     title: "Læse bøger",
     description: "Engagerende historier og praktisk anvendelse.",
   },
@@ -100,7 +100,6 @@ const FeatureSection = () => {
             Opdag sjove og lærerige kategorier for børn der vil lære somalisk gennem dansk
           </p>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {featureData.map((item, i) => (
             <FeatureCard
@@ -117,7 +116,6 @@ const FeatureSection = () => {
   );
 };
 
-// Tilføjer bgColor prop til FeatureCard, som bruges bag ikonet
 const FeatureCard = ({ icon, title, description, bgColor }) => {
   return (
     <Card className="border-0 shadow-md hover:shadow-lg transition-all">
