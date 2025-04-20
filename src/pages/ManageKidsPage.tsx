@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -36,9 +35,11 @@ const ManageKidsPage = () => {
     setKids(kids.filter((k) => k.id !== id));
   };
 
-  // Payment calculation
-  const totalMonthly = BASE_MONTHLY + KID_MONTHLY * kids.length;
-  const totalYearly = BASE_YEARLY + KID_YEARLY * kids.length;
+  // Opdateret payment calculation
+  // Første barn er inkluderet i basisprisen, ekstra børn koster ekstra
+  const extraKids = kids.length > 1 ? kids.length - 1 : 0;
+  const totalMonthly = BASE_MONTHLY + KID_MONTHLY * extraKids;
+  const totalYearly = BASE_YEARLY + KID_YEARLY * extraKids;
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-purple-100 via-white to-white px-4 py-12 animate-fade-in">
