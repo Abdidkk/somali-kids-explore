@@ -13,8 +13,8 @@ const bulletImages = [
     bg: "bg-[#D3E4FD]",
   },
   {
-    src: "/lovable-uploads/3dde2b17-7243-4066-9ab5-0c9433f8724a.png",
-    alt: "Pixar-inspireret illustration: Børn lærer alfabetet – Læringsevner",
+    src: "/lovable-uploads/5e2d4de9-8aa0-4544-b550-6b99911c87ba.png",
+    alt: "Barn, bøger og læring – Sprog og læring",
     bg: "bg-[#E5DEFF]",
   },
   {
