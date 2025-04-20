@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { google, apple } from "lucide-react";
+import { Apple } from "lucide-react";
 
 interface Kid {
   id: string;
@@ -130,14 +130,15 @@ const ManageKidsPage = () => {
               type="button"
               disabled
             >
-              {google({ size: 22 })} Betal med Google Pay
+              {/* No google icon available, only text */}
+              Betal med Google Pay
             </Button>
             <Button
               className="w-full bg-black hover:bg-neutral-800 text-white font-semibold flex items-center justify-center gap-2 py-3 text-base"
               type="button"
               disabled
             >
-              {apple({ size: 22 })} Betal med Apple Pay
+              <Apple size={22} /> Betal med Apple Pay
             </Button>
           </div>
           <p className="text-xs text-gray-400 text-center mt-3">
