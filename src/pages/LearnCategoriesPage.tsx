@@ -7,6 +7,7 @@ import ChildProgressBar from "@/components/ChildProgressBar";
 import BadgeBar from "@/components/BadgeBar";
 import ContinueCard from "@/components/ContinueCard";
 import { Star, BadgeCheck } from "lucide-react";
+import ProfileMenu from "@/components/ProfileMenu";
 
 const mockChild = {
   name: "Sami",
@@ -25,6 +26,7 @@ export default function LearnCategoriesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white flex flex-col items-center py-10 animate-fade-in relative">
+      <ProfileMenu />
       <div className="absolute left-8 top-8 z-10 flex items-center space-x-3">
         <Avatar className="w-14 h-14 ring-2 ring-vivid-purple ring-offset-2 ring-offset-white shadow-lg">
           <AvatarImage
