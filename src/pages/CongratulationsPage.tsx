@@ -2,6 +2,7 @@
 import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import SomaliFlag from "@/components/landing/SomaliFlag";
 
 const COLORS = [
   "text-pink-400",
@@ -22,6 +23,10 @@ export default function CongratulationsPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-pink-100 via-purple-100 to-yellow-50 animate-fade-in px-4 py-10">
       <div className="text-center mb-10 relative">
+        {/* Somali flag on top for festlig effekt */}
+        <div className="flex justify-center mb-6">
+          <SomaliFlag className="w-20 h-14 drop-shadow-xl" />
+        </div>
         {/* Stor række af sparkles for festlig effekt */}
         <div className="flex justify-center mb-6 gap-2 flex-wrap animate-bounce">
           {Array.from({ length: 8 }).map((_, idx) => (
