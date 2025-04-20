@@ -1,6 +1,8 @@
+
 import { learningCategories } from "@/data/learningCategories";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+// Removed Avatar imports as they are no longer used outside the menu
+// import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import React, { useState } from "react";
 import AlphabetModal from "@/components/AlphabetModal";
 import ChildProgressBar from "@/components/ChildProgressBar";
@@ -17,7 +19,7 @@ const mockChild = {
   lastCategory: "Tal",
   lastPercent: 30,
   finishedCategories: ["Alfabet"]
-}
+};
 
 export default function LearnCategoriesPage() {
   const [showAlphabet, setShowAlphabet] = useState(false);
@@ -27,7 +29,8 @@ export default function LearnCategoriesPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white flex flex-col items-center py-10 animate-fade-in relative">
       <ProfileMenu />
-      <div className="absolute left-8 top-8 z-10 flex items-center space-x-3">
+      {/* Removed Avatar and name from main layout */}
+      {/* <div className="absolute left-8 top-8 z-10 flex items-center space-x-3">
         <Avatar className="w-14 h-14 ring-2 ring-vivid-purple ring-offset-2 ring-offset-white shadow-lg">
           <AvatarImage
             src="https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?auto=format&fit=facearea&w=96&h=96&facepad=3"
@@ -36,7 +39,7 @@ export default function LearnCategoriesPage() {
           <AvatarFallback>Barn</AvatarFallback>
         </Avatar>
         <span className="font-semibold text-lg text-purple-700">{mockChild.name}</span>
-      </div>
+      </div> */}
       <ChildProgressBar name={mockChild.name} progress={mockChild.progress} streak={mockChild.streak} />
       <BadgeBar badges={mockChild.badges} />
 
@@ -103,3 +106,4 @@ export default function LearnCategoriesPage() {
     </div>
   );
 }
+
