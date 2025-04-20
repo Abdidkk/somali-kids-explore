@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { UserRound, Settings, LogOut } from "lucide-react";
+import { User as UserIcon, Settings, LogOut } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 // Brug evt. prop eller context for dynamiske værdier
@@ -21,21 +21,21 @@ const PROFILE = {
 
 export default function ProfileMenu() {
   const isMobile = useIsMobile();
-  // Mobilmenu state styres af Sheet-komponenten
 
   if (isMobile) {
-    // Mobil "sheet" menu
+    // Mobil "sheet" menu uden avatar/navn på siden, men INDENI menuen i toppen
     return (
       <div className="fixed top-5 right-5 z-50">
         <Sheet>
           <SheetTrigger asChild>
             <button className="flex items-center bg-purple-100 hover:bg-purple-200 rounded-full p-2 shadow-md transition focus:outline-none">
-              <UserRound className="w-6 h-6 text-purple-600" />
+              <UserIcon className="w-6 h-6 text-purple-600" />
               <span className="sr-only">Åbn profilmenu</span>
             </button>
           </SheetTrigger>
           <SheetContent side="right" className="w-72 max-w-full py-0 px-0">
-            <div className="flex flex-col items-center py-8 bg-purple-50 rounded-t-[10px]">
+            {/* Avatar og navn nu kun her øverst i menuen */}
+            <div className="flex flex-col items-center py-8 bg-purple-50 rounded-t-[10px] mb-2">
               <Avatar className="w-16 h-16 ring-2 ring-vivid-purple ring-offset-2 ring-offset-white mb-2">
                 <AvatarImage src={PROFILE.image} alt={PROFILE.name} />
                 <AvatarFallback>{PROFILE.name[0]}</AvatarFallback>
@@ -46,7 +46,7 @@ export default function ProfileMenu() {
             </div>
             <div className="flex flex-col py-4">
               <button className="flex items-center gap-3 py-3 px-6 text-base hover:bg-purple-100 transition text-gray-800">
-                <UserRound className="w-5 h-5" />
+                <UserIcon className="w-5 h-5" />
                 Profil
               </button>
               <button className="flex items-center gap-3 py-3 px-6 text-base hover:bg-purple-100 transition text-gray-800">
@@ -75,13 +75,13 @@ export default function ProfileMenu() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button className="flex items-center bg-purple-100 hover:bg-purple-200 rounded-full p-2 shadow-md transition focus:outline-none">
-            <UserRound className="w-6 h-6 text-purple-600" />
+            <UserIcon className="w-6 h-6 text-purple-600" />
             <span className="sr-only">Åbn profilmenu</span>
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-48 bg-white shadow-lg border mt-2 animate-fade-in">
           <DropdownMenuItem className="flex items-center gap-2">
-            <UserRound className="w-4 h-4" />
+            <UserIcon className="w-4 h-4" />
             <span>Profil</span>
           </DropdownMenuItem>
           <DropdownMenuItem className="flex items-center gap-2">
@@ -98,4 +98,3 @@ export default function ProfileMenu() {
     </div>
   );
 }
-
