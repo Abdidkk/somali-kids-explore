@@ -41,7 +41,7 @@ const HeroSection = () => {
                 <img
                   alt="Dugsi børn"
                   className="w-full h-auto rounded"
-                  src="https://images.unsplash.com/photo-1501286353178-1ec881214838?auto=format&fit=crop&w=600&q=80"
+                  src="/lovable-uploads/39e62fa6-99c4-4bf1-996f-19577f56a318.png"
                 />
                 {/* Overlay text */}
                 <span className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[#4CA6FE]/80 text-white text-2xl md:text-3xl px-6 py-1 rounded shadow animate-fade-in font-bold tracking-wide pointer-events-none">
