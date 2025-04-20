@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Apple, Google } from "lucide-react";
+import { google, apple } from "lucide-react";
 
 interface Kid {
   id: string;
@@ -34,8 +34,11 @@ const ManageKidsPage = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-purple-100 via-white to-white px-4 py-12 animate-fade-in">
       <div className="w-full max-w-md bg-white rounded-xl shadow-xl px-8 py-10 border border-purple-100">
-        <h1 className="text-2xl font-bold mb-3 text-center text-purple-600">Børneprofiler</h1>
-        <div className="mb-5 text-center text-purple-700 bg-purple-50 rounded py-2 px-4 border border-purple-200 font-medium">
+        <h1 className="text-2xl font-bold mb-3 text-center text-purple-600">
+          Børneprofiler
+        </h1>
+        {/* Prisinfo gjort mere synlig */}
+        <div className="mb-5 text-center text-purple-800 bg-purple-100 rounded py-2 px-4 border border-purple-200 font-semibold">
           Hver børneprofil koster <span className="font-bold">15 kr/md.</span> ekstra.<br />
           (Eller 135 kr/år hvis du har årlig betaling)
         </div>
@@ -55,12 +58,16 @@ const ManageKidsPage = () => {
               value={age}
               onChange={e => setAge(e.target.value)}
             />
-            <Button onClick={handleAdd} className="bg-purple-600 hover:bg-purple-700">Tilføj</Button>
+            <Button onClick={handleAdd} className="bg-purple-600 hover:bg-purple-700">
+              Tilføj
+            </Button>
           </div>
         </div>
         <div>
           {kids.length === 0 && (
-            <div className="text-gray-500 text-center py-6">Ingen børneprofiler oprettet endnu.</div>
+            <div className="text-gray-500 text-center py-6">
+              Ingen børneprofiler oprettet endnu.
+            </div>
           )}
           <ul className="space-y-2">
             {kids.map((kid) => (
@@ -123,14 +130,14 @@ const ManageKidsPage = () => {
               type="button"
               disabled
             >
-              <Google size={22} /> Betal med Google Pay
+              {google({ size: 22 })} Betal med Google Pay
             </Button>
             <Button
               className="w-full bg-black hover:bg-neutral-800 text-white font-semibold flex items-center justify-center gap-2 py-3 text-base"
               type="button"
               disabled
             >
-              <Apple size={22} /> Betal med Apple Pay
+              {apple({ size: 22 })} Betal med Apple Pay
             </Button>
           </div>
           <p className="text-xs text-gray-400 text-center mt-3">
