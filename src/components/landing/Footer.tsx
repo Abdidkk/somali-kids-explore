@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
 const Footer = () => {
-  return <footer className="py-12 px-4 md:px-8 lg:px-16 mt-auto bg-blue-500">
+  return <footer className="bg-gray-100 py-12 px-4 md:px-8 lg:px-16 mt-auto">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-slate-50">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-lg font-semibold mb-4">Dugsi Læring</h3>
             <p className="text-gray-600">Gør somalisk sproglæring sjovt og tilgængeligt for danske børn.</p>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-4">Hurtige Links</h3>
+            <h3 className="text-lg font-semibold mb-4">
+          </h3>
             <ul className="space-y-2">
               <li><Link to="/" className="text-gray-600 hover:text-purple-600">Hjem</Link></li>
               <li><Link to="/" className="text-gray-600 hover:text-purple-600">Funktioner</Link></li>

@@ -13,7 +13,7 @@ const HeroSection = () => {
             <h1 style={{
             color: HERO_BLUE
           }} className="text-4xl font-bold text-left md:text-5xl px-0 py-px my-0">
-              <span className="text-orange-500"></span> Danish-Somali Learning
+              <span className="text-orange-500">Dugsi</span> Danish-Somali Learning
             </h1>
             <p className="text-xl text-gray-700">
               En sjov og interaktiv måde for børn at lære somalisk sprog gennem dansk. Perfekt til tosprogede familier og kulturel læring.
@@ -34,7 +34,7 @@ const HeroSection = () => {
             <div className="relative">
               <div className="absolute -top-4 -left-4 w-full h-full bg-orange-200 rounded-lg"></div>
               <div className="relative bg-white p-3 border-2 border-purple-300 rounded-lg shadow-lg">
-                <img alt="Dugsi Learning" className="w-full h-auto rounded" src="/lovable-uploads/4ecccbf8-6fc5-4f66-9756-fb4b9e066554.png" />
+                <img alt="Dugsi Learning" className="w-full h-auto rounded object-fill" src="/lovable-uploads/b6b668a4-c6c3-4295-8fff-d5a453fbf544.png" />
               </div>
             </div>
           </div>
