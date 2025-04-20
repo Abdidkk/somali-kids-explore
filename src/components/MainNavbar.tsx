@@ -3,13 +3,15 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import SomaliFlag from "@/components/landing/SomaliFlag";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const HERO_BLUE = "#4CA6FE";
 
 const MainNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -34,8 +36,8 @@ const MainNavbar = () => {
         </div>
 
         <div className="flex items-center">
-          {/* Desktop knapper: Log ind & Tilmeld */}
-          {!isMobile && (
+          {/* Desktop knapper: Log ind & Tilmeld – kun på forsiden */}
+          {!isMobile && isHome && (
             <div className="flex gap-2">
               <Link
                 to="/login"
@@ -51,6 +53,7 @@ const MainNavbar = () => {
               </Link>
             </div>
           )}
+          {/* Mobil menu ikon – beholdes */}
           {isMobile && (
             <button
               type="button"
@@ -68,8 +71,8 @@ const MainNavbar = () => {
         </div>
       </div>
 
-      {/* Mobilmenuen inkl. Log ind & Tilmeld knapper */}
-      {isMobile && isMenuOpen && (
+      {/* Mobilmenuen inkl. Log ind & Tilmeld knapper – kun på forsiden */}
+      {isMobile && isMenuOpen && isHome && (
         <div className="md:hidden bg-white shadow-lg">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <div className="pt-4 flex flex-col space-y-3">
