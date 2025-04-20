@@ -44,10 +44,10 @@ const MainNavbar = () => {
 
         <div className="flex items-center">
           <div className="hidden md:flex items-center space-x-3">
-            <Button variant="outline" className="border-gray-300 hover:border-[#4CA6FE] hover:text-[#4CA6FE]">
+            <Button variant="outline" className="border-gray-300 hover:border-[#4CA6FE] hover:text-[#4CA6FE] py-0 px-[23px]">
               Log Ind
             </Button>
-            <Button className="bg-purple-800 hover:bg-purple-700">
+            <Button className="bg-purple-800 hover:bg-purple-700 px-[39px]">
               Tilmeld
             </Button>
           </div>
