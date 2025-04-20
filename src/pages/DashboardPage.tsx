@@ -9,13 +9,11 @@ const mockKids = [
     name: "Amina",
     progress: 58,
     streak: 8,
-    categories: ["Ordforråd", "Læseøvelser", "Sange"],
   },
   {
     name: "Yusuf",
     progress: 32,
     streak: 3,
-    categories: ["Ordforråd", "Videoer"],
   },
 ];
 
@@ -45,9 +43,9 @@ export default function DashboardPage() {
                   <div className="text-right text-xs text-gray-600 mt-1">{kid.progress}% gennemført</div>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {kid.categories.map((cat, i) => (
-                    <span key={i} className="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
-                      <Check className="w-3 h-3" /> {cat}
+                  {learningCategories.map((cat, i) => (
+                    <span key={cat.name} className="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
+                      <Check className="w-3 h-3" /> {cat.name}
                     </span>
                   ))}
                 </div>
