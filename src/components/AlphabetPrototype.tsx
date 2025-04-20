@@ -5,9 +5,8 @@ import { Play } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AlphabetAchievements from "./AlphabetAchievements";
 
-// I denne prototype har vi kun ét bogstav, men vi lader som om der er flere for at vise UI
 const TOTAL_LETTERS = 28;
-const LETTER = "A";
+// Brug prop letter i stedet for hardkodet "A"
 const IMAGE_URL = "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?auto=format&fit=facearea&w=256&h=256&facepad=3";
 
 function speakSomaliLetter(letter: string) {
@@ -20,8 +19,12 @@ function speakSomaliLetter(letter: string) {
   window.speechSynthesis.speak(utter);
 }
 
+interface Props {
+  letter: string;
+}
+
 // Dummy funktioner og stater til proof-of-concept
-export default function AlphabetPrototype() {
+export default function AlphabetPrototype({ letter }: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [traced, setTraced] = useState(false);
   const [lettersTraced, setLettersTraced] = useState(0);
@@ -29,10 +32,9 @@ export default function AlphabetPrototype() {
   const [badges, setBadges] = useState<string[]>([]);
   const { toast } = useToast();
 
-  // Dummy: lad som om alle bogstaver = bogstav A
+  // Simple trace-logic: markér "traced" når mouseup på canvas = 'sporet'
   let drawing = false;
 
-  // Simple trace-logic: markér "traced" når mouseup på canvas = 'sporet'
   const startDraw = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     drawing = true;
     const ctx = canvasRef.current?.getContext("2d");
@@ -103,14 +105,14 @@ export default function AlphabetPrototype() {
       />
       <div className="flex flex-col items-center gap-2">
         <div className="text-[72px] text-purple-700 font-bold drop-shadow" aria-label="Somalisk bogstav">
-          {LETTER}
+          {letter}
         </div>
         <img
           src={IMAGE_URL}
           alt="Eksempel for bogstav"
           className="w-24 h-24 object-cover rounded-xl border shadow mb-2"
         />
-        <Button onClick={() => speakSomaliLetter(LETTER)} variant="outline" className="flex gap-2">
+        <Button onClick={() => speakSomaliLetter(letter)} variant="outline" className="flex gap-2">
           <Play className="w-5 h-5" /> Lyt
         </Button>
       </div>
@@ -129,7 +131,7 @@ export default function AlphabetPrototype() {
             onMouseLeave={stopDraw}
           />
           <div className="pointer-events-none absolute inset-0 flex justify-center items-center">
-            <span className="text-[120px] text-gray-300 font-bold select-none">{LETTER}</span>
+            <span className="text-[120px] text-gray-300 font-bold select-none">{letter}</span>
           </div>
         </div>
         <Button size="sm" onClick={handleClear} className="mt-2" variant="ghost">
@@ -139,3 +141,4 @@ export default function AlphabetPrototype() {
     </div>
   );
 }
+
