@@ -2,8 +2,12 @@
 import { learningCategories } from "@/data/learningCategories";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import React, { useState } from "react";
+import AlphabetModal from "@/components/AlphabetModal";
 
 export default function LearnCategoriesPage() {
+  const [showAlphabet, setShowAlphabet] = useState(false);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white flex flex-col items-center py-10 animate-fade-in relative">
       {/* Avatar og navn øverst til venstre */}
@@ -24,6 +28,7 @@ export default function LearnCategoriesPage() {
       <div className="w-full max-w-5xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {learningCategories.map((cat, idx) => {
           const Icon = cat.icon;
+          const isAlphabet = cat.name === "Alfabet";
           return (
             <Card
               key={cat.name}
@@ -31,6 +36,11 @@ export default function LearnCategoriesPage() {
               style={{ background: cat.bgColor, borderRadius: "1.1rem" }}
               tabIndex={0}
               aria-label={`Lær om ${cat.name}`}
+              onClick={
+                isAlphabet
+                  ? () => setShowAlphabet(true)
+                  : undefined
+              }
             >
               <CardContent className="flex flex-col items-center py-6">
                 <div className="rounded-full bg-white shadow flex items-center justify-center mb-4" style={{ width: 64, height: 64 }}>
@@ -43,7 +53,7 @@ export default function LearnCategoriesPage() {
           );
         })}
       </div>
+      <AlphabetModal open={showAlphabet} onClose={() => setShowAlphabet(false)} />
     </div>
   );
 }
-
