@@ -1,5 +1,31 @@
 
-import { Brain, Coffee, Play, Disc } from "lucide-react";
+import { Brain, Coffee, Play } from "lucide-react";
+
+/**
+ * Simple local illustration images via Unsplash, but you can swap out these URLs!
+ */
+const bulletImages = [
+  {
+    src: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=64&q=80",
+    alt: "Identitet & kultur",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=64&q=80",
+    alt: "Kommunikation i fællesskab",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=64&q=80",
+    alt: "Sprog og læring",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=64&q=80",
+    alt: "Sociale relationer",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=64&q=80",
+    alt: "Muligheder",
+  },
+];
 
 const HowItWorksSection = () => {
   return (
@@ -41,25 +67,55 @@ const HowItWorksSection = () => {
             Hvorfor er det vigtigt at lære sit <span className="text-purple-600">modersmål?</span>
           </h3>
           <ul className="space-y-4 text-lg">
-            <InfoBullet 
-              iconColor="text-[#F97316]" 
-              text={<>Styrker barnets <span className="text-[#8B5CF6] font-semibold">identitet</span> og tilknytning til deres <span className="text-[#D946EF] font-semibold">rødder</span> og kultur.</>} 
+            <ImageBullet
+              img={bulletImages[0]}
+              text={
+                <>
+                  Styrker barnets{" "}
+                  <span className="text-[#8B5CF6] font-semibold">identitet</span> og tilknytning til deres{" "}
+                  <span className="text-[#D946EF] font-semibold">rødder</span> og kultur.
+                </>
+              }
             />
-            <InfoBullet 
-              iconColor="text-[#33C3F0]" 
-              text={<>Giver mulighed for at <span className="text-[#0EA5E9] font-semibold">kommunikere</span> med familie og fællesskab både her og i <span className="text-[#1575ad] font-semibold">Somalia</span>.</>} 
+            <ImageBullet
+              img={bulletImages[1]}
+              text={
+                <>
+                  Giver mulighed for at{" "}
+                  <span className="text-[#0EA5E9] font-semibold">kommunikere</span> med familie og fællesskab både her og i{" "}
+                  <span className="text-[#1575ad] font-semibold">Somalia</span>.
+                </>
+              }
             />
-            <InfoBullet 
-              iconColor="text-[#FEC6A1]" 
-              text={<>Forbedrer barnets generelle <span className="text-[#403E43] font-semibold">sproglige udvikling</span> og <span className="text-[#6E59A5] font-semibold">læringsevner</span>.</>} 
+            <ImageBullet
+              img={bulletImages[2]}
+              text={
+                <>
+                  Forbedrer barnets generelle{" "}
+                  <span className="text-[#403E43] font-semibold">sproglige udvikling</span> og{" "}
+                  <span className="text-[#6E59A5] font-semibold">læringsevner</span>.
+                </>
+              }
             />
-            <InfoBullet 
-              iconColor="text-[#7E69AB]" 
-              text={<>Understøtter <span className="text-[#9b87f5] font-semibold">sociale relationer</span> og følelsen af <span className="text-[#F97316] font-semibold">samhørighed</span>.</>} 
+            <ImageBullet
+              img={bulletImages[3]}
+              text={
+                <>
+                  Understøtter{" "}
+                  <span className="text-[#9b87f5] font-semibold">sociale relationer</span> og følelsen af{" "}
+                  <span className="text-[#F97316] font-semibold">samhørighed</span>.
+                </>
+              }
             />
-            <InfoBullet 
-              iconColor="text-[#8B5CF6]" 
-              text={<>At kunne <span className="text-[#D946EF] font-semibold">flere sprog</span> åbner døre til <span className="text-[#1EAEDB] font-semibold">flere muligheder</span> i fremtiden.</>} 
+            <ImageBullet
+              img={bulletImages[4]}
+              text={
+                <>
+                  At kunne{" "}
+                  <span className="text-[#D946EF] font-semibold">flere sprog</span> åbner døre til{" "}
+                  <span className="text-[#1EAEDB] font-semibold">flere muligheder</span> i fremtiden.
+                </>
+              }
             />
           </ul>
         </div>
@@ -80,13 +136,20 @@ const StepCard = ({ icon, title, description, bgColor, textColor }) => {
   );
 };
 
-// InfoBullet: farverigt ikonpunkt + farverig tekst
-const InfoBullet = ({ iconColor, text }) => (
-  <li className="flex items-start space-x-3">
-    <span className={`pt-1`}>
-      <Disc className={`w-5 h-5 ${iconColor} min-w-5`} />
-    </span>
-    <span className="">{text}</span>
+type ImageBulletProps = {
+  img: { src: string; alt: string };
+  text: React.ReactNode;
+};
+
+const ImageBullet = ({ img, text }: ImageBulletProps) => (
+  <li className="flex items-center space-x-4">
+    <img
+      src={img.src}
+      alt={img.alt}
+      className="w-10 h-10 object-cover rounded-full border-2 border-[#8B5CF6] shadow-sm flex-shrink-0"
+      loading="lazy"
+    />
+    <span>{text}</span>
   </li>
 );
 
