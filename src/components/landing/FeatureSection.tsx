@@ -1,48 +1,91 @@
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Languages, GraduationCap, Palette, Users, Calendar, BookOpen } from "lucide-react";
+import {
+  Abc,
+  Volume2,
+  Palette,
+  Coins,
+  Apple,
+  Dog,
+  Earth,
+  Calendar,
+  Users,
+  Sofa,
+  Activity,
+  MessageSquare,
+  Book,
+} from "lucide-react";
 
 const FeatureSection = () => {
   return (
     <section className="py-16 px-4 bg-white md:px-8 lg:px-16">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Læring Gjort Sjovt</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Sjove Kategorier – Lær Somali og Dansk</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Udforsk vores interaktive læringsindhold designet specielt til børn der lærer somalisk gennem dansk
+            Oplev engagerende indhold, der hjælper børn med at lære somalisk gennem dansk, opdelt i spændende kategorier!
           </p>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <FeatureCard 
-            icon={<Languages className="h-10 w-10 text-purple-500" />}
-            title="Alfabet Læring"
-            description="Lær somaliske bogstaver med visuelle hjælpemidler og lydudtale på dansk"
-          />
-          <FeatureCard 
-            icon={<GraduationCap className="h-10 w-10 text-blue-500" />}
-            title="Tal & Regning"
-            description="Mestre tælling og grundlæggende matematik på somalisk med dansk forklaring"
+            icon={<Abc className="h-10 w-10 text-purple-700" />}
+            title="Alfabet"
+            description="Somaliske bogstaver og udtale, forklaret på dansk"
           />
           <FeatureCard 
             icon={<Palette className="h-10 w-10 text-pink-500" />}
-            title="Farver & Former"
-            description="Genkend og navngiv farver og former på somalisk gennem danske oversættelser"
+            title="Farver"
+            description="Navne og genkendelse af farver på somalisk"
           />
           <FeatureCard 
-            icon={<Users className="h-10 w-10 text-yellow-500" />}
-            title="Familie & Relationer"
-            description="Lær somaliske ord for familiemedlemmer med dansk oversættelse"
+            icon={<Coins className="h-10 w-10 text-yellow-500" />}
+            title="Tal"
+            description="Optælling og grundlæggende matematik på somalisk"
           />
           <FeatureCard 
-            icon={<Calendar className="h-10 w-10 text-green-500" />}
-            title="Kalender & Tid"
-            description="Forstå somalisk terminologi for dage og måneder med dansk reference"
+            icon={<Apple className="h-10 w-10 text-green-600" />}
+            title="Mad"
+            description="Ordforråd for frugter og grøntsager"
           />
           <FeatureCard 
-            icon={<BookOpen className="h-10 w-10 text-orange-500" />}
-            title="Kulturelle Lektioner"
-            description="Udforsk somaliske ordsprog og kulturelle fortællinger med dansk forklaring"
+            icon={<Dog className="h-10 w-10 text-orange-400" />}
+            title="Dyr"
+            description="Somaliske navne på dyr og deres egenskaber"
+          />
+          <FeatureCard 
+            icon={<Earth className="h-10 w-10 text-blue-400" />}
+            title="Geografi"
+            description="Lær om lande, regioner og somalisk geografi"
+          />
+          <FeatureCard 
+            icon={<Calendar className="h-10 w-10 text-teal-500" />}
+            title="Kalender"
+            description="Terminologi for dage, måneder og årstider"
+          />
+          <FeatureCard 
+            icon={<Users className="h-10 w-10 text-violet-500" />}
+            title="Familie og venner"
+            description="Relationer og ordforråd om sociale dynamikker"
+          />
+          <FeatureCard 
+            icon={<Sofa className="h-10 w-10 text-gray-700" />}
+            title="Ord"
+            description="Genstande i hjemmet – stol, fjernsyn, sofa og flere"
+          />
+          <FeatureCard 
+            icon={<Activity className="h-10 w-10 text-lime-600" />}
+            title="Daglige aktiviteter"
+            description="Sætninger til hverdagsopgaver"
+          />
+          <FeatureCard 
+            icon={<MessageSquare className="h-10 w-10 text-cyan-600" />}
+            title="Sætninger"
+            description="Strukturerede somaliske sætninger til øvelse"
+          />
+          <FeatureCard 
+            icon={<Book className="h-10 w-10 text-orange-600" />}
+            title="Kulturelt indhold og Læse bøger"
+            description="Historier, fortællinger, traditioner og praktisk læsning"
           />
         </div>
       </div>
