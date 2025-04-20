@@ -1,15 +1,14 @@
 
 import { learningCategories } from "@/data/learningCategories";
 import { Card, CardContent } from "@/components/ui/card";
-// Removed Avatar imports as they are no longer used outside the menu
-// import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import React, { useState } from "react";
 import AlphabetModal from "@/components/AlphabetModal";
 import ChildProgressBar from "@/components/ChildProgressBar";
 import BadgeBar from "@/components/BadgeBar";
 import ContinueCard from "@/components/ContinueCard";
-import { Star, BadgeCheck } from "lucide-react";
+import { Star, BadgeCheck, ArrowLeft } from "lucide-react";
 import ProfileMenu from "@/components/ProfileMenu";
+import { Button } from "@/components/ui/button";
 
 const mockChild = {
   name: "Sami",
@@ -26,20 +25,21 @@ export default function LearnCategoriesPage() {
 
   const showContinue = !!mockChild.lastCategory;
 
+  // Håndter "gå tilbage" navigation
+  const handleBack = () => {
+    window.history.back();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white flex flex-col items-center py-10 animate-fade-in relative">
       <ProfileMenu />
-      {/* Removed Avatar and name from main layout */}
-      {/* <div className="absolute left-8 top-8 z-10 flex items-center space-x-3">
-        <Avatar className="w-14 h-14 ring-2 ring-vivid-purple ring-offset-2 ring-offset-white shadow-lg">
-          <AvatarImage
-            src="https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?auto=format&fit=facearea&w=96&h=96&facepad=3"
-            alt="Barnets billede"
-          />
-          <AvatarFallback>Barn</AvatarFallback>
-        </Avatar>
-        <span className="font-semibold text-lg text-purple-700">{mockChild.name}</span>
-      </div> */}
+      {/* Tilføjet tilbage-knap i øverste venstre hjørne */}
+      <div className="absolute left-4 top-4 z-20">
+        <Button onClick={handleBack} variant="outline" size="sm" className="flex items-center gap-1">
+          <ArrowLeft className="w-4 h-4" />
+          Tilbage
+        </Button>
+      </div>
       <ChildProgressBar name={mockChild.name} progress={mockChild.progress} streak={mockChild.streak} />
       <BadgeBar badges={mockChild.badges} />
 
