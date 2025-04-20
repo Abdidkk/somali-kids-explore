@@ -42,6 +42,7 @@ const App = () => (
           <Route path="/om-os" element={<AboutPage />} />
           <Route path="/fag" element={<SubjectsPage />} />
           <Route path="/priser" element={<PricingPage />} />
+          <Route path="/priser/mere-info" element={<(await import("./pages/MereOmPriserPage")).default />} />
           <Route path="/privatlivspolitik" element={<PrivacyPolicyPage />} />
           <Route path="/servicevilkaar" element={<TermsOfServicePage />} />
           <Route path="*" element={<NotFound />} />
