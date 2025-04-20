@@ -1,6 +1,8 @@
 
 import React from "react";
 import AlphabetPrototype from "./AlphabetPrototype";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface AlphabetModalProps {
   open: boolean;
@@ -13,6 +15,20 @@ const AlphabetModal: React.FC<AlphabetModalProps> = ({ open, onClose }) => {
   return (
     <div className="fixed z-50 inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm">
       <div className="bg-white rounded-xl shadow-xl px-7 py-6 w-full max-w-lg relative animate-in fade-in-50">
+        {/* Tilbage-knap i øverste venstre hjørne */}
+        <div className="absolute left-4 top-3 z-20">
+          <Button
+            onClick={onClose}
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-1"
+            aria-label="Tilbage"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Tilbage
+          </Button>
+        </div>
+        {/* Eksisterende luk-knap (×) i højre hjørne */}
         <button
           aria-label="Luk alfabet"
           onClick={onClose}
@@ -31,3 +47,4 @@ const AlphabetModal: React.FC<AlphabetModalProps> = ({ open, onClose }) => {
 };
 
 export default AlphabetModal;
+
