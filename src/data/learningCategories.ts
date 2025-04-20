@@ -1,5 +1,5 @@
 
-import { Mic, Palette, Calculator, Carrot, PawPrint, Earth, Calendar, Users, House, Activity, MessageSquare, Music, BookOpen } from "lucide-react";
+import { Mic, Palette, Calculator, Carrot, PawPrint, Earth, Calendar, Users, House, Activity, MessageSquare, Music, BookOpen, HelpCircle } from "lucide-react";
 
 export const learningCategories = [
   {
@@ -79,5 +79,11 @@ export const learningCategories = [
     icon: BookOpen,
     bgColor: "#FDF5E3",
     description: "Engagerende historier og praktisk anvendelse.",
+  },
+  {
+    name: "Quiz",
+    icon: HelpCircle,
+    bgColor: "#F7EFFF",
+    description: "Test din viden om det, du har lært.",
   },
 ];
