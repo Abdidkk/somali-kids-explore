@@ -10,6 +10,11 @@ interface Kid {
   age: string;
 }
 
+const BASE_MONTHLY = 45;
+const KID_MONTHLY = 15;
+const BASE_YEARLY = 405;
+const KID_YEARLY = 135;
+
 const ManageKidsPage = () => {
   const [kids, setKids] = useState<Kid[]>([]);
   const [name, setName] = useState("");
@@ -31,6 +36,10 @@ const ManageKidsPage = () => {
     setKids(kids.filter((k) => k.id !== id));
   };
 
+  // Payment calculation
+  const totalMonthly = BASE_MONTHLY + KID_MONTHLY * kids.length;
+  const totalYearly = BASE_YEARLY + KID_YEARLY * kids.length;
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-purple-100 via-white to-white px-4 py-12 animate-fade-in">
       <div className="w-full max-w-md bg-white rounded-xl shadow-xl px-8 py-10 border border-purple-100">
@@ -42,6 +51,23 @@ const ManageKidsPage = () => {
           Hver børneprofil koster <span className="font-bold">15 kr/md.</span> ekstra.<br />
           (Eller 135 kr/år hvis du har årlig betaling)
         </div>
+
+        {/* Payment summary */}
+        <div className="mb-6 text-center bg-orange-50 border border-orange-200 rounded py-3 px-3 text-orange-800 font-semibold">
+          <div>
+            <span className="block">
+              <span className="text-base">Din samlede pris:</span>
+            </span>
+            <span>
+              <b>{totalMonthly} kr/md.</b>&nbsp;eller&nbsp;
+              <b>{totalYearly} kr/år</b>
+            </span>
+          </div>
+          <div className="mt-1 text-xs text-gray-500">
+            (Inkluderer basispris + {kids.length} børneprofil{kids.length === 1 ? "" : "er"})
+          </div>
+        </div>
+
         <div className="mb-6">
           <div className="flex gap-2">
             <input
