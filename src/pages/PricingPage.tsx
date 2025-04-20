@@ -1,16 +1,13 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { DollarSign, CalendarCheck, BadgePercent } from "lucide-react";
 import { Link } from "react-router-dom";
-
 export default function PricingPage() {
-  return (
-    <div className="bg-gradient-to-b from-[#E5DEFF] via-white to-white min-h-screen py-12 px-4 flex flex-col items-center">
+  return <div className="bg-gradient-to-b from-[#E5DEFF] via-white to-white min-h-screen py-12 px-4 flex flex-col items-center">
       <div className="w-full max-w-xl mb-8">
         <Link to="/" className="text-vivid-purple hover:underline">&larr; Til forsiden</Link>
         <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4 flex items-center gap-2">
-          <DollarSign className="w-7 h-7" />
+          
           Priser & Planer
         </h1>
         <p className="text-gray-700 text-base mb-3">
@@ -91,6 +88,5 @@ export default function PricingPage() {
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
+    </div>;
 }
