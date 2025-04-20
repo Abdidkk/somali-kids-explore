@@ -39,11 +39,7 @@ const MainNavbar = () => {
 
         {/* Desktop Navigation */}
         {!isMobile && <nav className="hidden md:flex items-center space-x-4">
-            {navLinks.map((link, i) => <Link to={link.to} key={link.label} className={highlightClass + " hover-scale"} style={{
-          marginLeft: i > 0 ? 6 : 0
-        }}>
-                {link.label}
-              </Link>)}
+            {navLinks.map((link, i) => {})}
           </nav>}
 
         <div className="flex items-center">

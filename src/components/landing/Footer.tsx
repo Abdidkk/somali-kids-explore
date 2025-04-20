@@ -11,7 +11,7 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Hurtige Links</h3>
             <ul className="space-y-2">
               <li><Link to="/" className="text-gray-600 hover:text-purple-600">Hjem</Link></li>
-              <li><Link to="/" className="text-gray-600 hover:text-purple-600">Funktioner</Link></li>
+              
               <li><Link to="/" className="text-gray-600 hover:text-purple-600">Priser</Link></li>
               <li><Link to="/" className="text-gray-600 hover:text-purple-600">Om Os</Link></li>
             </ul>
