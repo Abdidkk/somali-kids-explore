@@ -1,7 +1,8 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Apple } from "lucide-react";
+import { Apple, CreditCard } from "lucide-react";
 
 interface Kid {
   id: string;
@@ -40,6 +41,11 @@ const ManageKidsPage = () => {
   const extraKids = kids.length > 1 ? kids.length - 1 : 0;
   const totalMonthly = BASE_MONTHLY + KID_MONTHLY * extraKids;
   const totalYearly = BASE_YEARLY + KID_YEARLY * extraKids;
+
+  // Dummy betalingshandler
+  const handlePay = () => {
+    alert("Betaling kan kun simuleres i denne prototype.");
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-purple-100 via-white to-white px-4 py-12 animate-fade-in">
@@ -151,6 +157,16 @@ const ManageKidsPage = () => {
               />
             </div>
           </div>
+
+          {/* BETAL KNAP */}
+          <Button
+            className="w-full mt-7 bg-[#9b87f5] hover:bg-[#7E69AB] text-white font-bold flex items-center justify-center gap-2 py-3 text-base shadow transition-all"
+            type="button"
+            onClick={handlePay}
+          >
+            <CreditCard className="mr-1" size={21} /> Betal
+          </Button>
+
           <div className="flex flex-col gap-3 mt-5">
             <Button
               className="w-full bg-[#4285F4] hover:bg-[#357ae8] text-white font-semibold flex items-center justify-center gap-2 py-3 text-base"
