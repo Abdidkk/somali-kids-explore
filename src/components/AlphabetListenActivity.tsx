@@ -5,7 +5,7 @@ import ElevenLabsTTS from "./ElevenLabsTTS";
 
 // Det somaliske alfabet (ingen C, F, P, Q, V, X, Z ifølge klassisk opsætning)
 const SOMALI_ALPHABET = [
-  "A","B","D","E","G","H","I","J","K","L","M","N","O","R","S","Sh","T","U","W","Y"
+  "A", "B", "D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "R", "S", "Sh", "T", "U", "W", "Y"
 ];
 
 interface Props {
@@ -27,12 +27,12 @@ export default function AlphabetListenActivity({ onBack }: Props) {
 
   return (
     <div className="flex flex-col items-center mt-5 gap-3">
-      {/* INDSÆTTER BILLEDET ØVERST */}
+      {/* Billedet øverst */}
       <img
         src="/lovable-uploads/23df9b50-7f66-4b52-819b-59cc920edd2b.png"
         alt="Børn lærer alfabetet"
         className="w-full max-w-xs rounded-xl border mb-2 shadow"
-        style={{objectFit: "cover"}}
+        style={{ objectFit: "cover" }}
       />
       <h3 className="text-xl font-bold text-purple-700 mb-2">Somalisk alfabet</h3>
       <div className="flex flex-col items-center gap-2 w-full max-w-xs">
@@ -53,10 +53,16 @@ export default function AlphabetListenActivity({ onBack }: Props) {
                 onClick={() => handlePlay(idx)}
                 variant="outline"
                 size="sm"
-                className="flex gap-1 px-2 py-1 text-xs"
+                className="flex gap-1 px-2 py-1 text-xs items-center"
                 disabled={playingIdx === idx}
               >
-                {/* Fjerner Headphones-ikonet, kun Lyt/tekst */}
+                {/* Billedet vises på knappen i stedet for ikon */}
+                <img
+                  src="/lovable-uploads/23df9b50-7f66-4b52-819b-59cc920edd2b.png"
+                  alt="Børn lærer alfabetet"
+                  className="w-6 h-6 rounded object-cover border shadow-sm"
+                  style={{ marginRight: "0.25rem" }}
+                />
                 {playingIdx === idx ? "Afspiller..." : "Lyt"}
               </Button>
               {playingIdx === idx && apiKey && (
