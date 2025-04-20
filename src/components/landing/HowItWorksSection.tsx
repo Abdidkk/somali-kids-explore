@@ -1,4 +1,3 @@
-
 import { Brain, Coffee, Play } from "lucide-react";
 
 // Nye, mere illustrative billeder - midlertidigt brugt Unsplash
@@ -14,7 +13,7 @@ const bulletImages = [
     bg: "bg-[#D3E4FD]",
   },
   {
-    src: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=800&q=80",
+    src: "/lovable-uploads/5e2d4de9-8aa0-4544-b550-6b99911c87ba.png",
     alt: "Barn, bøger og læring – Sprog og læring",
     bg: "bg-[#E5DEFF]",
   },
