@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,6 +20,7 @@ import SubjectsPage from "./pages/SubjectsPage";
 import PricingPage from "./pages/PricingPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsOfServicePage from "./pages/TermsOfServicePage";
+import MereOmPriserPage from "./pages/MereOmPriserPage";
 
 const queryClient = new QueryClient();
 
@@ -42,7 +44,7 @@ const App = () => (
           <Route path="/om-os" element={<AboutPage />} />
           <Route path="/fag" element={<SubjectsPage />} />
           <Route path="/priser" element={<PricingPage />} />
-          <Route path="/priser/mere-info" element={<(await import("./pages/MereOmPriserPage")).default />} />
+          <Route path="/priser/mere-info" element={<MereOmPriserPage />} />
           <Route path="/privatlivspolitik" element={<PrivacyPolicyPage />} />
           <Route path="/servicevilkaar" element={<TermsOfServicePage />} />
           <Route path="*" element={<NotFound />} />
