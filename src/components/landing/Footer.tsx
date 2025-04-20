@@ -1,9 +1,6 @@
-
 import { Link } from "react-router-dom";
-
 const Footer = () => {
-  return (
-    <footer className="bg-gray-100 py-12 px-4 md:px-8 lg:px-16 mt-auto">
+  return <footer className="py-12 px-4 md:px-8 lg:px-16 mt-auto bg-blue-500">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
@@ -37,13 +34,10 @@ const Footer = () => {
           <p className="text-gray-500">&copy; {new Date().getFullYear()} Dugsi Læringsplatform. Alle rettigheder forbeholdes.</p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 const SocialLinks = () => {
-  return (
-    <div className="flex space-x-4">
+  return <div className="flex space-x-4">
       <a href="#" className="text-gray-600 hover:text-purple-600">
         <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
           <path d="M22 5.16c-.94.42-1.95.7-3 .82 1.08-.65 1.9-1.68 2.3-2.9-1.03.61-2.17 1.06-3.38 1.3C16.95 3.2 15.8 2.75 14.5 2.75c-2.45 0-4.44 1.99-4.44 4.44 0 .35.04.69.12 1.02-3.7-.18-6.98-1.96-9.18-4.66-.38.66-.6 1.43-.6 2.25 0 1.54.78 2.9 1.97 3.7-.73-.02-1.42-.22-2.02-.55v.06c0 2.15 1.53 3.94 3.56 4.35-.37.1-.76.15-1.16.15-.28 0-.56-.03-.83-.08.56 1.76 2.2 3.04 4.15 3.08-1.52 1.2-3.44 1.9-5.52 1.9-.36 0-.71-.02-1.06-.06 1.97 1.26 4.3 2 6.8 2 8.16 0 12.6-6.76 12.6-12.6 0-.19 0-.38-.01-.57.87-.63 1.62-1.42 2.22-2.32z"></path>
@@ -59,8 +53,6 @@ const SocialLinks = () => {
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm-1-6.7c-.66 0-1.2-.54-1.2-1.2 0-.66.54-1.2 1.2-1.2.66 0 1.2.54 1.2 1.2 0 .66-.54 1.2-1.2 1.2zM17 17h-2v-3c0-.55-.45-1-1-1s-1 .45-1 1v3h-2v-6h2v1.1c.52-.7 1.37-1.1 2.25-1.1 1.65 0 2.99 1.34 2.99 2.99V17z"></path>
         </svg>
       </a>
-    </div>
-  );
+    </div>;
 };
-
 export default Footer;
