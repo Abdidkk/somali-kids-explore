@@ -1,11 +1,9 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Mic, Palette, Calculator, Carrot, PawPrint, Earth, Calendar,
   Users, House, Activity, MessageSquare, Music, BookOpen
 } from "lucide-react";
 
-// Unikke neddæmpede pastel-farver til hver kategori
 const categoryColors = [
   "#E9E3FC", // Alfabet - blid lilla
   "#FFEFF1", // Farver - blid rosa
@@ -118,16 +116,16 @@ const FeatureSection = () => {
 
 const FeatureCard = ({ icon, title, description, bgColor }) => {
   return (
-    <Card className="border-0 shadow-md hover:shadow-lg transition-all">
-      <CardContent
-        className="pt-6"
-        style={{
-          background: bgColor,
-          borderRadius: "1rem",
-          minHeight: 220,
-          transition: "background 0.2s"
-        }}
-      >
+    <Card
+      className="border-0 shadow-md hover:shadow-lg transition-all"
+      style={{
+        background: bgColor,
+        borderRadius: "1rem",
+        minHeight: 220,
+        transition: "background 0.2s"
+      }}
+    >
+      <CardContent className="pt-6 bg-transparent">
         <div className="flex flex-col items-center text-center">
           <div
             className="mb-4 rounded-full flex items-center justify-center shadow"
