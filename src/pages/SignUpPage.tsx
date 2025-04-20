@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Mail, Lock, User, LogIn } from "lucide-react";
+import { Mail, Lock, User, LogIn, Facebook } from "lucide-react";
 import SomaliFlag from "@/components/landing/SomaliFlag";
 import { Link } from "react-router-dom";
 import SocialLoginButton from "@/components/SocialLoginButton";
@@ -86,6 +86,11 @@ export default function SignUpPage() {
             icon={Mail}
             label="Fortsæt med Gmail"
             colorClass="border-[#ea384c] text-[#ea384c] hover:border-[#d32e22]/90"
+          />
+          <SocialLoginButton
+            icon={Facebook}
+            label="Fortsæt med Facebook"
+            colorClass="border-[#1877f3] text-[#1877f3] hover:border-[#1557b8]/90"
           />
         </div>
         <div className="mt-3 flex flex-col items-center space-y-1">
