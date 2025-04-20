@@ -1,26 +1,10 @@
 
 import React from "react";
-import { Button } from "@/components/ui/button";
-
-const SOMALI_ALPHABET = [
-  "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
-  "M", "N", "O", "Q", "R", "S", "Sh", "T", "U", "W", "X", "Y"
-];
+import AlphabetPrototype from "./AlphabetPrototype";
 
 interface AlphabetModalProps {
   open: boolean;
   onClose: () => void;
-}
-
-function speakSomaliLetter(letter: string) {
-  const utter = new window.SpeechSynthesisUtterance(letter);
-  utter.lang = "so-SO";
-  utter.rate = 0.7;
-  // Hvis ingen somali, brug fallback
-  const hasSomali = window.speechSynthesis.getVoices().some(v => v.lang === "so-SO");
-  if (!hasSomali) utter.lang = "en-US"; // fallback
-  window.speechSynthesis.cancel(); // stop evt. igangværende
-  window.speechSynthesis.speak(utter);
 }
 
 const AlphabetModal: React.FC<AlphabetModalProps> = ({ open, onClose }) => {
@@ -36,22 +20,11 @@ const AlphabetModal: React.FC<AlphabetModalProps> = ({ open, onClose }) => {
         >
           ×
         </button>
-        <h2 className="text-2xl font-semibold text-purple-700 mb-3 text-center">Somalisk alfabet</h2>
-        <p className="mb-6 text-gray-600 text-center">Tryk på et bogstav og hør udtalen på somalisk.</p>
-        <div className="grid grid-cols-6 gap-3">
-          {SOMALI_ALPHABET.map((letter) => (
-            <Button
-              key={letter}
-              onClick={() => speakSomaliLetter(letter)}
-              variant="secondary"
-              className="rounded-lg text-xl h-14 w-14 flex items-center justify-center shadow"
-              aria-label={`Udtal bogstavet ${letter}`}
-            >
-              {letter}
-              <span className="sr-only">{letter} play sound</span>
-            </Button>
-          ))}
-        </div>
+        <h2 className="text-2xl font-semibold text-purple-700 mb-3 text-center">Somalisk alfabet prototype</h2>
+        <p className="mb-5 text-gray-600 text-center">
+          Se bogstavet, billedet, lyt til udtalen og prøv at spore bogstavet.
+        </p>
+        <AlphabetPrototype />
       </div>
     </div>
   );
