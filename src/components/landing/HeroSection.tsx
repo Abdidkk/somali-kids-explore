@@ -34,7 +34,7 @@ const HeroSection = () => {
             <div className="relative">
               <div className="absolute -top-4 -left-4 w-full h-full bg-orange-200 rounded-lg"></div>
               <div className="relative bg-white p-3 border-2 border-purple-300 rounded-lg shadow-lg">
-                <img alt="Dugsi Learning" className="w-full h-auto rounded object-fill" src="/lovable-uploads/b6b668a4-c6c3-4295-8fff-d5a453fbf544.png" />
+                <img src="/placeholder.svg" alt="Dugsi Learning" className="w-full h-auto rounded" />
               </div>
             </div>
           </div>
