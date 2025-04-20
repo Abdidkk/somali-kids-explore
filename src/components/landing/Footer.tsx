@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return <footer className="py-12 px-4 md:px-8 lg:px-16 mt-auto bg-blue-500">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-slate-50">
           <div>
             <h3 className="text-lg font-semibold mb-4">Dugsi Læring</h3>
             <p className="text-gray-600">Gør somalisk sproglæring sjovt og tilgængeligt for danske børn.</p>
