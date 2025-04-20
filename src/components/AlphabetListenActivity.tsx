@@ -4,30 +4,33 @@ import { Button } from "@/components/ui/button";
 import { Headphones } from "lucide-react";
 import ElevenLabsTTS from "./ElevenLabsTTS";
 
-/**
- * Dummy-lytteaktivitet — endstegnsbogstav og knap til at høre.
- * Udvid evt. til flere bogstaver senere.
- */
+// Det somaliske alfabet (ingen C, F, P, Q, V, X, Z ifølge klassisk opsætning)
+const SOMALI_ALPHABET = [
+  "A","B","D","E","G","H","I","J","K","L","M","N","O","R","S","Sh","T","U","W","Y"
+];
+
 interface Props {
   onBack: () => void;
 }
 
-// Konfigureret til at udtale "pixar"-style med Aria (ElevenLabs)
-const LETTER = "A";
-
 export default function AlphabetListenActivity({ onBack }: Props) {
-  const [playing, setPlaying] = useState(false);
-  // For demo skal brugeren indtaste sin ElevenLabs API-nøgle:
+  // ElevenLabs API nøgle (en for hele listen)
   const [apiKey, setApiKey] = useState(""); 
+  // Tracking hvilket bogstav der bliver afspillet nu
+  const [playingIdx, setPlayingIdx] = useState<number | null>(null);
 
-  const handlePlay = () => {
-    if (apiKey) setPlaying(true);
-    else alert("Indtast din ElevenLabs API-nøgle!");
+  // Afspil bogstav
+  const handlePlay = (idx: number) => {
+    if (!apiKey) {
+      alert("Indtast din ElevenLabs API-nøgle!");
+      return;
+    }
+    setPlayingIdx(idx);
   };
 
   return (
-    <div className="flex flex-col items-center mt-5 gap-5">
-      <div className="text-[80px] font-bold text-purple-700">{LETTER}</div>
+    <div className="flex flex-col items-center mt-5 gap-3">
+      <h3 className="text-xl font-bold text-purple-700 mb-2">Somalisk alfabet</h3>
       <div className="flex flex-col items-center gap-2 w-full max-w-xs">
         <input
           type="password"
@@ -36,24 +39,37 @@ export default function AlphabetListenActivity({ onBack }: Props) {
           onChange={(e) => setApiKey(e.target.value)}
           className="border rounded px-3 py-2 text-sm w-full"
         />
-        <Button onClick={handlePlay} variant="outline" size="lg" className="flex gap-2 px-6">
-          <Headphones />
-          Lyt til bogstavet <span className="ml-2">{playing && "🔊"}</span>
-        </Button>
-        {playing && apiKey && (
-          <ElevenLabsTTS
-            text={LETTER}
-            voiceId="9BWtsMINqrJLrRacOk9x"
-            language="so"
-            apiKey={apiKey}
-            onAudioEnd={() => setPlaying(false)}
-          />
-        )}
       </div>
-      {/* Info-text */}
+      <div className="grid grid-cols-3 gap-3 mt-2 mb-2 w-full max-w-xs">
+        {SOMALI_ALPHABET.map((letter, idx) => (
+          <div key={letter} className="flex flex-col items-center gap-1">
+            <div className="text-4xl font-bold text-purple-700">{letter}</div>
+            <Button
+              onClick={() => handlePlay(idx)}
+              variant="outline"
+              size="sm"
+              className="flex gap-2 px-3"
+              disabled={playingIdx === idx}
+            >
+              <Headphones />
+              {playingIdx === idx ? "Afspiller..." : "Lyt"}
+            </Button>
+            {/* ElevenLabs lyd kun for aktivt bogstav */}
+            {playingIdx === idx && apiKey && (
+              <ElevenLabsTTS
+                text={letter}
+                voiceId="9BWtsMINqrJLrRacOk9x"
+                language="so"
+                apiKey={apiKey}
+                onAudioEnd={() => setPlayingIdx(null)}
+              />
+            )}
+          </div>
+        ))}
+      </div>
       <div className="text-gray-600 text-center text-sm max-w-xs mt-3">
-        Tryk på knappen for at høre hvordan bogstavet "{LETTER}" udtales på somali<br />
-        (Nu med ElevenLabs "Pixar"-stemmen "Aria" – kræver API-nøgle)
+        Tryk på "Lyt" ud for et bogstav for at høre det udtalt på somali<br />
+        (ElevenLabs "Aria" stemme – kræver API-nøgle)
       </div>
     </div>
   );
