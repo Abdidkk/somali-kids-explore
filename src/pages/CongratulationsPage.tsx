@@ -1,7 +1,5 @@
 
 import { Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 import SomaliFlag from "@/components/landing/SomaliFlag";
 
 const COLORS = [
@@ -56,11 +54,7 @@ export default function CongratulationsPage() {
             />
           ))}
         </div>
-        <div className="mt-10">
-          <Button asChild className="bg-purple-600 hover:bg-purple-700 text-white font-bold px-8 py-3 text-lg shadow-lg rounded-full hover:scale-105 transition-all">
-            <Link to="/">Gå til forsiden</Link>
-          </Button>
-        </div>
+        {/* Knappen er fjernet her! */}
       </div>
     </div>
   );
