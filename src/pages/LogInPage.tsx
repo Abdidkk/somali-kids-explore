@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Mail, Lock, LogIn } from "lucide-react";
 import SomaliFlag from "@/components/landing/SomaliFlag";
 import { Link } from "react-router-dom";
+import SocialLoginButton from "@/components/SocialLoginButton";
+import { facebook, gmail } from "lucide-react";
 
 const HERO_BLUE = "#4CA6FE";
 const VIVID_PURPLE = "#8B5CF6";
@@ -12,7 +14,7 @@ const VIVID_PURPLE = "#8B5CF6";
 export default function LogInPage() {
   const [loading, setLoading] = useState(false);
 
-  // Dummy handler – in backend version integrerer vi authentication!
+  // Dummy handler – i backend version integrerer vi authentication!
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -33,7 +35,7 @@ export default function LogInPage() {
               <Mail size={20} className="text-gray-400" />
               <span className="text-base font-medium">Email</span>
             </div>
-            <Input 
+            <Input
               type="email"
               placeholder="din@email.dk"
               required
@@ -64,7 +66,24 @@ export default function LogInPage() {
             {loading ? "Logger ind..." : (<><LogIn className="mr-2" />Log ind</>)}
           </Button>
         </form>
-        <div className="mt-5 flex flex-col items-center space-y-1">
+        <div className="my-7 flex items-center justify-center">
+          <span className="h-px bg-gray-200 w-1/5" />
+          <span className="mx-3 text-gray-400 text-xs">eller fortsæt med</span>
+          <span className="h-px bg-gray-200 w-1/5" />
+        </div>
+        <div className="flex flex-col gap-3 mb-2">
+          <SocialLoginButton
+            icon={gmail}
+            label="Fortsæt med Gmail"
+            colorClass="border-[#ea384c] text-[#ea384c] hover:border-[#d32e22]/90"
+          />
+          <SocialLoginButton
+            icon={facebook}
+            label="Fortsæt med Facebook"
+            colorClass="border-[#1877f3] text-[#1877f3] hover:border-[#1557b8]/90"
+          />
+        </div>
+        <div className="mt-3 flex flex-col items-center space-y-1">
           <span className="text-xs text-gray-400">Har du ikke en konto?</span>
           <Link to="/" className="text-sm text-[#4CA6FE] hover:underline">
             Hjem
