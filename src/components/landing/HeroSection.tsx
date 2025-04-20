@@ -13,7 +13,7 @@ const HeroSection = () => {
             <h1 style={{
             color: HERO_BLUE
           }} className="text-4xl font-bold text-left md:text-5xl px-0 py-px my-0">
-              <span className="text-orange-500">Dugsi</span> Danish-Somali Learning
+              <span className="text-orange-500"></span> Danish-Somali Learning
             </h1>
             <p className="text-xl text-gray-700">
               En sjov og interaktiv måde for børn at lære somalisk sprog gennem dansk. Perfekt til tosprogede familier og kulturel læring.
