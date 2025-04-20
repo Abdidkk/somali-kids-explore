@@ -2,28 +2,33 @@
 import { Brain, Coffee, Play } from "lucide-react";
 
 /**
- * Simple local illustration images via Unsplash, but you can swap out these URLs!
+ * Store, lokale/Unsplash illustrationsbilleder relevant for modersmål (72x72)
  */
 const bulletImages = [
   {
-    src: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=64&q=80",
+    src: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=200&q=80",
     alt: "Identitet & kultur",
+    bg: "bg-[#FDE1D3]",
   },
   {
-    src: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=64&q=80",
+    src: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=200&q=80",
     alt: "Kommunikation i fællesskab",
+    bg: "bg-[#D3E4FD]",
   },
   {
-    src: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=64&q=80",
+    src: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=200&q=80",
     alt: "Sprog og læring",
+    bg: "bg-[#E5DEFF]",
   },
   {
-    src: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=64&q=80",
+    src: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&q=80",
     alt: "Sociale relationer",
+    bg: "bg-[#FEF7CD]",
   },
   {
-    src: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=64&q=80",
+    src: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=200&q=80",
     alt: "Muligheder",
+    bg: "bg-[#FFDEE2]",
   },
 ];
 
@@ -61,60 +66,64 @@ const HowItWorksSection = () => {
           />
         </div>
 
-        {/* Ny sektion med vigtige punkter */}
+        {/* Opdateret sektion med store billeder som punkter */}
         <div className="bg-white rounded-lg shadow-md p-6 md:p-10 max-w-2xl mx-auto">
-          <h3 className="text-2xl font-bold mb-4 text-purple-700 text-center">
+          <h3 className="text-2xl font-bold mb-7 text-purple-700 text-center">
             Hvorfor er det vigtigt at lære sit <span className="text-purple-600">modersmål?</span>
           </h3>
-          <ul className="space-y-4 text-lg">
+          <ul className="space-y-7">
             <ImageBullet
               img={bulletImages[0]}
               text={
-                <>
+                <span>
                   Styrker barnets{" "}
-                  <span className="text-[#8B5CF6] font-semibold">identitet</span> og tilknytning til deres{" "}
-                  <span className="text-[#D946EF] font-semibold">rødder</span> og kultur.
-                </>
+                  <span className="text-[#8B5CF6] font-semibold text-lg">identitet</span>
+                  {" "}og tilknytning til deres{" "}
+                  <span className="text-[#D946EF] font-semibold text-lg">rødder</span> og kultur.
+                </span>
               }
             />
             <ImageBullet
               img={bulletImages[1]}
               text={
-                <>
+                <span>
                   Giver mulighed for at{" "}
-                  <span className="text-[#0EA5E9] font-semibold">kommunikere</span> med familie og fællesskab både her og i{" "}
-                  <span className="text-[#1575ad] font-semibold">Somalia</span>.
-                </>
+                  <span className="text-[#0EA5E9] font-semibold text-lg">kommunikere</span>
+                  {" "}med familie og fællesskab både her og i{" "}
+                  <span className="text-[#1575ad] font-semibold text-lg">Somalia</span>.
+                </span>
               }
             />
             <ImageBullet
               img={bulletImages[2]}
               text={
-                <>
+                <span>
                   Forbedrer barnets generelle{" "}
-                  <span className="text-[#403E43] font-semibold">sproglige udvikling</span> og{" "}
-                  <span className="text-[#6E59A5] font-semibold">læringsevner</span>.
-                </>
+                  <span className="text-[#403E43] font-semibold text-lg">sproglige udvikling</span>
+                  {" "}og{" "}
+                  <span className="text-[#6E59A5] font-semibold text-lg">læringsevner</span>.
+                </span>
               }
             />
             <ImageBullet
               img={bulletImages[3]}
               text={
-                <>
+                <span>
                   Understøtter{" "}
-                  <span className="text-[#9b87f5] font-semibold">sociale relationer</span> og følelsen af{" "}
-                  <span className="text-[#F97316] font-semibold">samhørighed</span>.
-                </>
+                  <span className="text-[#9b87f5] font-semibold text-lg">sociale relationer</span>
+                  {" "}og følelsen af{" "}
+                  <span className="text-[#F97316] font-semibold text-lg">samhørighed</span>.
+                </span>
               }
             />
             <ImageBullet
               img={bulletImages[4]}
               text={
-                <>
+                <span>
                   At kunne{" "}
-                  <span className="text-[#D946EF] font-semibold">flere sprog</span> åbner døre til{" "}
-                  <span className="text-[#1EAEDB] font-semibold">flere muligheder</span> i fremtiden.
-                </>
+                  <span className="text-[#D946EF] font-semibold text-lg">flere sprog</span> åbner døre til{" "}
+                  <span className="text-[#1EAEDB] font-semibold text-lg">flere muligheder</span> i fremtiden.
+                </span>
               }
             />
           </ul>
@@ -137,19 +146,21 @@ const StepCard = ({ icon, title, description, bgColor, textColor }) => {
 };
 
 type ImageBulletProps = {
-  img: { src: string; alt: string };
+  img: { src: string; alt: string; bg: string };
   text: React.ReactNode;
 };
 
 const ImageBullet = ({ img, text }: ImageBulletProps) => (
-  <li className="flex items-center space-x-4">
-    <img
-      src={img.src}
-      alt={img.alt}
-      className="w-10 h-10 object-cover rounded-full border-2 border-[#8B5CF6] shadow-sm flex-shrink-0"
-      loading="lazy"
-    />
-    <span>{text}</span>
+  <li className="flex items-center space-x-5">
+    <div className={`flex-shrink-0 ${img.bg} rounded-xl shadow-lg w-[72px] h-[72px] flex items-center justify-center`}>
+      <img
+        src={img.src}
+        alt={img.alt}
+        className="w-[64px] h-[64px] object-cover rounded-lg border-2 border-[#8B5CF6] shadow"
+        loading="lazy"
+      />
+    </div>
+    <span className="text-gray-900 font-medium text-[1.09rem] sm:text-lg">{text}</span>
   </li>
 );
 
