@@ -12,6 +12,7 @@ import ChoosePlanPage from "./pages/ChoosePlanPage";
 import ManageKidsPage from "./pages/ManageKidsPage";
 import CongratulationsPage from "./pages/CongratulationsPage";
 import DashboardPage from "./pages/DashboardPage";
+import LearnCategoriesPage from "./pages/LearnCategoriesPage";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/admin-kids" element={<ManageKidsPage />} />
           <Route path="/congratulations" element={<CongratulationsPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/laer" element={<LearnCategoriesPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
