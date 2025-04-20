@@ -119,12 +119,20 @@ const FeatureSection = () => {
 const FeatureCard = ({ icon, title, description, bgColor }) => {
   return (
     <Card className="border-0 shadow-md hover:shadow-lg transition-all">
-      <CardContent className="pt-6">
+      <CardContent
+        className="pt-6"
+        style={{
+          background: bgColor,
+          borderRadius: "1rem",
+          minHeight: 220,
+          transition: "background 0.2s"
+        }}
+      >
         <div className="flex flex-col items-center text-center">
           <div
-            className="mb-4 rounded-full flex items-center justify-center"
+            className="mb-4 rounded-full flex items-center justify-center shadow"
             style={{
-              background: bgColor,
+              background: "#fff",
               width: 64,
               height: 64,
             }}
