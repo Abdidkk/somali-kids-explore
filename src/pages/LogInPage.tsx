@@ -2,11 +2,10 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Mail, Lock, LogIn } from "lucide-react";
+import { Mail, Lock, LogIn, Facebook } from "lucide-react";
 import SomaliFlag from "@/components/landing/SomaliFlag";
 import { Link } from "react-router-dom";
 import SocialLoginButton from "@/components/SocialLoginButton";
-import { facebook, gmail } from "lucide-react";
 
 const HERO_BLUE = "#4CA6FE";
 const VIVID_PURPLE = "#8B5CF6";
@@ -73,12 +72,12 @@ export default function LogInPage() {
         </div>
         <div className="flex flex-col gap-3 mb-2">
           <SocialLoginButton
-            icon={gmail}
+            icon={Mail}
             label="Fortsæt med Gmail"
             colorClass="border-[#ea384c] text-[#ea384c] hover:border-[#d32e22]/90"
           />
           <SocialLoginButton
-            icon={facebook}
+            icon={Facebook}
             label="Fortsæt med Facebook"
             colorClass="border-[#1877f3] text-[#1877f3] hover:border-[#1557b8]/90"
           />
