@@ -24,8 +24,8 @@ const bulletImages = [
     bg: "bg-[#FEF7CD]",
   },
   {
-    src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80",
-    alt: "Børn på opdagelse – Muligheder",
+    src: "/lovable-uploads/bcb95cb7-3bd4-4b2c-8945-81adaca28f80.png",
+    alt: "Illustration af flere sprogmuligheder med børn foran skærm med flag – Flere sprogmuligheder",
     bg: "bg-[#FFDEE2]",
   },
 ];
