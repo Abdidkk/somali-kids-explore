@@ -31,23 +31,25 @@ export default function AlphabetTraceActivity({ onBack }: Props) {
         Vælg et bogstav nedenfor og øv dig i at spore/tegne det med musen eller fingeren.<br />
         Du får stjerner og badges for at øve flere bogstaver!
       </div>
-      <div className="grid grid-cols-5 sm:grid-cols-7 gap-2 mt-2 mb-2 w-full max-w-md">
-        {SOMALI_ALPHABET.map((letter) => (
-          <button
-            key={letter}
-            className={[
-              "flex flex-col items-center justify-center rounded-lg border transition-all font-bold text-lg md:text-2xl p-2",
-              selectedLetter === letter 
-                ? "bg-purple-100 border-purple-400 text-purple-700 scale-105 shadow"
-                : "bg-white border-gray-300 hover:bg-violet-50"
-            ].join(" ")}
-            onClick={() => setSelectedLetter(letter)}
-            aria-label={`Vælg bogstav ${letter}`}
-            tabIndex={0}
-          >
-            {letter}
-          </button>
-        ))}
+      <div className="w-full max-w-md overflow-x-auto">
+        <div className="flex flex-row gap-2 py-2 min-w-max">
+          {SOMALI_ALPHABET.map((letter) => (
+            <button
+              key={letter}
+              className={[
+                "flex flex-col items-center justify-center rounded-lg border transition-all font-bold text-lg md:text-2xl p-2 min-w-[44px]",
+                selectedLetter === letter 
+                  ? "bg-purple-100 border-purple-400 text-purple-700 scale-105 shadow"
+                  : "bg-white border-gray-300 hover:bg-violet-50"
+              ].join(" ")}
+              onClick={() => setSelectedLetter(letter)}
+              aria-label={`Vælg bogstav ${letter}`}
+              tabIndex={0}
+            >
+              {letter}
+            </button>
+          ))}
+        </div>
       </div>
       {/* Tegne-aktiviteten */}
       <AlphabetPrototype letter={selectedLetter} />
@@ -58,4 +60,3 @@ export default function AlphabetTraceActivity({ onBack }: Props) {
     </div>
   );
 }
-
