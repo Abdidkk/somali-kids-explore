@@ -1,7 +1,8 @@
 
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { LayoutDashboard, ChartBar, Check, Grid2x2, Book, Music, Video } from "lucide-react";
+import { LayoutDashboard, ChartBar, Check } from "lucide-react";
+import { learningCategories } from "@/data/learningCategories";
 
 const mockKids = [
   {
@@ -16,13 +17,6 @@ const mockKids = [
     streak: 3,
     categories: ["Ordforråd", "Videoer"],
   },
-];
-
-const learningCategories = [
-  { name: "Ordforråd", icon: Grid2x2 },
-  { name: "Historier", icon: Book },
-  { name: "Sange", icon: Music },
-  { name: "Videoer", icon: Video },
 ];
 
 export default function DashboardPage() {
@@ -61,23 +55,36 @@ export default function DashboardPage() {
             </Card>
           ))}
         </div>
-        {/* Læringskategorier */}
-        <div className="min-w-[230px] flex flex-col gap-4">
+        {/* Læringskategorier (hentet fra forsiden) */}
+        <div className="min-w-[260px] flex flex-col gap-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2 text-gray-700">
                 <ChartBar className="w-5 h-5 text-purple-400" />
-                Kategorier
+                Kategorier for læring
               </CardTitle>
+              <CardDescription>
+                Opdag de samme sjove og lærerige kategorier som på forsiden
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <ul className="grid grid-cols-2 gap-3">
-                {learningCategories.map((cat, idx) => (
-                  <li key={cat.name} className="flex flex-col items-center gap-2">
-                    <cat.icon className="w-7 h-7 text-purple-600" />
-                    <span className="text-xs text-gray-700">{cat.name}</span>
-                  </li>
-                ))}
+                {learningCategories.map((cat, idx) => {
+                  const Icon = cat.icon;
+                  return (
+                    <li key={cat.name} className="flex flex-col items-center gap-2">
+                      <span
+                        className="rounded-full flex items-center justify-center shadow mb-1"
+                        style={{ background: "#fff", width: 48, height: 48 }}
+                      >
+                        <Icon className="w-6 h-6" />
+                      </span>
+                      <span className="text-xs text-gray-700 font-semibold" style={{ background: cat.bgColor, borderRadius: "0.5rem", padding: "2px 8px" }}>
+                        {cat.name}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
             </CardContent>
           </Card>
