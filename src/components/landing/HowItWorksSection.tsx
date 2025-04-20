@@ -1,3 +1,4 @@
+
 import { Brain, Coffee, Play } from "lucide-react";
 
 // Nye, mere illustrative billeder - midlertidigt brugt Unsplash
@@ -18,7 +19,7 @@ const bulletImages = [
     bg: "bg-[#E5DEFF]",
   },
   {
-    src: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=800&q=80",
+    src: "/lovable-uploads/8aba18b4-5676-4bb0-b803-80babdbaeb0f.png",
     alt: "Børn i leg, sammenhold – Sociale relationer",
     bg: "bg-[#FEF7CD]",
   },
@@ -192,3 +193,4 @@ const StepCard = ({ icon, title, description, bgColor, textColor }) => {
 };
 
 export default HowItWorksSection;
+
