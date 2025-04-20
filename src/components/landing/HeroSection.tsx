@@ -10,9 +10,12 @@ const HeroSection = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
           <div className="lg:w-1/2 space-y-6">
-            <h1 style={{
-            color: HERO_BLUE
-          }} className="text-4xl font-bold text-left md:text-5xl px-0 py-px my-0">Dansk-Somaliske Læring</h1>
+            <h1 
+              className="text-4xl font-bold text-left md:text-5xl px-0 py-px my-0 bg-gradient-to-r from-[#4CA6FE] via-[#FEF7CD] to-[#FEDEE2] bg-clip-text text-transparent drop-shadow-sm"
+              style={{ WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
+            >
+              Dansk-Somaliske Læring
+            </h1>
             <p className="text-xl text-gray-700">
               En sjov og interaktiv måde for børn at lære somalisk sprog gennem dansk. Perfekt til tosprogede familier og kulturel læring.
             </p>
