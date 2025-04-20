@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -27,7 +28,7 @@ const MainNavbar = () => {
         <div className="flex items-center space-x-2">
           {/* Somali flag up in the corner */}
           <span className="flex items-center">
-            <SomaliFlag size={28} />
+            <SomaliFlag className="w-7 h-7" />
           </span>
           <span className="text-2xl font-bold ml-2" style={{
           color: HERO_BLUE,
@@ -39,7 +40,15 @@ const MainNavbar = () => {
 
         {/* Desktop Navigation */}
         {!isMobile && <nav className="hidden md:flex items-center space-x-4">
-            {navLinks.map((link, i) => {})}
+            {navLinks.map((link) => (
+              <Link
+                to={link.to}
+                key={link.label}
+                className={highlightClass}
+              >
+                {link.label}
+              </Link>
+            ))}
           </nav>}
 
         <div className="flex items-center">
