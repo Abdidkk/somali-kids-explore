@@ -8,6 +8,19 @@ const SOMALI_ALPHABET = [
   "A", "B", "D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "R", "S", "Sh", "T", "U", "W", "Y"
 ];
 
+// Tilføj mapping mellem bogstav og billede/tekst
+const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
+  "A": {
+    img: "/lovable-uploads/c3c53a02-5ecc-4109-964e-df932b52581c.png",
+    alt: "Abees / Slange billede: Pige og slange"
+  },
+  "B": {
+    img: "/lovable-uploads/81ec82e0-146f-4c28-87de-65901d939ac0.png",
+    alt: "Baabuur / Bil billede: Dreng og bil"
+  }
+  // Tilføj flere bogstaver og billeder her efter behov
+};
+
 interface Props {
   onBack: () => void;
 }
@@ -25,16 +38,32 @@ export default function AlphabetListenActivity({ onBack }: Props) {
     setPlayingIdx(idx);
   };
 
+  // Find billedinfo til valgt bogstav, ellers brug fallback
+  const getLetterImage = (letter: string) => {
+    if (ALPHABET_IMAGES[letter]) {
+      return ALPHABET_IMAGES[letter];
+    }
+    // Standard-billede fallback
+    return {
+      img: "/lovable-uploads/23df9b50-7f66-4b52-819b-59cc920edd2b.png",
+      alt: "Standard alfabet billede"
+    };
+  };
+
+  // Det valgte bogstav til visning af stort billede
+  const [selectedIdx, setSelectedIdx] = useState(0);
+  const selectedLetter = SOMALI_ALPHABET[selectedIdx];
+
   return (
-    <div className="flex flex-col items-center mt-5 gap-3">
-      {/* Billedet øverst */}
+    <div className="flex flex-col items-center mt-5 gap-4">
+      {/* Det store billede for valgt bogstav */}
       <img
-        src="/lovable-uploads/23df9b50-7f66-4b52-819b-59cc920edd2b.png"
-        alt="Børn lærer alfabetet"
-        className="w-full max-w-xs rounded-xl border mb-2 shadow"
+        src={getLetterImage(selectedLetter).img}
+        alt={getLetterImage(selectedLetter).alt}
+        className="w-full max-w-xs rounded-xl border mb-2 shadow bg-white"
         style={{ objectFit: "cover" }}
       />
-      <h3 className="text-xl font-bold text-purple-700 mb-2">Somalisk alfabet</h3>
+      <h3 className="text-xl font-bold text-purple-700 mb-2">{selectedLetter} — Lyt til bogstavet</h3>
       <div className="flex flex-col items-center gap-2 w-full max-w-xs">
         <input
           type="password"
@@ -44,44 +73,63 @@ export default function AlphabetListenActivity({ onBack }: Props) {
           className="border rounded px-3 py-2 text-sm w-full"
         />
       </div>
+      {/* Bogstavs-selector med billeder */}
       <div className="w-full max-w-md overflow-x-auto">
-        <div className="flex flex-row gap-2 py-2 min-w-max">
-          {SOMALI_ALPHABET.map((letter, idx) => (
-            <div key={letter} className="flex flex-col items-center gap-1 min-w-[52px]">
-              <div className="text-2xl md:text-3xl font-bold text-purple-700">{letter}</div>
-              <Button
-                onClick={() => handlePlay(idx)}
-                variant="outline"
-                size="sm"
-                className="flex gap-1 px-2 py-1 text-xs items-center"
-                disabled={playingIdx === idx}
+        <div className="flex flex-row gap-3 py-2 min-w-max">
+          {SOMALI_ALPHABET.map((letter, idx) => {
+            const info = getLetterImage(letter);
+            return (
+              <button
+                key={letter}
+                className={[
+                  "flex flex-col items-center min-w-[54px] transition-all rounded-lg px-2 py-1",
+                  selectedIdx === idx 
+                    ? "bg-vivid-purple/10 border border-vivid-purple shadow scale-105"
+                    : "hover:bg-violet-50 border border-transparent"
+                ].join(" ")}
+                onClick={() => setSelectedIdx(idx)}
+                aria-label={`Vælg bogstav: ${letter}`}
+                tabIndex={0}
+                type="button"
               >
-                {/* Billedet vises på knappen i stedet for ikon */}
                 <img
-                  src="/lovable-uploads/23df9b50-7f66-4b52-819b-59cc920edd2b.png"
-                  alt="Børn lærer alfabetet"
-                  className="w-6 h-6 rounded object-cover border shadow-sm"
-                  style={{ marginRight: "0.25rem" }}
+                  src={info.img}
+                  alt={info.alt}
+                  className="w-10 h-10 object-cover rounded"
                 />
-                {playingIdx === idx ? "Afspiller..." : "Lyt"}
-              </Button>
-              {playingIdx === idx && apiKey && (
-                <ElevenLabsTTS
-                  text={letter}
-                  voiceId="9BWtsMINqrJLrRacOk9x"
-                  language="so"
-                  apiKey={apiKey}
-                  onAudioEnd={() => setPlayingIdx(null)}
-                />
-              )}
-            </div>
-          ))}
+                <span className="text-lg font-bold mt-1">{letter}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
+      {/* Knappen til at lytte + ElevenLabsTTS */}
+      <Button
+        onClick={() => handlePlay(selectedIdx)}
+        variant="outline"
+        size="sm"
+        className="flex gap-1 px-4 py-2 text-md items-center mt-1 font-semibold"
+        disabled={playingIdx === selectedIdx}
+      >
+        {playingIdx === selectedIdx ? "Afspiller..." : `Lyt til ${selectedLetter}`}
+      </Button>
+      {playingIdx === selectedIdx && apiKey && (
+        <ElevenLabsTTS
+          text={selectedLetter}
+          voiceId="9BWtsMINqrJLrRacOk9x"
+          language="so"
+          apiKey={apiKey}
+          onAudioEnd={() => setPlayingIdx(null)}
+        />
+      )}
       <div className="text-gray-600 text-center text-sm max-w-xs mt-3">
-        Tryk på "Lyt" ud for et bogstav for at høre det udtalt på somali<br />
+        Tryk på et bogstav ovenfor og hør det udtalt på somali<br />
         (ElevenLabs "Aria" stemme – kræver API-nøgle)
       </div>
+      <Button onClick={onBack} variant="outline" size="sm" className="mt-2">
+        Tilbage
+      </Button>
     </div>
   );
 }
+
