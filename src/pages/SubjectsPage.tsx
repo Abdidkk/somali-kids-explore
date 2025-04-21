@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { book } from "lucide-react";
+import { Book } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const subjects = [
@@ -18,7 +18,7 @@ export default function SubjectsPage() {
       <div className="w-full max-w-xl mb-8">
         <Link to="/" className="text-vivid-purple hover:underline">&larr; Til forsiden</Link>
         <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4 flex items-center gap-2">
-          <span><book className="w-7 h-7" /></span>
+          <span><Book className="w-7 h-7" /></span>
           Fag / Områder
         </h1>
         <p className="text-gray-700 text-base mb-6">
