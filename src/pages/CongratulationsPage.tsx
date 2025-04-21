@@ -2,6 +2,7 @@
 import { Sparkles } from "lucide-react";
 import { Trophy } from "lucide-react";
 import SomaliFlag from "@/components/landing/SomaliFlag";
+import React, { useEffect, useRef } from "react";
 
 const COLORS = [
   "text-pink-400",
@@ -18,7 +19,26 @@ const COLORS = [
   "text-lime-400",
 ];
 
+// Skift til det korrekte filnavn, fx "minlyd.mp3"
+const SOUND_SRC = "/lovable-uploads/LYDFIL_NAVN.mp3";
+
 export default function CongratulationsPage() {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Afspil lyd automatisk når siden indlæses (én gang)
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.play().catch(() => {
+        // Autoplay kan blive blokeret – så gør ingenting.
+      });
+    }
+  }, []);
+
+  // Manuel afspilning via knap
+  const handlePlay = () => {
+    audioRef.current?.play();
+  };
+
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-[#f9e9fc] via-[#e5deff] to-[#fef7cd] animate-fade-in px-2 py-10">
       <div className="relative w-full max-w-lg mx-auto animate-fade-in">
@@ -65,6 +85,20 @@ export default function CongratulationsPage() {
               />
             ))}
           </div>
+          {/* Audio player komponent */}
+          <audio
+            ref={audioRef}
+            src={SOUND_SRC}
+            preload="auto"
+            className="hidden"
+          />
+          <button
+            type="button"
+            onClick={handlePlay}
+            className="mt-2 px-4 py-2 rounded bg-vivid-purple text-white text-sm font-bold shadow hover:bg-vivid-purple/90 transition-colors"
+          >
+            Afspil lyd igen
+          </button>
         </div>
         {/* Bløde gradientglimt baggrundseffekt */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 z-[-1] w-full h-full pointer-events-none">
