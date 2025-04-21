@@ -3,11 +3,10 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ElevenLabsTTS from "./ElevenLabsTTS";
 
-// Det korrekte somaliske alfabet ifølge din besked (første 10 bogstaver):
-// Bb, Cc, Dd, DHdh, Ff, Gg, Hh, Jj, Kk, KHkh
+// Opdateret somalisk alfabet (rigtig rækkefølge)
 const SOMALI_ALPHABET = [
-  "Bb", "Cc", "Dd", "DHdh", "Ff", "Gg", "Hh", "Jj", "Kk", "KHkh"
-  // Resten kan tilføjes her efter behov
+  "Bb", "Cc", "Dd", "DHdh", "Ff", "Gg", "Hh", "Jj", "Kk", "KHkh",
+  "Ll", "Mm", "Nn", "Qq", "Rr", "Ss", "SHsh", "Tt", "Ww", "Xx", "Yy"
 ];
 
 // Tilføj mapping mellem bogstav og billede/tekst
@@ -20,15 +19,7 @@ const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/c3c53a02-5ecc-4109-964e-df932b52581c.png",
     alt: "Dameer / Æsel billede: Pige og æsel"
   },
-  // Her kan du sætte billeder ind for de øvrige bogstaver:
-  // "Cc": { img: "...", alt: "..." }
-  // "DHdh": { img: "...", alt: "..." }
-  // "Ff": { img: "...", alt: "..." }
-  // "Gg": { img: "...", alt: "..." }
-  // "Hh": { img: "...", alt: "..." }
-  // "Jj": { img: "...", alt: "..." }
-  // "Kk": { img: "...", alt: "..." }
-  // "KHkh": { img: "...", alt: "..." }
+  // Yderligere billeder kan tilføjes her, ellers bruges fallback.
 };
 
 interface Props {

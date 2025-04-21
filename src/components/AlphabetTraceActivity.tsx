@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import AlphabetPrototype from "./AlphabetPrototype";
 
-// Det korrekte somaliske alfabet (første 10 bogstaver)
+// Opdateret det korrekte somaliske alfabet med alle bogstaver i orden
 const SOMALI_ALPHABET = [
-  "Bb", "Cc", "Dd", "DHdh", "Ff", "Gg", "Hh", "Jj", "Kk", "KHkh"
-  // Resten af alfabetet kan tilføjes her
+  "Bb", "Cc", "Dd", "DHdh", "Ff", "Gg", "Hh", "Jj", "Kk", "KHkh",
+  "Ll", "Mm", "Nn", "Qq", "Rr", "Ss", "SHsh", "Tt", "Ww", "Xx", "Yy"
 ];
 
 interface Props {
