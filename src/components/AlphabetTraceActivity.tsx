@@ -3,63 +3,83 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import AlphabetPrototype from "./AlphabetPrototype";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-// Rigtig somalisk alfabet: vokaler først
-const SOMALI_ALPHABET = [
-  // Korte vokaler
-  "Aa", "Ee", "Ii", "Oo", "Uu",
-  // Lange vokaler
-  "AA", "EE", "II", "OO", "UU",
-  // Resten af bogstaverne
+// Definer bogstavgrupper
+const SHORT_VOWELS = ["Aa", "Ee", "Ii", "Oo", "Uu"];
+const LONG_VOWELS = ["AA", "EE", "II", "OO", "UU"];
+const ALPHABET = [
   "Bb", "Cc", "Dd", "DHdh", "Ff", "Gg", "Hh", "Jj", "Kk", "KHkh",
   "Ll", "Mm", "Nn", "Qq", "Rr", "Ss", "SHsh", "Tt", "Ww", "Xx", "Yy"
 ];
+
+const GROUPS = {
+  alphabet: { label: "Alfabetet", letters: [...SHORT_VOWELS, ...LONG_VOWELS, ...ALPHABET] },
+  short:    { label: "Korte vokaler", letters: SHORT_VOWELS },
+  long:     { label: "Lange vokaler", letters: LONG_VOWELS }
+};
 
 interface Props {
   onBack: () => void;
 }
 
 /**
- * Spor bogstavet-aktivitetskomponent hvor man vælger bogstav fra et grid.
+ * Alfabetaktivitet med tabs til alfabetet, korte og lange vokaler.
  */
 export default function AlphabetTraceActivity({ onBack }: Props) {
-  const [selectedLetter, setSelectedLetter] = useState<string>(SOMALI_ALPHABET[0]);
+  const [tab, setTab] = useState<"alphabet" | "short" | "long">("alphabet");
+  const [selectedLetter, setSelectedLetter] = useState<string>(GROUPS.alphabet.letters[0]);
+
+  // Sørg for at valgt bogstav altid eksisterer i nuværende gruppe
+  React.useEffect(() => {
+    const arr = GROUPS[tab].letters;
+    if (!arr.includes(selectedLetter)) setSelectedLetter(arr[0]);
+  }, [tab]);
 
   return (
     <div className="flex flex-col items-center mt-5 gap-5 w-full">
-      {/* Aktivitetsikon og titel */}
+      {/* Ikon og titel */}
       <div className="flex flex-col items-center gap-2">
         <Pencil className="w-10 h-10 text-purple-700" />
         <div className="font-semibold text-lg text-purple-700">Tegn bogstavet</div>
       </div>
-      {/* Info-text */}
-      <div className="text-gray-600 text-center text-sm max-w-xs">
-        Vælg et bogstav nedenfor og øv dig i at spore/tegne det med musen eller fingeren.<br />
-        Du får stjerner og badges for at øve flere bogstaver!
-      </div>
-      <div className="w-full max-w-md overflow-x-auto">
-        <div className="flex flex-row gap-2 py-2 min-w-max">
-          {SOMALI_ALPHABET.map((letter) => (
-            <button
-              key={letter}
-              className={[
-                "flex flex-col items-center justify-center rounded-lg border transition-all font-bold text-lg md:text-2xl p-2 min-w-[54px]",
-                selectedLetter === letter 
-                  ? "bg-purple-100 border-purple-400 text-purple-700 scale-105 shadow"
-                  : "bg-white border-gray-300 hover:bg-violet-50"
-              ].join(" ")}
-              onClick={() => setSelectedLetter(letter)}
-              aria-label={`Vælg bogstav ${letter}`}
-              tabIndex={0}
-            >
-              {letter}
-            </button>
-          ))}
+      {/* Tabs til valg */}
+      <Tabs value={tab} onValueChange={v => setTab(v as "alphabet" | "short" | "long")} className="w-full flex flex-col items-center">
+        <TabsList className="mb-3 bg-violet-50">
+          <TabsTrigger value="alphabet">{GROUPS.alphabet.label}</TabsTrigger>
+          <TabsTrigger value="short">{GROUPS.short.label}</TabsTrigger>
+          <TabsTrigger value="long">{GROUPS.long.label}</TabsTrigger>
+        </TabsList>
+        {/* Info-text */}
+        <div className="text-gray-600 text-center text-sm max-w-xs mb-2">
+          Vælg et bogstav og øv dig i at spore det med musen eller fingeren. Skift mellem alfabet, korte og lange vokaler med fanerne.
         </div>
-      </div>
+        <TabsContent value={tab} className="w-full">
+          <div className="w-full max-w-md overflow-x-auto">
+            <div className="flex flex-row gap-2 py-2 min-w-max">
+              {GROUPS[tab].letters.map((letter) => (
+                <button
+                  key={letter}
+                  className={[
+                    "flex flex-col items-center justify-center rounded-lg border transition-all font-bold text-lg md:text-2xl p-2 min-w-[54px]",
+                    selectedLetter === letter 
+                      ? "bg-purple-100 border-purple-400 text-purple-700 scale-105 shadow"
+                      : "bg-white border-gray-300 hover:bg-violet-50"
+                  ].join(" ")}
+                  onClick={() => setSelectedLetter(letter)}
+                  aria-label={`Vælg bogstav ${letter}`}
+                  tabIndex={0}
+                  type="button"
+                >
+                  {letter}
+                </button>
+              ))}
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
       {/* Tegne-aktiviteten */}
       <AlphabetPrototype letter={selectedLetter} />
-      {/* Tilbage-knap, placeret nederst som de andre */}
       <Button onClick={onBack} variant="outline" size="sm" className="mt-2">
         Tilbage
       </Button>
