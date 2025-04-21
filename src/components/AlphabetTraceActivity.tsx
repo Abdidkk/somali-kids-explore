@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import AlphabetPrototype from "./AlphabetPrototype";
 
-// Det somaliske alfabet (ingen C, F, P, Q, V, X, Z ifølge klassisk opsætning)
+// Det korrekte somaliske alfabet (første 10 bogstaver)
 const SOMALI_ALPHABET = [
-  "A","B","D","E","G","H","I","J","K","L","M","N","O","R","S","Sh","T","U","W","Y"
+  "Bb", "Cc", "Dd", "DHdh", "Ff", "Gg", "Hh", "Jj", "Kk", "KHkh"
+  // Resten af alfabetet kan tilføjes her
 ];
 
 interface Props {
@@ -17,7 +18,7 @@ interface Props {
  * Spor bogstavet-aktivitetskomponent hvor man vælger bogstav fra et grid.
  */
 export default function AlphabetTraceActivity({ onBack }: Props) {
-  const [selectedLetter, setSelectedLetter] = useState<string>("A");
+  const [selectedLetter, setSelectedLetter] = useState<string>(SOMALI_ALPHABET[0]);
 
   return (
     <div className="flex flex-col items-center mt-5 gap-5 w-full">
@@ -37,7 +38,7 @@ export default function AlphabetTraceActivity({ onBack }: Props) {
             <button
               key={letter}
               className={[
-                "flex flex-col items-center justify-center rounded-lg border transition-all font-bold text-lg md:text-2xl p-2 min-w-[44px]",
+                "flex flex-col items-center justify-center rounded-lg border transition-all font-bold text-lg md:text-2xl p-2 min-w-[54px]",
                 selectedLetter === letter 
                   ? "bg-purple-100 border-purple-400 text-purple-700 scale-105 shadow"
                   : "bg-white border-gray-300 hover:bg-violet-50"

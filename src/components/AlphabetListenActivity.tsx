@@ -3,22 +3,32 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ElevenLabsTTS from "./ElevenLabsTTS";
 
-// Det somaliske alfabet (ingen C, F, P, Q, V, X, Z ifølge klassisk opsætning)
+// Det korrekte somaliske alfabet ifølge din besked (første 10 bogstaver):
+// Bb, Cc, Dd, DHdh, Ff, Gg, Hh, Jj, Kk, KHkh
 const SOMALI_ALPHABET = [
-  "A", "B", "D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "R", "S", "Sh", "T", "U", "W", "Y"
+  "Bb", "Cc", "Dd", "DHdh", "Ff", "Gg", "Hh", "Jj", "Kk", "KHkh"
+  // Resten kan tilføjes her efter behov
 ];
 
 // Tilføj mapping mellem bogstav og billede/tekst
 const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
-  "A": {
-    img: "/lovable-uploads/c3c53a02-5ecc-4109-964e-df932b52581c.png",
-    alt: "Abees / Slange billede: Pige og slange"
-  },
-  "B": {
+  "Bb": {
     img: "/lovable-uploads/81ec82e0-146f-4c28-87de-65901d939ac0.png",
     alt: "Baabuur / Bil billede: Dreng og bil"
-  }
-  // Tilføj flere bogstaver og billeder her efter behov
+  },
+  "Dd": {
+    img: "/lovable-uploads/c3c53a02-5ecc-4109-964e-df932b52581c.png",
+    alt: "Dameer / Æsel billede: Pige og æsel"
+  },
+  // Her kan du sætte billeder ind for de øvrige bogstaver:
+  // "Cc": { img: "...", alt: "..." }
+  // "DHdh": { img: "...", alt: "..." }
+  // "Ff": { img: "...", alt: "..." }
+  // "Gg": { img: "...", alt: "..." }
+  // "Hh": { img: "...", alt: "..." }
+  // "Jj": { img: "...", alt: "..." }
+  // "Kk": { img: "...", alt: "..." }
+  // "KHkh": { img: "...", alt: "..." }
 };
 
 interface Props {
@@ -132,4 +142,3 @@ export default function AlphabetListenActivity({ onBack }: Props) {
     </div>
   );
 }
-
