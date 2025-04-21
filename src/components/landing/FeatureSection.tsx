@@ -1,7 +1,8 @@
+
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  Mic, Palette, Calculator, Carrot, PawPrint, Earth, Calendar,
-  Users, House, Activity, MessageSquare, Music, BookOpen
+  Mic, Palette, Calculator, Carrot, PawPrint, Hand, Earth, Calendar,
+  Users, House, Activity, MessageSquare, Music, BookOpen, HelpCircle
 } from "lucide-react";
 
 const categoryColors = [
@@ -10,6 +11,7 @@ const categoryColors = [
   "#DBF3FA", // Tal - blid blå
   "#FBF1DE", // Mad - neddæmpet orange/gul
   "#FFFBE0", // Dyr - lys gul
+  "#E2F7FF", // Kropsdel - blågrøn
   "#E5FAF1", // Geografi - pastel grøn/turkis
   "#E7F0FB", // Kalender - blålig pastel
   "#FDE4F2", // Familie og venner - svag pink/lilla
@@ -18,6 +20,7 @@ const categoryColors = [
   "#E6F5F8", // Sætninger - lyseblå/cyan
   "#F9EAF6", // Kulturelt indhold - pink/lilla
   "#FDF5E3", // Læse bøger - creme/gul
+  "#F7EFFF", // Quiz - lys lilla
 ];
 
 const featureData = [
@@ -45,6 +48,11 @@ const featureData = [
     icon: <PawPrint className="h-10 w-10 text-yellow-400" />,
     title: "Dyr",
     description: "Somaliske navne og deres egenskaber.",
+  },
+  {
+    icon: <Hand className="h-10 w-10 text-blue-400" />,
+    title: "Kropsdel",
+    description: "Lær navnene på kroppens dele på somalisk.",
   },
   {
     icon: <Earth className="h-10 w-10 text-green-500" />,
@@ -85,6 +93,11 @@ const featureData = [
     icon: <BookOpen className="h-10 w-10 text-yellow-500" />,
     title: "Læse bøger",
     description: "Engagerende historier og praktisk anvendelse.",
+  },
+  {
+    icon: <HelpCircle className="h-10 w-10 text-purple-400" />,
+    title: "Quiz",
+    description: "Test din viden om det, du har lært.",
   },
 ];
 
