@@ -6,7 +6,7 @@ import AlphabetPrototype from "./AlphabetPrototype";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 // Definer bogstavgrupper
-const SHORT_VOWELS = ["Aa", "Ee", "Ii", "Oo", "Uu"];
+const SHORT_VOWELS = ["A", "E", "I", "O", "U"];
 const LONG_VOWELS = ["AA", "EE", "II", "OO", "UU"];
 const ALPHABET = [
   "Bb", "Cc", "Dd", "DHdh", "Ff", "Gg", "Hh", "Jj", "Kk", "KHkh",
