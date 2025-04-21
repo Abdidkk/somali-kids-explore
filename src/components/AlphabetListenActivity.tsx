@@ -3,8 +3,13 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ElevenLabsTTS from "./ElevenLabsTTS";
 
-// Opdateret somalisk alfabet (rigtig rækkefølge)
+// Rigtig somalisk alfabet: vokaler først
 const SOMALI_ALPHABET = [
+  // Korte vokaler
+  "Aa", "Ee", "Ii", "Oo", "Uu",
+  // Lange vokaler
+  "AA", "EE", "II", "OO", "UU",
+  // Resten af bogstaverne
   "Bb", "Cc", "Dd", "DHdh", "Ff", "Gg", "Hh", "Jj", "Kk", "KHkh",
   "Ll", "Mm", "Nn", "Qq", "Rr", "Ss", "SHsh", "Tt", "Ww", "Xx", "Yy"
 ];
