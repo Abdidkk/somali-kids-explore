@@ -48,19 +48,19 @@ const ManageKidsPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-purple-100 via-white to-white px-4 py-12 animate-fade-in">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-xl px-8 py-10 border border-purple-100">
-        <h1 className="text-2xl font-bold mb-3 text-center text-purple-600">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 via-white to-white px-4 py-12 animate-fade-in">
+      <div className="w-full max-w-md bg-white rounded-xl shadow-xl px-8 py-10 border border-blue-100">
+        <h1 className="text-2xl font-bold mb-3 text-center text-blue-600">
           Børneprofiler
         </h1>
         {/* Prisinfo gjort mere synlig */}
-        <div className="mb-5 text-center text-purple-800 bg-purple-100 rounded py-2 px-4 border border-purple-200 font-semibold">
+        <div className="mb-5 text-center text-blue-800 bg-blue-50 rounded py-2 px-4 border border-blue-200 font-semibold">
           Hver børneprofil koster <span className="font-bold">15 kr/md.</span> ekstra.<br />
           (Eller 135 kr/år hvis du har årlig betaling)
         </div>
 
         {/* Payment summary */}
-        <div className="mb-6 text-center bg-orange-50 border border-orange-200 rounded py-3 px-3 text-orange-800 font-semibold">
+        <div className="mb-6 text-center bg-blue-50 border border-blue-200 rounded py-3 px-3 text-blue-800 font-semibold">
           <div>
             <span className="block">
               <span className="text-base">Din samlede pris:</span>
@@ -78,20 +78,20 @@ const ManageKidsPage = () => {
         <div className="mb-6">
           <div className="flex gap-2">
             <input
-              className="border rounded px-3 py-2 w-1/2 bg-purple-50"
+              className="border rounded px-3 py-2 w-1/2 bg-blue-50 border-blue-200 focus:border-blue-400 focus:outline-none"
               placeholder="Navn"
               value={name}
               onChange={e => setName(e.target.value)}
             />
             <input
-              className="border rounded px-3 py-2 w-1/2 bg-purple-50"
+              className="border rounded px-3 py-2 w-1/2 bg-blue-50 border-blue-200 focus:border-blue-400 focus:outline-none"
               placeholder="Alder"
               type="number"
               min="1"
               value={age}
               onChange={e => setAge(e.target.value)}
             />
-            <Button onClick={handleAdd} className="bg-purple-600 hover:bg-purple-700">
+            <Button onClick={handleAdd} className="bg-blue-600 hover:bg-blue-700">
               Tilføj
             </Button>
           </div>
@@ -104,7 +104,7 @@ const ManageKidsPage = () => {
           )}
           <ul className="space-y-2">
             {kids.map((kid) => (
-              <li key={kid.id} className="flex justify-between items-center p-3 bg-purple-50 rounded border">
+              <li key={kid.id} className="flex justify-between items-center p-3 bg-blue-50 rounded border border-blue-200">
                 <span>
                   <b>{kid.name}</b> ({kid.age} år)
                 </span>
@@ -120,16 +120,16 @@ const ManageKidsPage = () => {
           </ul>
         </div>
 
-        {/* --- NYT: Betalingsoplysninger --- */}
+        {/* --- Betalingsoplysninger --- */}
         <div className="mt-10">
-          <h2 className="text-lg font-semibold text-purple-700 mb-3">Betalingsoplysninger</h2>
+          <h2 className="text-lg font-semibold text-blue-700 mb-3">Betalingsoplysninger</h2>
           <div className="space-y-3">
             <Input
               type="text"
               placeholder="Kortnummer"
               value={cardNumber}
               onChange={e => setCardNumber(e.target.value)}
-              className="bg-purple-50 focus:bg-white"
+              className="bg-blue-50 focus:bg-white border-blue-200"
               maxLength={19}
               autoComplete="cc-number"
               inputMode="numeric"
@@ -140,7 +140,7 @@ const ManageKidsPage = () => {
                 placeholder="Udløbsdato (MM/ÅÅ)"
                 value={cardExpiry}
                 onChange={e => setCardExpiry(e.target.value)}
-                className="bg-purple-50 focus:bg-white"
+                className="bg-blue-50 focus:bg-white border-blue-200"
                 maxLength={5}
                 autoComplete="cc-exp"
                 inputMode="numeric"
@@ -150,7 +150,7 @@ const ManageKidsPage = () => {
                 placeholder="CVC"
                 value={cardCvc}
                 onChange={e => setCardCvc(e.target.value)}
-                className="bg-purple-50 focus:bg-white"
+                className="bg-blue-50 focus:bg-white border-blue-200"
                 maxLength={4}
                 autoComplete="cc-csc"
                 inputMode="numeric"
@@ -160,7 +160,7 @@ const ManageKidsPage = () => {
 
           {/* BETAL KNAP */}
           <Button
-            className="w-full mt-7 bg-[#9b87f5] hover:bg-[#7E69AB] text-white font-bold flex items-center justify-center gap-2 py-3 text-base shadow transition-all"
+            className="w-full mt-7 bg-blue-600 hover:bg-blue-700 text-white font-bold flex items-center justify-center gap-2 py-3 text-base shadow transition-all"
             type="button"
             onClick={handlePay}
           >
