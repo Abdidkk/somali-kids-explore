@@ -7,12 +7,12 @@ import { Info, Users } from "lucide-react";
 const AboutPage = () => {
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="text-4xl font-bold text-center mb-12">Om Os</h1>
+      <h1 className="text-4xl font-bold text-center mb-12 text-blue-600">Om Os</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-        <Card>
+        <Card className="border-blue-100 shadow-md hover:shadow-lg transition-all">
           <CardHeader className="flex flex-row items-center gap-4">
-            <Info className="h-8 w-8 text-primary" />
+            <Info className="h-8 w-8 text-blue-500" />
             <div>
               <CardTitle>Vores Mission</CardTitle>
               <CardDescription>Hvad vi arbejder for</CardDescription>
@@ -25,9 +25,9 @@ const AboutPage = () => {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="border-blue-100 shadow-md hover:shadow-lg transition-all">
           <CardHeader className="flex flex-row items-center gap-4">
-            <Users className="h-8 w-8 text-primary" />
+            <Users className="h-8 w-8 text-blue-500" />
             <div>
               <CardTitle>Vores Team</CardTitle>
               <CardDescription>Hvem er vi</CardDescription>
@@ -43,11 +43,11 @@ const AboutPage = () => {
       
       {/* Additional content */}
       <div className="max-w-3xl mx-auto text-center mb-16">
-        <h2 className="text-3xl font-bold mb-6">Vores Historie</h2>
+        <h2 className="text-3xl font-bold mb-6 text-blue-600">Vores Historie</h2>
         <p className="text-lg mb-8">
           Kaalay Dugsiga startede som et lille projekt i 2022, da en gruppe lærere og forældre så et behov for bedre somaliske læringsressourcer til børn i Danmark. I dag er vi vokset til at blive en førende platform for tosprogede familier.
         </p>
-        <Button size="lg" className="bg-violet-600 hover:bg-violet-700">
+        <Button size="lg" className="bg-blue-500 hover:bg-blue-600 transition-colors">
           Læs mere om vores rejse
         </Button>
       </div>
