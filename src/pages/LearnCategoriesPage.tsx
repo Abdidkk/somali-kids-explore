@@ -35,7 +35,7 @@ export default function LearnCategoriesPage() {
       <ProfileMenu />
       {/* Tilføjet tilbage-knap i øverste venstre hjørne */}
       <div className="absolute left-4 top-4 z-20">
-        <Button onClick={handleBack} variant="outline" size="sm" className="flex items-center gap-1">
+        <Button onClick={handleBack} variant="outline" size="sm" className="flex items-center gap-1 border-blue-200 text-blue-600">
           <ArrowLeft className="w-4 h-4" />
           Tilbage
         </Button>
@@ -56,7 +56,7 @@ export default function LearnCategoriesPage() {
         />
       )}
 
-      <h1 className="text-3xl font-bold text-purple-600 mb-6 text-center">Læringskategorier</h1>
+      <h1 className="text-3xl font-bold text-blue-600 mb-6 text-center">Læringskategorier</h1>
       <p className="text-lg text-gray-700 max-w-xl mb-8 text-center">
         Vælg en kategori og begynd at lære nye ting på dansk og somali!
       </p>
@@ -73,7 +73,7 @@ export default function LearnCategoriesPage() {
               key={cat.name}
               className={[
                 "cursor-pointer transition-transform hover:scale-105 border-none shadow-lg hover:shadow-xl focus:scale-105 animate-fade-in relative duration-200",
-                isLastCat ? "outline outline-vivid-purple outline-2 z-10" : ""
+                isLastCat ? "outline outline-blue-400 outline-2 z-10" : ""
               ].join(" ")}
               style={{
                 background: cat.bgColor,
@@ -87,7 +87,7 @@ export default function LearnCategoriesPage() {
                 <div className="rounded-full bg-white shadow flex items-center justify-center mb-4 relative" style={{ width: 64, height: 64 }}>
                   <Icon className="w-9 h-9" />
                   {isFinished && (
-                    <span className="absolute -top-3 -right-3 bg-vivid-purple p-1 rounded-full animate-bounce shadow">
+                    <span className="absolute -top-3 -right-3 bg-blue-500 p-1 rounded-full animate-bounce shadow">
                       <BadgeCheck className="w-5 h-5 text-white" />
                     </span>
                   )}
@@ -95,7 +95,7 @@ export default function LearnCategoriesPage() {
                 <div className="font-bold text-lg text-gray-900 mb-2">{cat.name}</div>
                 <div className="text-gray-700 text-center text-sm">{cat.description}</div>
                 {isLastCat && (
-                  <div className="mt-2 text-xs text-purple-700 font-semibold animate-pulse bg-purple-100 rounded py-1 px-2">Sidste kategori</div>
+                  <div className="mt-2 text-xs text-blue-700 font-semibold animate-pulse bg-blue-100 rounded py-1 px-2">Sidste kategori</div>
                 )}
               </CardContent>
             </Card>
@@ -106,4 +106,3 @@ export default function LearnCategoriesPage() {
     </div>
   );
 }
-

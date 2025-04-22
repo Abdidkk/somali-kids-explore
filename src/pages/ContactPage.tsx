@@ -8,7 +8,7 @@ import { toast } from "@/hooks/use-toast";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const primary = "#9b87f5";
+const primary = "#4CA6FE";
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -33,9 +33,9 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="bg-gradient-to-b from-[#E5DEFF] via-white to-white min-h-screen py-12 px-4 flex flex-col items-center">
+    <div className="bg-gradient-to-b from-blue-50 via-white to-white min-h-screen py-12 px-4 flex flex-col items-center">
       <div className="w-full max-w-xl mb-8">
-        <Link to="/" className="text-vivid-purple hover:underline">&larr; Til forsiden</Link>
+        <Link to="/" className="text-blue-500 hover:underline">&larr; Til forsiden</Link>
         <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2" style={{ color: primary }}>
           Kontakt os
         </h1>
@@ -45,18 +45,18 @@ export default function ContactPage() {
       </div>
       <div className="grid gap-8 md:grid-cols-2 w-full max-w-4xl">
         {/* Kontaktoplysninger */}
-        <Card className="bg-soft-purple/70 border-0 shadow-lg">
+        <Card className="bg-blue-50/70 border-0 shadow-lg">
           <CardContent className="flex flex-col gap-6 py-8 px-8">
             <div className="flex items-center gap-3">
-              <Mail className="text-vivid-purple w-6 h-6" />
+              <Mail className="text-blue-500 w-6 h-6" />
               <span className="text-base text-gray-700">kontakt@dugsi.dk</span>
             </div>
             <div className="flex items-center gap-3">
-              <Phone className="text-vivid-purple w-6 h-6" />
+              <Phone className="text-blue-500 w-6 h-6" />
               <span className="text-base text-gray-700">+45 12 34 56 78</span>
             </div>
             <div className="flex items-center gap-3">
-              <MapPin className="text-vivid-purple w-6 h-6" />
+              <MapPin className="text-blue-500 w-6 h-6" />
               <span className="text-base text-gray-700">København, Danmark</span>
             </div>
           </CardContent>
@@ -77,6 +77,7 @@ export default function ContactPage() {
                   placeholder="Dit navn"
                   value={form.name}
                   onChange={handleChange}
+                  className="bg-blue-50 focus:bg-white"
                 />
               </div>
               <div>
@@ -91,6 +92,7 @@ export default function ContactPage() {
                   placeholder="din@email.dk"
                   value={form.email}
                   onChange={handleChange}
+                  className="bg-blue-50 focus:bg-white"
                 />
               </div>
               <div>
@@ -105,13 +107,13 @@ export default function ContactPage() {
                   placeholder="Hvordan kan vi hjælpe dig?"
                   value={form.message}
                   onChange={handleChange}
-                  className="min-h-[90px]"
+                  className="min-h-[90px] bg-blue-50 focus:bg-white"
                 />
               </div>
               <Button
                 type="submit"
                 variant="default"
-                className="mt-1 font-bold"
+                className="mt-1 font-bold bg-blue-500 hover:bg-blue-600"
                 disabled={sending}
               >
                 {sending ? "Sender..." : "Send besked"}

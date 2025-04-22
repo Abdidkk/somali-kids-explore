@@ -47,7 +47,7 @@ const MainNavbar = () => {
               </Link>
               <Link
                 to="/signup"
-                className="px-4 py-2 rounded-md font-medium text-white bg-[#4CA6FE] hover:bg-[#238dde] transition"
+                className="px-4 py-2 rounded-md font-medium text-white bg-[#4CA6FE] hover:bg-[#3b95e9] transition"
               >
                 Opret bruger
               </Link>
@@ -85,7 +85,7 @@ const MainNavbar = () => {
               </Link>
               <Link
                 to="/signup"
-                className="px-4 py-2 rounded-md font-medium text-white bg-[#4CA6FE] hover:bg-[#238dde] transition text-center"
+                className="px-4 py-2 rounded-md font-medium text-white bg-[#4CA6FE] hover:bg-[#3b95e9] transition text-center"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Opret bruger

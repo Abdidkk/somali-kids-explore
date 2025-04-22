@@ -21,11 +21,11 @@ export default function LogInPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-b from-purple-100 via-white to-white px-4 py-12 animate-fade-in">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-b from-blue-50 via-white to-white px-4 py-12 animate-fade-in">
       <div className="absolute left-0 top-0 mt-6 ml-6 z-10">
         <SomaliFlag className="w-8 h-8" />
       </div>
-      <div className="w-full max-w-md bg-white rounded-xl shadow-xl px-8 py-9 border border-purple-100 relative">
+      <div className="w-full max-w-md bg-white rounded-xl shadow-xl px-8 py-9 border border-blue-100 relative">
         <h1 className="text-3xl font-bold mb-2 text-center" style={{ color: HERO_BLUE }}>Log Ind</h1>
         <p className="mb-7 text-base text-gray-500 text-center">Velkommen tilbage! Log ind for at fortsætte til Dugsi.</p>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -38,7 +38,7 @@ export default function LogInPage() {
               type="email"
               placeholder="din@email.dk"
               required
-              className="bg-purple-50 focus:bg-white"
+              className="bg-blue-50 focus:bg-white"
               autoComplete="email"
             />
           </div>
@@ -52,7 +52,7 @@ export default function LogInPage() {
               placeholder="●●●●●●●●"
               required
               minLength={6}
-              className="bg-purple-50 focus:bg-white"
+              className="bg-blue-50 focus:bg-white"
               autoComplete="current-password"
             />
           </div>
@@ -60,7 +60,7 @@ export default function LogInPage() {
             type="submit"
             size="lg"
             disabled={loading}
-            className="w-full bg-purple-600 hover:bg-purple-700 transition"
+            className="w-full bg-blue-500 hover:bg-blue-600 transition"
           >
             {loading ? "Logger ind..." : (<><LogIn className="mr-2" />Log ind</>)}
           </Button>
