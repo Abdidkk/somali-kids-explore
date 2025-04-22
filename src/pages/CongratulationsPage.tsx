@@ -41,6 +41,21 @@ export default function CongratulationsPage() {
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-[#f9e9fc] via-[#e5deff] to-[#fef7cd] animate-fade-in px-2 py-10">
+      {/* Bannerbillede */}
+      <div className="w-full max-w-4xl mx-auto mb-8">
+        <div className="relative rounded-xl overflow-hidden shadow-xl">
+          <img 
+            src="/lovable-uploads/bed57f0f-32ee-4a06-8668-fb4be176b5f1.png" 
+            alt="Dugsi - Børn på vej til skole" 
+            className="w-full h-auto object-cover"
+          />
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent text-center py-6">
+            <h2 className="text-white text-3xl md:text-4xl font-bold">Kaalay Dugsiga</h2>
+            <p className="text-white text-lg md:text-xl mt-2">Kom ind til skolen</p>
+          </div>
+        </div>
+      </div>
+      
       <div className="relative w-full max-w-lg mx-auto animate-fade-in">
         {/* Kort container */}
         <div className="bg-white/80 rounded-3xl shadow-[0_8px_32px_0_rgba(155,136,245,0.15)] border border-[#9b87f5]/20 px-6 md:px-12 py-10 md:py-12 ring-2 ring-vivid-purple/10 flex flex-col items-center">
