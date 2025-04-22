@@ -1,37 +1,58 @@
 
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { users, info } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Info, Users } from "lucide-react";
 
-export default function AboutPage() {
+const AboutPage = () => {
   return (
-    <div className="bg-gradient-to-b from-[#E5DEFF] via-white to-white min-h-screen py-12 px-4 flex flex-col items-center">
-      <div className="w-full max-w-xl mb-8">
-        <Link to="/" className="text-vivid-purple hover:underline">&larr; Til forsiden</Link>
-        <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">
-          <span className="inline-flex align-middle mr-2"><info className="w-7 h-7" /></span>
-          Om Dugsi Læring
-        </h1>
-        <p className="text-gray-700 text-base mb-6">
-          Dugsi Læring er dedikeret til at gøre somalisk sproglæring sjov, motiverende og lettilgængelig for børn i Danmark. 
-          Vi tror på legende læring og på at styrke børns sproglige rødder samt selvtillid igennem digital undervisning skræddersyet til danske-somaliske familier.
-        </p>
+    <div className="container mx-auto px-4 py-12">
+      <h1 className="text-4xl font-bold text-center mb-12">Om Os</h1>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+        <Card>
+          <CardHeader className="flex flex-row items-center gap-4">
+            <Info className="h-8 w-8 text-primary" />
+            <div>
+              <CardTitle>Vores Mission</CardTitle>
+              <CardDescription>Hvad vi arbejder for</CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-4">
+            <p className="text-lg">
+              Vi arbejder for at skabe en bro mellem dansk og somalisk kultur gennem sprog. Vores mål er at hjælpe somaliske børn i Danmark med at bevare deres modersmål, samtidig med at de bliver integreret i det danske samfund.
+            </p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center gap-4">
+            <Users className="h-8 w-8 text-primary" />
+            <div>
+              <CardTitle>Vores Team</CardTitle>
+              <CardDescription>Hvem er vi</CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-4">
+            <p className="text-lg">
+              Vores team består af pædagoger, lærere og sprogeksperter med dyb forståelse for både dansk og somalisk kultur. Vi kombinerer vores ekspertise for at skabe den bedste læringsoplevelse for børn.
+            </p>
+          </CardContent>
+        </Card>
       </div>
-      <Card className="bg-soft-purple/70 border-0 shadow-lg w-full max-w-2xl">
-        <CardContent className="flex flex-col gap-8 py-8 px-8">
-          <div className="flex items-center gap-3">
-            <users className="text-vivid-purple w-6 h-6" />
-            <span className="text-base text-gray-700">
-              Vores team består af erfarne lærere, sprogpædagoger og teknologientusiaster.
-            </span>
-          </div>
-          <div>
-            <span className="font-semibold text-vivid-purple">Vores mission:&nbsp;</span>
-            At skabe bro mellem kulturer gennem sproglig og kulturel læring, der engagerer både børn og forældre!
-          </div>
-        </CardContent>
-      </Card>
+      
+      {/* Additional content */}
+      <div className="max-w-3xl mx-auto text-center mb-16">
+        <h2 className="text-3xl font-bold mb-6">Vores Historie</h2>
+        <p className="text-lg mb-8">
+          Kaalay Dugsiga startede som et lille projekt i 2022, da en gruppe lærere og forældre så et behov for bedre somaliske læringsressourcer til børn i Danmark. I dag er vi vokset til at blive en førende platform for tosprogede familier.
+        </p>
+        <Button size="lg" className="bg-violet-600 hover:bg-violet-700">
+          Læs mere om vores rejse
+        </Button>
+      </div>
     </div>
   );
-}
+};
+
+export default AboutPage;

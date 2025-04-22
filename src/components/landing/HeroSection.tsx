@@ -11,21 +11,6 @@ const HeroSection = () => {
         <SomaliFlag />
       </div>
       
-      {/* Stort bannerbillede */}
-      <div className="max-w-7xl mx-auto mb-12">
-        <div className="relative rounded-xl overflow-hidden shadow-xl">
-          <img 
-            src="/lovable-uploads/bed57f0f-32ee-4a06-8668-fb4be176b5f1.png" 
-            alt="Dugsi - Børn på vej til skole" 
-            className="w-full h-auto object-cover"
-          />
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent text-center py-6">
-            <h2 className="text-white text-3xl md:text-4xl font-bold">Kaalay Dugsiga</h2>
-            <p className="text-white text-lg md:text-xl mt-2">Kom ind til skolen</p>
-          </div>
-        </div>
-      </div>
-      
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
           <div className="lg:w-1/2 space-y-6">
