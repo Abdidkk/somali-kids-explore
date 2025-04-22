@@ -57,23 +57,23 @@ function getMotivationMsg(kid) {
 export default function DashboardPage() {
   return (
     <div className="min-h-screen p-6 md:p-10 bg-gradient-to-b from-blue-50 via-white to-white animate-fade-in">
-      <h1 className="text-3xl font-bold text-purple-700 mb-4 flex items-center gap-2">
-        <LayoutDashboard className="w-8 h-8 text-blue-400" /> Forældre Dashboard
+      <h1 className="text-3xl font-bold text-blue-700 mb-4 flex items-center gap-2">
+        <LayoutDashboard className="w-8 h-8 text-blue-500" /> Forældre Dashboard
       </h1>
       <div className="flex flex-col md:flex-row gap-8">
         {/* Børneliste med fremskridt, badges, aktiviteter, osv. */}
         <div className="flex-1 space-y-6">
           {mockKids.map((kid, idx) => (
-            <Card key={idx}>
+            <Card key={idx} className="border-blue-100">
               <CardHeader>
                 <div className="flex items-center justify-between gap-2">
                   <CardTitle className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-blue-400" />
+                    <Users className="w-5 h-5 text-blue-500" />
                     <span className="text-lg font-semibold">{kid.name}</span>
-                    <span className="text-blue-400 text-xs bg-blue-100 rounded-full px-2 py-1 font-mono">Streak: {kid.streak} 🔥</span>
+                    <span className="text-blue-500 text-xs bg-blue-100 rounded-full px-2 py-1 font-mono">Streak: {kid.streak} 🔥</span>
                   </CardTitle>
                   <div>
-                    <Link to="/admin-kids" className="text-xs bg-gray-50 px-3 py-1 rounded-md border text-blue-500 hover:bg-blue-100 transition hover:underline">Administrer</Link>
+                    <Link to="/admin-kids" className="text-xs bg-blue-50 px-3 py-1 rounded-md border border-blue-200 text-blue-600 hover:bg-blue-100 transition hover:underline">Administrer</Link>
                   </div>
                 </div>
                 <CardDescription>
@@ -83,22 +83,22 @@ export default function DashboardPage() {
               <CardContent>
                 {/* Progress bar og procent */}
                 <div className="mb-2">
-                  <Progress value={kid.progress} />
+                  <Progress value={kid.progress} className="bg-blue-100" />
                   <div className="text-right text-xs text-gray-600 mt-1">
                     {kid.progress}% gennemført
                   </div>
                 </div>
                 {/* Motiverende besked */}
                 {getMotivationMsg(kid) && (
-                  <div className="mb-2 flex items-center gap-2 text-green-700">
-                    <MessageSquare className="w-4 h-4 text-green-400" />
+                  <div className="mb-2 flex items-center gap-2 text-blue-700">
+                    <MessageSquare className="w-4 h-4 text-blue-500" />
                     <span>{getMotivationMsg(kid)}</span>
                   </div>
                 )}
                 {/* Seneste aktiviteter */}
                 <div className="mb-3">
                   <div className="font-medium text-xs text-gray-500 mb-1 flex items-center gap-2">
-                    <ChartBar className="w-4 h-4 text-purple-400" />
+                    <ChartBar className="w-4 h-4 text-blue-500" />
                     Seneste aktivitet
                   </div>
                   <ul className="ml-1 list-disc pl-4 text-xs text-gray-800">
@@ -110,16 +110,16 @@ export default function DashboardPage() {
                 {/* Badges, hvis nogen */}
                 {kid.badges && kid.badges.length > 0 && (
                   <div className="mb-2 flex flex-wrap gap-2 items-center">
-                    <span className="text-xs font-semibold text-yellow-600 flex items-center gap-1"><Badge className="w-4 h-4" /> Badges:</span>
+                    <span className="text-xs font-semibold text-blue-600 flex items-center gap-1"><Badge className="w-4 h-4" /> Badges:</span>
                     {kid.badges.map((badge, bi) => (
-                      <span key={bi} className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs font-mono">{badge}</span>
+                      <span key={bi} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-mono">{badge}</span>
                     ))}
                   </div>
                 )}
                 {/* Progress graf */}
                 <div className="mb-2">
                   <div className="font-medium text-xs text-gray-500 mb-1 flex items-center gap-2">
-                    <ChartBar className="w-4 h-4 text-purple-400" />
+                    <ChartBar className="w-4 h-4 text-blue-500" />
                     Aktivitet denne uge
                   </div>
                   <ResponsiveContainer width="100%" height={80}>
@@ -127,14 +127,14 @@ export default function DashboardPage() {
                       <XAxis dataKey="day" axisLine={false} tickLine={false} />
                       <YAxis hide />
                       <Tooltip />
-                      <Bar dataKey="score" fill="#9b87f5" radius={[8,8,0,0]} />
+                      <Bar dataKey="score" fill="#4388f5" radius={[8,8,0,0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
                 {/* Læringskategorier */}
                 <div className="flex flex-wrap gap-2">
                   {learningCategories.map((cat, i) => (
-                    <span key={cat.name} className="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
+                    <span key={cat.name} className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
                       <Check className="w-3 h-3" /> {cat.name}
                     </span>
                   ))}
@@ -145,10 +145,10 @@ export default function DashboardPage() {
         </div>
         {/* Læringskategorier (hentet fra forsiden) */}
         <div className="min-w-[260px] flex flex-col gap-4">
-          <Card>
+          <Card className="border-blue-100">
             <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2 text-gray-700">
-                <ChartBar className="w-5 h-5 text-purple-400" />
+              <CardTitle className="text-lg flex items-center gap-2 text-blue-700">
+                <ChartBar className="w-5 h-5 text-blue-500" />
                 Kategorier for læring
               </CardTitle>
               <CardDescription>
@@ -177,10 +177,10 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
           {/* Hurtig navigation */}
-          <Card>
+          <Card className="border-blue-100">
             <CardHeader>
-              <CardTitle className="text-md flex items-center gap-2 text-purple-800">
-                <Users className="w-5 h-5 text-blue-400" />
+              <CardTitle className="text-md flex items-center gap-2 text-blue-800">
+                <Users className="w-5 h-5 text-blue-500" />
                 Forældre links
               </CardTitle>
             </CardHeader>
@@ -188,7 +188,7 @@ export default function DashboardPage() {
               <Link to="/admin-kids" className="block px-4 py-2 mb-2 rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 text-sm font-medium transition">
                 Administrer børn
               </Link>
-              <Link to="/laer" className="block px-4 py-2 rounded-md bg-purple-50 text-purple-700 hover:bg-purple-100 text-sm font-medium transition">
+              <Link to="/laer" className="block px-4 py-2 rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 text-sm font-medium transition">
                 Se alle læringskategorier
               </Link>
             </CardContent>
