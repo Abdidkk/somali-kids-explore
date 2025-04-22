@@ -1,13 +1,14 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { DollarSign, CalendarCheck, BadgePercent } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function PricingPage() {
-  return <div className="bg-gradient-to-b from-[#E5DEFF] via-white to-white min-h-screen py-12 px-4 flex flex-col items-center">
+  return <div className="bg-gradient-to-b from-blue-50 via-white to-white min-h-screen py-12 px-4 flex flex-col items-center animate-fade-in">
     <div className="w-full max-w-xl mb-8">
-      <Link to="/" className="text-vivid-purple hover:underline">&larr; Til forsiden</Link>
-      <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4 flex items-center gap-2">
+      <Link to="/" className="text-blue-600 hover:underline flex items-center gap-1">&larr; Til forsiden</Link>
+      <h1 className="text-3xl md:text-4xl font-bold text-blue-700 mb-4 flex items-center gap-2">
         Priser & Planer
       </h1>
       <p className="text-gray-700 text-base mb-3">
@@ -20,9 +21,9 @@ export default function PricingPage() {
 
     <div className="grid grid-cols-1 md:grid-cols-2 gap-7 w-full max-w-3xl">
       {/* Månedlig plan */}
-      <Card className="bg-soft-purple/70 border-0 shadow-lg flex flex-col justify-between">
+      <Card className="bg-blue-50 border-0 shadow-lg flex flex-col justify-between hover:shadow-xl transition-all">
         <CardHeader>
-          <div className="flex items-center gap-2 text-vivid-purple">
+          <div className="flex items-center gap-2 text-blue-600">
             <CalendarCheck className="w-6 h-6" />
             <CardTitle className="text-xl font-semibold">Månedlig betaling</CardTitle>
           </div>
@@ -43,21 +44,21 @@ export default function PricingPage() {
           </ul>
         </CardContent>
         <CardFooter>
-          <Link className="text-vivid-purple underline text-sm hover:font-semibold" to="/priser/mere-info">
+          <Link className="text-blue-600 underline text-sm hover:font-semibold" to="/priser/mere-info">
             Læs mere
           </Link>
         </CardFooter>
       </Card>
 
       {/* Årlig plan */}
-      <Card className="bg-[#9b87f511] border-2 border-vivid-purple shadow-xl flex flex-col justify-between">
+      <Card className="bg-blue-100 border-2 border-blue-500 shadow-xl flex flex-col justify-between hover:shadow-2xl transition-all">
         <CardHeader>
           <div className="flex items-center gap-2 text-orange-500 font-semibold uppercase tracking-wide">
             <BadgePercent className="w-5 h-5" />
             Spar 25%
           </div>
           <div className="flex items-center gap-2 mt-2">
-            <CardTitle className="text-xl font-semibold text-vivid-purple">Årlig betaling</CardTitle>
+            <CardTitle className="text-xl font-semibold text-blue-600">Årlig betaling</CardTitle>
           </div>
           <div className="mt-3">
             <span className="text-3xl font-bold">405 kr</span>
@@ -76,7 +77,7 @@ export default function PricingPage() {
           </ul>
         </CardContent>
         <CardFooter>
-          <Link className="text-vivid-purple underline text-sm hover:font-semibold" to="/priser/mere-info">
+          <Link className="text-blue-600 underline text-sm hover:font-semibold" to="/priser/mere-info">
             Læs mere
           </Link>
         </CardFooter>
@@ -84,7 +85,7 @@ export default function PricingPage() {
     </div>
 
     <div className="mt-10 w-full max-w-2xl">
-      <Card className="bg-purple-50/50 border-0 shadow-none">
+      <Card className="bg-blue-50/50 border-0 shadow-none">
         <CardContent className="py-5 px-8 text-center text-gray-700 text-sm">
           <div className="mb-1">
             <b>Bemærk:</b> Alle abonnementer starter med 24 timers gratis prøveperiode uden kreditkort.
