@@ -83,11 +83,12 @@ export default function LearnCategoriesPage() {
             >
               <CardContent className="flex flex-col items-center py-6">
                 {isAlphabet ? (
-                  <div className="w-full h-32 mb-4 relative rounded-lg overflow-hidden">
+                  <div className="w-full h-40 mb-4 relative rounded-lg overflow-hidden">
                     <img 
                       src="/lovable-uploads/0d3cffdb-ae5f-47c7-921d-87af02dceffe.png"
                       alt="Alfabet illustration"
                       className="w-full h-full object-cover"
+                      style={{ objectPosition: 'center' }}
                     />
                     {isFinished && (
                       <span className="absolute -top-3 -right-3 bg-blue-500 p-1 rounded-full animate-bounce shadow z-10">
