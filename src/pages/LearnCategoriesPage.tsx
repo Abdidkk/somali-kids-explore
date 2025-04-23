@@ -62,6 +62,8 @@ export default function LearnCategoriesPage() {
         {learningCategories.map((cat, idx) => {
           const Icon = cat.icon;
           const isAlphabet = cat.name === "Alfabet";
+          const isColors = cat.name === "Farver";
+          const isNumbers = cat.name === "Tal";
           const isFinished = mockChild.finishedCategories.includes(cat.name);
           const isLastCat = cat.name === mockChild.lastCategory;
 
@@ -82,11 +84,15 @@ export default function LearnCategoriesPage() {
               onClick={isAlphabet ? () => setShowAlphabet(true) : undefined}
             >
               <CardContent className="p-0 relative">
-                {isAlphabet ? (
+                {(isAlphabet || isColors || isNumbers) ? (
                   <div className="relative h-full">
                     <img 
-                      src="/lovable-uploads/0d3cffdb-ae5f-47c7-921d-87af02dceffe.png"
-                      alt="Alfabet illustration"
+                      src={
+                        isAlphabet ? "/lovable-uploads/0d3cffdb-ae5f-47c7-921d-87af02dceffe.png" :
+                        isColors ? "/lovable-uploads/42f73c53-76a6-4c54-82f2-df3ccb4980f6.png" :
+                        "/lovable-uploads/04d6bd8a-13b1-43ae-9c27-983dac50c5be.png"
+                      }
+                      alt={`${cat.name} illustration`}
                       className="w-full h-48 object-cover"
                     />
                     {isFinished && (
@@ -123,7 +129,7 @@ export default function LearnCategoriesPage() {
             </Card>
           );
 
-          if (isAlphabet) {
+          if (isAlphabet || isColors || isNumbers) {
             return (
               <HoverCard key={cat.name}>
                 <HoverCardTrigger asChild>
@@ -131,13 +137,31 @@ export default function LearnCategoriesPage() {
                 </HoverCardTrigger>
                 <HoverCardContent className="w-80 p-4 border-none shadow-lg" style={{ background: cat.bgColor }}>
                   <div className="text-gray-800">
-                    <h3 className="font-bold text-lg mb-2">Lær det somaliske alfabet</h3>
+                    <h3 className="font-bold text-lg mb-2">Lær om {cat.name}</h3>
                     <p className="mb-2">I denne kategori vil du:</p>
                     <ul className="list-disc pl-4 space-y-1">
-                      <li>Lære alle bogstaverne i det somaliske alfabet</li>
-                      <li>Øve udtale af hver bogstav</li>
-                      <li>Træne genkendelse af bogstaver</li>
-                      <li>Lære at skrive bogstaverne</li>
+                      {isAlphabet && (
+                        <li>Lære alle bogstaverne i det somaliske alfabet</li>
+                        <li>Øve udtale af hver bogstav</li>
+                        <li>Træne genkendelse af bogstaver</li>
+                        <li>Lære at skrive bogstaverne</li>
+                      )}
+                      {isColors && (
+                        <>
+                          <li>Lære de grundlæggende farver</li>
+                          <li>Øve farvenavne på somalisk</li>
+                          <li>Lave sjove farveøvelser</li>
+                          <li>Lære at genkende farver i hverdagen</li>
+                        </>
+                      )}
+                      {isNumbers && (
+                        <>
+                          <li>Lære at tælle på somalisk</li>
+                          <li>Øve tal og mængder</li>
+                          <li>Træne grundlæggende matematik</li>
+                          <li>Lære tallenes navne og symboler</li>
+                        </>
+                      )}
                     </ul>
                   </div>
                 </HoverCardContent>
