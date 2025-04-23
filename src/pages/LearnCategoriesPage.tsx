@@ -82,14 +82,29 @@ export default function LearnCategoriesPage() {
               onClick={isAlphabet ? () => setShowAlphabet(true) : undefined}
             >
               <CardContent className="flex flex-col items-center py-6">
-                <div className="rounded-full bg-white shadow flex items-center justify-center mb-4 relative" style={{ width: 64, height: 64 }}>
-                  <Icon className="w-9 h-9" />
-                  {isFinished && (
-                    <span className="absolute -top-3 -right-3 bg-blue-500 p-1 rounded-full animate-bounce shadow">
-                      <BadgeCheck className="w-5 h-5 text-white" />
-                    </span>
-                  )}
-                </div>
+                {isAlphabet ? (
+                  <div className="w-full h-32 mb-4 relative rounded-lg overflow-hidden">
+                    <img 
+                      src="/lovable-uploads/0d3cffdb-ae5f-47c7-921d-87af02dceffe.png"
+                      alt="Alfabet illustration"
+                      className="w-full h-full object-cover"
+                    />
+                    {isFinished && (
+                      <span className="absolute -top-3 -right-3 bg-blue-500 p-1 rounded-full animate-bounce shadow z-10">
+                        <BadgeCheck className="w-5 h-5 text-white" />
+                      </span>
+                    )}
+                  </div>
+                ) : (
+                  <div className="rounded-full bg-white shadow flex items-center justify-center mb-4 relative" style={{ width: 64, height: 64 }}>
+                    <Icon className="w-9 h-9" />
+                    {isFinished && (
+                      <span className="absolute -top-3 -right-3 bg-blue-500 p-1 rounded-full animate-bounce shadow">
+                        <BadgeCheck className="w-5 h-5 text-white" />
+                      </span>
+                    )}
+                  </div>
+                )}
                 <div className="font-bold text-lg text-gray-900 mb-2">{cat.name}</div>
                 <div className="text-gray-700 text-center text-sm">{cat.description}</div>
                 {isLastCat && (
