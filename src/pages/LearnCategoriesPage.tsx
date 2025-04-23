@@ -9,6 +9,7 @@ import ContinueCard from "@/components/ContinueCard";
 import { Star, BadgeCheck, ArrowLeft } from "lucide-react";
 import ProfileMenu from "@/components/ProfileMenu";
 import { Button } from "@/components/ui/button";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 const mockChild = {
   name: "Sami",
@@ -25,7 +26,6 @@ export default function LearnCategoriesPage() {
 
   const showContinue = !!mockChild.lastCategory;
 
-  // Håndter "gå tilbage" navigation
   const handleBack = () => {
     window.history.back();
   };
@@ -33,7 +33,6 @@ export default function LearnCategoriesPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white flex flex-col items-center py-10 animate-fade-in relative">
       <ProfileMenu />
-      {/* Tilføjet tilbage-knap i øverste venstre hjørne */}
       <div className="absolute left-4 top-4 z-20">
         <Button onClick={handleBack} variant="outline" size="sm" className="flex items-center gap-1 border-blue-200 text-blue-600">
           <ArrowLeft className="w-4 h-4" />
@@ -67,7 +66,7 @@ export default function LearnCategoriesPage() {
           const isFinished = mockChild.finishedCategories.includes(cat.name);
           const isLastCat = cat.name === mockChild.lastCategory;
 
-          return (
+          const categoryCard = (
             <Card
               id={`learn-cat-${idx}`}
               key={cat.name}
@@ -100,6 +99,25 @@ export default function LearnCategoriesPage() {
               </CardContent>
             </Card>
           );
+
+          if (isAlphabet) {
+            return (
+              <HoverCard key={cat.name}>
+                <HoverCardTrigger asChild>
+                  {categoryCard}
+                </HoverCardTrigger>
+                <HoverCardContent className="w-80 p-0 border-none shadow-lg" style={{ background: cat.bgColor }}>
+                  <img 
+                    src="/lovable-uploads/0d3cffdb-ae5f-47c7-921d-87af02dceffe.png" 
+                    alt="Alfabet illustration" 
+                    className="w-full h-auto rounded-lg"
+                  />
+                </HoverCardContent>
+              </HoverCard>
+            );
+          }
+
+          return categoryCard;
         })}
       </div>
       <AlphabetModal open={showAlphabet} onClose={() => setShowAlphabet(false)} />
