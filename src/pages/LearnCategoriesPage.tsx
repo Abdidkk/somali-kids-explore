@@ -1,4 +1,3 @@
-
 import { learningCategories } from "@/data/learningCategories";
 import { Card, CardContent } from "@/components/ui/card";
 import React, { useState } from "react";
@@ -106,12 +105,17 @@ export default function LearnCategoriesPage() {
                 <HoverCardTrigger asChild>
                   {categoryCard}
                 </HoverCardTrigger>
-                <HoverCardContent className="w-80 p-0 border-none shadow-lg" style={{ background: cat.bgColor }}>
-                  <img 
-                    src="/lovable-uploads/0d3cffdb-ae5f-47c7-921d-87af02dceffe.png" 
-                    alt="Alfabet illustration" 
-                    className="w-full h-auto rounded-lg"
-                  />
+                <HoverCardContent className="w-80 p-4 border-none shadow-lg" style={{ background: cat.bgColor }}>
+                  <div className="text-gray-800">
+                    <h3 className="font-bold text-lg mb-2">Lær det somaliske alfabet</h3>
+                    <p className="mb-2">I denne kategori vil du:</p>
+                    <ul className="list-disc pl-4 space-y-1">
+                      <li>Lære alle bogstaverne i det somaliske alfabet</li>
+                      <li>Øve udtale af hver bogstav</li>
+                      <li>Træne genkendelse af bogstaver</li>
+                      <li>Lære at skrive bogstaverne</li>
+                    </ul>
+                  </div>
                 </HoverCardContent>
               </HoverCard>
             );
