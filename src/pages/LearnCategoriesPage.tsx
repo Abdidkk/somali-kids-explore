@@ -81,35 +81,43 @@ export default function LearnCategoriesPage() {
               aria-label={`Lær om ${cat.name}`}
               onClick={isAlphabet ? () => setShowAlphabet(true) : undefined}
             >
-              <CardContent className="flex flex-col items-center py-6">
+              <CardContent className="p-0 relative">
                 {isAlphabet ? (
-                  <div className="w-full h-40 mb-4 relative rounded-lg overflow-hidden">
+                  <div className="relative h-full">
                     <img 
                       src="/lovable-uploads/0d3cffdb-ae5f-47c7-921d-87af02dceffe.png"
                       alt="Alfabet illustration"
-                      className="w-full h-full object-cover"
-                      style={{ objectPosition: 'center' }}
+                      className="w-full h-48 object-cover"
                     />
                     {isFinished && (
-                      <span className="absolute -top-3 -right-3 bg-blue-500 p-1 rounded-full animate-bounce shadow z-10">
+                      <span className="absolute top-2 right-2 bg-blue-500 p-1 rounded-full animate-bounce shadow z-10">
                         <BadgeCheck className="w-5 h-5 text-white" />
                       </span>
                     )}
+                    <div className="p-6">
+                      <div className="font-bold text-lg text-gray-900 mb-2">{cat.name}</div>
+                      <div className="text-gray-700 text-center text-sm">{cat.description}</div>
+                      {isLastCat && (
+                        <div className="mt-2 text-xs text-blue-700 font-semibold animate-pulse bg-blue-100 rounded py-1 px-2">Sidste kategori</div>
+                      )}
+                    </div>
                   </div>
                 ) : (
-                  <div className="rounded-full bg-white shadow flex items-center justify-center mb-4 relative" style={{ width: 64, height: 64 }}>
-                    <Icon className="w-9 h-9" />
-                    {isFinished && (
-                      <span className="absolute -top-3 -right-3 bg-blue-500 p-1 rounded-full animate-bounce shadow">
-                        <BadgeCheck className="w-5 h-5 text-white" />
-                      </span>
+                  <div className="flex flex-col items-center py-6">
+                    <div className="rounded-full bg-white shadow flex items-center justify-center mb-4 relative" style={{ width: 64, height: 64 }}>
+                      <Icon className="w-9 h-9" />
+                      {isFinished && (
+                        <span className="absolute -top-3 -right-3 bg-blue-500 p-1 rounded-full animate-bounce shadow">
+                          <BadgeCheck className="w-5 h-5 text-white" />
+                        </span>
+                      )}
+                    </div>
+                    <div className="font-bold text-lg text-gray-900 mb-2">{cat.name}</div>
+                    <div className="text-gray-700 text-center text-sm">{cat.description}</div>
+                    {isLastCat && (
+                      <div className="mt-2 text-xs text-blue-700 font-semibold animate-pulse bg-blue-100 rounded py-1 px-2">Sidste kategori</div>
                     )}
                   </div>
-                )}
-                <div className="font-bold text-lg text-gray-900 mb-2">{cat.name}</div>
-                <div className="text-gray-700 text-center text-sm">{cat.description}</div>
-                {isLastCat && (
-                  <div className="mt-2 text-xs text-blue-700 font-semibold animate-pulse bg-blue-100 rounded py-1 px-2">Sidste kategori</div>
                 )}
               </CardContent>
             </Card>
