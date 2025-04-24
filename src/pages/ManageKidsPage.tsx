@@ -3,11 +3,11 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Apple, CreditCard } from "lucide-react";
 import AddKidForm from "@/components/kids/AddKidForm";
-import KidList, { Kid } from "@/components/kids/KidList";
+import KidList from "@/components/kids/KidList";
 import PaymentSummary from "@/components/kids/PaymentSummary";
 import PaymentForm from "@/components/kids/PaymentForm";
 
-interface Kid {
+interface KidType {
   id: string;
   name: string;
   age: string;
@@ -19,7 +19,7 @@ const BASE_YEARLY = 405;
 const KID_YEARLY = 135;
 
 const ManageKidsPage = () => {
-  const [kids, setKids] = useState<Kid[]>([]);
+  const [kids, setKids] = useState<KidType[]>([]);
   const [cardNumber, setCardNumber] = useState("");
   const [cardExpiry, setCardExpiry] = useState("");
   const [cardCvc, setCardCvc] = useState("");
