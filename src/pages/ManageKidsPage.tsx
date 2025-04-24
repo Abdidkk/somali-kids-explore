@@ -3,15 +3,9 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Apple, CreditCard } from "lucide-react";
 import AddKidForm from "@/components/kids/AddKidForm";
-import KidList, { Kid } from "@/components/kids/KidList";
+import KidList from "@/components/kids/KidList";
 import PaymentSummary from "@/components/kids/PaymentSummary";
 import PaymentForm from "@/components/kids/PaymentForm";
-
-interface Kid {
-  id: string;
-  name: string;
-  age: string;
-}
 
 const BASE_MONTHLY = 45;
 const KID_MONTHLY = 15;
