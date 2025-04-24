@@ -6,6 +6,7 @@ import AddKidForm from "@/components/kids/AddKidForm";
 import KidList from "@/components/kids/KidList";
 import PaymentSummary from "@/components/kids/PaymentSummary";
 import PaymentForm from "@/components/kids/PaymentForm";
+import { Kid } from "@/types/Kid";
 
 const BASE_MONTHLY = 45;
 const KID_MONTHLY = 15;

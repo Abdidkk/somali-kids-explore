@@ -25,7 +25,7 @@ const HeroSection = () => {
               En sjov og interaktiv måde for børn at lære somalisk sprog gennem dansk. Perfekt til tosprogede familier og kulturel læring.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/signup">
+              <Link to="/laer">
                 <Button size="lg" className="bg-blue-500 hover:bg-blue-600 transition-colors w-full sm:w-auto">
                   Start Gratis Prøve
                 </Button>
