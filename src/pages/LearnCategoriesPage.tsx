@@ -1,3 +1,4 @@
+
 import { learningCategories } from "@/data/learningCategories";
 import { Card, CardContent } from "@/components/ui/card";
 import React, { useState } from "react";
@@ -141,10 +142,12 @@ export default function LearnCategoriesPage() {
                     <p className="mb-2">I denne kategori vil du:</p>
                     <ul className="list-disc pl-4 space-y-1">
                       {isAlphabet && (
-                        <li>Lære alle bogstaverne i det somaliske alfabet</li>
-                        <li>Øve udtale af hver bogstav</li>
-                        <li>Træne genkendelse af bogstaver</li>
-                        <li>Lære at skrive bogstaverne</li>
+                        <>
+                          <li>Lære alle bogstaverne i det somaliske alfabet</li>
+                          <li>Øve udtale af hver bogstav</li>
+                          <li>Træne genkendelse af bogstaver</li>
+                          <li>Lære at skrive bogstaverne</li>
+                        </>
                       )}
                       {isColors && (
                         <>
