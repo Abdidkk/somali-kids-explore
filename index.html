@@ -1,80 +1,26 @@
-
 <!DOCTYPE html>
-<html lang="da">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dugsi Læring</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="main-container">
-        <nav class="profile-menu">
-            <button class="back-button">
-                <span class="icon">←</span>
-                Tilbage
-            </button>
-            <div class="profile-section">
-                <span class="profile-name">Sami</span>
-                <div class="progress-bar">
-                    <div class="progress" style="width: 38%"></div>
-                </div>
-                <div class="streak">Streak: 5 dage</div>
-            </div>
-        </nav>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>somali-kids-explore</title>
+    <meta name="description" content="Lovable Generated Project" />
+    <meta name="author" content="Lovable" />
 
-        <div class="badges-container">
-            <span class="badge">
-                <span class="icon">🔥</span>
-                Streak 3 dage
-            </span>
-            <span class="badge">
-                <span class="icon">⭐</span>
-                Flittig Lærer
-            </span>
-        </div>
+    <meta property="og:title" content="somali-kids-explore" />
+    <meta property="og:description" content="Lovable Generated Project" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
 
-        <h1>Læringskategorier</h1>
-        <p class="subtitle">Vælg en kategori og begynd at lære nye ting på dansk og somali!</p>
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@lovable_dev" />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+  </head>
 
-        <div class="categories-grid">
-            <div class="category-card alphabet" data-category="alphabet">
-                <img src="/lovable-uploads/0d3cffdb-ae5f-47c7-921d-87af02dceffe.png" alt="Alfabet illustration">
-                <div class="card-content">
-                    <h3>Alfabet</h3>
-                    <p>Lær det somaliske alfabet</p>
-                </div>
-            </div>
-
-            <div class="category-card colors" data-category="colors">
-                <img src="/lovable-uploads/42f73c53-76a6-4c54-82f2-df3ccb4980f6.png" alt="Farver illustration">
-                <div class="card-content">
-                    <h3>Farver</h3>
-                    <p>Lær om farver på somalisk</p>
-                </div>
-            </div>
-
-            <div class="category-card numbers" data-category="numbers">
-                <img src="/lovable-uploads/04d6bd8a-13b1-43ae-9c27-983dac50c5be.png" alt="Tal illustration">
-                <div class="card-content">
-                    <h3>Tal</h3>
-                    <p>Lær at tælle på somalisk</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="alphabetModal">
-        <div class="modal-content">
-            <button class="close-button">&times;</button>
-            <h2>Somalisk alfabet</h2>
-            <div class="alphabet-content">
-                <!-- Alphabet content will be dynamically loaded -->
-            </div>
-        </div>
-    </div>
-
+  <body>
+    <div id="root"></div>
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script src="script.js"></script>
-</body>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
