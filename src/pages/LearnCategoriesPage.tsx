@@ -71,7 +71,7 @@ export default function LearnCategoriesPage() {
               <CardContent className="p-0 relative">
                 {isAlphabet || isColors || isNumbers || isFood || isAnimals ? <div className="relative h-full">
                     <img src={isAlphabet ? "/lovable-uploads/0d3cffdb-ae5f-47c7-921d-87af02dceffe.png" : 
-                            isColors ? "/lovable-uploads/42f73c53-76a6-4c54-82f2-df3ccb4980f6.png" : 
+                            isColors ? "/lovable-uploads/2b3d5738-fe36-44c4-8d12-40c95bb1c0f8.png" : 
                             isFood ? "/lovable-uploads/d53ddb64-53af-4bd5-a6c6-c7cd8495bda0.png" :
                             isAnimals ? "/lovable-uploads/5b82e785-bd89-4559-81c7-048e78c263ff.png" :
                             "/lovable-uploads/04d6bd8a-13b1-43ae-9c27-983dac50c5be.png"} 
