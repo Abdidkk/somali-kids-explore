@@ -78,7 +78,7 @@ export default function LearnCategoriesPage() {
                             isKropsdele ? "/lovable-uploads/5f3c2e5c-8a56-4baf-8c3f-4d8ecbe1f924.png" :
                             "/lovable-uploads/04d6bd8a-13b1-43ae-9c27-983dac50c5be.png"} 
                          alt={`${cat.name} illustration`} 
-                         className="w-full h-48 object-fill" />
+                         className={`w-full h-48 object-contain ${isKropsdele ? 'p-2 bg-white/90 rounded-t-lg shadow-inner' : 'object-fill'}`} />
                     {isFinished && <span className="absolute top-2 right-2 bg-blue-500 p-1 rounded-full animate-bounce shadow z-10">
                         <BadgeCheck className="w-5 h-5 text-white" />
                       </span>}
