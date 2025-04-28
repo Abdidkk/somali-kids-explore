@@ -9,6 +9,7 @@ import { Star, BadgeCheck, ArrowLeft } from "lucide-react";
 import ProfileMenu from "@/components/ProfileMenu";
 import { Button } from "@/components/ui/button";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+
 const mockChild = {
   name: "Sami",
   progress: 38,
@@ -19,12 +20,15 @@ const mockChild = {
   lastPercent: 30,
   finishedCategories: ["Alfabet"]
 };
+
 export default function LearnCategoriesPage() {
   const [showAlphabet, setShowAlphabet] = useState(false);
   const showContinue = !!mockChild.lastCategory;
+
   const handleBack = () => {
     window.history.back();
   };
+
   return <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white flex flex-col items-center py-10 animate-fade-in relative">
     <ProfileMenu />
     <div className="absolute left-4 top-4 z-20">
@@ -58,7 +62,7 @@ export default function LearnCategoriesPage() {
         const isNumbers = cat.name === "Tal";
         const isFood = cat.name === "Mad";
         const isAnimals = cat.name === "Dyr";
-        const isKropsdele = cat.name === "Kropsdel";
+        const isKropsdele = cat.name === "Kropsdel"; 
         const isFinished = mockChild.finishedCategories.includes(cat.name);
         const isLastCat = cat.name === mockChild.lastCategory;
         const categoryCard = <Card id={`learn-cat-${idx}`} key={cat.name} className={["cursor-pointer transition-transform hover:scale-105 border-none shadow-lg hover:shadow-xl focus:scale-105 animate-fade-in relative", isLastCat ? "outline outline-blue-400 outline-2 z-10" : ""].join(" ")} style={{
@@ -67,7 +71,14 @@ export default function LearnCategoriesPage() {
         }} tabIndex={0} aria-label={`Lær om ${cat.name}`} onClick={isAlphabet ? () => setShowAlphabet(true) : undefined}>
               <CardContent className="p-0 relative">
                 {isAlphabet || isColors || isNumbers || isFood || isAnimals || isKropsdele ? <div className="relative h-full">
-                    <img src={isAlphabet ? "/lovable-uploads/0d3cffdb-ae5f-47c7-921d-87af02dceffe.png" : isColors ? "/lovable-uploads/2b3d5738-fe36-44c4-8d12-40c95bb1c0f8.png" : isFood ? "/lovable-uploads/d53ddb64-53af-4bd5-a6c6-c7cd8495bda0.png" : isAnimals ? "/lovable-uploads/5b82e785-bd89-4559-81c7-048e78c263ff.png" : isKropsdele ? "/lovable-uploads/5f3c2e5c-8a56-4baf-8c3f-4d8ecbe1f924.png" : "/lovable-uploads/04d6bd8a-13b1-43ae-9c27-983dac50c5be.png"} alt={`${cat.name} illustration`} className="object-fill" />
+                    <img src={isAlphabet ? "/lovable-uploads/0d3cffdb-ae5f-47c7-921d-87af02dceffe.png" : 
+                            isColors ? "/lovable-uploads/2b3d5738-fe36-44c4-8d12-40c95bb1c0f8.png" : 
+                            isFood ? "/lovable-uploads/d53ddb64-53af-4bd5-a6c6-c7cd8495bda0.png" :
+                            isAnimals ? "/lovable-uploads/5b82e785-bd89-4559-81c7-048e78c263ff.png" :
+                            isKropsdele ? "/lovable-uploads/5f3c2e5c-8a56-4baf-8c3f-4d8ecbe1f924.png" :
+                            "/lovable-uploads/04d6bd8a-13b1-43ae-9c27-983dac50c5be.png"} 
+                         alt={`${cat.name} illustration`} 
+                         className={`w-full h-48 object-contain ${isKropsdele ? 'p-2 bg-white/90 rounded-t-lg shadow-inner' : 'object-fill'}`} />
                     {isFinished && <span className="absolute top-2 right-2 bg-blue-500 p-1 rounded-full animate-bounce shadow z-10">
                         <BadgeCheck className="w-5 h-5 text-white" />
                       </span>}
@@ -92,6 +103,7 @@ export default function LearnCategoriesPage() {
                   </div>}
               </CardContent>
             </Card>;
+
         if (isAlphabet || isColors || isNumbers || isFood || isAnimals || isKropsdele) {
           return <HoverCard key={cat.name}>
                 <HoverCardTrigger asChild>
