@@ -1,5 +1,5 @@
 
-import { Mic, Palette, Calculator, Carrot, PawPrint, Earth, Calendar, Users, House, Activity, MessageSquare, Music, BookOpen, HelpCircle, Hand, Cloud } from "lucide-react";
+import { Mic, Palette, Calculator, Carrot, PawPrint, Earth, Calendar, Users, House, Activity, MessageSquare, Music, BookOpen, HelpCircle, Hand } from "lucide-react";
 
 export const learningCategories = [
   {
@@ -37,12 +37,6 @@ export const learningCategories = [
     icon: Hand,
     bgColor: "#E2F7FF",
     description: "Lær navnene på kroppens dele på somalisk.",
-  },
-  {
-    name: "Sæsoner",
-    icon: Cloud,
-    bgColor: "#E0F4FF",
-    description: "Lær om årstider på somalisk.",
   },
   {
     name: "Geografi",
