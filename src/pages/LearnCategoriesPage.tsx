@@ -77,7 +77,7 @@ export default function LearnCategoriesPage() {
                             isFood ? "/lovable-uploads/d53ddb64-53af-4bd5-a6c6-c7cd8495bda0.png" :
                             isAnimals ? "/lovable-uploads/5b82e785-bd89-4559-81c7-048e78c263ff.png" :
                             isKropsdele ? "/lovable-uploads/5f3c2e5c-8a56-4baf-8c3f-4d8ecbe1f924.png" :
-                            isGeografi ? "/lovable-uploads/6a848c23-3667-454f-bb54-122cdb3444b9.png" :
+                            isGeografi ? "/lovable-uploads/96a8e74c-d203-46ea-a5b3-62d43488681b.png" :
                             "/lovable-uploads/04d6bd8a-13b1-43ae-9c27-983dac50c5be.png"} 
                          alt={`${cat.name} illustration`} 
                          className={`w-full h-48 object-contain ${isKropsdele ? 'p-2 bg-white/90 rounded-t-lg shadow-inner' : 'object-fill'}`} />
