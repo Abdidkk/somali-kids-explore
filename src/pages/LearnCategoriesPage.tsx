@@ -72,6 +72,7 @@ export default function LearnCategoriesPage() {
         const isSaetninger = cat.name === "Sætninger";
         const isKultureltIndhold = cat.name === "Kulturelt indhold";
         const isLaeseBøger = cat.name === "Læse bøger";
+        const isQuiz = cat.name === "Quiz";
         const isFinished = mockChild.finishedCategories.includes(cat.name);
         const isLastCat = cat.name === mockChild.lastCategory;
         const categoryCard = <Card id={`learn-cat-${idx}`} key={cat.name} className={["cursor-pointer transition-transform hover:scale-105 border-none shadow-lg hover:shadow-xl focus:scale-105 animate-fade-in relative", isLastCat ? "outline outline-blue-400 outline-2 z-10" : ""].join(" ")} style={{
@@ -79,23 +80,24 @@ export default function LearnCategoriesPage() {
           borderRadius: "1.1rem"
         }} tabIndex={0} aria-label={`Lær om ${cat.name}`} onClick={isAlphabet ? () => setShowAlphabet(true) : undefined}>
               <CardContent className="p-0 relative">
-                {isAlphabet || isColors || isNumbers || isFood || isAnimals || isKropsdele || isGeografi || isKalender || isFamilie || isOrd || isDagligeAktiviteter || isSaetninger || isKultureltIndhold || isLaeseBøger ? <div className="relative h-full">
+                {isAlphabet || isColors || isNumbers || isFood || isAnimals || isKropsdele || isGeografi || isKalender || isFamilie || isOrd || isDagligeAktiviteter || isSaetninger || isKultureltIndhold || isLaeseBøger || isQuiz ? <div className="relative h-full">
                     <img src={isAlphabet ? "/lovable-uploads/0d3cffdb-ae5f-47c7-921d-87af02dceffe.png" : 
-                            isColors ? "/lovable-uploads/2b3d5738-fe36-44c4-8d12-40c95bb1c0f8.png" : 
-                            isFood ? "/lovable-uploads/d53ddb64-53af-4bd5-a6c6-c7cd8495bda0.png" :
-                            isAnimals ? "/lovable-uploads/5b82e785-bd89-4559-81c7-048e78c263ff.png" :
-                            isKropsdele ? "/lovable-uploads/5f3c2e5c-8a56-4baf-8c3f-4d8ecbe1f924.png" :
-                            isGeografi ? "/lovable-uploads/96a8e74c-d203-46ea-a5b3-62d43488681b.png" :
-                            isKalender ? "/lovable-uploads/0435c435-2eb6-4de9-a68e-d3a18fd524e5.png" :
-                            isFamilie ? "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png" :
-                            isOrd ? "/lovable-uploads/a57afdc1-14bd-4e86-87d9-907a566e2c64.png" :
-                            isDagligeAktiviteter ? "/lovable-uploads/cffd237e-6a54-4fc2-8948-ab03ee00399a.png" :
-                            isSaetninger ? "/lovable-uploads/a1b97193-b26e-42a5-90f1-0ee432386d70.png" :
-                            isKultureltIndhold ? "/lovable-uploads/5226a33a-bf7f-4cc7-ace6-28b7484c60ce.png" :
-                            isLaeseBøger ? "/lovable-uploads/5ea2439d-4fd6-419d-a5b6-9afb3d0362dd.png" :
-                            "/lovable-uploads/04d6bd8a-13b1-43ae-9c27-983dac50c5be.png"} 
-                         alt={`${cat.name} illustration`} 
-                         className={`w-full h-48 object-contain ${isKropsdele ? 'p-2 bg-white/90 rounded-t-lg shadow-inner' : 'object-fill'}`} />
+                             isColors ? "/lovable-uploads/2b3d5738-fe36-44c4-8d12-40c95bb1c0f8.png" : 
+                             isFood ? "/lovable-uploads/d53ddb64-53af-4bd5-a6c6-c7cd8495bda0.png" :
+                             isAnimals ? "/lovable-uploads/5b82e785-bd89-4559-81c7-048e78c263ff.png" :
+                             isKropsdele ? "/lovable-uploads/5f3c2e5c-8a56-4baf-8c3f-4d8ecbe1f924.png" :
+                             isGeografi ? "/lovable-uploads/96a8e74c-d203-46ea-a5b3-62d43488681b.png" :
+                             isKalender ? "/lovable-uploads/0435c435-2eb6-4de9-a68e-d3a18fd524e5.png" :
+                             isFamilie ? "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png" :
+                             isOrd ? "/lovable-uploads/a57afdc1-14bd-4e86-87d9-907a566e2c64.png" :
+                             isDagligeAktiviteter ? "/lovable-uploads/cffd237e-6a54-4fc2-8948-ab03ee00399a.png" :
+                             isSaetninger ? "/lovable-uploads/a1b97193-b26e-42a5-90f1-0ee432386d70.png" :
+                             isKultureltIndhold ? "/lovable-uploads/5226a33a-bf7f-4cc7-ace6-28b7484c60ce.png" :
+                             isLaeseBøger ? "/lovable-uploads/5ea2439d-4fd6-419d-a5b6-9afb3d0362dd.png" :
+                             isQuiz ? "/lovable-uploads/4bdde527-cfcd-4a08-bf5c-65c9f1b9127f.png" :
+                             "/lovable-uploads/04d6bd8a-13b1-43ae-9c27-983dac50c5be.png"} 
+                          alt={`${cat.name} illustration`} 
+                          className={`w-full h-48 object-contain ${isKropsdele ? 'p-2 bg-white/90 rounded-t-lg shadow-inner' : 'object-fill'}`} />
                     {isFinished && <span className="absolute top-2 right-2 bg-blue-500 p-1 rounded-full animate-bounce shadow z-10">
                         <BadgeCheck className="w-5 h-5 text-white" />
                       </span>}
@@ -121,7 +123,7 @@ export default function LearnCategoriesPage() {
               </CardContent>
             </Card>;
 
-        if (isAlphabet || isColors || isNumbers || isFood || isAnimals || isKropsdele || isGeografi || isKalender || isFamilie || isOrd || isDagligeAktiviteter || isSaetninger || isKultureltIndhold || isLaeseBøger) {
+        if (isAlphabet || isColors || isNumbers || isFood || isAnimals || isKropsdele || isGeografi || isKalender || isFamilie || isOrd || isDagligeAktiviteter || isSaetninger || isKultureltIndhold || isLaeseBøger || isQuiz) {
           return <HoverCard key={cat.name}>
                 <HoverCardTrigger asChild>
                   {categoryCard}
@@ -216,6 +218,12 @@ export default function LearnCategoriesPage() {
                           <li>Forbedre læseforståelse og ordforråd</li>
                           <li>Blive introduceret til somalisk litteratur</li>
                           <li>Udvikle glæde ved læsning på to sprog</li>
+                        </>}
+                      {isQuiz && <>
+                          <li>Teste din viden om det lærte materiale</li>
+                          <li>Besvare spørgsmål om alle kategorier</li>
+                          <li>Styrke hukommelse og forståelse gennem sjove opgaver</li>
+                          <li>Opnå point og anerkendelse for dine præstationer</li>
                         </>}
                     </ul>
                   </div>
