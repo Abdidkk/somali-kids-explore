@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ElevenLabsTTS from "./ElevenLabsTTS";
@@ -39,25 +40,25 @@ const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/565c97e5-b6b0-4419-9a59-13174c95fba6.png",
     alt: "Bogstavet U"
   },
-  // Lange vokaler tilføjes her, men bruger default billede midlertidigt
+  // Lange vokaler med opdaterede billeder
   "AA": {
-    img: "/lovable-uploads/23df9b50-7f66-4b52-819b-59cc920edd2b.png",
+    img: "/lovable-uploads/39e62fa6-99c4-4bf1-996f-19577f56a318.png",
     alt: "Bogstavet AA"
   },
   "EE": {
-    img: "/lovable-uploads/23df9b50-7f66-4b52-819b-59cc920edd2b.png",
+    img: "/lovable-uploads/51f528f7-5124-4514-b0f4-ecf0d93a85ae.png",
     alt: "Bogstavet EE"
   },
   "II": {
-    img: "/lovable-uploads/23df9b50-7f66-4b52-819b-59cc920edd2b.png",
+    img: "/lovable-uploads/5e2d4de9-8aa0-4544-b550-6b99911c87ba.png",
     alt: "Bogstavet II"
   },
   "OO": {
-    img: "/lovable-uploads/23df9b50-7f66-4b52-819b-59cc920edd2b.png",
+    img: "/lovable-uploads/6a848c23-3667-454f-bb54-122cdb3444b9.png",
     alt: "Bogstavet OO"
   },
   "UU": {
-    img: "/lovable-uploads/23df9b50-7f66-4b52-819b-59cc920edd2b.png",
+    img: "/lovable-uploads/6ec9d492-46d1-4558-9e1d-92abc8dc7ebc.png",
     alt: "Bogstavet UU"
   },
   // Alfabetet
