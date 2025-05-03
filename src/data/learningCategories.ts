@@ -1,7 +1,14 @@
 
 import { Mic, Palette, Calculator, Carrot, PawPrint, Earth, Calendar, Users, House, Activity, MessageSquare, Music, BookOpen, HelpCircle, Hand } from "lucide-react";
 
-export const learningCategories = [
+export interface LearningCategory {
+  name: string;
+  icon: React.ComponentType<{ className?: string }>;
+  bgColor: string;
+  description: string;
+}
+
+export const learningCategories: LearningCategory[] = [
   {
     name: "Alfabet",
     icon: Mic,
