@@ -18,11 +18,6 @@ const bulletImages = [
     bg: "bg-[#E5DEFF]",
   },
   {
-    src: "/lovable-uploads/8aba18b4-5676-4bb0-b803-80babdbaeb0f.png",
-    alt: "Børn i leg, sammenhold – Sociale relationer",
-    bg: "bg-[#FEF7CD]",
-  },
-  {
     src: "/lovable-uploads/bcb95cb7-3bd4-4b2c-8945-81adaca28f80.png",
     alt: "Illustration af flere sprogmuligheder med børn foran skærm med flag – Flere sprogmuligheder",
     bg: "bg-[#FFDEE2]",
@@ -77,21 +72,6 @@ const howWhyBullets = [
   },
   {
     img: bulletImages[3],
-    title: (
-      <>
-        <span className="text-[#9b87f5] font-semibold text-[1.15rem]">Sociale relationer</span>
-        <span className="text-[#F97316] font-semibold text-[1.12rem] ml-1">samhørighed</span>
-      </>
-    ),
-    text: (
-      <span>
-        Understøtter <span className="font-semibold text-[#9b87f5]">sociale relationer</span>
-        {" "}og følelsen af <span className="font-semibold text-[#F97316]">samhørighed</span>.
-      </span>
-    ),
-  },
-  {
-    img: bulletImages[4],
     title: (
       <>
         <span className="text-[#D946EF] font-semibold text-[1.15rem]">Flere sprog</span>
