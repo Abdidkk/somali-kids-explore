@@ -1,3 +1,4 @@
+
 import { Brain, Coffee, Play } from "lucide-react";
 
 // Nye, mere illustrative billeder - midlertidigt brugt Unsplash
@@ -18,7 +19,7 @@ const bulletImages = [
     bg: "bg-[#E5DEFF]",
   },
   {
-    src: "/lovable-uploads/bcb95cb7-3bd4-4b2c-8945-81adaca28f80.png",
+    src: "/lovable-uploads/e07592ff-5948-45cb-a7a5-de1ab3075b22.png",
     alt: "Illustration af flere sprogmuligheder med børn foran skærm med flag – Flere sprogmuligheder",
     bg: "bg-[#FFDEE2]",
   },
