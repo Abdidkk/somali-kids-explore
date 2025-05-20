@@ -14,7 +14,7 @@ const bulletImages = [
     bg: "bg-[#D3E4FD]",
   },
   {
-    src: "/lovable-uploads/5e2d4de9-8aa0-4544-b550-6b99911c87ba.png",
+    src: "/lovable-uploads/85f38696-d894-4781-a2e8-210a91796896.png",
     alt: "Barn, bøger og læring – Sprog og læring",
     bg: "bg-[#E5DEFF]",
   },
