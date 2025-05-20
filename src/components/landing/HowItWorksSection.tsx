@@ -1,3 +1,4 @@
+
 import { Brain, Coffee, Play } from "lucide-react";
 
 // Nye, mere illustrative billeder - midlertidigt brugt Unsplash
@@ -8,7 +9,7 @@ const bulletImages = [
     bg: "bg-[#FDE1D3]",
   },
   {
-    src: "/lovable-uploads/6ec9d492-46d1-4558-9e1d-92abc8dc7ebc.png",
+    src: "/lovable-uploads/c7a740c6-588d-44dc-ba26-f1f0a1d10531.png",
     alt: "Gruppe børn i dialog – Kommunikation & Fællesskab",
     bg: "bg-[#D3E4FD]",
   },
