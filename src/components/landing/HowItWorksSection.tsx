@@ -4,7 +4,7 @@ import { Brain, Coffee, Play } from "lucide-react";
 // Nye, mere illustrative billeder - midlertidigt brugt Unsplash
 const bulletImages = [
   {
-    src: "/lovable-uploads/bcb95cb7-3bd4-4b2c-8945-81adaca28f80.png",
+    src: "/lovable-uploads/c14144b9-9843-4d08-ac21-d439ebef2ad0.png",
     alt: "Stamtræ – Identitet & rødder",
     bg: "bg-[#FDE1D3]",
   },
