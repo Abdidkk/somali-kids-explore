@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ElevenLabsTTS from "./ElevenLabsTTS";
@@ -143,7 +142,7 @@ const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     alt: "Bogstavet X"
   },
   "Yy": {
-    img: "/lovable-uploads/81ec82e0-146f-4c28-87de-65901d939ac0.png",
+    img: "/lovable-uploads/635670fe-f87e-4fb0-aec5-e1d0346b85c7.png",
     alt: "Bogstavet Y"
   }
 };
