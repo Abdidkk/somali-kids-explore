@@ -41,10 +41,7 @@ const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     alt: "Bogstavet U"
   },
   // Lange vokaler med opdaterede billeder
-  "AA": {
-    img: "/lovable-uploads/39e62fa6-99c4-4bf1-996f-19577f56a318.png",
-    alt: "Bogstavet AA"
-  },
+  // "AA" image removed
   "EE": {
     img: "/lovable-uploads/51f528f7-5124-4514-b0f4-ecf0d93a85ae.png",
     alt: "Bogstavet EE"
@@ -176,6 +173,11 @@ export default function AlphabetListenActivity({ onBack }: Props) {
 
   // Find billedinfo
   const getLetterImage = (letter: string) => {
+    // Special case for "AA" - don't show an image
+    if (letter === "AA") {
+      return null;
+    }
+    
     if (ALPHABET_IMAGES[letter]) return ALPHABET_IMAGES[letter];
     return {
       img: "/lovable-uploads/23df9b50-7f66-4b52-819b-59cc920edd2b.png",
@@ -194,8 +196,8 @@ export default function AlphabetListenActivity({ onBack }: Props) {
         </TabsList>
         <TabsContent value={tab} className="w-full flex flex-col items-center">
           <img
-            src={getLetterImage(selectedLetter).img}
-            alt={getLetterImage(selectedLetter).alt}
+            src={getLetterImage(selectedLetter)?.img || ""}
+            alt={getLetterImage(selectedLetter)?.alt || selectedLetter}
             className="w-full max-w-xs rounded-xl border mb-2 shadow bg-white"
             style={{ objectFit: "cover" }}
           />
@@ -227,11 +229,15 @@ export default function AlphabetListenActivity({ onBack }: Props) {
                     tabIndex={0}
                     type="button"
                   >
-                    <img
-                      src={info.img}
-                      alt={info.alt}
-                      className="w-10 h-10 object-cover rounded"
-                    />
+                    {letter === "AA" ? (
+                      <span className="font-semibold text-lg">{letter}</span>
+                    ) : info && (
+                      <img
+                        src={info.img}
+                        alt={info.alt}
+                        className="w-10 h-10 object-cover rounded"
+                      />
+                    )}
                   </button>
                 );
               })}
