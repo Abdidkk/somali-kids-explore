@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import SomaliFlag from "./SomaliFlag";
@@ -48,10 +49,7 @@ const HeroSection = () => {
               <div className="absolute -top-4 -left-4 w-full h-full bg-yellow-100 rounded-lg"></div>
               <div className="relative bg-white p-3 border-2 border-blue-300 rounded-lg shadow-lg">
                 <img alt="Dugsi børn" className="w-full h-auto rounded" src="/lovable-uploads/1fab73b2-2b8f-42c9-99cc-c168c63c5e92.png" />
-                {/* Overlay text */}
-                <span className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[#4CA6FE]/80 text-white text-2xl md:text-3xl px-6 py-1 rounded shadow animate-fade-in font-bold tracking-wide pointer-events-none">
-                  Dugsi
-                </span>
+                {/* Removed the overlay text with "Dugsi" */}
               </div>
             </div>
           </div>
