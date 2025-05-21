@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ElevenLabsTTS from "./ElevenLabsTTS";
@@ -243,24 +242,6 @@ export default function AlphabetListenActivity({ onBack }: Props) {
               })}
             </div>
           </div>
-          <Button
-            onClick={() => handlePlay(selectedIdx)}
-            variant="outline"
-            size="sm"
-            className="flex gap-1 px-4 py-2 text-md items-center mt-1 font-semibold"
-            disabled={playingIdx === selectedIdx}
-          >
-            {playingIdx === selectedIdx ? "Afspiller..." : `Lyt til ${selectedLetter}`}
-          </Button>
-          {playingIdx === selectedIdx && apiKey && (
-            <ElevenLabsTTS
-              text={selectedLetter}
-              voiceId="9BWtsMINqrJLrRacOk9x"
-              language="so"
-              apiKey={apiKey}
-              onAudioEnd={() => setPlayingIdx(null)}
-            />
-          )}
           <div className="text-gray-600 text-center text-sm max-w-xs mt-3">
             Tryk på et bogstav og hør det udtalt på somali<br />
             (ElevenLabs "Aria" stemme – kræver API-nøgle)
