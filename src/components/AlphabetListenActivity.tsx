@@ -143,7 +143,7 @@ const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     alt: "Bogstavet X"
   },
   "Yy": {
-    img: "/lovable-uploads/d73af632-b4f5-4d01-b29e-0faeaf97d245.png",
+    img: "/lovable-uploads/81ec82e0-146f-4c28-87de-65901d939ac0.png",
     alt: "Bogstavet Y"
   }
 };
