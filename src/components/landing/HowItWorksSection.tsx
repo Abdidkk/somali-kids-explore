@@ -1,5 +1,6 @@
-
 import { Brain, Coffee, Play } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 // Nye, mere illustrative billeder - midlertidigt brugt Unsplash
 const bulletImages = [
@@ -122,39 +123,28 @@ const HowItWorksSection = () => {
           />
         </div>
 
-        {/* Opdateret sektion med store illustrationer som punkter */}
-        <div className="bg-white rounded-lg shadow-md p-6 md:p-10 max-w-2xl mx-auto">
-          <h3 className="text-2xl font-bold mb-7 text-black text-center">
+        {/* Redesigned section with better expandability and enhanced images */}
+        <Card className="bg-white rounded-lg shadow-xl p-6 md:p-10 max-w-4xl mx-auto">
+          <h3 className="text-2xl font-bold mb-8 text-black text-center">
             Hvorfor er det vigtigt at lære sit <span className="text-purple-600">modersmål?</span>
           </h3>
-          <ul className="space-y-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {howWhyBullets.map((bullet, idx) => (
-              <li
-                key={idx}
-                className="flex flex-col items-center md:flex-row md:items-center md:space-x-7 animate-fade-in"
-              >
-                <div
-                  className={`flex-shrink-0 ${bullet.img.bg} rounded-2xl shadow-lg w-[120px] h-[120px] flex items-center justify-center mb-4 md:mb-0`}
-                >
-                  <img
-                    src={bullet.img.src}
-                    alt={bullet.img.alt}
-                    className="w-[110px] h-[110px] object-cover rounded-xl border-2 border-[#8B5CF6] shadow-lg"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="flex-1 text-center md:text-left">
-                  <div className="mb-1 text-[1.13rem]">
-                    {bullet.title}
-                  </div>
-                  <div className="text-gray-900 font-medium text-[1.09rem] sm:text-lg">
-                    {bullet.text}
-                  </div>
-                </div>
-              </li>
+              <ModersmaalCard 
+                key={idx} 
+                image={bullet.img} 
+                title={bullet.title} 
+                text={bullet.text}
+                index={idx}
+              />
             ))}
-          </ul>
-        </div>
+          </div>
+          <div className="mt-8 text-center">
+            <Button variant="outline" className="hover:bg-purple-100">
+              Lær mere om betydningen af modersmål
+            </Button>
+          </div>
+        </Card>
       </div>
     </section>
   );
@@ -169,6 +159,34 @@ const StepCard = ({ icon, title, description, bgColor, textColor }) => {
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
       <p className="text-gray-600">{description}</p>
     </div>
+  );
+};
+
+// New component for better reusability and expandability
+const ModersmaalCard = ({ image, title, text, index }) => {
+  return (
+    <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg animate-fade-in" style={{ animationDelay: `${index * 150}ms` }}>
+      <div className="flex flex-col h-full">
+        <div className={`${image.bg} p-4 flex justify-center`}>
+          <div className="relative w-full aspect-square max-w-[200px] mx-auto">
+            <img
+              src={image.src}
+              alt={image.alt}
+              className="w-full h-full object-cover rounded-xl border-2 border-[#8B5CF6] shadow-md transition-transform duration-300 hover:scale-105"
+              loading="lazy"
+            />
+          </div>
+        </div>
+        <CardContent className="flex-1 p-5">
+          <div className="mb-2 text-[1.13rem]">
+            {title}
+          </div>
+          <div className="text-gray-900 font-medium text-[1.09rem]">
+            {text}
+          </div>
+        </CardContent>
+      </div>
+    </Card>
   );
 };
 
