@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ElevenLabsTTS from "./ElevenLabsTTS";
@@ -210,23 +211,30 @@ export default function AlphabetListenActivity({ onBack }: Props) {
           </div>
           <div className="w-full max-w-md overflow-x-auto">
             <div className="flex flex-row gap-3 py-2 min-w-max">
-              {groupLetters.map((letter, idx) => (
-                <button
-                  key={letter}
-                  className={[
-                    "flex flex-col items-center min-w-[54px] transition-all rounded-lg px-2 py-1",
-                    selectedIdx === idx 
-                      ? "bg-vivid-purple/10 border border-vivid-purple shadow scale-105"
-                      : "hover:bg-violet-50 border border-transparent"
-                  ].join(" ")}
-                  onClick={() => setSelectedIdx(idx)}
-                  aria-label={`Vælg bogstav: ${letter}`}
-                  tabIndex={0}
-                  type="button"
-                >
-                  <span className="font-semibold">{letter}</span>
-                </button>
-              ))}
+              {groupLetters.map((letter, idx) => {
+                const info = getLetterImage(letter);
+                return (
+                  <button
+                    key={letter}
+                    className={[
+                      "flex flex-col items-center min-w-[54px] transition-all rounded-lg px-2 py-1",
+                      selectedIdx === idx 
+                        ? "bg-vivid-purple/10 border border-vivid-purple shadow scale-105"
+                        : "hover:bg-violet-50 border border-transparent"
+                    ].join(" ")}
+                    onClick={() => setSelectedIdx(idx)}
+                    aria-label={`Vælg bogstav: ${letter}`}
+                    tabIndex={0}
+                    type="button"
+                  >
+                    <img
+                      src={info.img}
+                      alt={info.alt}
+                      className="w-10 h-10 object-cover rounded"
+                    />
+                  </button>
+                );
+              })}
             </div>
           </div>
           <Button
