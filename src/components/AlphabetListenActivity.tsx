@@ -157,7 +157,6 @@ export default function AlphabetListenActivity({ onBack }: Props) {
                       alt={info.alt}
                       className="w-10 h-10 object-cover rounded"
                     />
-                    <span className="text-lg font-bold mt-1">{letter}</span>
                   </button>
                 );
               })}
