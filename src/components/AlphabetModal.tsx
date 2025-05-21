@@ -61,14 +61,7 @@ const AlphabetModal: React.FC<AlphabetModalProps> = ({ open, onClose }) => {
             Tilbage
           </Button>
         </div>
-        {/* Luk-knap */}
-        <button
-          aria-label="Luk alfabet"
-          onClick={onClose}
-          className="absolute top-3 right-3 text-gray-500 text-xl hover:text-vivid-purple"
-        >
-          ×
-        </button>
+        
         <h2 className="text-2xl font-semibold text-purple-700 mb-3 text-center">Somalisk alfabet</h2>
         
         <ScrollArea className="h-[70vh] max-h-[600px] pr-3">
