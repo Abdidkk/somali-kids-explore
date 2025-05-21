@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ElevenLabsTTS from "./ElevenLabsTTS";
@@ -18,43 +19,46 @@ const GROUPS = {
 };
 
 const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
-  // Korte vokaler
+  // Korte vokaler - removed images for vowels
   "A": {
-    img: "/lovable-uploads/0a4df638-a8fe-492e-b3bf-9b8d9c7235fc.png",
+    img: "",
     alt: "Bogstavet A"
   },
   "E": {
-    img: "/lovable-uploads/d0b3c9b9-109a-4f4a-b560-6bbcba7c84e8.png",
+    img: "",
     alt: "Bogstavet E"
   },
   "I": {
-    img: "/lovable-uploads/6506b1da-00fd-4f81-9d87-1c7275dccb9c.png",
+    img: "",
     alt: "Bogstavet I"
   },
   "O": {
-    img: "/lovable-uploads/fe657e0f-c052-431d-88ac-d092125bd493.png",
+    img: "",
     alt: "Bogstavet O"
   },
   "U": {
-    img: "/lovable-uploads/565c97e5-b6b0-4419-9a59-13174c95fba6.png",
+    img: "",
     alt: "Bogstavet U"
   },
-  // Lange vokaler med opdaterede billeder
-  // "AA" image removed
+  // Lange vokaler - removed images 
+  "AA": {
+    img: "",
+    alt: "Bogstavet AA"
+  },
   "EE": {
-    img: "/lovable-uploads/51f528f7-5124-4514-b0f4-ecf0d93a85ae.png",
+    img: "",
     alt: "Bogstavet EE"
   },
   "II": {
-    img: "/lovable-uploads/5e2d4de9-8aa0-4544-b550-6b99911c87ba.png",
+    img: "",
     alt: "Bogstavet II"
   },
   "OO": {
-    img: "/lovable-uploads/6a848c23-3667-454f-bb54-122cdb3444b9.png",
+    img: "",
     alt: "Bogstavet OO"
   },
   "UU": {
-    img: "/lovable-uploads/6ec9d492-46d1-4558-9e1d-92abc8dc7ebc.png",
+    img: "",
     alt: "Bogstavet UU"
   },
   // Alfabetet - nye billeder tilføjet
@@ -161,27 +165,16 @@ export default function AlphabetListenActivity({ onBack }: Props) {
     if (selectedIdx > groupLetters.length - 1) setSelectedIdx(0);
   }, [tab]);
 
-  // Afspil bogstav
-  const handlePlay = (idx: number) => {
-    if (!apiKey) {
-      alert("Indtast din ElevenLabs API-nøgle!");
-      return;
+  // Afspil bogstav automatisk hvis API-nøgle er angivet
+  React.useEffect(() => {
+    if (apiKey) {
+      setPlayingIdx(selectedIdx);
     }
-    setPlayingIdx(idx);
-  };
+  }, [selectedIdx, apiKey]);
 
-  // Find billedinfo
-  const getLetterImage = (letter: string) => {
-    // Special case for "AA" - don't show an image
-    if (letter === "AA") {
-      return null;
-    }
-    
-    if (ALPHABET_IMAGES[letter]) return ALPHABET_IMAGES[letter];
-    return {
-      img: "/lovable-uploads/23df9b50-7f66-4b52-819b-59cc920edd2b.png",
-      alt: "Standard alfabet billede"
-    };
+  // Check om bogstavet er en vokal
+  const isVowel = (letter: string) => {
+    return SHORT_VOWELS.includes(letter) || LONG_VOWELS.includes(letter);
   };
 
   return (
@@ -194,12 +187,15 @@ export default function AlphabetListenActivity({ onBack }: Props) {
           <TabsTrigger value="long">{GROUPS.long.label}</TabsTrigger>
         </TabsList>
         <TabsContent value={tab} className="w-full flex flex-col items-center">
-          <img
-            src={getLetterImage(selectedLetter)?.img || ""}
-            alt={getLetterImage(selectedLetter)?.alt || selectedLetter}
-            className="w-full max-w-xs rounded-xl border mb-2 shadow bg-white"
-            style={{ objectFit: "cover" }}
-          />
+          {/* Viser kun billede hvis det ikke er en vokal */}
+          {!isVowel(selectedLetter) && (
+            <img
+              src={ALPHABET_IMAGES[selectedLetter]?.img || ""}
+              alt={ALPHABET_IMAGES[selectedLetter]?.alt || selectedLetter}
+              className="w-full max-w-xs rounded-xl border mb-2 shadow bg-white"
+              style={{ objectFit: "cover" }}
+            />
+          )}
           <h3 className="text-xl font-bold text-purple-700 mb-2">{selectedLetter} — Lyt til bogstavet</h3>
           <div className="flex flex-col items-center gap-2 w-full max-w-xs">
             <input
@@ -212,34 +208,35 @@ export default function AlphabetListenActivity({ onBack }: Props) {
           </div>
           <div className="w-full max-w-md overflow-x-auto">
             <div className="flex flex-row gap-3 py-2 min-w-max">
-              {groupLetters.map((letter, idx) => {
-                const info = getLetterImage(letter);
-                return (
-                  <button
-                    key={letter}
-                    className={[
-                      "flex flex-col items-center min-w-[54px] transition-all rounded-lg px-2 py-1",
-                      selectedIdx === idx 
-                        ? "bg-vivid-purple/10 border border-vivid-purple shadow scale-105"
-                        : "hover:bg-violet-50 border border-transparent"
-                    ].join(" ")}
-                    onClick={() => setSelectedIdx(idx)}
-                    aria-label={`Vælg bogstav: ${letter}`}
-                    tabIndex={0}
-                    type="button"
-                  >
-                    {letter === "AA" ? (
-                      <span className="font-semibold text-lg">{letter}</span>
-                    ) : info && (
+              {groupLetters.map((letter, idx) => (
+                <button
+                  key={letter}
+                  className={[
+                    "flex flex-col items-center min-w-[54px] transition-all rounded-lg px-2 py-1",
+                    selectedIdx === idx 
+                      ? "bg-vivid-purple/10 border border-vivid-purple shadow scale-105"
+                      : "hover:bg-violet-50 border border-transparent"
+                  ].join(" ")}
+                  onClick={() => setSelectedIdx(idx)}
+                  aria-label={`Vælg bogstav: ${letter}`}
+                  tabIndex={0}
+                  type="button"
+                >
+                  {isVowel(letter) ? (
+                    <span className="font-semibold text-lg">{letter}</span>
+                  ) : (
+                    ALPHABET_IMAGES[letter] && ALPHABET_IMAGES[letter].img ? (
                       <img
-                        src={info.img}
-                        alt={info.alt}
+                        src={ALPHABET_IMAGES[letter].img}
+                        alt={ALPHABET_IMAGES[letter].alt}
                         className="w-10 h-10 object-cover rounded"
                       />
-                    )}
-                  </button>
-                );
-              })}
+                    ) : (
+                      <span className="font-semibold text-lg">{letter}</span>
+                    )
+                  )}
+                </button>
+              ))}
             </div>
           </div>
           <div className="text-gray-600 text-center text-sm max-w-xs mt-3">
@@ -248,6 +245,13 @@ export default function AlphabetListenActivity({ onBack }: Props) {
           </div>
         </TabsContent>
       </Tabs>
+      {playingIdx !== null && apiKey && (
+        <ElevenLabsTTS
+          text={groupLetters[playingIdx]}
+          apiKey={apiKey}
+          onAudioEnd={() => setPlayingIdx(null)}
+        />
+      )}
       <Button onClick={onBack} variant="outline" size="sm" className="mt-2">
         Tilbage
       </Button>
