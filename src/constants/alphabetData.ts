@@ -1,13 +1,14 @@
+
 // Bogstavgrupper
 export const SHORT_VOWELS = ["E", "I", "O", "U"];
 export const LONG_VOWELS = ["AA", "EE", "II", "OO", "UU"];
-export const ALPHABET = [
+export const CONSONANTS = [
   "Bb", "Cc", "Dd", "DHdh", "Ff", "Gg", "Hh", "Jj", "Kk", "KHkh",
   "Ll", "Mm", "Nn", "Qq", "Rr", "Ss", "SHsh", "Tt", "Ww", "Xx", "Yy"
 ];
 
 export const GROUPS = {
-  alphabet: { label: "Alfabetet", letters: [...SHORT_VOWELS, ...LONG_VOWELS, ...ALPHABET] },
+  alphabet: { label: "Alfabetet", letters: CONSONANTS },
   short:    { label: "Korte vokaler", letters: SHORT_VOWELS },
   long:     { label: "Lange vokaler", letters: LONG_VOWELS }
 };

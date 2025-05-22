@@ -4,20 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import AlphabetPrototype from "./AlphabetPrototype";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-
-// Definer bogstavgrupper
-const SHORT_VOWELS = ["A", "E", "I", "O", "U"];
-const LONG_VOWELS = ["AA", "EE", "II", "OO", "UU"];
-const ALPHABET = [
-  "Bb", "Cc", "Dd", "DHdh", "Ff", "Gg", "Hh", "Jj", "Kk", "KHkh",
-  "Ll", "Mm", "Nn", "Qq", "Rr", "Ss", "SHsh", "Tt", "Ww", "Xx", "Yy"
-];
-
-const GROUPS = {
-  alphabet: { label: "Alfabetet", letters: [...SHORT_VOWELS, ...LONG_VOWELS, ...ALPHABET] },
-  short:    { label: "Korte vokaler", letters: SHORT_VOWELS },
-  long:     { label: "Lange vokaler", letters: LONG_VOWELS }
-};
+import { GROUPS } from "@/constants/alphabetData";
 
 interface Props {
   onBack: () => void;
