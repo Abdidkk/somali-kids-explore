@@ -56,11 +56,11 @@ const AlphabetModal: React.FC<AlphabetModalProps> = ({ open, onClose }) => {
               onClick={() => setActivity("listen")}
               className="bg-purple-50 hover:bg-purple-100 border-2 border-purple-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
             >
-              <div className="bg-purple-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-24 min-h-24 md:min-w-28 md:min-h-28">
+              <div className="bg-purple-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
                 <img 
                   src="/lovable-uploads/4b8dc6fc-aca1-44d7-9188-920521dc6d81.png" 
                   alt="Lyt og lær" 
-                  className="w-16 h-16 md:w-20 md:h-20 object-contain"
+                  className="w-20 h-20 md:w-24 md:h-24 object-contain"
                 />
               </div>
               <div>
@@ -74,11 +74,11 @@ const AlphabetModal: React.FC<AlphabetModalProps> = ({ open, onClose }) => {
               onClick={() => setActivity("trace")}
               className="bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
             >
-              <div className="bg-blue-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-24 min-h-24 md:min-w-28 md:min-h-28">
+              <div className="bg-blue-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
                 <img 
                   src="/lovable-uploads/72e8879d-c2fa-4fbe-982b-eb59d9fa37c5.png" 
                   alt="Tegn og skriv" 
-                  className="w-16 h-16 md:w-20 md:h-20 object-contain"
+                  className="w-20 h-20 md:w-24 md:h-24 object-contain"
                 />
               </div>
               <div>
@@ -92,11 +92,11 @@ const AlphabetModal: React.FC<AlphabetModalProps> = ({ open, onClose }) => {
               onClick={() => setActivity("guess")}
               className="bg-green-50 hover:bg-green-100 border-2 border-green-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
             >
-              <div className="bg-green-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-24 min-h-24 md:min-w-28 md:min-h-28">
+              <div className="bg-green-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
                 <img 
                   src="/lovable-uploads/1e80efba-0e83-48c7-aa88-40fa3c48f0a9.png" 
                   alt="Gæt og lær" 
-                  className="w-16 h-16 md:w-20 md:h-20 object-contain"
+                  className="w-20 h-20 md:w-24 md:h-24 object-contain"
                 />
               </div>
               <div>
