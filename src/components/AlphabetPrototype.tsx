@@ -4,12 +4,26 @@ import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AlphabetAchievements from "./AlphabetAchievements";
+import { hasAudio, AUDIO_FILES } from "@/constants/alphabetData";
 
 const TOTAL_LETTERS = 28;
-// Brug prop letter i stedet for hardkodet "A"
 const IMAGE_URL = "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?auto=format&fit=facearea&w=256&h=256&facepad=3";
 
 function speakSomaliLetter(letter: string) {
+  // Check if we have a custom audio file for this letter
+  if (hasAudio(letter)) {
+    const audio = new Audio(AUDIO_FILES[letter]);
+    audio.play().catch(error => {
+      console.error("Failed to play custom audio:", error);
+      // Fallback to speech synthesis if audio file fails
+      speakUsingSynthesis(letter);
+    });
+  } else {
+    speakUsingSynthesis(letter);
+  }
+}
+
+function speakUsingSynthesis(letter: string) {
   const utter = new window.SpeechSynthesisUtterance(letter);
   utter.lang = "so-SO";
   utter.rate = 0.7;
@@ -141,4 +155,3 @@ export default function AlphabetPrototype({ letter }: Props) {
     </div>
   );
 }
-

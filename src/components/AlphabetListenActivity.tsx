@@ -2,7 +2,10 @@
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ElevenLabsTTS from "./ElevenLabsTTS";
-import { GROUPS, ALPHABET_IMAGES } from "@/constants/alphabetData";
+import { GROUPS, ALPHABET_IMAGES, hasAudio, AUDIO_FILES } from "@/constants/alphabetData";
+import AudioPlayer from "./AudioPlayer";
+import { Button } from "@/components/ui/button";
+import { Volume2 } from "lucide-react";
 
 interface Props {
   onBack: () => void;
@@ -16,18 +19,40 @@ export default function AlphabetListenActivity({ onBack }: Props) {
   const [selectedIdx, setSelectedIdx] = useState(0);
   const groupLetters = GROUPS[tab].letters;
   const selectedLetter = groupLetters[selectedIdx] || groupLetters[0];
+  const [useCustomAudio, setUseCustomAudio] = useState(true);
 
   // Reset selectedIdx if we switch tabs and the current index is out of bounds
   useEffect(() => {
     if (selectedIdx > groupLetters.length - 1) setSelectedIdx(0);
   }, [tab, groupLetters.length, selectedIdx]);
 
-  // Afspil bogstav automatisk hvis API-nøgle er angivet
+  // Afspil bogstav automatisk hvis API-nøgle er angivet og ikke bruger custom audio
   useEffect(() => {
-    if (apiKey) {
+    if (apiKey && !useCustomAudio) {
       setPlayingIdx(selectedIdx);
     }
-  }, [selectedIdx, apiKey]);
+  }, [selectedIdx, apiKey, useCustomAudio]);
+
+  // Function to handle audio playback
+  const playAudio = () => {
+    if (hasAudio(selectedLetter) && useCustomAudio) {
+      // We'll use the Audio API directly here since we control the playback manually with a button
+      const audio = new Audio(AUDIO_FILES[selectedLetter]);
+      audio.play();
+    } else if (apiKey) {
+      // Fall back to ElevenLabs if we have an API key
+      setPlayingIdx(selectedIdx);
+    } else {
+      // Fall back to browser's speech synthesis
+      const utter = new window.SpeechSynthesisUtterance(selectedLetter);
+      utter.lang = "so-SO";
+      utter.rate = 0.7;
+      const hasSomali = window.speechSynthesis.getVoices().some(v => v.lang === "so-SO");
+      if (!hasSomali) utter.lang = "en-US";
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utter);
+    }
+  };
 
   // Function to display only the uppercase letter
   const getDisplayLetter = (letter: string) => {
@@ -60,6 +85,15 @@ export default function AlphabetListenActivity({ onBack }: Props) {
                   className="w-32 h-32 object-contain rounded-lg border border-purple-200 bg-white shadow-sm"
                 />
               )}
+              
+              {/* Play audio button */}
+              <Button 
+                onClick={playAudio} 
+                variant="outline" 
+                className="mt-4 flex gap-2"
+              >
+                <Volume2 className="w-5 h-5" /> Lyt
+              </Button>
             </div>
             
             {/* Letter navigation */}
@@ -107,8 +141,8 @@ export default function AlphabetListenActivity({ onBack }: Props) {
         </TabsContent>
       </Tabs>
       
-      {/* Text-to-speech component */}
-      {playingIdx !== null && apiKey && (
+      {/* Text-to-speech component - only render if needed */}
+      {playingIdx !== null && apiKey && !useCustomAudio && (
         <ElevenLabsTTS
           text={groupLetters[playingIdx]}
           apiKey={apiKey}

@@ -13,6 +13,43 @@ export const GROUPS = {
   long:     { label: "Lange vokaler", letters: LONG_VOWELS }
 };
 
+// Audio file mappings - Foreløbig tomme stier, der skal udfyldes med faktiske lydfilstier
+export const AUDIO_FILES: Record<string, string> = {
+  // Korte vokaler
+  "E": "",
+  "I": "",
+  "O": "",
+  "U": "",
+  // Lange vokaler
+  "AA": "",
+  "EE": "",
+  "II": "",
+  "OO": "",
+  "UU": "",
+  // Alfabetet
+  "Bb": "",
+  "Cc": "",
+  "Dd": "",
+  "DHdh": "", 
+  "Ff": "",
+  "Gg": "",
+  "Hh": "",
+  "Jj": "",
+  "Kk": "",
+  "KHkh": "",
+  "Ll": "",
+  "Mm": "",
+  "Nn": "",
+  "Qq": "",
+  "Rr": "",
+  "Ss": "",
+  "SHsh": "",
+  "Tt": "",
+  "Ww": "",
+  "Xx": "",
+  "Yy": ""
+};
+
 export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
   // Korte vokaler - removed images for vowels
   "E": {
@@ -146,4 +183,8 @@ export const isVowel = (letter: string) => {
 
 export const hasImage = (letter: string) => {
   return ALPHABET_IMAGES[letter]?.img && ALPHABET_IMAGES[letter].img !== "";
+};
+
+export const hasAudio = (letter: string) => {
+  return AUDIO_FILES[letter] && AUDIO_FILES[letter] !== "";
 };
