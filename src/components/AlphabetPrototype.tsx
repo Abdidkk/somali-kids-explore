@@ -1,7 +1,6 @@
-
 import React, { useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Play, EraseIcon } from "lucide-react";
+import { Play, EraserIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AlphabetAchievements from "./AlphabetAchievements";
 import { hasAudio, AUDIO_FILES, ALPHABET_IMAGES } from "@/constants/alphabetData";
@@ -200,13 +199,7 @@ export default function AlphabetPrototype({ letter }: Props) {
           {letter}
         </div>
         
-        {ALPHABET_IMAGES[letter]?.img ? (
-          <img
-            src={ALPHABET_IMAGES[letter].img}
-            alt={ALPHABET_IMAGES[letter].alt}
-            className={`${isMobile ? "w-20 h-20" : "w-24 h-24"} object-cover rounded-xl border shadow mb-2`}
-          />
-        ) : null}
+        <LetterDisplay selectedLetter={letter} />
         
         <Button 
           onClick={() => speakSomaliLetter(letter)} 
@@ -244,11 +237,7 @@ export default function AlphabetPrototype({ letter }: Props) {
             variant="ghost" 
             className="flex gap-1 items-center"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 9v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9"></path>
-              <path d="M9 3h6a2 2 0 0 1 2 2v4H7V5a2 2 0 0 1 2-2z"></path>
-              <line x1="3" y1="9" x2="21" y2="9"></line>
-            </svg>
+            <EraserIcon className="w-4 h-4" />
             Ryd tegning
           </Button>
         </div>
@@ -256,4 +245,3 @@ export default function AlphabetPrototype({ letter }: Props) {
     </div>
   );
 }
-
