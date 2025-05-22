@@ -4,10 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AlphabetAchievements from "./AlphabetAchievements";
-import { hasAudio, AUDIO_FILES } from "@/constants/alphabetData";
+import { hasAudio, AUDIO_FILES, ALPHABET_IMAGES } from "@/constants/alphabetData";
 
-const TOTAL_LETTERS = 28;
-const IMAGE_URL = "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?auto=format&fit=facearea&w=256&h=256&facepad=3";
+const TOTAL_LETTERS = 29; // Updated to include the new vowel A
 
 function speakSomaliLetter(letter: string) {
   // Check if we have a custom audio file for this letter
@@ -121,11 +120,19 @@ export default function AlphabetPrototype({ letter }: Props) {
         <div className="text-[72px] text-purple-700 font-bold drop-shadow" aria-label="Somalisk bogstav">
           {letter}
         </div>
-        <img
-          src={IMAGE_URL}
-          alt="Eksempel for bogstav"
-          className="w-24 h-24 object-cover rounded-xl border shadow mb-2"
-        />
+        {ALPHABET_IMAGES[letter]?.img ? (
+          <img
+            src={ALPHABET_IMAGES[letter].img}
+            alt={ALPHABET_IMAGES[letter].alt}
+            className="w-24 h-24 object-cover rounded-xl border shadow mb-2"
+          />
+        ) : (
+          <img
+            src="https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?auto=format&fit=facearea&w=256&h=256&facepad=3"
+            alt="Eksempel for bogstav"
+            className="w-24 h-24 object-cover rounded-xl border shadow mb-2"
+          />
+        )}
         <Button onClick={() => speakSomaliLetter(letter)} variant="outline" className="flex gap-2">
           <Play className="w-5 h-5" /> Lyt
         </Button>

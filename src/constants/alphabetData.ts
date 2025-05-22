@@ -1,6 +1,6 @@
 
 // Bogstavgrupper
-export const SHORT_VOWELS = ["E", "I", "O", "U"];
+export const SHORT_VOWELS = ["A", "E", "I", "O", "U"];
 export const LONG_VOWELS = ["AA", "EE", "II", "OO", "UU"];
 export const CONSONANTS = [
   "Bb", "Cc", "Dd", "DHdh", "Ff", "Gg", "Hh", "Jj", "Kk", "KHkh",
@@ -16,6 +16,7 @@ export const GROUPS = {
 // Audio file mappings - Foreløbig tomme stier, der skal udfyldes med faktiske lydfilstier
 export const AUDIO_FILES: Record<string, string> = {
   // Korte vokaler
+  "A": "",
   "E": "",
   "I": "",
   "O": "",
@@ -51,42 +52,46 @@ export const AUDIO_FILES: Record<string, string> = {
 };
 
 export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
-  // Korte vokaler - removed images for vowels
+  // Korte vokaler - added image for A vowel
+  "A": {
+    img: "/lovable-uploads/0e29c5c2-6fa5-4899-a196-b7832d8abc67.png",
+    alt: "Bogstavet A"
+  },
   "E": {
-    img: "",
+    img: "/lovable-uploads/0435c435-2eb6-4de9-a68e-d3a18fd524e5.png",
     alt: "Bogstavet E"
   },
   "I": {
-    img: "",
+    img: "/lovable-uploads/2e500a3e-3baa-45e1-a7ba-07e14b919f79.png",
     alt: "Bogstavet I"
   },
   "O": {
-    img: "",
+    img: "/lovable-uploads/5226a33a-bf7f-4cc7-ace6-28b7484c60ce.png",
     alt: "Bogstavet O"
   },
   "U": {
-    img: "",
+    img: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png",
     alt: "Bogstavet U"
   },
-  // Lange vokaler - removed images 
+  // Lange vokaler - added images
   "AA": {
-    img: "",
+    img: "/lovable-uploads/0a4df638-a8fe-492e-b3bf-9b8d9c7235fc.png",
     alt: "Bogstavet AA"
   },
   "EE": {
-    img: "",
+    img: "/lovable-uploads/85f38696-d894-4781-a2e8-210a91796896.png",
     alt: "Bogstavet EE"
   },
   "II": {
-    img: "",
+    img: "/lovable-uploads/c14144b9-9843-4d08-ac21-d439ebef2ad0.png",
     alt: "Bogstavet II"
   },
   "OO": {
-    img: "",
+    img: "/lovable-uploads/96a8e74c-d203-46ea-a5b3-62d43488681b.png",
     alt: "Bogstavet OO"
   },
   "UU": {
-    img: "",
+    img: "/lovable-uploads/d0b3c9b9-109a-4f4a-b560-6bbcba7c84e8.png",
     alt: "Bogstavet UU"
   },
   // Alfabetet - nye billeder tilføjet

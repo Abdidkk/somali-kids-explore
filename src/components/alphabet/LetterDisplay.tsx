@@ -1,6 +1,6 @@
 
 import React from "react";
-import { ALPHABET_IMAGES, isVowel } from "@/constants/alphabetData";
+import { ALPHABET_IMAGES } from "@/constants/alphabetData";
 
 interface LetterDisplayProps {
   selectedLetter: string;
@@ -9,11 +9,11 @@ interface LetterDisplayProps {
 export default function LetterDisplay({ selectedLetter }: LetterDisplayProps) {
   return (
     <>
-      {/* Viser kun billede hvis det ikke er en vokal */}
-      {!isVowel(selectedLetter) && (
+      {/* Removed restriction for vowels so all letters can show images */}
+      {ALPHABET_IMAGES[selectedLetter]?.img && (
         <img
-          src={ALPHABET_IMAGES[selectedLetter]?.img || ""}
-          alt={ALPHABET_IMAGES[selectedLetter]?.alt || selectedLetter}
+          src={ALPHABET_IMAGES[selectedLetter].img}
+          alt={ALPHABET_IMAGES[selectedLetter].alt || selectedLetter}
           className="w-full max-w-xs rounded-xl border mb-2 shadow bg-white"
           style={{ objectFit: "cover" }}
         />
