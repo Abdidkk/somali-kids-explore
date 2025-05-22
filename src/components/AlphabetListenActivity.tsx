@@ -59,15 +59,6 @@ export default function AlphabetListenActivity({ onBack }: Props) {
 
   return (
     <div className="flex flex-col items-center mt-3 md:mt-5 gap-4 md:gap-5">
-      {/* Illustration image for "Lyt og lær" */}
-      <div className="w-full flex justify-center mb-2">
-        <img 
-          src="/lovable-uploads/f14491ab-2af4-4d21-9576-69fc0b114b96.png" 
-          alt="Lyt og lær - barn med høretelefoner der lærer" 
-          className="w-32 h-32 md:w-40 md:h-40 object-contain"
-        />
-      </div>
-      
       {/* Tabs */}
       <Tabs value={tab} onValueChange={v => setTab(v as "alphabet" | "short" | "long")} className="w-full flex flex-col items-center">
         <TabsList className={`mb-3 md:mb-4 bg-violet-50 ${isMobile ? 'text-xs' : ''}`}>
