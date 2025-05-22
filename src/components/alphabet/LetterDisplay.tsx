@@ -31,15 +31,14 @@ export default function LetterDisplay({ selectedLetter }: LetterDisplayProps) {
             src={imagePath}
             alt={imageAlt}
             className="w-full max-w-xs rounded-xl border mb-2 shadow bg-white"
-            style={{ objectFit: "cover" }}
+            style={{ objectFit: "contain", maxHeight: "200px" }}
             onError={handleImageError}
           />
-          {/* Add a console log to help debug - removed because it's causing a React error */}
         </div>
       )}
       {imageError && (
         <div className="text-red-500 mb-2 text-sm">
-          Billede kunne ikke indlæses. Sti: {imagePath}
+          Billede kunne ikke indlæses
         </div>
       )}
       <h3 className="text-xl font-bold text-purple-700 mb-2">{selectedLetter} — Lyt til bogstavet</h3>

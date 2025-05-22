@@ -52,25 +52,25 @@ export const AUDIO_FILES: Record<string, string> = {
 };
 
 export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
-  // Korte vokaler - updated with new images
+  // Korte vokaler - updated with new uploaded images
   "A": {
-    img: "/lovable-uploads/116250e2-c9a4-4ec1-9236-0d825d3b6a11.png",
+    img: "/lovable-uploads/f584a67e-2b87-4d62-86dc-f19fdabc6fa9.png",
     alt: "Bogstavet A"
   },
   "E": {
-    img: "/lovable-uploads/a3519cc0-0a57-4dd5-b6f0-6d8bf9afc52e.png",
+    img: "/lovable-uploads/6b8402cb-3183-4698-a050-5c9030cbdccd.png",
     alt: "Bogstavet E"
   },
   "I": {
-    img: "/lovable-uploads/63e849c7-8527-4a16-9d2e-57e26848c768.png",
+    img: "/lovable-uploads/baeff668-cdc5-49e6-91f8-39f8a79ef959.png",
     alt: "Bogstavet I"
   },
   "O": {
-    img: "/lovable-uploads/bfab1e39-35df-4138-8364-7fb19eabad6b.png",
+    img: "/lovable-uploads/e920e3c0-12e4-42f6-887d-4a0c1d2af2dc.png",
     alt: "Bogstavet O"
   },
   "U": {
-    img: "/lovable-uploads/55e06bb8-84ae-457f-a858-b2a867a8e34e.png",
+    img: "/lovable-uploads/061ec32d-c737-4aba-bb96-e1924b0c39a6.png",
     alt: "Bogstavet U"
   },
   // Lange vokaler - updated with new uploaded images
