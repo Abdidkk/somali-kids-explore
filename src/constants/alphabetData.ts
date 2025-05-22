@@ -1,6 +1,5 @@
-
 // Bogstavgrupper
-export const SHORT_VOWELS = ["A", "E", "I", "O", "U"];
+export const SHORT_VOWELS = ["E", "I", "O", "U"];
 export const LONG_VOWELS = ["AA", "EE", "II", "OO", "UU"];
 export const ALPHABET = [
   "Bb", "Cc", "Dd", "DHdh", "Ff", "Gg", "Hh", "Jj", "Kk", "KHkh",
@@ -15,10 +14,6 @@ export const GROUPS = {
 
 export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
   // Korte vokaler - removed images for vowels
-  "A": {
-    img: "",
-    alt: "Bogstavet A"
-  },
   "E": {
     img: "",
     alt: "Bogstavet E"
