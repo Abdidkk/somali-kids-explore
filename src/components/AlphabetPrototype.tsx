@@ -1,10 +1,12 @@
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Play } from "lucide-react";
+import { Play, EraseIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AlphabetAchievements from "./AlphabetAchievements";
 import { hasAudio, AUDIO_FILES, ALPHABET_IMAGES } from "@/constants/alphabetData";
+import { useIsMobile } from "@/hooks/use-mobile";
+import LetterDisplay from "./alphabet/LetterDisplay";
 
 const TOTAL_LETTERS = 29; // Updated to include the new vowel A
 
@@ -36,7 +38,6 @@ interface Props {
   letter: string;
 }
 
-// Dummy funktioner og stater til proof-of-concept
 export default function AlphabetPrototype({ letter }: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [traced, setTraced] = useState(false);
@@ -44,32 +45,107 @@ export default function AlphabetPrototype({ letter }: Props) {
   const [streak, setStreak] = useState(2); // eks. dummy værdi
   const [badges, setBadges] = useState<string[]>([]);
   const { toast } = useToast();
-
-  // Simple trace-logic: markér "traced" når mouseup på canvas = 'sporet'
-  let drawing = false;
-
-  const startDraw = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    drawing = true;
-    const ctx = canvasRef.current?.getContext("2d");
+  const isMobile = useIsMobile();
+  
+  // Set up canvas after render and when letter changes
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    // Resize canvas to container size
+    const resizeCanvas = () => {
+      if (canvas) {
+        const container = canvas.parentElement;
+        if (container) {
+          // Set canvas dimensions based on container size
+          canvas.width = container.clientWidth;
+          canvas.height = container.clientWidth; // Keep it square
+          
+          // Reset canvas when letter changes
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            setTraced(false);
+          }
+        }
+      }
+    };
+    
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    return () => window.removeEventListener('resize', resizeCanvas);
+  }, [letter]);
+  
+  // Track if we're currently drawing
+  const [isDrawing, setIsDrawing] = useState(false);
+  
+  // Drawing functions - now supporting both mouse and touch events
+  const startDraw = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent> | React.TouchEvent<HTMLCanvasElement>) => {
+    setIsDrawing(true);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const rect = canvasRef.current!.getBoundingClientRect();
+    
+    const rect = canvas.getBoundingClientRect();
+    let clientX, clientY;
+    
+    if ('touches' in e) {
+      // Touch event
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      // Mouse event
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+    
     ctx.beginPath();
-    ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    ctx.moveTo(clientX - rect.left, clientY - rect.top);
+    
+    // Prevent scrolling while drawing
+    if ('touches' in e) {
+      e.preventDefault();
+    }
   };
-
-  const draw = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    if (!drawing) return;
-    const ctx = canvasRef.current?.getContext("2d");
+  
+  const draw = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawing) return;
+    
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const rect = canvasRef.current!.getBoundingClientRect();
-    ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+    
+    const rect = canvas.getBoundingClientRect();
+    let clientX, clientY;
+    
+    if ('touches' in e) {
+      // Touch event
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+      e.preventDefault(); // Prevent scrolling
+    } else {
+      // Mouse event
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+    
+    ctx.lineTo(clientX - rect.left, clientY - rect.top);
     ctx.strokeStyle = "#7c3aed";
-    ctx.lineWidth = 6;
+    ctx.lineWidth = isMobile ? 8 : 6; // Thicker line on mobile
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
     ctx.stroke();
   };
-
+  
   const stopDraw = () => {
-    // Første gang brugeren "tegnede" betragtes det som succesfuldt sporet
+    setIsDrawing(false);
+    
+    // First time the user "drew" is considered successful tracing
     if (!traced) {
       setTraced(true);
       setLettersTraced(lt => {
@@ -97,9 +173,8 @@ export default function AlphabetPrototype({ letter }: Props) {
         return newCount;
       });
     }
-    drawing = false;
   };
-
+  
   const handleClear = () => {
     const ctx = canvasRef.current?.getContext("2d");
     if (ctx && canvasRef.current) {
@@ -109,56 +184,76 @@ export default function AlphabetPrototype({ letter }: Props) {
   };
 
   return (
-    <div className="w-full flex flex-col items-center gap-6">
+    <div className="w-full flex flex-col items-center gap-4 md:gap-6">
       <AlphabetAchievements
         streak={streak}
         lettersTraced={lettersTraced}
         totalLetters={TOTAL_LETTERS}
         badges={badges}
       />
+      
       <div className="flex flex-col items-center gap-2">
-        <div className="text-[72px] text-purple-700 font-bold drop-shadow" aria-label="Somalisk bogstav">
+        <div 
+          className={`${isMobile ? "text-[52px]" : "text-[72px]"} text-purple-700 font-bold drop-shadow`} 
+          aria-label="Somalisk bogstav"
+        >
           {letter}
         </div>
+        
         {ALPHABET_IMAGES[letter]?.img ? (
           <img
             src={ALPHABET_IMAGES[letter].img}
             alt={ALPHABET_IMAGES[letter].alt}
-            className="w-24 h-24 object-cover rounded-xl border shadow mb-2"
+            className={`${isMobile ? "w-20 h-20" : "w-24 h-24"} object-cover rounded-xl border shadow mb-2`}
           />
-        ) : (
-          <img
-            src="https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?auto=format&fit=facearea&w=256&h=256&facepad=3"
-            alt="Eksempel for bogstav"
-            className="w-24 h-24 object-cover rounded-xl border shadow mb-2"
-          />
-        )}
-        <Button onClick={() => speakSomaliLetter(letter)} variant="outline" className="flex gap-2">
-          <Play className="w-5 h-5" /> Lyt
+        ) : null}
+        
+        <Button 
+          onClick={() => speakSomaliLetter(letter)} 
+          variant="outline" 
+          size={isMobile ? "sm" : "default"}
+          className="flex gap-2"
+        >
+          <Play className="w-4 h-4" /> Lyt
         </Button>
       </div>
-      <div>
+      
+      <div className="w-full max-w-xs">
         <div className="mb-1 text-gray-700 text-center text-sm">Prøv at spore bogstavet:</div>
-        <div className="relative border rounded-xl bg-gray-50 overflow-hidden shadow">
+        <div className="relative border rounded-xl bg-gray-50 overflow-hidden shadow w-full aspect-square">
           <canvas
             ref={canvasRef}
-            width={200}
-            height={200}
             style={{ touchAction: "none", background: "transparent" }}
-            className="block"
+            className="block w-full h-full"
             onMouseDown={startDraw}
             onMouseMove={draw}
             onMouseUp={stopDraw}
             onMouseLeave={stopDraw}
+            onTouchStart={startDraw}
+            onTouchMove={draw}
+            onTouchEnd={stopDraw}
           />
           <div className="pointer-events-none absolute inset-0 flex justify-center items-center">
-            <span className="text-[120px] text-gray-300 font-bold select-none">{letter}</span>
+            <span className={`${isMobile ? "text-[100px]" : "text-[120px]"} text-gray-300 font-bold select-none`}>{letter}</span>
           </div>
         </div>
-        <Button size="sm" onClick={handleClear} className="mt-2" variant="ghost">
-          Ryd tegning
-        </Button>
+        <div className="flex justify-center mt-2">
+          <Button 
+            size={isMobile ? "sm" : "default"} 
+            onClick={handleClear} 
+            variant="ghost" 
+            className="flex gap-1 items-center"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 9v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9"></path>
+              <path d="M9 3h6a2 2 0 0 1 2 2v4H7V5a2 2 0 0 1 2-2z"></path>
+              <line x1="3" y1="9" x2="21" y2="9"></line>
+            </svg>
+            Ryd tegning
+          </Button>
+        </div>
       </div>
     </div>
   );
 }
+

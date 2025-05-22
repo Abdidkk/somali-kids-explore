@@ -32,8 +32,8 @@ export default function LetterDisplay({ selectedLetter }: LetterDisplayProps) {
           <img
             src={imagePath}
             alt={imageAlt}
-            className={`rounded-xl border mb-2 shadow bg-white ${isMobile ? 'w-32 h-32' : 'w-full max-w-xs'}`}
-            style={{ objectFit: "contain", maxHeight: isMobile ? "150px" : "200px" }}
+            className={`rounded-xl border mb-2 shadow bg-white ${isMobile ? 'w-28 h-28 sm:w-32 sm:h-32' : 'w-full max-w-xs'}`}
+            style={{ objectFit: "contain", maxHeight: isMobile ? "120px" : "200px" }}
             onError={handleImageError}
           />
         </div>
@@ -43,9 +43,10 @@ export default function LetterDisplay({ selectedLetter }: LetterDisplayProps) {
           Billede kunne ikke indlæses
         </div>
       )}
-      <h3 className={`font-bold text-purple-700 mb-2 ${isMobile ? 'text-lg' : 'text-xl'}`}>
+      <h3 className={`font-bold text-purple-700 mb-2 ${isMobile ? 'text-base sm:text-lg' : 'text-xl'}`}>
         {selectedLetter} — Lyt til bogstavet
       </h3>
     </>
   );
 }
+
