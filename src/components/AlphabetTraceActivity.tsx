@@ -1,10 +1,9 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import AlphabetPrototype from "./AlphabetPrototype";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { GROUPS } from "@/constants/alphabetData";
+import { GROUPS, LONG_VOWELS } from "@/constants/alphabetData";
 
 interface Props {
   onBack: () => void;
@@ -23,12 +22,15 @@ export default function AlphabetTraceActivity({ onBack }: Props) {
     if (!arr.includes(selectedLetter)) setSelectedLetter(arr[0]);
   }, [tab]);
 
-  // Function to display only the uppercase letter
+  // Function to display the appropriate letter representation
   const getDisplayLetter = (letter: string) => {
     // Special cases for digraphs
     if (letter === "DHdh") return "DH";
     if (letter === "KHkh") return "KH";
     if (letter === "SHsh") return "SH";
+    // For long vowels, show the full vowel name (AA, EE, etc.)
+    if (LONG_VOWELS.includes(letter)) return letter;
+    // Otherwise, return just the first character
     return letter.charAt(0);
   };
 
@@ -57,7 +59,8 @@ export default function AlphabetTraceActivity({ onBack }: Props) {
                 <button
                   key={letter}
                   className={[
-                    "flex flex-col items-center justify-center rounded-lg border transition-all font-bold text-lg md:text-2xl p-2 min-w-[54px]",
+                    "flex flex-col items-center justify-center rounded-lg border transition-all font-bold text-lg md:text-2xl p-2",
+                    tab === "long" ? "min-w-[70px]" : "min-w-[54px]",
                     selectedLetter === letter 
                       ? "bg-purple-100 border-purple-400 text-purple-700 scale-105 shadow"
                       : "bg-white border-gray-300 hover:bg-violet-50"

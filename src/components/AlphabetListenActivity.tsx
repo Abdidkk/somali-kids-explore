@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ElevenLabsTTS from "./ElevenLabsTTS";
-import { GROUPS, ALPHABET_IMAGES, hasAudio, AUDIO_FILES } from "@/constants/alphabetData";
+import { GROUPS, ALPHABET_IMAGES, hasAudio, AUDIO_FILES, LONG_VOWELS } from "@/constants/alphabetData";
 import AudioPlayer from "./AudioPlayer";
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
@@ -55,12 +54,15 @@ export default function AlphabetListenActivity({ onBack }: Props) {
     }
   };
 
-  // Function to display only the uppercase letter
+  // Function to display the appropriate letter representation
   const getDisplayLetter = (letter: string) => {
     // Special cases for digraphs
     if (letter === "DHdh") return "DH";
     if (letter === "KHkh") return "KH";
     if (letter === "SHsh") return "SH";
+    // For long vowels, show the full vowel name (AA, EE, etc.)
+    if (LONG_VOWELS.includes(letter)) return letter;
+    // Otherwise, return just the first character
     return letter.charAt(0);
   };
 
@@ -114,18 +116,18 @@ export default function AlphabetListenActivity({ onBack }: Props) {
               </button>
             </div>
             
-            {/* Letter selector grid - updated to show only uppercase */}
+            {/* Letter selector grid - updated to show full names for long vowels */}
             <div className="w-full overflow-x-auto">
               <div className="flex flex-wrap gap-2 justify-center min-w-min p-2">
                 {groupLetters.map((letter, idx) => (
                   <button
                     key={letter}
                     onClick={() => setSelectedIdx(idx)}
-                    className={`w-10 h-10 flex items-center justify-center rounded-md border ${
+                    className={`min-w-[3rem] h-10 flex items-center justify-center rounded-md border ${
                       idx === selectedIdx 
                         ? "bg-purple-600 text-white border-purple-700" 
                         : "bg-white hover:bg-purple-50 border-gray-200"
-                    }`}
+                    } ${tab === "long" ? "px-2" : ""}`}
                   >
                     {getDisplayLetter(letter)}
                   </button>
