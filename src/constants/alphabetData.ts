@@ -52,25 +52,25 @@ export const AUDIO_FILES: Record<string, string> = {
 };
 
 export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
-  // Korte vokaler - added image for A vowel
+  // Korte vokaler - updated with new images
   "A": {
-    img: "/lovable-uploads/0e29c5c2-6fa5-4899-a196-b7832d8abc67.png",
+    img: "/lovable-uploads/116250e2-c9a4-4ec1-9236-0d825d3b6a11.png",
     alt: "Bogstavet A"
   },
   "E": {
-    img: "/lovable-uploads/0435c435-2eb6-4de9-a68e-d3a18fd524e5.png",
+    img: "/lovable-uploads/a3519cc0-0a57-4dd5-b6f0-6d8bf9afc52e.png",
     alt: "Bogstavet E"
   },
   "I": {
-    img: "/lovable-uploads/2e500a3e-3baa-45e1-a7ba-07e14b919f79.png",
+    img: "/lovable-uploads/63e849c7-8527-4a16-9d2e-57e26848c768.png",
     alt: "Bogstavet I"
   },
   "O": {
-    img: "/lovable-uploads/5226a33a-bf7f-4cc7-ace6-28b7484c60ce.png",
+    img: "/lovable-uploads/bfab1e39-35df-4138-8364-7fb19eabad6b.png",
     alt: "Bogstavet O"
   },
   "U": {
-    img: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png",
+    img: "/lovable-uploads/55e06bb8-84ae-457f-a858-b2a867a8e34e.png",
     alt: "Bogstavet U"
   },
   // Lange vokaler - added images

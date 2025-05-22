@@ -9,7 +9,7 @@ interface LetterDisplayProps {
 export default function LetterDisplay({ selectedLetter }: LetterDisplayProps) {
   return (
     <>
-      {/* Removed restriction for vowels so all letters can show images */}
+      {/* Display image for the selected letter if available */}
       {ALPHABET_IMAGES[selectedLetter]?.img && (
         <img
           src={ALPHABET_IMAGES[selectedLetter].img}
