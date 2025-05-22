@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ElevenLabsTTS from "./ElevenLabsTTS";
@@ -176,6 +177,11 @@ export default function AlphabetListenActivity({ onBack }: Props) {
     return SHORT_VOWELS.includes(letter) || LONG_VOWELS.includes(letter);
   };
 
+  // Check om bogstavet har et billede
+  const hasImage = (letter: string) => {
+    return ALPHABET_IMAGES[letter]?.img && ALPHABET_IMAGES[letter].img !== "";
+  };
+
   return (
     <div className="flex flex-col items-center mt-5 gap-4">
       {/* Tabs */}
@@ -208,10 +214,10 @@ export default function AlphabetListenActivity({ onBack }: Props) {
           <div className="w-full max-w-md overflow-x-auto">
             <div className="flex flex-row gap-3 py-2 min-w-max">
               {groupLetters.map((letter, idx) => (
-                <button
+                <div
                   key={letter}
                   className={[
-                    "flex flex-col items-center min-w-[54px] transition-all rounded-lg px-2 py-1",
+                    "flex flex-col items-center min-w-[54px] transition-all rounded-lg px-2 py-1 cursor-pointer",
                     selectedIdx === idx 
                       ? "bg-vivid-purple/10 border border-vivid-purple shadow scale-105"
                       : "hover:bg-violet-50 border border-transparent"
@@ -219,22 +225,17 @@ export default function AlphabetListenActivity({ onBack }: Props) {
                   onClick={() => setSelectedIdx(idx)}
                   aria-label={`Vælg bogstav: ${letter}`}
                   tabIndex={0}
-                  type="button"
                 >
-                  {isVowel(letter) ? (
-                    <span className="font-semibold text-lg">{letter}</span>
+                  {hasImage(letter) ? (
+                    <img
+                      src={ALPHABET_IMAGES[letter].img}
+                      alt={ALPHABET_IMAGES[letter].alt}
+                      className="w-10 h-10 object-cover rounded"
+                    />
                   ) : (
-                    ALPHABET_IMAGES[letter] && ALPHABET_IMAGES[letter].img ? (
-                      <img
-                        src={ALPHABET_IMAGES[letter].img}
-                        alt={ALPHABET_IMAGES[letter].alt}
-                        className="w-10 h-10 object-cover rounded"
-                      />
-                    ) : (
-                      <span className="font-semibold text-lg">{letter}</span>
-                    )
+                    <span className="font-semibold text-lg">{letter}</span>
                   )}
-                </button>
+                </div>
               ))}
             </div>
           </div>
