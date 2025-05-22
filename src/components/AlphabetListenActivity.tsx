@@ -42,11 +42,6 @@ export default function AlphabetListenActivity({ onBack }: Props) {
         
         <TabsContent value={tab} className="w-full flex flex-col items-center">
           {/* Content will be rebuilt */}
-          
-          <div className="text-gray-600 text-center text-sm max-w-xs mt-3">
-            Tryk på et bogstav og hør det udtalt på somali<br />
-            (ElevenLabs "Aria" stemme – kræver API-nøgle)
-          </div>
         </TabsContent>
       </Tabs>
       
