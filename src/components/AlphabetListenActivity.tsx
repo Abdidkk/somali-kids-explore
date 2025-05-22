@@ -1,8 +1,7 @@
 
 import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import ElevenLabsTTS from "./ElevenLabsTTS";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import ElevenLabsTTS from "./ElevenLabsTTS";
 import { GROUPS } from "@/constants/alphabetData";
 
 interface Props {
@@ -53,10 +52,6 @@ export default function AlphabetListenActivity({ onBack }: Props) {
           onAudioEnd={() => setPlayingIdx(null)}
         />
       )}
-      
-      <Button onClick={onBack} variant="outline" size="sm" className="mt-2">
-        Tilbage
-      </Button>
     </div>
   );
 }
