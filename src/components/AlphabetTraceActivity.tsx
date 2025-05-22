@@ -23,6 +23,11 @@ export default function AlphabetTraceActivity({ onBack }: Props) {
     if (!arr.includes(selectedLetter)) setSelectedLetter(arr[0]);
   }, [tab]);
 
+  // Function to display only the uppercase letter
+  const getDisplayLetter = (letter: string) => {
+    return letter.charAt(0);
+  };
+
   return (
     <div className="flex flex-col items-center mt-5 gap-5 w-full">
       {/* Ikon og titel */}
@@ -58,7 +63,7 @@ export default function AlphabetTraceActivity({ onBack }: Props) {
                   tabIndex={0}
                   type="button"
                 >
-                  {letter}
+                  {getDisplayLetter(letter)}
                 </button>
               ))}
             </div>

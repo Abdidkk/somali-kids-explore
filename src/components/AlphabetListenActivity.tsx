@@ -29,6 +29,11 @@ export default function AlphabetListenActivity({ onBack }: Props) {
     }
   }, [selectedIdx, apiKey]);
 
+  // Function to display only the uppercase letter
+  const getDisplayLetter = (letter: string) => {
+    return letter.charAt(0);
+  };
+
   return (
     <div className="flex flex-col items-center mt-5 gap-4">
       {/* Tabs */}
@@ -76,7 +81,7 @@ export default function AlphabetListenActivity({ onBack }: Props) {
               </button>
             </div>
             
-            {/* Letter selector grid */}
+            {/* Letter selector grid - updated to show only uppercase */}
             <div className="w-full overflow-x-auto">
               <div className="flex flex-wrap gap-2 justify-center min-w-min p-2">
                 {groupLetters.map((letter, idx) => (
@@ -89,7 +94,7 @@ export default function AlphabetListenActivity({ onBack }: Props) {
                         : "bg-white hover:bg-purple-50 border-gray-200"
                     }`}
                   >
-                    {letter}
+                    {getDisplayLetter(letter)}
                   </button>
                 ))}
               </div>
