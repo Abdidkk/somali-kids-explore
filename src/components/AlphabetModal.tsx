@@ -99,6 +99,6 @@ const AlphabetModal: React.FC<AlphabetModalProps> = ({ open, onClose }) => {
       </div>
     </div>
   );
-};
+}
 
 export default AlphabetModal;

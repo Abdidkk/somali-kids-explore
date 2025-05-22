@@ -4,9 +4,6 @@ import { Button } from "@/components/ui/button";
 import ElevenLabsTTS from "./ElevenLabsTTS";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { GROUPS } from "@/constants/alphabetData";
-import LetterSelector from "./alphabet/LetterSelector";
-import ApiKeyInput from "./alphabet/ApiKeyInput";
-import LetterDisplay from "./alphabet/LetterDisplay";
 
 interface Props {
   onBack: () => void;
@@ -44,21 +41,7 @@ export default function AlphabetListenActivity({ onBack }: Props) {
         </TabsList>
         
         <TabsContent value={tab} className="w-full flex flex-col items-center">
-          {/* Letter Display Component */}
-          <LetterDisplay selectedLetter={selectedLetter} />
-          
-          {/* API Key Input Component */}
-          <ApiKeyInput 
-            apiKey={apiKey}
-            onApiKeyChange={setApiKey}
-          />
-          
-          {/* Letter Selector Component */}
-          <LetterSelector
-            letters={groupLetters}
-            selectedIdx={selectedIdx}
-            onLetterSelect={setSelectedIdx}
-          />
+          {/* Content will be rebuilt */}
           
           <div className="text-gray-600 text-center text-sm max-w-xs mt-3">
             Tryk på et bogstav og hør det udtalt på somali<br />
