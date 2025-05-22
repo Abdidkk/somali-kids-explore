@@ -31,6 +31,8 @@ export default function AlphabetListenActivity({ onBack }: Props) {
 
   // Function to display only the uppercase letter
   const getDisplayLetter = (letter: string) => {
+    // Special case for DH
+    if (letter === "DHdh") return "DH";
     return letter.charAt(0);
   };
 
