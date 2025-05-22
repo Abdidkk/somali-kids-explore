@@ -42,11 +42,8 @@ export default function AlphabetListenActivity({ onBack }: Props) {
         <TabsContent value={tab} className="w-full flex flex-col items-center">
           {/* Letter display with image and buttons */}
           <div className="flex flex-col items-center gap-4 w-full">
-            {/* Current letter display */}
+            {/* Current letter display - removed text representation */}
             <div className="flex flex-col items-center p-4">
-              <div className="text-5xl md:text-7xl font-bold text-purple-700 mb-2">
-                {selectedLetter}
-              </div>
               {ALPHABET_IMAGES[selectedLetter]?.img && (
                 <img 
                   src={ALPHABET_IMAGES[selectedLetter].img} 
