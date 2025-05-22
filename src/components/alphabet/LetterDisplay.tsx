@@ -28,12 +28,12 @@ export default function LetterDisplay({ selectedLetter }: LetterDisplayProps) {
     <>
       {/* Display image for the selected letter if available */}
       {imagePath && !imageError && (
-        <div className="relative">
+        <div className="relative flex justify-center">
           <img
             src={imagePath}
             alt={imageAlt}
-            className={`rounded-xl border mb-2 shadow bg-white ${isMobile ? 'w-28 h-28 sm:w-32 sm:h-32' : 'w-full max-w-xs'}`}
-            style={{ objectFit: "contain", maxHeight: isMobile ? "120px" : "200px" }}
+            className={`rounded-xl border mb-3 shadow bg-white ${isMobile ? 'w-40 h-40 sm:w-48 sm:h-48' : 'w-56 h-56'}`}
+            style={{ objectFit: "contain", maxHeight: isMobile ? "180px" : "220px" }}
             onError={handleImageError}
           />
         </div>
@@ -43,10 +43,9 @@ export default function LetterDisplay({ selectedLetter }: LetterDisplayProps) {
           Billede kunne ikke indlæses
         </div>
       )}
-      <h3 className={`font-bold text-purple-700 mb-2 ${isMobile ? 'text-base sm:text-lg' : 'text-xl'}`}>
+      <h3 className={`font-bold text-purple-700 mb-3 ${isMobile ? 'text-lg sm:text-xl' : 'text-2xl'}`}>
         {selectedLetter} — Lyt til bogstavet
       </h3>
     </>
   );
 }
-

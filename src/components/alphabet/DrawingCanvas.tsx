@@ -101,7 +101,7 @@ export default function DrawingCanvas({ letter, onSuccessfulTrace }: DrawingCanv
     
     ctx.lineTo(clientX - rect.left, clientY - rect.top);
     ctx.strokeStyle = "#7c3aed";
-    ctx.lineWidth = isMobile ? 8 : 6; // Thicker line on mobile
+    ctx.lineWidth = isMobile ? 10 : 8; // Thicker line for better visibility
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.stroke();
@@ -126,9 +126,9 @@ export default function DrawingCanvas({ letter, onSuccessfulTrace }: DrawingCanv
   };
 
   return (
-    <div className="w-full max-w-xs">
-      <div className="mb-1 text-gray-700 text-center text-sm">Prøv at spore bogstavet:</div>
-      <div className="relative border rounded-xl bg-gray-50 overflow-hidden shadow w-full aspect-square">
+    <div className="w-full max-w-md mx-auto">
+      <div className="mb-2 text-gray-700 text-center text-sm">Prøv at spore bogstavet:</div>
+      <div className="relative border-2 rounded-xl bg-gray-50 overflow-hidden shadow-md w-full aspect-square">
         <canvas
           ref={canvasRef}
           style={{ touchAction: "none", background: "transparent" }}
@@ -142,17 +142,17 @@ export default function DrawingCanvas({ letter, onSuccessfulTrace }: DrawingCanv
           onTouchEnd={stopDraw}
         />
         <div className="pointer-events-none absolute inset-0 flex justify-center items-center">
-          <span className={`${isMobile ? "text-[100px]" : "text-[120px]"} text-gray-300 font-bold select-none`}>{letter}</span>
+          <span className={`${isMobile ? "text-[130px]" : "text-[150px]"} text-gray-300 font-bold select-none`}>{letter}</span>
         </div>
       </div>
-      <div className="flex justify-center mt-2">
+      <div className="flex justify-center mt-3">
         <Button 
           size={isMobile ? "sm" : "default"} 
           onClick={handleClear} 
           variant="ghost" 
-          className="flex gap-1 items-center"
+          className="flex gap-2 items-center"
         >
-          <EraserIcon className="w-4 h-4" />
+          <EraserIcon className="w-5 h-5" />
           Ryd tegning
         </Button>
       </div>

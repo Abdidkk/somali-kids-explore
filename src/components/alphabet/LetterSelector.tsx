@@ -17,17 +17,17 @@ export default function LetterSelector({
   const isMobile = useIsMobile();
   
   return (
-    <div className="w-full overflow-x-auto">
-      <div className="flex flex-row gap-2 py-2 min-w-max">
+    <div className="w-full overflow-x-auto py-1">
+      <div className="flex flex-row gap-3 py-2 min-w-max px-1">
         {letters.map((letter, idx) => (
           <div
             key={letter}
             className={[
-              "flex flex-col items-center transition-all rounded-lg px-1 py-1 cursor-pointer",
-              isMobile ? "min-w-[40px]" : "min-w-[54px]",
+              "flex flex-col items-center justify-center transition-all rounded-lg px-2 py-2 cursor-pointer",
+              isMobile ? "min-w-[50px] min-h-[50px]" : "min-w-[60px] min-h-[60px]",
               selectedIdx === idx 
-                ? "bg-vivid-purple/10 border border-vivid-purple shadow scale-105"
-                : "hover:bg-violet-50 border border-transparent"
+                ? "bg-vivid-purple/10 border-2 border-vivid-purple shadow-md scale-105"
+                : "hover:bg-violet-50 border-2 border-transparent hover:border-violet-200"
             ].join(" ")}
             onClick={() => onLetterSelect(idx)}
             aria-label={`Vælg bogstav: ${letter}`}
@@ -37,10 +37,10 @@ export default function LetterSelector({
               <img
                 src={ALPHABET_IMAGES[letter].img}
                 alt={ALPHABET_IMAGES[letter].alt}
-                className={isMobile ? "w-8 h-8 object-cover rounded" : "w-10 h-10 object-cover rounded"}
+                className={isMobile ? "w-10 h-10 object-contain rounded" : "w-12 h-12 object-contain rounded"}
               />
             ) : (
-              <span className={isMobile ? "font-semibold text-base" : "font-semibold text-lg"}>{letter}</span>
+              <span className={isMobile ? "font-semibold text-xl" : "font-semibold text-2xl"}>{letter}</span>
             )}
           </div>
         ))}

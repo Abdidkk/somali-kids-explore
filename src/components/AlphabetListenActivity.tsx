@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ElevenLabsTTS from "./ElevenLabsTTS";
@@ -56,23 +57,11 @@ export default function AlphabetListenActivity({ onBack }: Props) {
     }
   };
 
-  // Function to display the appropriate letter representation
-  const getDisplayLetter = (letter: string) => {
-    // Special cases for digraphs
-    if (letter === "DHdh") return "DH";
-    if (letter === "KHkh") return "KH";
-    if (letter === "SHsh") return "SH";
-    // For long vowels, show the full vowel name (AA, EE, etc.)
-    if (LONG_VOWELS.includes(letter)) return letter;
-    // Otherwise, return just the first character
-    return letter.charAt(0);
-  };
-
   return (
-    <div className="flex flex-col items-center mt-3 md:mt-5 gap-3 md:gap-4">
+    <div className="flex flex-col items-center mt-3 md:mt-5 gap-4 md:gap-5">
       {/* Tabs */}
       <Tabs value={tab} onValueChange={v => setTab(v as "alphabet" | "short" | "long")} className="w-full flex flex-col items-center">
-        <TabsList className={`mb-2 md:mb-3 bg-violet-50 ${isMobile ? 'text-xs' : ''}`}>
+        <TabsList className={`mb-3 md:mb-4 bg-violet-50 ${isMobile ? 'text-xs' : ''}`}>
           <TabsTrigger value="alphabet">{GROUPS.alphabet.label}</TabsTrigger>
           <TabsTrigger value="short">{GROUPS.short.label}</TabsTrigger>
           <TabsTrigger value="long">{GROUPS.long.label}</TabsTrigger>
@@ -80,39 +69,39 @@ export default function AlphabetListenActivity({ onBack }: Props) {
         
         <TabsContent value={tab} className="w-full flex flex-col items-center">
           {/* Letter display with image and buttons */}
-          <div className="flex flex-col items-center gap-3 md:gap-4 w-full">
+          <div className="flex flex-col items-center gap-4 md:gap-5 w-full">
             {/* Current letter display using the dedicated LetterDisplay component */}
-            <div className={`flex flex-col items-center ${isMobile ? 'p-2' : 'p-4'}`}>
+            <div className={`flex flex-col items-center ${isMobile ? 'p-3' : 'p-5'}`}>
               <LetterDisplay selectedLetter={selectedLetter} />
               
               {/* Play audio button */}
               <Button 
                 onClick={playAudio} 
                 variant="outline" 
-                size={isMobile ? "sm" : "default"}
-                className="mt-2 md:mt-4 flex gap-2"
+                size={isMobile ? "default" : "lg"}
+                className="mt-3 md:mt-4 flex gap-2"
               >
                 <Volume2 className="w-5 h-5" /> Lyt
               </Button>
             </div>
             
             {/* Letter navigation */}
-            <div className="flex items-center gap-2 mb-2 md:mb-4">
+            <div className="flex items-center gap-3 mb-3 md:mb-4">
               <button 
                 onClick={() => setSelectedIdx(prev => Math.max(0, prev - 1))}
                 disabled={selectedIdx === 0}
-                className="bg-purple-100 hover:bg-purple-200 disabled:opacity-50 p-1 md:p-2 rounded-full"
+                className="bg-purple-100 hover:bg-purple-200 disabled:opacity-50 p-2 md:p-3 rounded-full"
                 aria-label="Forrige bogstav"
               >
                 ◀
               </button>
-              <div className={`px-2 md:px-4 py-1 md:py-2 bg-purple-50 rounded-lg font-medium ${isMobile ? 'text-sm' : ''}`}>
+              <div className={`px-4 md:px-5 py-2 md:py-3 bg-purple-50 rounded-lg font-medium ${isMobile ? 'text-sm' : 'text-base'}`}>
                 {selectedIdx + 1} / {groupLetters.length}
               </div>
               <button 
                 onClick={() => setSelectedIdx(prev => Math.min(groupLetters.length - 1, prev + 1))}
                 disabled={selectedIdx >= groupLetters.length - 1}
-                className="bg-purple-100 hover:bg-purple-200 disabled:opacity-50 p-1 md:p-2 rounded-full"
+                className="bg-purple-100 hover:bg-purple-200 disabled:opacity-50 p-2 md:p-3 rounded-full"
                 aria-label="Næste bogstav"
               >
                 ▶
