@@ -75,7 +75,11 @@ const AlphabetModal: React.FC<AlphabetModalProps> = ({ open, onClose }) => {
               className="bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg p-3 md:p-4 transition-all text-left flex items-center gap-2 md:gap-3"
             >
               <div className="bg-blue-600 text-white p-2 rounded-full flex items-center justify-center w-10 h-10 md:w-12 md:h-12">
-                <span className={`${isMobile ? 'text-base' : 'text-lg'}`}>✏️</span>
+                <img 
+                  src="/lovable-uploads/72e8879d-c2fa-4fbe-982b-eb59d9fa37c5.png" 
+                  alt="Tegn og skriv" 
+                  className="w-8 h-8 md:w-10 md:h-10 object-contain"
+                />
               </div>
               <div>
                 <h4 className={`font-medium text-blue-700 ${isMobile ? 'text-sm' : ''}`}>Tegn og skriv</h4>
@@ -89,7 +93,11 @@ const AlphabetModal: React.FC<AlphabetModalProps> = ({ open, onClose }) => {
               className="bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg p-3 md:p-4 transition-all text-left flex items-center gap-2 md:gap-3"
             >
               <div className="bg-green-600 text-white p-2 rounded-full flex items-center justify-center w-10 h-10 md:w-12 md:h-12">
-                <span className={`${isMobile ? 'text-base' : 'text-lg'}`}>🎮</span>
+                <img 
+                  src="/lovable-uploads/1e80efba-0e83-48c7-aa88-40fa3c48f0a9.png" 
+                  alt="Gæt og lær" 
+                  className="w-8 h-8 md:w-10 md:h-10 object-contain"
+                />
               </div>
               <div>
                 <h4 className={`font-medium text-green-700 ${isMobile ? 'text-sm' : ''}`}>Gæt og spil</h4>
