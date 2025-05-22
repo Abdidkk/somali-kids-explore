@@ -1,6 +1,7 @@
 
 import React from "react";
 import { hasImage, ALPHABET_IMAGES } from "@/constants/alphabetData";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface LetterSelectorProps {
   letters: string[];
@@ -13,14 +14,17 @@ export default function LetterSelector({
   selectedIdx, 
   onLetterSelect 
 }: LetterSelectorProps) {
+  const isMobile = useIsMobile();
+  
   return (
-    <div className="w-full max-w-md overflow-x-auto">
-      <div className="flex flex-row gap-3 py-2 min-w-max">
+    <div className="w-full overflow-x-auto">
+      <div className="flex flex-row gap-2 py-2 min-w-max">
         {letters.map((letter, idx) => (
           <div
             key={letter}
             className={[
-              "flex flex-col items-center min-w-[54px] transition-all rounded-lg px-2 py-1 cursor-pointer",
+              "flex flex-col items-center transition-all rounded-lg px-1 py-1 cursor-pointer",
+              isMobile ? "min-w-[40px]" : "min-w-[54px]",
               selectedIdx === idx 
                 ? "bg-vivid-purple/10 border border-vivid-purple shadow scale-105"
                 : "hover:bg-violet-50 border border-transparent"
@@ -33,10 +37,10 @@ export default function LetterSelector({
               <img
                 src={ALPHABET_IMAGES[letter].img}
                 alt={ALPHABET_IMAGES[letter].alt}
-                className="w-10 h-10 object-cover rounded"
+                className={isMobile ? "w-8 h-8 object-cover rounded" : "w-10 h-10 object-cover rounded"}
               />
             ) : (
-              <span className="font-semibold text-lg">{letter}</span>
+              <span className={isMobile ? "font-semibold text-base" : "font-semibold text-lg"}>{letter}</span>
             )}
           </div>
         ))}

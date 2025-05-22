@@ -1,6 +1,7 @@
 
 import React, { useState } from "react";
 import { ALPHABET_IMAGES } from "@/constants/alphabetData";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface LetterDisplayProps {
   selectedLetter: string;
@@ -8,6 +9,7 @@ interface LetterDisplayProps {
 
 export default function LetterDisplay({ selectedLetter }: LetterDisplayProps) {
   const [imageError, setImageError] = useState(false);
+  const isMobile = useIsMobile();
 
   // Reset image error state when letter changes
   React.useEffect(() => {
@@ -30,8 +32,8 @@ export default function LetterDisplay({ selectedLetter }: LetterDisplayProps) {
           <img
             src={imagePath}
             alt={imageAlt}
-            className="w-full max-w-xs rounded-xl border mb-2 shadow bg-white"
-            style={{ objectFit: "contain", maxHeight: "200px" }}
+            className={`rounded-xl border mb-2 shadow bg-white ${isMobile ? 'w-32 h-32' : 'w-full max-w-xs'}`}
+            style={{ objectFit: "contain", maxHeight: isMobile ? "150px" : "200px" }}
             onError={handleImageError}
           />
         </div>
@@ -41,7 +43,9 @@ export default function LetterDisplay({ selectedLetter }: LetterDisplayProps) {
           Billede kunne ikke indlæses
         </div>
       )}
-      <h3 className="text-xl font-bold text-purple-700 mb-2">{selectedLetter} — Lyt til bogstavet</h3>
+      <h3 className={`font-bold text-purple-700 mb-2 ${isMobile ? 'text-lg' : 'text-xl'}`}>
+        {selectedLetter} — Lyt til bogstavet
+      </h3>
     </>
   );
 }

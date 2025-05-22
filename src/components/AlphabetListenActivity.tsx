@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ElevenLabsTTS from "./ElevenLabsTTS";
-import { GROUPS, ALPHABET_IMAGES, hasAudio, AUDIO_FILES, LONG_VOWELS } from "@/constants/alphabetData";
-import AudioPlayer from "./AudioPlayer";
+import { GROUPS, hasAudio, AUDIO_FILES, LONG_VOWELS } from "@/constants/alphabetData";
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
 import LetterDisplay from "./alphabet/LetterDisplay";
+import { useIsMobile } from "@/hooks/use-mobile";
+import LetterSelector from "./alphabet/LetterSelector";
 
 interface Props {
   onBack: () => void;
 }
 
 export default function AlphabetListenActivity({ onBack }: Props) {
+  const isMobile = useIsMobile();
   const [apiKey, setApiKey] = useState(""); 
   const [playingIdx, setPlayingIdx] = useState<number | null>(null);
   // Tabs
@@ -67,10 +69,10 @@ export default function AlphabetListenActivity({ onBack }: Props) {
   };
 
   return (
-    <div className="flex flex-col items-center mt-5 gap-4">
+    <div className="flex flex-col items-center mt-3 md:mt-5 gap-3 md:gap-4">
       {/* Tabs */}
       <Tabs value={tab} onValueChange={v => setTab(v as "alphabet" | "short" | "long")} className="w-full flex flex-col items-center">
-        <TabsList className="mb-3 bg-violet-50">
+        <TabsList className={`mb-2 md:mb-3 bg-violet-50 ${isMobile ? 'text-xs' : ''}`}>
           <TabsTrigger value="alphabet">{GROUPS.alphabet.label}</TabsTrigger>
           <TabsTrigger value="short">{GROUPS.short.label}</TabsTrigger>
           <TabsTrigger value="long">{GROUPS.long.label}</TabsTrigger>
@@ -78,62 +80,51 @@ export default function AlphabetListenActivity({ onBack }: Props) {
         
         <TabsContent value={tab} className="w-full flex flex-col items-center">
           {/* Letter display with image and buttons */}
-          <div className="flex flex-col items-center gap-4 w-full">
+          <div className="flex flex-col items-center gap-3 md:gap-4 w-full">
             {/* Current letter display using the dedicated LetterDisplay component */}
-            <div className="flex flex-col items-center p-4">
+            <div className={`flex flex-col items-center ${isMobile ? 'p-2' : 'p-4'}`}>
               <LetterDisplay selectedLetter={selectedLetter} />
               
               {/* Play audio button */}
               <Button 
                 onClick={playAudio} 
                 variant="outline" 
-                className="mt-4 flex gap-2"
+                size={isMobile ? "sm" : "default"}
+                className="mt-2 md:mt-4 flex gap-2"
               >
                 <Volume2 className="w-5 h-5" /> Lyt
               </Button>
             </div>
             
             {/* Letter navigation */}
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-2 md:mb-4">
               <button 
                 onClick={() => setSelectedIdx(prev => Math.max(0, prev - 1))}
                 disabled={selectedIdx === 0}
-                className="bg-purple-100 hover:bg-purple-200 disabled:opacity-50 p-2 rounded-full"
+                className="bg-purple-100 hover:bg-purple-200 disabled:opacity-50 p-1 md:p-2 rounded-full"
                 aria-label="Forrige bogstav"
               >
                 ◀
               </button>
-              <div className="px-4 py-2 bg-purple-50 rounded-lg font-medium">
+              <div className={`px-2 md:px-4 py-1 md:py-2 bg-purple-50 rounded-lg font-medium ${isMobile ? 'text-sm' : ''}`}>
                 {selectedIdx + 1} / {groupLetters.length}
               </div>
               <button 
                 onClick={() => setSelectedIdx(prev => Math.min(groupLetters.length - 1, prev + 1))}
                 disabled={selectedIdx >= groupLetters.length - 1}
-                className="bg-purple-100 hover:bg-purple-200 disabled:opacity-50 p-2 rounded-full"
+                className="bg-purple-100 hover:bg-purple-200 disabled:opacity-50 p-1 md:p-2 rounded-full"
                 aria-label="Næste bogstav"
               >
                 ▶
               </button>
             </div>
             
-            {/* Letter selector grid - updated to show full names for long vowels */}
-            <div className="w-full overflow-x-auto">
-              <div className="flex flex-wrap gap-2 justify-center min-w-min p-2">
-                {groupLetters.map((letter, idx) => (
-                  <button
-                    key={letter}
-                    onClick={() => setSelectedIdx(idx)}
-                    className={`min-w-[3rem] h-10 flex items-center justify-center rounded-md border ${
-                      idx === selectedIdx 
-                        ? "bg-purple-600 text-white border-purple-700" 
-                        : "bg-white hover:bg-purple-50 border-gray-200"
-                    } ${tab === "long" ? "px-2" : ""}`}
-                  >
-                    {getDisplayLetter(letter)}
-                  </button>
-                ))}
-              </div>
-            </div>
+            {/* Letter selector grid using our updated component */}
+            <LetterSelector 
+              letters={groupLetters}
+              selectedIdx={selectedIdx}
+              onLetterSelect={setSelectedIdx}
+            />
           </div>
         </TabsContent>
       </Tabs>
