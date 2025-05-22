@@ -25,8 +25,9 @@ export default function AlphabetTraceActivity({ onBack }: Props) {
 
   // Function to display only the uppercase letter
   const getDisplayLetter = (letter: string) => {
-    // Special case for DH
+    // Special cases for digraphs
     if (letter === "DHdh") return "DH";
+    if (letter === "KHkh") return "KH";
     return letter.charAt(0);
   };
 
