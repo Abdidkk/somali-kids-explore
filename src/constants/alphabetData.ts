@@ -58,15 +58,15 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
   },
   // Alfabetet - nye billeder tilføjet
   "Bb": {
-    img: "/lovable-uploads/2176c21d-70ed-4835-8927-27d0dee437d2.png",
+    img: "/lovable-uploads/137c3493-d107-4ad6-bdfe-0d3ebde86557.png",
     alt: "Bogstavet B"
   },
   "Cc": {
-    img: "/lovable-uploads/0e29c5c2-6fa5-4899-a196-b7832d8abc67.png",
+    img: "/lovable-uploads/2f53b20d-6439-420c-8bd8-f2b42e07562c.png",
     alt: "Bogstavet C"
   },
   "Dd": {
-    img: "/lovable-uploads/c1dd8450-aabf-4867-a1f8-a87aedeb964a.png",
+    img: "/lovable-uploads/21dbe823-efb8-4536-bae2-f0fa1b05135a.png",
     alt: "Bogstavet D"
   },
   "DHdh": {
