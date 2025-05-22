@@ -6,6 +6,7 @@ import { GROUPS, ALPHABET_IMAGES, hasAudio, AUDIO_FILES } from "@/constants/alph
 import AudioPlayer from "./AudioPlayer";
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
+import LetterDisplay from "./alphabet/LetterDisplay";
 
 interface Props {
   onBack: () => void;
@@ -76,15 +77,9 @@ export default function AlphabetListenActivity({ onBack }: Props) {
         <TabsContent value={tab} className="w-full flex flex-col items-center">
           {/* Letter display with image and buttons */}
           <div className="flex flex-col items-center gap-4 w-full">
-            {/* Current letter display - removed text representation */}
+            {/* Current letter display using the dedicated LetterDisplay component */}
             <div className="flex flex-col items-center p-4">
-              {ALPHABET_IMAGES[selectedLetter]?.img && (
-                <img 
-                  src={ALPHABET_IMAGES[selectedLetter].img} 
-                  alt={ALPHABET_IMAGES[selectedLetter].alt}
-                  className="w-32 h-32 object-contain rounded-lg border border-purple-200 bg-white shadow-sm"
-                />
-              )}
+              <LetterDisplay selectedLetter={selectedLetter} />
               
               {/* Play audio button */}
               <Button 

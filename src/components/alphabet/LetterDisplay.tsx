@@ -34,8 +34,7 @@ export default function LetterDisplay({ selectedLetter }: LetterDisplayProps) {
             style={{ objectFit: "cover" }}
             onError={handleImageError}
           />
-          {/* Add a console log to help debug */}
-          {console.log(`Rendering image for ${selectedLetter}: ${imagePath}`)}
+          {/* Add a console log to help debug - removed because it's causing a React error */}
         </div>
       )}
       {imageError && (

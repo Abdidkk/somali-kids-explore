@@ -73,25 +73,25 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/55e06bb8-84ae-457f-a858-b2a867a8e34e.png",
     alt: "Bogstavet U"
   },
-  // Lange vokaler - added images
+  // Lange vokaler - updated with new uploaded images
   "AA": {
-    img: "/lovable-uploads/0a4df638-a8fe-492e-b3bf-9b8d9c7235fc.png",
+    img: "/lovable-uploads/c7e639a4-cc13-4207-aeb6-641c37cb7565.png",
     alt: "Bogstavet AA"
   },
   "EE": {
-    img: "/lovable-uploads/85f38696-d894-4781-a2e8-210a91796896.png",
+    img: "/lovable-uploads/237b7523-c439-422c-a3e6-e3fc2fa4a508.png",
     alt: "Bogstavet EE"
   },
   "II": {
-    img: "/lovable-uploads/c14144b9-9843-4d08-ac21-d439ebef2ad0.png",
+    img: "/lovable-uploads/d287a2a9-249c-4973-b525-d3117639bee9.png",
     alt: "Bogstavet II"
   },
   "OO": {
-    img: "/lovable-uploads/96a8e74c-d203-46ea-a5b3-62d43488681b.png",
+    img: "/lovable-uploads/db1c1aca-aa6e-4bb1-b0fd-bf1f2f34539b.png",
     alt: "Bogstavet OO"
   },
   "UU": {
-    img: "/lovable-uploads/d0b3c9b9-109a-4f4a-b560-6bbcba7c84e8.png",
+    img: "/lovable-uploads/a519a572-4893-49e9-baee-965f0243deb5.png",
     alt: "Bogstavet UU"
   },
   // Alfabetet - nye billeder tilføjet
