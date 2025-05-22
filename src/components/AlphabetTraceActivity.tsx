@@ -28,6 +28,7 @@ export default function AlphabetTraceActivity({ onBack }: Props) {
     // Special cases for digraphs
     if (letter === "DHdh") return "DH";
     if (letter === "KHkh") return "KH";
+    if (letter === "SHsh") return "SH";
     return letter.charAt(0);
   };
 
