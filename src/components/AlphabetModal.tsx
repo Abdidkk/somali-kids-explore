@@ -57,7 +57,11 @@ const AlphabetModal: React.FC<AlphabetModalProps> = ({ open, onClose }) => {
               className="bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-lg p-3 md:p-4 transition-all text-left flex items-center gap-2 md:gap-3"
             >
               <div className="bg-purple-600 text-white p-2 rounded-full flex items-center justify-center w-8 h-8 md:w-10 md:h-10">
-                <span className={`${isMobile ? 'text-base' : 'text-lg'}`}>🔊</span>
+                <img 
+                  src="/lovable-uploads/4b8dc6fc-aca1-44d7-9188-920521dc6d81.png" 
+                  alt="Lyt og lær" 
+                  className="w-6 h-6 md:w-8 md:h-8 object-contain"
+                />
               </div>
               <div>
                 <h4 className={`font-medium text-purple-700 ${isMobile ? 'text-sm' : ''}`}>Lyt og lær</h4>
