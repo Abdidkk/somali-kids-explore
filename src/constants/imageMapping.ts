@@ -72,7 +72,7 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     alt: "Bogstavet H"
   },
   "J": {
-    img: "/lovable-uploads/ea6f776c-fc95-4f9c-9b19-e161711ab1d9.png",
+    img: "/lovable-uploads/e4254e84-9622-46cd-a75e-3ad9a617be98.png",
     alt: "Bogstavet J"
   },
   "K": {
