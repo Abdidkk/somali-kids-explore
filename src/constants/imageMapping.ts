@@ -1,4 +1,3 @@
-
 // Image file mappings for all letters
 export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
   // Korte vokaler
@@ -45,7 +44,7 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
   },
   // Consonants with corrected image mappings from uploaded files
   "B": {
-    img: "/lovable-uploads/21c9dccc-fb21-4aee-9f6f-6de24ab69a0d.png",
+    img: "/lovable-uploads/baeca82b-56e6-45aa-95bd-3056a44c3507.png",
     alt: "Bogstavet B"
   },
   "C": {
