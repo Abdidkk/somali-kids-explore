@@ -5,7 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { GROUPS, ALPHABET_IMAGES, SHORT_VOWELS, LONG_VOWELS, CONSONANTS } from "@/constants/alphabetData";
+import { ALPHABET_IMAGES, SHORT_VOWELS, LONG_VOWELS } from "@/constants/alphabetData";
 import { speakSomaliLetter } from "@/utils/speechUtils";
 import { AUDIO_FILES } from "@/constants/alphabetData";
 
@@ -24,20 +24,27 @@ const generateSequence = (patternType: string): { sequence: string[], answer: st
     case "longVowels":
       letters = [...LONG_VOWELS];
       break;
-    case "consonants":
-      letters = [...CONSONANTS];
-      break;
-    case "mixedAlpha":
-      // For mixed, randomly pick one of the arrays to maintain sequence
-      const arrays = [SHORT_VOWELS, LONG_VOWELS, CONSONANTS];
-      letters = [...arrays[Math.floor(Math.random() * arrays.length)]];
-      break;
     default:
-      letters = SHORT_VOWELS;
+      // Default to short vowels if invalid pattern type
+      letters = [...SHORT_VOWELS];
   }
   
-  // Generate sequence length (2-4 letters)
-  const sequenceLength = Math.floor(Math.random() * 3) + 2; // 2-4 letters
+  // Safety check: If letters is empty, use SHORT_VOWELS as fallback
+  if (letters.length === 0) {
+    letters = [...SHORT_VOWELS];
+  }
+  
+  // We need at least 2 letters to create a sequence plus an answer
+  if (letters.length < 3) {
+    console.warn("Not enough letters for a proper sequence, using simplified pattern");
+    return { 
+      sequence: letters.length > 0 ? [letters[0]] : ["A"], 
+      answer: letters.length > 1 ? letters[1] : "E" 
+    };
+  }
+  
+  // Generate sequence length (2-3 letters to ensure we have answer choices)
+  const sequenceLength = Math.min(Math.floor(Math.random() * 2) + 2, letters.length - 1); // 2-3 letters
   
   // Make sure we don't start too close to the end so we have a next letter
   const maxStartIdx = letters.length - sequenceLength - 1;
@@ -68,15 +75,21 @@ const generateOptions = (correctAnswer: string, difficulty: "easy" | "medium" | 
   } else if (LONG_VOWELS.includes(correctAnswer)) {
     allOptions = [...LONG_VOWELS];
   } else {
-    // For consonants, include a broader range
-    allOptions = [...CONSONANTS];
+    // Fallback to all vowels
+    allOptions = [...SHORT_VOWELS, ...LONG_VOWELS];
   }
   
   // Remove the correct answer from options pool
   allOptions = allOptions.filter(letter => letter !== correctAnswer);
   
-  // Shuffle and take 3 wrong options
-  const wrongOptions = allOptions.sort(() => Math.random() - 0.5).slice(0, 3);
+  // Safety check: If not enough options, use both vowel types
+  if (allOptions.length < 3) {
+    const combinedVowels = [...SHORT_VOWELS, ...LONG_VOWELS].filter(v => v !== correctAnswer);
+    allOptions = [...new Set(combinedVowels)]; // Remove duplicates
+  }
+  
+  // Shuffle and take up to 3 wrong options
+  const wrongOptions = allOptions.sort(() => Math.random() - 0.5).slice(0, Math.min(3, allOptions.length));
   
   // Add correct answer and shuffle final options
   const finalOptions = [...wrongOptions, correctAnswer];
@@ -99,19 +112,17 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
   
   // Generate a new question with sequential letters
   const generateNewQuestion = () => {
-    // Randomly select pattern type for variety
-    const patternTypes = ["shortVowels", "longVowels", "consonants", "mixedAlpha"];
+    // Only use vowel pattern types
+    const patternTypes = ["shortVowels", "longVowels"];
     const weights = {
-      "shortVowels": difficultyLevel === "easy" ? 0.4 : 0.2,
-      "longVowels": difficultyLevel === "easy" ? 0.3 : 0.3,
-      "consonants": difficultyLevel === "easy" ? 0.2 : 0.4,
-      "mixedAlpha": difficultyLevel === "easy" ? 0.1 : 0.1
+      "shortVowels": difficultyLevel === "easy" ? 0.6 : 0.4,
+      "longVowels": difficultyLevel === "easy" ? 0.4 : 0.6
     };
     
     // Weighted random selection
     const random = Math.random();
     let cumulative = 0;
-    let selectedType = "shortVowels";
+    let selectedType = "shortVowels"; // Default
     
     for (const [type, weight] of Object.entries(weights)) {
       cumulative += weight;
@@ -124,9 +135,18 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
     // Generate sequential pattern
     const { sequence, answer } = generateSequence(selectedType);
     
-    setCurrentSequence(sequence);
-    setCorrectAnswer(answer);
-    setOptions(generateOptions(answer, difficultyLevel));
+    // Safety check to ensure we have an answer and sequence
+    if (!answer || sequence.length === 0) {
+      console.warn("Failed to generate valid sequence, using fallback");
+      setCurrentSequence(["A"]);
+      setCorrectAnswer("E");
+      setOptions(["E", "I", "O", "U"]);
+    } else {
+      setCurrentSequence(sequence);
+      setCorrectAnswer(answer);
+      setOptions(generateOptions(answer, difficultyLevel));
+    }
+    
     setSelectedAnswer("");
     setInputAnswer("");
     setResult(null);
