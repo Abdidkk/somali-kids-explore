@@ -1,4 +1,3 @@
-
 // Image file mappings for all letters
 export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
   // Korte vokaler
@@ -57,7 +56,7 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     alt: "Bogstavet D"
   },
   "DH": {
-    img: "/lovable-uploads/f60eecb4-865c-4a83-907c-b15c190c300a.png",
+    img: "/lovable-uploads/907294f0-3611-4497-bae4-26421475f766.png",
     alt: "Bogstavet DH"
   },
   "F": {
