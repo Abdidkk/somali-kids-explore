@@ -1,9 +1,10 @@
 
+
 // Bogstavgrupper
 export const SHORT_VOWELS = ["A", "E", "I", "O", "U"];
 export const LONG_VOWELS = ["AA", "EE", "II", "OO", "UU"];
 export const CONSONANTS = [
-  "Bb", "Cc", "Dd", "DHdh", "Ff", "Gg", "Hh", "Jj", "Kk", "KHkh",
+  "Bb", "Ff", "Gg", "Hh", "Kk", "KHkh",
   "Ll", "Mm", "Nn", "Qq", "Rr", "Ss", "SHsh", "Tt", "Ww", "Xx", "Yy"
 ];
 
@@ -29,13 +30,9 @@ export const AUDIO_FILES: Record<string, string> = {
   "UU": "",
   // Alfabetet
   "Bb": "",
-  "Cc": "",
-  "Dd": "",
-  "DHdh": "", 
   "Ff": "",
   "Gg": "",
   "Hh": "",
-  "Jj": "",
   "Kk": "",
   "KHkh": "",
   "Ll": "",
@@ -94,22 +91,10 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/a519a572-4893-49e9-baee-965f0243deb5.png",
     alt: "Bogstavet UU"
   },
-  // Alfabetet - nye billeder tilføjet
+  // Alfabetet - nye billeder tilføjet (removed Cc, Jj, Dd, DHdh)
   "Bb": {
     img: "/lovable-uploads/137c3493-d107-4ad6-bdfe-0d3ebde86557.png",
     alt: "Bogstavet B"
-  },
-  "Cc": {
-    img: "/lovable-uploads/2f53b20d-6439-420c-8bd8-f2b42e07562c.png",
-    alt: "Bogstavet C"
-  },
-  "Dd": {
-    img: "/lovable-uploads/21dbe823-efb8-4536-bae2-f0fa1b05135a.png",
-    alt: "Bogstavet D"
-  },
-  "DHdh": {
-    img: "/lovable-uploads/fed49f42-48ff-4aa2-971d-914092d122a8.png", 
-    alt: "Bogstavet DH"
   },
   "Ff": {
     img: "/lovable-uploads/e6aa3b70-3fa2-4c9e-af6a-398e0c5487f6.png",
@@ -122,10 +107,6 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
   "Hh": {
     img: "/lovable-uploads/fadf7158-7c58-41a5-bc73-84baf9995109.png",
     alt: "Bogstavet H"
-  },
-  "Jj": {
-    img: "/lovable-uploads/2880b50d-a895-4677-a7d9-680fa0c872f3.png",
-    alt: "Bogstavet J"
   },
   "Kk": {
     img: "/lovable-uploads/5e9cedef-3d1e-4ca9-8f28-eac454a506e7.png",
@@ -193,3 +174,4 @@ export const hasImage = (letter: string) => {
 export const hasAudio = (letter: string) => {
   return AUDIO_FILES[letter] && AUDIO_FILES[letter] !== "";
 };
+
