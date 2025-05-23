@@ -5,7 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { ALPHABET_IMAGES, SHORT_VOWELS, LONG_VOWELS } from "@/constants/alphabetData";
+import { ALPHABET_IMAGES, SHORT_VOWELS, LONG_VOWELS, CONSONANTS } from "@/constants/alphabetData";
 import { speakSomaliLetter } from "@/utils/speechUtils";
 import { AUDIO_FILES } from "@/constants/alphabetData";
 
@@ -18,6 +18,10 @@ const generateSequence = (patternType: string): { sequence: string[], answer: st
   let letters: string[] = [];
   
   switch(patternType) {
+    case "alphabet":
+      // If consonants are empty, fall back to short vowels
+      letters = CONSONANTS.length > 0 ? [...CONSONANTS] : [...SHORT_VOWELS];
+      break;
     case "shortVowels":
       letters = [...SHORT_VOWELS];
       break;
@@ -112,11 +116,12 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
   
   // Generate a new question with sequential letters
   const generateNewQuestion = () => {
-    // Only use vowel pattern types
-    const patternTypes = ["shortVowels", "longVowels"];
+    // Cycle through all three categories including alphabet
+    const patternTypes = ["alphabet", "shortVowels", "longVowels"];
     const weights = {
-      "shortVowels": difficultyLevel === "easy" ? 0.6 : 0.4,
-      "longVowels": difficultyLevel === "easy" ? 0.4 : 0.6
+      "alphabet": difficultyLevel === "easy" ? 0.3 : 0.4,
+      "shortVowels": difficultyLevel === "easy" ? 0.4 : 0.3,
+      "longVowels": difficultyLevel === "easy" ? 0.3 : 0.3
     };
     
     // Weighted random selection
