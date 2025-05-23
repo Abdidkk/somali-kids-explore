@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { AUDIO_FILES } from "@/constants/alphabetData";
+import { AUDIO_FILES } from "@/constants/audioMapping";
 import { useIsMobile } from "@/hooks/use-mobile";
 import AlphabetAchievements from "./AlphabetAchievements";
 import LetterDisplay from "./alphabet/LetterDisplay";

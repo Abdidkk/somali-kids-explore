@@ -1,59 +1,7 @@
 
-
-// Bogstavgrupper
-export const SHORT_VOWELS = ["A", "E", "I", "O", "U"];
-export const LONG_VOWELS = ["AA", "EE", "II", "OO", "UU"];
-export const CONSONANTS: string[] = ["B", "C", "D", "DH", "F", "G", "H", "J", "K", "KH", "L", "M", "N", "P", "Q", "R", "S", "SH", "T", "V", "W", "X", "Y", "Z"]; // Complete Somali alphabet with digraphs
-
-export const GROUPS = {
-  alphabet: { label: "Alfabetet", letters: CONSONANTS },
-  short:    { label: "Korte vokaler", letters: SHORT_VOWELS },
-  long:     { label: "Lange vokaler", letters: LONG_VOWELS }
-};
-
-// Audio file mappings - Including consonants (with empty paths for now)
-export const AUDIO_FILES: Record<string, string> = {
-  // Korte vokaler
-  "A": "",
-  "E": "",
-  "I": "",
-  "O": "",
-  "U": "",
-  // Lange vokaler
-  "AA": "",
-  "EE": "",
-  "II": "",
-  "OO": "",
-  "UU": "",
-  // Consonants (empty paths)
-  "B": "",
-  "C": "",
-  "D": "",
-  "DH": "",
-  "F": "",
-  "G": "",
-  "H": "",
-  "J": "",
-  "K": "",
-  "KH": "",
-  "L": "",
-  "M": "",
-  "N": "",
-  "P": "",
-  "Q": "",
-  "R": "",
-  "S": "",
-  "SH": "",
-  "T": "",
-  "V": "",
-  "W": "",
-  "X": "",
-  "Y": "",
-  "Z": ""
-};
-
+// Image file mappings for all letters
 export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
-  // Korte vokaler - updated with new uploaded images
+  // Korte vokaler
   "A": {
     img: "/lovable-uploads/f584a67e-2b87-4d62-86dc-f19fdabc6fa9.png",
     alt: "Bogstavet A"
@@ -74,7 +22,7 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/061ec32d-c737-4aba-bb96-e1924b0c39a6.png",
     alt: "Bogstavet U"
   },
-  // Lange vokaler - updated with new uploaded images
+  // Lange vokaler
   "AA": {
     img: "/lovable-uploads/c7e639a4-cc13-4207-aeb6-641c37cb7565.png",
     alt: "Bogstavet AA"
@@ -193,17 +141,3 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     alt: "Bogstavet Z"
   }
 };
-
-// Helper functions
-export const isVowel = (letter: string) => {
-  return SHORT_VOWELS.includes(letter) || LONG_VOWELS.includes(letter);
-};
-
-export const hasImage = (letter: string) => {
-  return ALPHABET_IMAGES[letter]?.img && ALPHABET_IMAGES[letter].img !== "";
-};
-
-export const hasAudio = (letter: string) => {
-  return AUDIO_FILES[letter] && AUDIO_FILES[letter] !== "";
-};
-

@@ -5,9 +5,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { ALPHABET_IMAGES, SHORT_VOWELS, LONG_VOWELS, CONSONANTS } from "@/constants/alphabetData";
+import { ALPHABET_IMAGES } from "@/constants/imageMapping";
+import { SHORT_VOWELS, LONG_VOWELS, CONSONANTS } from "@/constants/letterGroups";
 import { speakSomaliLetter } from "@/utils/speechUtils";
-import { AUDIO_FILES } from "@/constants/alphabetData";
+import { AUDIO_FILES } from "@/constants/audioMapping";
 
 interface Props {
   onBack: () => void;

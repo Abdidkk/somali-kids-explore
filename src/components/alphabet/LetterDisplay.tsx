@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { ALPHABET_IMAGES } from "@/constants/alphabetData";
+import { ALPHABET_IMAGES } from "@/constants/imageMapping";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface LetterDisplayProps {

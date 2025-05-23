@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import AlphabetPrototype from "./AlphabetPrototype";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { GROUPS, LONG_VOWELS } from "@/constants/alphabetData";
+import { GROUPS } from "@/constants/letterGroups";
 import { useIsMobile } from "@/hooks/use-mobile";
 import LetterSelector from "./alphabet/LetterSelector";
 

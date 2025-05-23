@@ -2,7 +2,9 @@
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ElevenLabsTTS from "./ElevenLabsTTS";
-import { GROUPS, hasAudio, AUDIO_FILES, LONG_VOWELS, CONSONANTS } from "@/constants/alphabetData";
+import { GROUPS } from "@/constants/letterGroups";
+import { hasAudio } from "@/constants/alphabetHelpers";
+import { AUDIO_FILES } from "@/constants/audioMapping";
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
 import LetterDisplay from "./alphabet/LetterDisplay";

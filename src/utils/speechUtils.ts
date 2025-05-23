@@ -1,7 +1,9 @@
 
+import { hasAudio } from "@/constants/alphabetHelpers";
+
 export function speakSomaliLetter(letter: string, audioFiles: Record<string, string>) {
   // Check if we have a custom audio file for this letter
-  if (hasAudio(letter, audioFiles)) {
+  if (hasAudio(letter)) {
     const audio = new Audio(audioFiles[letter]);
     audio.play().catch(error => {
       console.error("Failed to play custom audio:", error);
@@ -21,8 +23,4 @@ export function speakUsingSynthesis(letter: string) {
   if (!hasSomali) utter.lang = "en-US";
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(utter);
-}
-
-export function hasAudio(letter: string, audioFiles: Record<string, string>) {
-  return audioFiles[letter] && audioFiles[letter] !== "";
 }
