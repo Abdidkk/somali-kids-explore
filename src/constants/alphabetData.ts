@@ -5,7 +5,7 @@ export const SHORT_VOWELS = ["A", "E", "I", "O", "U"];
 export const LONG_VOWELS = ["AA", "EE", "II", "OO", "UU"];
 export const CONSONANTS = [
   "Bb", "Ff", "Gg", "Hh", "Kk", "KHkh",
-  "Ll", "Mm", "Nn", "Qq", "Rr", "Ss", "SHsh", "Tt", "Ww", "Xx", "Yy"
+  "Ll", "Nn", "Qq", "Rr", "SHsh", "Tt", "Xx"
 ];
 
 export const GROUPS = {
@@ -36,16 +36,12 @@ export const AUDIO_FILES: Record<string, string> = {
   "Kk": "",
   "KHkh": "",
   "Ll": "",
-  "Mm": "",
   "Nn": "",
   "Qq": "",
   "Rr": "",
-  "Ss": "",
   "SHsh": "",
   "Tt": "",
-  "Ww": "",
-  "Xx": "",
-  "Yy": ""
+  "Xx": ""
 };
 
 export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
@@ -91,7 +87,7 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/a519a572-4893-49e9-baee-965f0243deb5.png",
     alt: "Bogstavet UU"
   },
-  // Alfabetet - nye billeder tilføjet (removed Cc, Jj, Dd, DHdh)
+  // Alfabetet - reduced set of consonants
   "Bb": {
     img: "/lovable-uploads/137c3493-d107-4ad6-bdfe-0d3ebde86557.png",
     alt: "Bogstavet B"
@@ -120,10 +116,6 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/1dbfd78f-7c8b-4272-a674-10d38c20043d.png",
     alt: "Bogstavet L"
   },
-  "Mm": {
-    img: "/lovable-uploads/ad1381cf-5eeb-4fef-8af0-1dc5f93bf90b.png",
-    alt: "Bogstavet M"
-  },
   "Nn": {
     img: "/lovable-uploads/3b5c7f31-fb92-4d57-b31a-2b9f5e3f8f04.png",
     alt: "Bogstavet N"
@@ -136,10 +128,6 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/05aa24f3-bf74-4721-80fd-294bfe79b1eb.png",
     alt: "Bogstavet R"
   },
-  "Ss": {
-    img: "/lovable-uploads/7704660d-576e-4a7f-ac19-3aed5364351f.png",
-    alt: "Bogstavet S"
-  },
   "SHsh": {
     img: "/lovable-uploads/0249030c-58e1-4fac-8541-4c83b0b41900.png",
     alt: "Bogstavet SH"
@@ -148,17 +136,9 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/0e8c4234-8d4a-494f-ba70-7efa05bbf051.png",
     alt: "Bogstavet T"
   },
-  "Ww": {
-    img: "/lovable-uploads/1b83ffd6-177b-4abc-b5e8-ff1f289e98d6.png",
-    alt: "Bogstavet W"
-  },
   "Xx": {
     img: "/lovable-uploads/8caf3563-09bf-4bd5-a4ee-92b930b270a5.png",
     alt: "Bogstavet X"
-  },
-  "Yy": {
-    img: "/lovable-uploads/635670fe-f87e-4fb0-aec5-e1d0346b85c7.png",
-    alt: "Bogstavet Y"
   }
 };
 
