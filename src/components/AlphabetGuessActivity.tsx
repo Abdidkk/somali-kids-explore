@@ -13,7 +13,7 @@ interface Props {
   onBack: () => void;
 }
 
-// Generate a random sequence based on pattern type
+// Generate a sequential pattern based on pattern type
 const generateSequence = (patternType: string): { sequence: string[], answer: string } => {
   let letters: string[] = [];
   
@@ -28,35 +28,32 @@ const generateSequence = (patternType: string): { sequence: string[], answer: st
       letters = [...CONSONANTS];
       break;
     case "mixedAlpha":
-      // Mix different types of letters
-      letters = [...SHORT_VOWELS, ...LONG_VOWELS, ...CONSONANTS];
+      // For mixed, randomly pick one of the arrays to maintain sequence
+      const arrays = [SHORT_VOWELS, LONG_VOWELS, CONSONANTS];
+      letters = [...arrays[Math.floor(Math.random() * arrays.length)]];
       break;
     default:
       letters = SHORT_VOWELS;
   }
   
-  // Shuffle the letters array to get random selection
-  const shuffled = [...letters].sort(() => Math.random() - 0.5);
-  
-  // For random sequences, take 2-4 consecutive letters from the shuffled array
+  // Generate sequence length (2-4 letters)
   const sequenceLength = Math.floor(Math.random() * 3) + 2; // 2-4 letters
-  const startIdx = Math.floor(Math.random() * (shuffled.length - sequenceLength - 1));
   
-  const sequence = shuffled.slice(startIdx, startIdx + sequenceLength);
-  
-  // The answer is the next letter in the original order (if it exists)
-  // Otherwise, pick a random letter from the same category
-  let answer: string;
-  const lastLetter = sequence[sequence.length - 1];
-  const originalIndex = letters.indexOf(lastLetter);
-  
-  if (originalIndex !== -1 && originalIndex < letters.length - 1) {
-    answer = letters[originalIndex + 1];
-  } else {
-    // If we can't find next in sequence, pick random from same category
-    const remainingLetters = letters.filter(l => !sequence.includes(l));
-    answer = remainingLetters[Math.floor(Math.random() * remainingLetters.length)] || letters[0];
+  // Make sure we don't start too close to the end so we have a next letter
+  const maxStartIdx = letters.length - sequenceLength - 1;
+  if (maxStartIdx < 0) {
+    // If array is too small, just take the first letters
+    const sequence = letters.slice(0, Math.min(sequenceLength, letters.length - 1));
+    const answer = letters[sequence.length];
+    return { sequence, answer };
   }
+  
+  // Pick random starting position ensuring we have room for the answer
+  const startIdx = Math.floor(Math.random() * (maxStartIdx + 1));
+  
+  // Create sequential pattern
+  const sequence = letters.slice(startIdx, startIdx + sequenceLength);
+  const answer = letters[startIdx + sequenceLength]; // Next letter in sequence
   
   return { sequence, answer };
 };
@@ -100,9 +97,9 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
   const [showCelebration, setShowCelebration] = useState(false);
   const [difficultyLevel, setDifficultyLevel] = useState<"easy" | "medium" | "hard">("easy");
   
-  // Generate a new question with completely random letters
+  // Generate a new question with sequential letters
   const generateNewQuestion = () => {
-    // Randomly select pattern type for more variety
+    // Randomly select pattern type for variety
     const patternTypes = ["shortVowels", "longVowels", "consonants", "mixedAlpha"];
     const weights = {
       "shortVowels": difficultyLevel === "easy" ? 0.4 : 0.2,
@@ -124,7 +121,7 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
       }
     }
     
-    // Generate completely random sequence
+    // Generate sequential pattern
     const { sequence, answer } = generateSequence(selectedType);
     
     setCurrentSequence(sequence);
