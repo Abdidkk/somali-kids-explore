@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { HelpCircle, Volume2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,7 +13,7 @@ interface Props {
   onBack: () => void;
 }
 
-// Generate a sequence based on pattern type
+// Generate a random sequence based on pattern type
 const generateSequence = (patternType: string): { sequence: string[], answer: string } => {
   let letters: string[] = [];
   
@@ -26,28 +25,38 @@ const generateSequence = (patternType: string): { sequence: string[], answer: st
       letters = [...LONG_VOWELS];
       break;
     case "consonants":
-      // Select a continuous subset of consonants (3-5 letters)
-      const startIdx = Math.floor(Math.random() * (CONSONANTS.length - 5));
-      letters = CONSONANTS.slice(startIdx, startIdx + Math.floor(Math.random() * 2) + 3);
+      letters = [...CONSONANTS];
       break;
     case "mixedAlpha":
-      // For mixed alphabet, we'll use the first letters of each group
-      letters = [
-        CONSONANTS[Math.floor(Math.random() * 5)],
-        CONSONANTS[Math.floor(Math.random() * 5) + 5],
-        CONSONANTS[Math.floor(Math.random() * 5) + 10]
-      ];
+      // Mix different types of letters
+      letters = [...SHORT_VOWELS, ...LONG_VOWELS, ...CONSONANTS];
       break;
     default:
       letters = SHORT_VOWELS;
   }
   
-  // For the sequence, use all but the last letter
-  const sequenceLength = Math.min(letters.length - 1, 3);
-  const sequence = letters.slice(0, sequenceLength);
+  // Shuffle the letters array to get random selection
+  const shuffled = [...letters].sort(() => Math.random() - 0.5);
   
-  // The answer is the next letter in the sequence
-  const answer = letters[sequenceLength];
+  // For random sequences, take 2-4 consecutive letters from the shuffled array
+  const sequenceLength = Math.floor(Math.random() * 3) + 2; // 2-4 letters
+  const startIdx = Math.floor(Math.random() * (shuffled.length - sequenceLength - 1));
+  
+  const sequence = shuffled.slice(startIdx, startIdx + sequenceLength);
+  
+  // The answer is the next letter in the original order (if it exists)
+  // Otherwise, pick a random letter from the same category
+  let answer: string;
+  const lastLetter = sequence[sequence.length - 1];
+  const originalIndex = letters.indexOf(lastLetter);
+  
+  if (originalIndex !== -1 && originalIndex < letters.length - 1) {
+    answer = letters[originalIndex + 1];
+  } else {
+    // If we can't find next in sequence, pick random from same category
+    const remainingLetters = letters.filter(l => !sequence.includes(l));
+    answer = remainingLetters[Math.floor(Math.random() * remainingLetters.length)] || letters[0];
+  }
   
   return { sequence, answer };
 };
@@ -56,28 +65,25 @@ const generateSequence = (patternType: string): { sequence: string[], answer: st
 const generateOptions = (correctAnswer: string, difficulty: "easy" | "medium" | "hard"): string[] => {
   let allOptions: string[] = [];
   
-  // Add some options from each letter group
+  // Determine which category the correct answer belongs to
   if (SHORT_VOWELS.includes(correctAnswer)) {
     allOptions = [...SHORT_VOWELS];
   } else if (LONG_VOWELS.includes(correctAnswer)) {
     allOptions = [...LONG_VOWELS];
   } else {
-    // For consonants, include nearby letters in the alphabet
-    const idx = CONSONANTS.indexOf(correctAnswer);
-    const start = Math.max(0, idx - 4);
-    const end = Math.min(CONSONANTS.length, idx + 5);
-    allOptions = CONSONANTS.slice(start, end);
+    // For consonants, include a broader range
+    allOptions = [...CONSONANTS];
   }
   
-  // Exclude the correct answer from the pool (we'll add it back later)
+  // Remove the correct answer from options pool
   allOptions = allOptions.filter(letter => letter !== correctAnswer);
   
-  // Shuffle the options and take 3 (or fewer if not enough options)
-  allOptions = allOptions.sort(() => Math.random() - 0.5).slice(0, 3);
+  // Shuffle and take 3 wrong options
+  const wrongOptions = allOptions.sort(() => Math.random() - 0.5).slice(0, 3);
   
-  // Add the correct answer and shuffle again
-  allOptions.push(correctAnswer);
-  return allOptions.sort(() => Math.random() - 0.5);
+  // Add correct answer and shuffle final options
+  const finalOptions = [...wrongOptions, correctAnswer];
+  return finalOptions.sort(() => Math.random() - 0.5);
 };
 
 export default function AlphabetGuessActivity({ onBack }: Props) {
@@ -94,21 +100,32 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
   const [showCelebration, setShowCelebration] = useState(false);
   const [difficultyLevel, setDifficultyLevel] = useState<"easy" | "medium" | "hard">("easy");
   
-  // Generate a new question
+  // Generate a new question with completely random letters
   const generateNewQuestion = () => {
-    // Select pattern type based on difficulty and question count
-    let patternType: string;
+    // Randomly select pattern type for more variety
+    const patternTypes = ["shortVowels", "longVowels", "consonants", "mixedAlpha"];
+    const weights = {
+      "shortVowels": difficultyLevel === "easy" ? 0.4 : 0.2,
+      "longVowels": difficultyLevel === "easy" ? 0.3 : 0.3,
+      "consonants": difficultyLevel === "easy" ? 0.2 : 0.4,
+      "mixedAlpha": difficultyLevel === "easy" ? 0.1 : 0.1
+    };
     
-    if (difficultyLevel === "easy" || questionCount < 2) {
-      patternType = "shortVowels";
-    } else if (difficultyLevel === "medium" || questionCount < 5) {
-      patternType = Math.random() > 0.5 ? "longVowels" : "consonants";
-    } else {
-      patternType = Math.random() > 0.7 ? "mixedAlpha" : "consonants";
+    // Weighted random selection
+    const random = Math.random();
+    let cumulative = 0;
+    let selectedType = "shortVowels";
+    
+    for (const [type, weight] of Object.entries(weights)) {
+      cumulative += weight;
+      if (random <= cumulative) {
+        selectedType = type;
+        break;
+      }
     }
     
-    // Generate the sequence and answer
-    const { sequence, answer } = generateSequence(patternType);
+    // Generate completely random sequence
+    const { sequence, answer } = generateSequence(selectedType);
     
     setCurrentSequence(sequence);
     setCorrectAnswer(answer);
@@ -158,7 +175,7 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
         toast.success("Fantastisk! Du er mester i alfabetet!");
       }
       
-      // Generate new question
+      // Generate completely new random question
       generateNewQuestion();
     }, 1800);
   };
