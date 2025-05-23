@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ElevenLabsTTS from "./ElevenLabsTTS";
-import { GROUPS, hasAudio, AUDIO_FILES, LONG_VOWELS } from "@/constants/alphabetData";
+import { GROUPS, hasAudio, AUDIO_FILES, LONG_VOWELS, CONSONANTS } from "@/constants/alphabetData";
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
 import LetterDisplay from "./alphabet/LetterDisplay";
@@ -17,8 +17,8 @@ export default function AlphabetListenActivity({ onBack }: Props) {
   const isMobile = useIsMobile();
   const [apiKey, setApiKey] = useState(""); 
   const [playingIdx, setPlayingIdx] = useState<number | null>(null);
-  // Tabs - start with short vowels
-  const [tab, setTab] = useState<"alphabet" | "short" | "long">("short");
+  // Tabs - start with alphabet if available, otherwise short vowels
+  const [tab, setTab] = useState<"alphabet" | "short" | "long">("alphabet");
   const [selectedIdx, setSelectedIdx] = useState(0);
   const groupLetters = GROUPS[tab].letters;
   const selectedLetter = groupLetters[selectedIdx] || groupLetters[0];
@@ -29,9 +29,9 @@ export default function AlphabetListenActivity({ onBack }: Props) {
     if (selectedIdx > groupLetters.length - 1) setSelectedIdx(0);
   }, [tab, groupLetters.length, selectedIdx]);
 
-  // Handle empty alphabet group
+  // If alphabet is empty, switch to short vowels on initial load
   useEffect(() => {
-    if (GROUPS[tab].letters.length === 0) {
+    if (GROUPS.alphabet.letters.length === 0 && tab === "alphabet") {
       setTab("short");
       setSelectedIdx(0);
     }
@@ -67,12 +67,10 @@ export default function AlphabetListenActivity({ onBack }: Props) {
 
   return (
     <div className="flex flex-col items-center mt-3 md:mt-5 gap-4 md:gap-5">
-      {/* Tabs - hide alphabet tab if empty */}
+      {/* Tabs - always show all three tabs */}
       <Tabs value={tab} onValueChange={v => setTab(v as "alphabet" | "short" | "long")} className="w-full flex flex-col items-center">
         <TabsList className={`mb-3 md:mb-4 bg-violet-50 ${isMobile ? 'text-xs' : ''}`}>
-          {GROUPS.alphabet.letters.length > 0 && (
-            <TabsTrigger value="alphabet">{GROUPS.alphabet.label}</TabsTrigger>
-          )}
+          <TabsTrigger value="alphabet">{GROUPS.alphabet.label}</TabsTrigger>
           <TabsTrigger value="short">{GROUPS.short.label}</TabsTrigger>
           <TabsTrigger value="long">{GROUPS.long.label}</TabsTrigger>
         </TabsList>
