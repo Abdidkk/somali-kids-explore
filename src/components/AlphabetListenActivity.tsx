@@ -17,8 +17,8 @@ export default function AlphabetListenActivity({ onBack }: Props) {
   const isMobile = useIsMobile();
   const [apiKey, setApiKey] = useState(""); 
   const [playingIdx, setPlayingIdx] = useState<number | null>(null);
-  // Tabs
-  const [tab, setTab] = useState<"alphabet" | "short" | "long">("alphabet");
+  // Tabs - start with short vowels
+  const [tab, setTab] = useState<"alphabet" | "short" | "long">("short");
   const [selectedIdx, setSelectedIdx] = useState(0);
   const groupLetters = GROUPS[tab].letters;
   const selectedLetter = groupLetters[selectedIdx] || groupLetters[0];
@@ -28,6 +28,14 @@ export default function AlphabetListenActivity({ onBack }: Props) {
   useEffect(() => {
     if (selectedIdx > groupLetters.length - 1) setSelectedIdx(0);
   }, [tab, groupLetters.length, selectedIdx]);
+
+  // Handle empty alphabet group
+  useEffect(() => {
+    if (GROUPS[tab].letters.length === 0) {
+      setTab("short");
+      setSelectedIdx(0);
+    }
+  }, [tab]);
 
   // Afspil bogstav automatisk hvis API-nøgle er angivet og ikke bruger custom audio
   useEffect(() => {
@@ -59,10 +67,12 @@ export default function AlphabetListenActivity({ onBack }: Props) {
 
   return (
     <div className="flex flex-col items-center mt-3 md:mt-5 gap-4 md:gap-5">
-      {/* Tabs */}
+      {/* Tabs - hide alphabet tab if empty */}
       <Tabs value={tab} onValueChange={v => setTab(v as "alphabet" | "short" | "long")} className="w-full flex flex-col items-center">
         <TabsList className={`mb-3 md:mb-4 bg-violet-50 ${isMobile ? 'text-xs' : ''}`}>
-          <TabsTrigger value="alphabet">{GROUPS.alphabet.label}</TabsTrigger>
+          {GROUPS.alphabet.letters.length > 0 && (
+            <TabsTrigger value="alphabet">{GROUPS.alphabet.label}</TabsTrigger>
+          )}
           <TabsTrigger value="short">{GROUPS.short.label}</TabsTrigger>
           <TabsTrigger value="long">{GROUPS.long.label}</TabsTrigger>
         </TabsList>
@@ -71,55 +81,65 @@ export default function AlphabetListenActivity({ onBack }: Props) {
           {/* Letter display with image and buttons */}
           <div className="flex flex-col items-center gap-4 md:gap-5 w-full">
             {/* Current letter display using the dedicated LetterDisplay component */}
-            <div className={`flex flex-col items-center ${isMobile ? 'p-3' : 'p-5'}`}>
-              <LetterDisplay selectedLetter={selectedLetter} />
-              
-              {/* Play audio button */}
-              <Button 
-                onClick={playAudio} 
-                variant="outline" 
-                size={isMobile ? "default" : "lg"}
-                className="mt-3 md:mt-4 flex gap-2"
-              >
-                <Volume2 className="w-5 h-5" /> Lyt
-              </Button>
-            </div>
+            {groupLetters.length > 0 && (
+              <>
+                <div className={`flex flex-col items-center ${isMobile ? 'p-3' : 'p-5'}`}>
+                  <LetterDisplay selectedLetter={selectedLetter} />
+                  
+                  {/* Play audio button */}
+                  <Button 
+                    onClick={playAudio} 
+                    variant="outline" 
+                    size={isMobile ? "default" : "lg"}
+                    className="mt-3 md:mt-4 flex gap-2"
+                  >
+                    <Volume2 className="w-5 h-5" /> Lyt
+                  </Button>
+                </div>
+                
+                {/* Letter navigation */}
+                <div className="flex items-center gap-3 mb-3 md:mb-4">
+                  <button 
+                    onClick={() => setSelectedIdx(prev => Math.max(0, prev - 1))}
+                    disabled={selectedIdx === 0}
+                    className="bg-purple-100 hover:bg-purple-200 disabled:opacity-50 p-2 md:p-3 rounded-full"
+                    aria-label="Forrige bogstav"
+                  >
+                    ◀
+                  </button>
+                  <div className={`px-4 md:px-5 py-2 md:py-3 bg-purple-50 rounded-lg font-medium ${isMobile ? 'text-sm' : 'text-base'}`}>
+                    {selectedIdx + 1} / {groupLetters.length}
+                  </div>
+                  <button 
+                    onClick={() => setSelectedIdx(prev => Math.min(groupLetters.length - 1, prev + 1))}
+                    disabled={selectedIdx >= groupLetters.length - 1}
+                    className="bg-purple-100 hover:bg-purple-200 disabled:opacity-50 p-2 md:p-3 rounded-full"
+                    aria-label="Næste bogstav"
+                  >
+                    ▶
+                  </button>
+                </div>
+                
+                {/* Letter selector grid using our updated component */}
+                <LetterSelector 
+                  letters={groupLetters}
+                  selectedIdx={selectedIdx}
+                  onLetterSelect={setSelectedIdx}
+                />
+              </>
+            )}
             
-            {/* Letter navigation */}
-            <div className="flex items-center gap-3 mb-3 md:mb-4">
-              <button 
-                onClick={() => setSelectedIdx(prev => Math.max(0, prev - 1))}
-                disabled={selectedIdx === 0}
-                className="bg-purple-100 hover:bg-purple-200 disabled:opacity-50 p-2 md:p-3 rounded-full"
-                aria-label="Forrige bogstav"
-              >
-                ◀
-              </button>
-              <div className={`px-4 md:px-5 py-2 md:py-3 bg-purple-50 rounded-lg font-medium ${isMobile ? 'text-sm' : 'text-base'}`}>
-                {selectedIdx + 1} / {groupLetters.length}
+            {groupLetters.length === 0 && (
+              <div className="text-gray-500 text-center py-8">
+                Ingen bogstaver tilgængelige i denne kategori
               </div>
-              <button 
-                onClick={() => setSelectedIdx(prev => Math.min(groupLetters.length - 1, prev + 1))}
-                disabled={selectedIdx >= groupLetters.length - 1}
-                className="bg-purple-100 hover:bg-purple-200 disabled:opacity-50 p-2 md:p-3 rounded-full"
-                aria-label="Næste bogstav"
-              >
-                ▶
-              </button>
-            </div>
-            
-            {/* Letter selector grid using our updated component */}
-            <LetterSelector 
-              letters={groupLetters}
-              selectedIdx={selectedIdx}
-              onLetterSelect={setSelectedIdx}
-            />
+            )}
           </div>
         </TabsContent>
       </Tabs>
       
       {/* Text-to-speech component - only render if needed */}
-      {playingIdx !== null && apiKey && !useCustomAudio && (
+      {playingIdx !== null && apiKey && !useCustomAudio && groupLetters.length > 0 && (
         <ElevenLabsTTS
           text={groupLetters[playingIdx]}
           apiKey={apiKey}
