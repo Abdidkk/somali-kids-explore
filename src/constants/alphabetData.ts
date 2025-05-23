@@ -1,8 +1,9 @@
 
+
 // Bogstavgrupper
 export const SHORT_VOWELS = ["A", "E", "I", "O", "U"];
 export const LONG_VOWELS = ["AA", "EE", "II", "OO", "UU"];
-export const CONSONANTS: string[] = ["B", "D", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "X", "Y", "Z"]; // Restored consonants
+export const CONSONANTS: string[] = ["B", "C", "D", "DH", "F", "G", "H", "J", "K", "KH", "L", "M", "N", "P", "Q", "R", "S", "SH", "T", "V", "W", "X", "Y", "Z"]; // Complete Somali alphabet with digraphs
 
 export const GROUPS = {
   alphabet: { label: "Alfabetet", letters: CONSONANTS },
@@ -26,12 +27,15 @@ export const AUDIO_FILES: Record<string, string> = {
   "UU": "",
   // Consonants (empty paths)
   "B": "",
+  "C": "",
   "D": "",
+  "DH": "",
   "F": "",
   "G": "",
   "H": "",
   "J": "",
   "K": "",
+  "KH": "",
   "L": "",
   "M": "",
   "N": "",
@@ -39,6 +43,7 @@ export const AUDIO_FILES: Record<string, string> = {
   "Q": "",
   "R": "",
   "S": "",
+  "SH": "",
   "T": "",
   "V": "",
   "W": "",
@@ -90,45 +95,57 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/a519a572-4893-49e9-baee-965f0243deb5.png",
     alt: "Bogstavet UU"
   },
-  // Consonants with image mappings from uploaded files
+  // Consonants with updated image mappings from uploaded files
   "B": {
-    img: "/lovable-uploads/85f38696-d894-4781-a2e8-210a91796896.png",
+    img: "/lovable-uploads/21c9dccc-fb21-4aee-9f6f-6de24ab69a0d.png",
     alt: "Bogstavet B"
   },
+  "C": {
+    img: "/lovable-uploads/24359a93-cd7c-4cd8-a421-ceb9b8f45bb9.png",
+    alt: "Bogstavet C"
+  },
   "D": {
-    img: "/lovable-uploads/0e29c5c2-6fa5-4899-a196-b7832d8abc67.png",
+    img: "/lovable-uploads/968054ad-60e9-4e68-91b0-03b2fad888a2.png",
     alt: "Bogstavet D"
   },
+  "DH": {
+    img: "/lovable-uploads/f60eecb4-865c-4a83-907c-b15c190c300a.png",
+    alt: "Bogstavet DH"
+  },
   "F": {
-    img: "/lovable-uploads/39e62fa6-99c4-4bf1-996f-19577f56a318.png", 
+    img: "/lovable-uploads/aee0280a-2434-493c-8180-e7ace9f4a89b.png", 
     alt: "Bogstavet F"
   },
   "G": {
-    img: "/lovable-uploads/4b8dc6fc-aca1-44d7-9188-920521dc6d81.png",
+    img: "/lovable-uploads/25264bfe-de04-484e-9f0e-62113974aa65.png",
     alt: "Bogstavet G"
   },
   "H": {
-    img: "/lovable-uploads/2880b50d-a895-4677-a7d9-680fa0c872f3.png",
+    img: "/lovable-uploads/61de946b-37f5-4def-9c0b-8659fc5c7e60.png",
     alt: "Bogstavet H"
   },
   "J": {
-    img: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png",
+    img: "/lovable-uploads/ea6f776c-fc95-4f9c-9b19-e161711ab1d9.png",
     alt: "Bogstavet J"
   },
   "K": {
-    img: "/lovable-uploads/ad1381cf-5eeb-4fef-8af0-1dc5f93bf90b.png",
+    img: "/lovable-uploads/d644d00a-2079-4693-9e0c-10575e898ac0.png",
     alt: "Bogstavet K"
   },
+  "KH": {
+    img: "/lovable-uploads/d7098faf-cce7-4c67-aaa7-342269b6275d.png",
+    alt: "Bogstavet KH"
+  },
   "L": {
-    img: "/lovable-uploads/51f528f7-5124-4514-b0f4-ecf0d93a85ae.png",
+    img: "/lovable-uploads/7042d830-3270-48c7-a5cb-cac9b00fb249.png",
     alt: "Bogstavet L"
   },
   "M": {
-    img: "/lovable-uploads/a1b97193-b26e-42a5-90f1-0ee432386d70.png",
+    img: "/lovable-uploads/b8557c67-cf0a-4c2f-ba61-81ef327af440.png",
     alt: "Bogstavet M"
   },
   "N": {
-    img: "/lovable-uploads/4097f6e7-9f3a-423f-8959-f5b7d9b23ed7.png",
+    img: "/lovable-uploads/bae4fc6d-0a95-4f11-a9cb-678ad9104980.png",
     alt: "Bogstavet N"
   },
   "P": {
@@ -136,19 +153,23 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     alt: "Bogstavet P"
   },
   "Q": {
-    img: "/lovable-uploads/cffd237e-6a54-4fc2-8948-ab03ee00399a.png",
+    img: "/lovable-uploads/39550249-2c78-495a-8d1d-8ee30d0bfd11.png",
     alt: "Bogstavet Q"
   },
   "R": {
-    img: "/lovable-uploads/e07592ff-5948-45cb-a7a5-de1ab3075b22.png",
+    img: "/lovable-uploads/0264af11-4d98-40b2-ae46-849d662b25d4.png",
     alt: "Bogstavet R"
   },
   "S": {
-    img: "/lovable-uploads/c14144b9-9843-4d08-ac21-d439ebef2ad0.png",
+    img: "/lovable-uploads/0be6fe4a-4dd9-4477-815f-c774c20c36fc.png",
     alt: "Bogstavet S"
   },
+  "SH": {
+    img: "/lovable-uploads/686e71c2-924e-4681-88ee-cc2bd31802e6.png",
+    alt: "Bogstavet SH"
+  },
   "T": {
-    img: "/lovable-uploads/5f3c2e5c-8a56-4baf-8c3f-4d8ecbe1f924.png",
+    img: "/lovable-uploads/a25523b0-c75a-4941-9cdf-961f3cce4b96.png",
     alt: "Bogstavet T"
   },
   "V": {
@@ -156,11 +177,11 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     alt: "Bogstavet V"
   },
   "W": {
-    img: "/lovable-uploads/23df9b50-7f66-4b52-819b-59cc920edd2b.png",
+    img: "/lovable-uploads/e39fb3d1-806d-48ea-84d8-f57229d07492.png",
     alt: "Bogstavet W"
   },
   "X": {
-    img: "/lovable-uploads/2e500a3e-3baa-45e1-a7ba-07e14b919f79.png", 
+    img: "/lovable-uploads/bd5f3fe5-451f-4dda-967d-9334aba0ae0f.png", 
     alt: "Bogstavet X"
   },
   "Y": {
@@ -185,3 +206,4 @@ export const hasImage = (letter: string) => {
 export const hasAudio = (letter: string) => {
   return AUDIO_FILES[letter] && AUDIO_FILES[letter] !== "";
 };
+
