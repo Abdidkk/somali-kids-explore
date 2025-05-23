@@ -1,47 +1,363 @@
 
-import React, { useState } from "react";
-import { HelpCircle } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { HelpCircle, Volume2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-// Dummy for proof-of-concept — der vælges altid "A"
-const CORRECT_ANSWER = "A";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { GROUPS, ALPHABET_IMAGES, SHORT_VOWELS, LONG_VOWELS, CONSONANTS } from "@/constants/alphabetData";
+import { speakSomaliLetter } from "@/utils/speechUtils";
+import { AUDIO_FILES } from "@/constants/alphabetData";
 
 interface Props {
   onBack: () => void;
 }
 
-export default function AlphabetGuessActivity({ onBack }: Props) {
-  const [guess, setGuess] = useState("");
-  const [result, setResult] = useState<null | "correct" | "wrong">(null);
+// Generate a sequence based on pattern type
+const generateSequence = (patternType: string): { sequence: string[], answer: string } => {
+  let letters: string[] = [];
+  
+  switch(patternType) {
+    case "shortVowels":
+      letters = [...SHORT_VOWELS];
+      break;
+    case "longVowels":
+      letters = [...LONG_VOWELS];
+      break;
+    case "consonants":
+      // Select a continuous subset of consonants (3-5 letters)
+      const startIdx = Math.floor(Math.random() * (CONSONANTS.length - 5));
+      letters = CONSONANTS.slice(startIdx, startIdx + Math.floor(Math.random() * 2) + 3);
+      break;
+    case "mixedAlpha":
+      // For mixed alphabet, we'll use the first letters of each group
+      letters = [
+        CONSONANTS[Math.floor(Math.random() * 5)],
+        CONSONANTS[Math.floor(Math.random() * 5) + 5],
+        CONSONANTS[Math.floor(Math.random() * 5) + 10]
+      ];
+      break;
+    default:
+      letters = SHORT_VOWELS;
+  }
+  
+  // For the sequence, use all but the last letter
+  const sequenceLength = Math.min(letters.length - 1, 3);
+  const sequence = letters.slice(0, sequenceLength);
+  
+  // The answer is the next letter in the sequence
+  const answer = letters[sequenceLength];
+  
+  return { sequence, answer };
+};
 
-  const handleGuess = () => {
-    setResult(guess.trim().toUpperCase() === CORRECT_ANSWER ? "correct" : "wrong");
+// Generate multiple choice options (including the correct answer)
+const generateOptions = (correctAnswer: string, difficulty: "easy" | "medium" | "hard"): string[] => {
+  let allOptions: string[] = [];
+  
+  // Add some options from each letter group
+  if (SHORT_VOWELS.includes(correctAnswer)) {
+    allOptions = [...SHORT_VOWELS];
+  } else if (LONG_VOWELS.includes(correctAnswer)) {
+    allOptions = [...LONG_VOWELS];
+  } else {
+    // For consonants, include nearby letters in the alphabet
+    const idx = CONSONANTS.indexOf(correctAnswer);
+    const start = Math.max(0, idx - 4);
+    const end = Math.min(CONSONANTS.length, idx + 5);
+    allOptions = CONSONANTS.slice(start, end);
+  }
+  
+  // Exclude the correct answer from the pool (we'll add it back later)
+  allOptions = allOptions.filter(letter => letter !== correctAnswer);
+  
+  // Shuffle the options and take 3 (or fewer if not enough options)
+  allOptions = allOptions.sort(() => Math.random() - 0.5).slice(0, 3);
+  
+  // Add the correct answer and shuffle again
+  allOptions.push(correctAnswer);
+  return allOptions.sort(() => Math.random() - 0.5);
+};
+
+export default function AlphabetGuessActivity({ onBack }: Props) {
+  const isMobile = useIsMobile();
+  const [score, setScore] = useState(0);
+  const [questionCount, setQuestionCount] = useState(0);
+  const [currentSequence, setCurrentSequence] = useState<string[]>([]);
+  const [correctAnswer, setCorrectAnswer] = useState<string>("");
+  const [options, setOptions] = useState<string[]>([]);
+  const [selectedAnswer, setSelectedAnswer] = useState<string>("");
+  const [inputAnswer, setInputAnswer] = useState<string>("");
+  const [answerMode, setAnswerMode] = useState<"multiple" | "text">("multiple");
+  const [result, setResult] = useState<null | "correct" | "wrong">(null);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [difficultyLevel, setDifficultyLevel] = useState<"easy" | "medium" | "hard">("easy");
+  
+  // Generate a new question
+  const generateNewQuestion = () => {
+    // Select pattern type based on difficulty and question count
+    let patternType: string;
+    
+    if (difficultyLevel === "easy" || questionCount < 2) {
+      patternType = "shortVowels";
+    } else if (difficultyLevel === "medium" || questionCount < 5) {
+      patternType = Math.random() > 0.5 ? "longVowels" : "consonants";
+    } else {
+      patternType = Math.random() > 0.7 ? "mixedAlpha" : "consonants";
+    }
+    
+    // Generate the sequence and answer
+    const { sequence, answer } = generateSequence(patternType);
+    
+    setCurrentSequence(sequence);
+    setCorrectAnswer(answer);
+    setOptions(generateOptions(answer, difficultyLevel));
+    setSelectedAnswer("");
+    setInputAnswer("");
+    setResult(null);
+  };
+  
+  // Initialize the first question
+  useEffect(() => {
+    generateNewQuestion();
+  }, []);
+  
+  // Check the answer
+  const checkAnswer = () => {
+    const userAnswer = answerMode === "multiple" ? selectedAnswer : inputAnswer.trim().toUpperCase();
+    
+    if (userAnswer === correctAnswer) {
+      handleCorrectAnswer();
+    } else {
+      handleWrongAnswer();
+    }
+  };
+  
+  // Handle correct answer
+  const handleCorrectAnswer = () => {
+    setResult("correct");
+    setScore(prev => prev + 1);
+    setShowCelebration(true);
+    
+    // Play success sound - simple browser beep
+    const audio = new Audio("data:audio/wav;base64,//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Cc+CDv/7xA4Tvh9Rz/y8QADBwMWgQAZG/ILNAARQ4GLTcDeIIIhxGOBAuD7hOfBB3/94gcJ3w+o5/5eIAIAAAVwWgQAVQ2ORaIQwEMAJiDg95G4nQL7mQVWI6GwRcfsZAcsKkJvxgxEjzFUgfHoSQ9Qq7KNwqHwuB13MA4a1q/DmBrHgPcmjiGoh//EwC5nGPEmS4RcfkVKOhJf+WOgoxJclFz3kgn//dBA+ya1GhurNn8zb//9NNutNuhz31f////9vt///z+IdAEAAAK4LQIAKobHItEIYCGAExBwe8jcToF9zIKrEdDYIuP2MgOWFSE34wYiR5iqQPj0JIeoVdlG4VD4XA67mAcNa1fhzA1jwHuTRxDUQ//iYBczjHiTJcIuPyKlHQkv/LHQUYkuSi57yQT//uggfZNajQ3Vmz+Zt//+mm3Wm3Q576v////+32///5/EOgAAADVghQAAAAA//uQZAUAB1WI0PZugAAAAAoQwAAAEk3nRd2qAAAAACiDgAAAAAAABCqEEQRLCgwpBGMlJkIz8jKhGvj4k6jzRnqasNKIeoh5gI7BJaC1A1AoNBjJgbyApVS4IDlZgDU5WUAxEKDNmmALHzZp0Fkz1FMTmGFl1FMEyodIavcCAUHDWrKAIA4aa2ooVoLAIFUz9JpJiqeAJzKvHQCQZzxyPT7HbzgudJbGIoPyMXnHG/QtOAVp0tQxfjTzbPnMskFygDgwAAAQRC/AAO+KbuwAAAAAA");
+    audio.play().catch(e => console.error("Audio playback failed:", e));
+    
+    // Automatically move to the next question after a delay
+    setTimeout(() => {
+      setShowCelebration(false);
+      setQuestionCount(prev => prev + 1);
+      
+      // Adjust difficulty based on score
+      if (score >= 5 && difficultyLevel === "easy") {
+        setDifficultyLevel("medium");
+        toast.success("Du er rigtig god! Nu bliver spørgsmålene lidt sværere!");
+      } else if (score >= 10 && difficultyLevel === "medium") {
+        setDifficultyLevel("hard");
+        toast.success("Fantastisk! Du er mester i alfabetet!");
+      }
+      
+      // Generate new question
+      generateNewQuestion();
+    }, 1800);
+  };
+  
+  // Handle wrong answer
+  const handleWrongAnswer = () => {
+    setResult("wrong");
+    
+    // Reset after a delay
+    setTimeout(() => {
+      setResult(null);
+      setSelectedAnswer("");
+      setInputAnswer("");
+    }, 1500);
+  };
+  
+  // Play letter sound
+  const playLetterSound = (letter: string) => {
+    speakSomaliLetter(letter, AUDIO_FILES);
+  };
+  
+  // Toggle between multiple choice and text input
+  const toggleAnswerMode = () => {
+    setAnswerMode(prev => prev === "multiple" ? "text" : "multiple");
+    setSelectedAnswer("");
+    setInputAnswer("");
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 mt-4">
-      <div className="flex flex-col items-center gap-1">
-        <HelpCircle className="w-10 h-10 text-purple-700" />
-        <div className="font-semibold text-lg text-purple-700 mb-2">Gæt hvilket bogstav der kommer efter:</div>
-        <div className="text-6xl font-bold text-gray-600 mb-2">?</div>
+    <div className="flex flex-col items-center gap-6 mt-4 relative">
+      {/* Score display */}
+      <div className="absolute top-0 right-2 flex items-center">
+        <Star className="w-5 h-5 text-yellow-500 mr-1" />
+        <span className="font-semibold text-gray-700">{score}</span>
       </div>
-      <input
-        className="w-24 text-center text-2xl border-b-2 border-vivid-purple outline-none bg-transparent mb-2"
-        placeholder="Svar"
-        maxLength={1}
-        value={guess}
-        onChange={e => {
-          setGuess(e.target.value);
-          setResult(null);
-        }}
-        autoFocus
-        aria-label="Gæt bogstav"
-      />
-      <Button onClick={handleGuess} disabled={!guess || result === "correct"} className="px-5">
+      
+      {/* Question display */}
+      <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center">
+          <HelpCircle className={`w-10 h-10 text-purple-700 ${showCelebration ? 'animate-bounce' : ''}`} />
+          <div className="font-semibold text-lg text-purple-700 mb-3">
+            Hvilket bogstav kommer efter:
+          </div>
+        </div>
+        
+        {/* Sequence display - letters with images */}
+        <div className="flex items-center gap-2 md:gap-4 justify-center mb-2">
+          {currentSequence.map((letter, idx) => (
+            <div 
+              key={idx} 
+              className="flex flex-col items-center gap-1 relative"
+              onClick={() => playLetterSound(letter)}
+            >
+              {ALPHABET_IMAGES[letter] && (
+                <div className="relative w-16 h-16 md:w-20 md:h-20 bg-purple-50 rounded-lg p-1 border-2 border-purple-200 hover:bg-purple-100 cursor-pointer">
+                  <img
+                    src={ALPHABET_IMAGES[letter].img}
+                    alt={ALPHABET_IMAGES[letter].alt}
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                  <div className="absolute -bottom-6 left-0 right-0 text-center font-bold text-purple-700 text-xl">
+                    {letter}
+                  </div>
+                </div>
+              )}
+              {!ALPHABET_IMAGES[letter] && (
+                <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center bg-purple-100 rounded-lg border-2 border-purple-300 hover:bg-purple-200 cursor-pointer">
+                  <span className="text-3xl font-bold text-purple-700">{letter}</span>
+                </div>
+              )}
+              {/* Sound icon */}
+              <Volume2 className="w-4 h-4 text-purple-600 absolute -bottom-7 md:-bottom-8 right-0" />
+            </div>
+          ))}
+          
+          {/* Question mark for the answer */}
+          <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center bg-yellow-100 rounded-lg border-2 border-yellow-300 animate-pulse">
+            <span className="text-3xl font-bold text-yellow-700">?</span>
+          </div>
+        </div>
+      </div>
+      
+      {/* Answer mode toggle */}
+      <Button 
+        variant="outline" 
+        size="sm" 
+        onClick={toggleAnswerMode}
+        className="text-xs"
+      >
+        {answerMode === "multiple" ? "Skift til tekstsvar" : "Skift til multiple choice"}
+      </Button>
+      
+      {/* Multiple choice answers */}
+      {answerMode === "multiple" && (
+        <div className="w-full max-w-md">
+          <RadioGroup
+            value={selectedAnswer}
+            onValueChange={setSelectedAnswer}
+            className="grid grid-cols-2 gap-4"
+          >
+            {options.map((option, idx) => (
+              <div
+                key={idx}
+                className={`
+                  flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer
+                  ${selectedAnswer === option ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-200'}
+                  ${result === "correct" && selectedAnswer === option ? 'bg-green-100 border-green-500' : ''}
+                  ${result === "wrong" && selectedAnswer === option ? 'bg-red-100 border-red-500' : ''}
+                `}
+                onClick={() => setSelectedAnswer(option)}
+              >
+                <div className="flex items-center gap-2">
+                  <RadioGroupItem value={option} id={`option-${idx}`} />
+                  <div className="flex items-center gap-2">
+                    {ALPHABET_IMAGES[option] ? (
+                      <img
+                        src={ALPHABET_IMAGES[option].img}
+                        alt={ALPHABET_IMAGES[option].alt}
+                        className="w-8 h-8 object-contain"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    ) : null}
+                    <span className="text-xl font-semibold">{option}</span>
+                  </div>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  type="button"
+                  className="h-8 w-8 rounded-full p-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    playLetterSound(option);
+                  }}
+                >
+                  <Volume2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </RadioGroup>
+        </div>
+      )}
+      
+      {/* Text input */}
+      {answerMode === "text" && (
+        <div className="w-full max-w-md">
+          <Input
+            className={`text-center text-2xl border-2 h-14 ${
+              result === "correct" ? 'border-green-500 bg-green-50' : 
+              result === "wrong" ? 'border-red-500 bg-red-50' : 
+              'border-purple-300'
+            }`}
+            placeholder="Skriv bogstav her"
+            maxLength={3}
+            value={inputAnswer}
+            onChange={e => {
+              setInputAnswer(e.target.value);
+              setResult(null);
+            }}
+            autoFocus
+            aria-label="Gæt bogstav"
+          />
+        </div>
+      )}
+      
+      {/* Submit button */}
+      <Button 
+        onClick={checkAnswer} 
+        disabled={
+          (answerMode === "multiple" && !selectedAnswer) || 
+          (answerMode === "text" && !inputAnswer) || 
+          result === "correct"
+        }
+        className="px-5"
+      >
         Indsend svar
       </Button>
-      {result === "correct" && <div className="text-green-600 font-semibold">Korrekt! 🎉</div>}
-      {result === "wrong" && <div className="text-red-500 font-semibold">Prøv igen!</div>}
+      
+      {/* Result feedback */}
+      {result === "correct" && (
+        <div className="text-green-600 font-semibold text-xl flex items-center gap-2">
+          Korrekt! 🎉
+          {showCelebration && (
+            <div className="fixed inset-0 pointer-events-none z-50 flex items-center justify-center">
+              <div className="text-7xl animate-bounce">🎉</div>
+            </div>
+          )}
+        </div>
+      )}
+      {result === "wrong" && (
+        <div className="text-red-500 font-semibold text-lg">
+          Prøv igen!
+        </div>
+      )}
     </div>
   );
 }
