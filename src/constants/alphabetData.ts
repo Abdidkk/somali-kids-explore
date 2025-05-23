@@ -95,7 +95,7 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/a519a572-4893-49e9-baee-965f0243deb5.png",
     alt: "Bogstavet UU"
   },
-  // Consonants with updated image mappings from uploaded files
+  // Consonants with corrected image mappings from uploaded files
   "B": {
     img: "/lovable-uploads/21c9dccc-fb21-4aee-9f6f-6de24ab69a0d.png",
     alt: "Bogstavet B"
