@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { AUDIO_FILES } from "@/constants/audioMapping";
+import { AUDIO_FILES } from "@/constants/alphabetData";
 
 interface Props {
   letter: string;

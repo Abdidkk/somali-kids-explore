@@ -1,7 +1,6 @@
 
 import React from "react";
-import { hasImage } from "@/constants/alphabetHelpers";
-import { ALPHABET_IMAGES } from "@/constants/imageMapping";
+import { hasImage, ALPHABET_IMAGES } from "@/constants/alphabetData";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface LetterSelectorProps {

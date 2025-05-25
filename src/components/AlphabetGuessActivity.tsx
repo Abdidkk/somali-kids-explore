@@ -5,67 +5,58 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { ALPHABET_IMAGES } from "@/constants/imageMapping";
-import { SHORT_VOWELS, LONG_VOWELS, CONSONANTS } from "@/constants/letterGroups";
+import { GROUPS, ALPHABET_IMAGES, SHORT_VOWELS, LONG_VOWELS, CONSONANTS } from "@/constants/alphabetData";
 import { speakSomaliLetter } from "@/utils/speechUtils";
-import { AUDIO_FILES } from "@/constants/audioMapping";
+import { AUDIO_FILES } from "@/constants/alphabetData";
 
 interface Props {
   onBack: () => void;
 }
 
-// Generate a sequential pattern based on pattern type
+// Generate a random sequence based on pattern type
 const generateSequence = (patternType: string): { sequence: string[], answer: string } => {
   let letters: string[] = [];
   
   switch(patternType) {
-    case "alphabet":
-      // If consonants are empty, fall back to short vowels
-      letters = CONSONANTS.length > 0 ? [...CONSONANTS] : [...SHORT_VOWELS];
-      break;
     case "shortVowels":
       letters = [...SHORT_VOWELS];
       break;
     case "longVowels":
       letters = [...LONG_VOWELS];
       break;
+    case "consonants":
+      letters = [...CONSONANTS];
+      break;
+    case "mixedAlpha":
+      // Mix different types of letters
+      letters = [...SHORT_VOWELS, ...LONG_VOWELS, ...CONSONANTS];
+      break;
     default:
-      // Default to short vowels if invalid pattern type
-      letters = [...SHORT_VOWELS];
+      letters = SHORT_VOWELS;
   }
   
-  // Safety check: If letters is empty, use SHORT_VOWELS as fallback
-  if (letters.length === 0) {
-    letters = [...SHORT_VOWELS];
+  // Shuffle the letters array to get random selection
+  const shuffled = [...letters].sort(() => Math.random() - 0.5);
+  
+  // For random sequences, take 2-4 consecutive letters from the shuffled array
+  const sequenceLength = Math.floor(Math.random() * 3) + 2; // 2-4 letters
+  const startIdx = Math.floor(Math.random() * (shuffled.length - sequenceLength - 1));
+  
+  const sequence = shuffled.slice(startIdx, startIdx + sequenceLength);
+  
+  // The answer is the next letter in the original order (if it exists)
+  // Otherwise, pick a random letter from the same category
+  let answer: string;
+  const lastLetter = sequence[sequence.length - 1];
+  const originalIndex = letters.indexOf(lastLetter);
+  
+  if (originalIndex !== -1 && originalIndex < letters.length - 1) {
+    answer = letters[originalIndex + 1];
+  } else {
+    // If we can't find next in sequence, pick random from same category
+    const remainingLetters = letters.filter(l => !sequence.includes(l));
+    answer = remainingLetters[Math.floor(Math.random() * remainingLetters.length)] || letters[0];
   }
-  
-  // We need at least 2 letters to create a sequence plus an answer
-  if (letters.length < 3) {
-    console.warn("Not enough letters for a proper sequence, using simplified pattern");
-    return { 
-      sequence: letters.length > 0 ? [letters[0]] : ["A"], 
-      answer: letters.length > 1 ? letters[1] : "E" 
-    };
-  }
-  
-  // Generate sequence length (2-3 letters to ensure we have answer choices)
-  const sequenceLength = Math.min(Math.floor(Math.random() * 2) + 2, letters.length - 1); // 2-3 letters
-  
-  // Make sure we don't start too close to the end so we have a next letter
-  const maxStartIdx = letters.length - sequenceLength - 1;
-  if (maxStartIdx < 0) {
-    // If array is too small, just take the first letters
-    const sequence = letters.slice(0, Math.min(sequenceLength, letters.length - 1));
-    const answer = letters[sequence.length];
-    return { sequence, answer };
-  }
-  
-  // Pick random starting position ensuring we have room for the answer
-  const startIdx = Math.floor(Math.random() * (maxStartIdx + 1));
-  
-  // Create sequential pattern
-  const sequence = letters.slice(startIdx, startIdx + sequenceLength);
-  const answer = letters[startIdx + sequenceLength]; // Next letter in sequence
   
   return { sequence, answer };
 };
@@ -80,21 +71,15 @@ const generateOptions = (correctAnswer: string, difficulty: "easy" | "medium" | 
   } else if (LONG_VOWELS.includes(correctAnswer)) {
     allOptions = [...LONG_VOWELS];
   } else {
-    // Fallback to all vowels
-    allOptions = [...SHORT_VOWELS, ...LONG_VOWELS];
+    // For consonants, include a broader range
+    allOptions = [...CONSONANTS];
   }
   
   // Remove the correct answer from options pool
   allOptions = allOptions.filter(letter => letter !== correctAnswer);
   
-  // Safety check: If not enough options, use both vowel types
-  if (allOptions.length < 3) {
-    const combinedVowels = [...SHORT_VOWELS, ...LONG_VOWELS].filter(v => v !== correctAnswer);
-    allOptions = [...new Set(combinedVowels)]; // Remove duplicates
-  }
-  
-  // Shuffle and take up to 3 wrong options
-  const wrongOptions = allOptions.sort(() => Math.random() - 0.5).slice(0, Math.min(3, allOptions.length));
+  // Shuffle and take 3 wrong options
+  const wrongOptions = allOptions.sort(() => Math.random() - 0.5).slice(0, 3);
   
   // Add correct answer and shuffle final options
   const finalOptions = [...wrongOptions, correctAnswer];
@@ -115,20 +100,21 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
   const [showCelebration, setShowCelebration] = useState(false);
   const [difficultyLevel, setDifficultyLevel] = useState<"easy" | "medium" | "hard">("easy");
   
-  // Generate a new question with sequential letters
+  // Generate a new question with completely random letters
   const generateNewQuestion = () => {
-    // Cycle through all three categories including alphabet
-    const patternTypes = ["alphabet", "shortVowels", "longVowels"];
+    // Randomly select pattern type for more variety
+    const patternTypes = ["shortVowels", "longVowels", "consonants", "mixedAlpha"];
     const weights = {
-      "alphabet": difficultyLevel === "easy" ? 0.3 : 0.4,
-      "shortVowels": difficultyLevel === "easy" ? 0.4 : 0.3,
-      "longVowels": difficultyLevel === "easy" ? 0.3 : 0.3
+      "shortVowels": difficultyLevel === "easy" ? 0.4 : 0.2,
+      "longVowels": difficultyLevel === "easy" ? 0.3 : 0.3,
+      "consonants": difficultyLevel === "easy" ? 0.2 : 0.4,
+      "mixedAlpha": difficultyLevel === "easy" ? 0.1 : 0.1
     };
     
     // Weighted random selection
     const random = Math.random();
     let cumulative = 0;
-    let selectedType = "shortVowels"; // Default
+    let selectedType = "shortVowels";
     
     for (const [type, weight] of Object.entries(weights)) {
       cumulative += weight;
@@ -138,21 +124,12 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
       }
     }
     
-    // Generate sequential pattern
+    // Generate completely random sequence
     const { sequence, answer } = generateSequence(selectedType);
     
-    // Safety check to ensure we have an answer and sequence
-    if (!answer || sequence.length === 0) {
-      console.warn("Failed to generate valid sequence, using fallback");
-      setCurrentSequence(["A"]);
-      setCorrectAnswer("E");
-      setOptions(["E", "I", "O", "U"]);
-    } else {
-      setCurrentSequence(sequence);
-      setCorrectAnswer(answer);
-      setOptions(generateOptions(answer, difficultyLevel));
-    }
-    
+    setCurrentSequence(sequence);
+    setCorrectAnswer(answer);
+    setOptions(generateOptions(answer, difficultyLevel));
     setSelectedAnswer("");
     setInputAnswer("");
     setResult(null);
