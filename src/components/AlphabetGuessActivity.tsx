@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { HelpCircle, Volume2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -217,9 +216,12 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
                           e.currentTarget.style.display = 'none';
                         }}
                       />
-                      <div className="absolute -bottom-6 left-0 right-0 text-center font-bold text-purple-700 text-xl">
-                        {letter}
-                      </div>
+                      {/* Conditionally show text label - hide for alphabet category */}
+                      {activeTab !== "alfabetet" && (
+                        <div className="absolute -bottom-6 left-0 right-0 text-center font-bold text-purple-700 text-xl">
+                          {letter}
+                        </div>
+                      )}
                     </div>
                   )}
                   {!ALPHABET_IMAGES[letter] && (
@@ -281,7 +283,10 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
                             }}
                           />
                         ) : null}
-                        <span className="text-xl font-semibold">{option}</span>
+                        {/* Conditionally show text label - hide for alphabet category */}
+                        {activeTab !== "alfabetet" && (
+                          <span className="text-xl font-semibold">{option}</span>
+                        )}
                       </div>
                     </div>
                     <Button 
