@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { learningCategories } from "@/data/learningCategories";
 import AlphabetModal from "@/components/AlphabetModal";
+import ColorsModal from "@/components/ColorsModal";
 import ProfileMenu from "@/components/ProfileMenu";
 import CategoryGrid from "@/components/learning/CategoryGrid";
 import LearningPageHeader from "@/components/learning/LearningPageHeader";
@@ -19,6 +20,7 @@ const mockChild = {
 
 export default function LearnCategoriesPage() {
   const [showAlphabet, setShowAlphabet] = useState(false);
+  const [showColors, setShowColors] = useState(false);
 
   const handleBack = () => {
     window.history.back();
@@ -27,6 +29,8 @@ export default function LearnCategoriesPage() {
   const handleCategorySelect = (category) => {
     if (category.name === "Alfabet") {
       setShowAlphabet(true);
+    } else if (category.name === "Farver") {
+      setShowColors(true);
     }
   };
 
@@ -60,6 +64,11 @@ export default function LearnCategoriesPage() {
       <AlphabetModal 
         open={showAlphabet} 
         onClose={() => setShowAlphabet(false)} 
+      />
+      
+      <ColorsModal 
+        open={showColors} 
+        onClose={() => setShowColors(false)} 
       />
     </div>
   );
