@@ -10,7 +10,6 @@ import ScoreDisplay from "@/components/alphabet/guess/ScoreDisplay";
 import QuestionHeader from "@/components/alphabet/guess/QuestionHeader";
 import SequenceDisplay from "@/components/alphabet/guess/SequenceDisplay";
 import MultipleChoiceAnswer from "@/components/alphabet/guess/MultipleChoiceAnswer";
-import TextInputAnswer from "@/components/alphabet/guess/TextInputAnswer";
 import ResultFeedback from "@/components/alphabet/guess/ResultFeedback";
 
 interface Props {
@@ -26,8 +25,6 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
   const [correctAnswer, setCorrectAnswer] = useState<string>("");
   const [options, setOptions] = useState<string[]>([]);
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
-  const [inputAnswer, setInputAnswer] = useState<string>("");
-  const [answerMode, setAnswerMode] = useState<"multiple" | "text">("multiple");
   const [result, setResult] = useState<null | "correct" | "wrong">(null);
   const [showCelebration, setShowCelebration] = useState(false);
   
@@ -39,7 +36,6 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
     setCorrectAnswer(answer);
     setOptions(generateOptions(answer, activeTab));
     setSelectedAnswer("");
-    setInputAnswer("");
     setResult(null);
   };
   
@@ -54,16 +50,13 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
     setScore(0);
     setQuestionCount(0);
     setSelectedAnswer("");
-    setInputAnswer("");
     setResult(null);
     setShowCelebration(false);
   };
   
   // Check the answer
   const checkAnswer = () => {
-    const userAnswer = answerMode === "multiple" ? selectedAnswer : inputAnswer.trim().toUpperCase();
-    
-    if (userAnswer === correctAnswer) {
+    if (selectedAnswer === correctAnswer) {
       handleCorrectAnswer();
     } else {
       handleWrongAnswer();
@@ -96,26 +89,12 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
     setTimeout(() => {
       setResult(null);
       setSelectedAnswer("");
-      setInputAnswer("");
     }, 1500);
   };
   
   // Play letter sound
   const playLetterSound = (letter: string) => {
     speakSomaliLetter(letter, AUDIO_FILES);
-  };
-  
-  // Toggle between multiple choice and text input
-  const toggleAnswerMode = () => {
-    setAnswerMode(prev => prev === "multiple" ? "text" : "multiple");
-    setSelectedAnswer("");
-    setInputAnswer("");
-  };
-
-  // Handle input answer change
-  const handleInputChange = (value: string) => {
-    setInputAnswer(value);
-    setResult(null);
   };
 
   return (
@@ -142,45 +121,20 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
             />
           </div>
           
-          {/* Answer mode toggle */}
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={toggleAnswerMode}
-            className="text-xs mb-4"
-          >
-            {answerMode === "multiple" ? "Skift til tekstsvar" : "Skift til multiple choice"}
-          </Button>
-          
           {/* Multiple choice answers */}
-          {answerMode === "multiple" && (
-            <MultipleChoiceAnswer
-              options={options}
-              selectedAnswer={selectedAnswer}
-              activeTab={activeTab}
-              result={result}
-              onAnswerSelect={setSelectedAnswer}
-              onPlaySound={playLetterSound}
-            />
-          )}
-          
-          {/* Text input */}
-          {answerMode === "text" && (
-            <TextInputAnswer
-              inputAnswer={inputAnswer}
-              result={result}
-              onInputChange={handleInputChange}
-            />
-          )}
+          <MultipleChoiceAnswer
+            options={options}
+            selectedAnswer={selectedAnswer}
+            activeTab={activeTab}
+            result={result}
+            onAnswerSelect={setSelectedAnswer}
+            onPlaySound={playLetterSound}
+          />
           
           {/* Submit button */}
           <Button 
             onClick={checkAnswer} 
-            disabled={
-              (answerMode === "multiple" && !selectedAnswer) || 
-              (answerMode === "text" && !inputAnswer) || 
-              result === "correct"
-            }
+            disabled={!selectedAnswer || result === "correct"}
             className="px-5 mt-4"
           >
             Indsend svar
