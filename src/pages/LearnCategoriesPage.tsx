@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { learningCategories } from "@/data/learningCategories";
 import AlphabetModal from "@/components/AlphabetModal";
 import ColorsModal from "@/components/ColorsModal";
+import NumbersModal from "@/components/NumbersModal";
 import ProfileMenu from "@/components/ProfileMenu";
 import CategoryGrid from "@/components/learning/CategoryGrid";
 import LearningPageHeader from "@/components/learning/LearningPageHeader";
