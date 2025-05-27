@@ -21,6 +21,7 @@ const mockChild = {
 export default function LearnCategoriesPage() {
   const [showAlphabet, setShowAlphabet] = useState(false);
   const [showColors, setShowColors] = useState(false);
+  const [showNumbers, setShowNumbers] = useState(false);
 
   const handleBack = () => {
     window.history.back();
@@ -31,6 +32,8 @@ export default function LearnCategoriesPage() {
       setShowAlphabet(true);
     } else if (category.name === "Farver") {
       setShowColors(true);
+    } else if (category.name === "Tal") {
+      setShowNumbers(true);
     }
   };
 
@@ -69,6 +72,11 @@ export default function LearnCategoriesPage() {
       <ColorsModal 
         open={showColors} 
         onClose={() => setShowColors(false)} 
+      />
+      
+      <NumbersModal 
+        open={showNumbers} 
+        onClose={() => setShowNumbers(false)} 
       />
     </div>
   );
