@@ -4,6 +4,7 @@ import AlphabetModal from "@/components/AlphabetModal";
 import ColorsModal from "@/components/ColorsModal";
 import NumbersModal from "@/components/NumbersModal";
 import FoodModal from "@/components/FoodModal";
+import AnimalsModal from "@/components/AnimalsModal";
 import ProfileMenu from "@/components/ProfileMenu";
 import CategoryGrid from "@/components/learning/CategoryGrid";
 import LearningPageHeader from "@/components/learning/LearningPageHeader";
@@ -24,6 +25,7 @@ export default function LearnCategoriesPage() {
   const [showColors, setShowColors] = useState(false);
   const [showNumbers, setShowNumbers] = useState(false);
   const [showFood, setShowFood] = useState(false);
+  const [showAnimals, setShowAnimals] = useState(false);
 
   const handleBack = () => {
     window.history.back();
@@ -38,6 +40,8 @@ export default function LearnCategoriesPage() {
       setShowNumbers(true);
     } else if (category.name === "Mad") {
       setShowFood(true);
+    } else if (category.name === "Dyr") {
+      setShowAnimals(true);
     }
   };
 
@@ -86,6 +90,11 @@ export default function LearnCategoriesPage() {
       <FoodModal 
         open={showFood} 
         onClose={() => setShowFood(false)} 
+      />
+      
+      <AnimalsModal 
+        open={showAnimals} 
+        onClose={() => setShowAnimals(false)} 
       />
     </div>
   );
