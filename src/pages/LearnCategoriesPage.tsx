@@ -1,9 +1,9 @@
-
 import React, { useState } from "react";
 import { learningCategories } from "@/data/learningCategories";
 import AlphabetModal from "@/components/AlphabetModal";
 import ColorsModal from "@/components/ColorsModal";
 import NumbersModal from "@/components/NumbersModal";
+import FoodModal from "@/components/FoodModal";
 import ProfileMenu from "@/components/ProfileMenu";
 import CategoryGrid from "@/components/learning/CategoryGrid";
 import LearningPageHeader from "@/components/learning/LearningPageHeader";
@@ -23,6 +23,7 @@ export default function LearnCategoriesPage() {
   const [showAlphabet, setShowAlphabet] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const [showNumbers, setShowNumbers] = useState(false);
+  const [showFood, setShowFood] = useState(false);
 
   const handleBack = () => {
     window.history.back();
@@ -35,6 +36,8 @@ export default function LearnCategoriesPage() {
       setShowColors(true);
     } else if (category.name === "Tal") {
       setShowNumbers(true);
+    } else if (category.name === "Mad") {
+      setShowFood(true);
     }
   };
 
@@ -78,6 +81,11 @@ export default function LearnCategoriesPage() {
       <NumbersModal 
         open={showNumbers} 
         onClose={() => setShowNumbers(false)} 
+      />
+      
+      <FoodModal 
+        open={showFood} 
+        onClose={() => setShowFood(false)} 
       />
     </div>
   );
