@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { BadgeCheck } from "lucide-react";
@@ -41,7 +40,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLas
     if (isColors) return "/lovable-uploads/2b3d5738-fe36-44c4-8d12-40c95bb1c0f8.png";
     if (isFood) return "/lovable-uploads/d53ddb64-53af-4bd5-a6c6-c7cd8495bda0.png";
     if (isAnimals) return "/lovable-uploads/5b82e785-bd89-4559-81c7-048e78c263ff.png";
-    if (isKropsdele) return "/lovable-uploads/5f3c2e5c-8a56-4baf-8c3f-4d8ecbe1f924.png";
+    if (isKropsdele) return "/lovable-uploads/f927bf4a-4844-4700-b85e-58155f27873b.png";
     if (isGeografi) return "/lovable-uploads/96a8e74c-d203-46ea-a5b3-62d43488681b.png";
     if (isKalender) return "/lovable-uploads/0435c435-2eb6-4de9-a68e-d3a18fd524e5.png";
     if (isFamilie) return "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png";
