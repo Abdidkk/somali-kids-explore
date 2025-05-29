@@ -74,7 +74,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLas
             <img 
               src={getCategoryImage()} 
               alt={`${category.name} illustration`} 
-              className={`w-full h-48 object-contain ${isKropsdele ? 'p-2 bg-white/90 rounded-t-lg shadow-inner' : 'object-fill'}`}
+              className="w-full h-48 object-fill"
             />
             {isFinished && (
               <span className="absolute top-2 right-2 bg-blue-500 p-1 rounded-full animate-bounce shadow z-10">
