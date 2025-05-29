@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { learningCategories } from "@/data/learningCategories";
 import AlphabetModal from "@/components/AlphabetModal";
@@ -5,6 +6,7 @@ import ColorsModal from "@/components/ColorsModal";
 import NumbersModal from "@/components/NumbersModal";
 import FoodModal from "@/components/FoodModal";
 import AnimalsModal from "@/components/AnimalsModal";
+import KropsdeleModal from "@/components/KropsdeleModal";
 import ProfileMenu from "@/components/ProfileMenu";
 import CategoryGrid from "@/components/learning/CategoryGrid";
 import LearningPageHeader from "@/components/learning/LearningPageHeader";
@@ -26,6 +28,7 @@ export default function LearnCategoriesPage() {
   const [showNumbers, setShowNumbers] = useState(false);
   const [showFood, setShowFood] = useState(false);
   const [showAnimals, setShowAnimals] = useState(false);
+  const [showKropsdele, setShowKropsdele] = useState(false);
 
   const handleBack = () => {
     window.history.back();
@@ -42,6 +45,8 @@ export default function LearnCategoriesPage() {
       setShowFood(true);
     } else if (category.name === "Dyr") {
       setShowAnimals(true);
+    } else if (category.name === "Kropsdel") {
+      setShowKropsdele(true);
     }
   };
 
@@ -95,6 +100,11 @@ export default function LearnCategoriesPage() {
       <AnimalsModal 
         open={showAnimals} 
         onClose={() => setShowAnimals(false)} 
+      />
+      
+      <KropsdeleModal 
+        open={showKropsdele} 
+        onClose={() => setShowKropsdele(false)} 
       />
     </div>
   );
