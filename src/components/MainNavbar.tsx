@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -12,6 +11,12 @@ const MainNavbar = () => {
   const isMobile = useIsMobile();
   const location = useLocation();
   const isHome = location.pathname === "/";
+  const isLearningPage = location.pathname === "/laer";
+
+  // Don't render the navbar on the learning page
+  if (isLearningPage) {
+    return null;
+  }
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
