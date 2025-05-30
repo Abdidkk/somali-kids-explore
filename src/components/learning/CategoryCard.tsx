@@ -140,10 +140,12 @@ const CategoryHoverContent: React.FC<{ category: LearningCategory }> = ({ catego
       <ul className="list-disc pl-4 space-y-1">
         {category.name === "Alfabet" && (
           <>
-            <li>Lære alle bogstaverne i det somaliske alfabet</li>
-            <li>Øve udtale af hver bogstav</li>
-            <li>Træne genkendelse af bogstaver</li>
-            <li>Lære at skrive bogstaverne</li>
+            <li>Lære det somaliske alfabet gennem lyd og tekst</li>
+            <li>Høre udtale af hvert bogstav på somalisk</li>
+            <li>Se store og tydelige bogstaver i forskellige farver</li>
+            <li>Øve med alfabetet, korte vokaler og lange vokaler</li>
+            <li>Spore og skrive bogstaver for at træne skrivetræning</li>
+            <li>Teste din viden ved at genkende bogstaver</li>
           </>
         )}
         {category.name === "Farver" && (

@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ElevenLabsTTS from "./ElevenLabsTTS";
-import { GROUPS, hasAudio, AUDIO_FILES, LONG_VOWELS } from "@/constants/alphabetData";
+import { GROUPS, hasAudio, AUDIO_FILES } from "@/constants/alphabetData";
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
-import LetterDisplay from "./alphabet/LetterDisplay";
+import ColoredLetterDisplay from "./alphabet/ColoredLetterDisplay";
 import { useIsMobile } from "@/hooks/use-mobile";
 import LetterSelector from "./alphabet/LetterSelector";
 
@@ -70,9 +70,17 @@ export default function AlphabetListenActivity({ onBack }: Props) {
         <TabsContent value={tab} className="w-full flex flex-col items-center">
           {/* Letter display with image and buttons */}
           <div className="flex flex-col items-center gap-4 md:gap-5 w-full">
-            {/* Current letter display using the dedicated LetterDisplay component */}
+            {/* Current letter display using colored letters */}
             <div className={`flex flex-col items-center ${isMobile ? 'p-3' : 'p-5'}`}>
-              <LetterDisplay selectedLetter={selectedLetter} />
+              <ColoredLetterDisplay 
+                letter={selectedLetter} 
+                size={isMobile ? "medium" : "large"}
+              />
+              
+              {/* Letter name display */}
+              <div className={`mt-3 ${isMobile ? 'text-xl' : 'text-2xl'} font-semibold text-gray-700`}>
+                {selectedLetter}
+              </div>
               
               {/* Play audio button */}
               <Button 

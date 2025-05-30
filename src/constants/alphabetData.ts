@@ -1,10 +1,10 @@
 
-// Bogstavgrupper
+// Bogstavgrupper - Updated with new order
 export const SHORT_VOWELS = ["A", "E", "I", "O", "U"];
 export const LONG_VOWELS = ["AA", "EE", "II", "OO", "UU"];
 export const CONSONANTS = [
-  "Bb", "Cc", "Dd", "DHdh", "Ff", "Gg", "Hh", "Jj", "Kk", "KHkh",
-  "Ll", "Mm", "Nn", "Qq", "Rr", "Ss", "SHsh", "Tt", "Ww", "Xx", "Yy"
+  "Bb", "Tt", "Jj", "Xx", "KHkh", "Dd", "Rr", "Ss", "SHsh", "DHdh", 
+  "Cc", "Gg", "Ff", "Qq", "Kk", "Ll", "Mm", "Nn", "Ww", "Hh", "Yy"
 ];
 
 export const GROUPS = {
@@ -27,27 +27,27 @@ export const AUDIO_FILES: Record<string, string> = {
   "II": "",
   "OO": "",
   "UU": "",
-  // Alfabetet
+  // Alfabetet - updated with new order
   "Bb": "",
-  "Cc": "",
-  "Dd": "",
-  "DHdh": "", 
-  "Ff": "",
-  "Gg": "",
-  "Hh": "",
+  "Tt": "",
   "Jj": "",
-  "Kk": "",
+  "Xx": "",
   "KHkh": "",
-  "Ll": "",
-  "Mm": "",
-  "Nn": "",
-  "Qq": "",
+  "Dd": "",
   "Rr": "",
   "Ss": "",
   "SHsh": "",
-  "Tt": "",
+  "DHdh": "",
+  "Cc": "",
+  "Gg": "",
+  "Ff": "",
+  "Qq": "",
+  "Kk": "",
+  "Ll": "",
+  "Mm": "",
+  "Nn": "",
   "Ww": "",
-  "Xx": "",
+  "Hh": "",
   "Yy": ""
 };
 
@@ -73,7 +73,6 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/061ec32d-c737-4aba-bb96-e1924b0c39a6.png",
     alt: "Bogstavet U"
   },
-  // Lange vokaler - updated with new uploaded images
   "AA": {
     img: "/lovable-uploads/c7e639a4-cc13-4207-aeb6-641c37cb7565.png",
     alt: "Bogstavet AA"
@@ -94,7 +93,6 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/a519a572-4893-49e9-baee-965f0243deb5.png",
     alt: "Bogstavet UU"
   },
-  // Alfabetet - nye billeder tilføjet
   "Bb": {
     img: "/lovable-uploads/137c3493-d107-4ad6-bdfe-0d3ebde86557.png",
     alt: "Bogstavet B"
@@ -192,4 +190,28 @@ export const hasImage = (letter: string) => {
 
 export const hasAudio = (letter: string) => {
   return AUDIO_FILES[letter] && AUDIO_FILES[letter] !== "";
+};
+
+// Function to get letter color based on type and position
+export const getLetterColor = (letter: string): string => {
+  if (SHORT_VOWELS.includes(letter)) {
+    const colors = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7"];
+    return colors[SHORT_VOWELS.indexOf(letter)];
+  }
+  
+  if (LONG_VOWELS.includes(letter)) {
+    const colors = ["#E17055", "#00B894", "#0984E3", "#00CEC9", "#FDCB6E"];
+    return colors[LONG_VOWELS.indexOf(letter)];
+  }
+  
+  // For consonants, use a variety of colors
+  const consonantColors = [
+    "#6C5CE7", "#A29BFE", "#FD79A8", "#E84393", "#00CEC9",
+    "#00B894", "#00A085", "#FDCB6E", "#E17055", "#D63031",
+    "#74B9FF", "#0984E3", "#6C5CE7", "#A29BFE", "#FD79A8",
+    "#E84393", "#00CEC9", "#00B894", "#FDCB6E", "#E17055", "#D63031"
+  ];
+  
+  const index = CONSONANTS.indexOf(letter);
+  return index >= 0 ? consonantColors[index % consonantColors.length] : "#6C5CE7";
 };
