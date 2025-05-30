@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { Volume2 } from "lucide-react";
 import { WEEKDAYS, MONTHS, getCalendarItemColor } from "@/constants/calendarData";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -24,8 +25,18 @@ export default function CalendarDragDropActivity({ onBack }: Props) {
     return [...currentItems].sort(() => Math.random() - 0.5);
   }, [currentItems, tab]);
 
+  const playAudio = (text: string) => {
+    const utter = new window.SpeechSynthesisUtterance(text);
+    utter.lang = "so-SO";
+    utter.rate = 0.7;
+    const hasSomali = window.speechSynthesis.getVoices().some(v => v.lang === "so-SO");
+    if (!hasSomali) utter.lang = "en-US";
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utter);
+  };
+
   const handleDragStart = (e: React.DragEvent, item: { danish: string; somali: string }) => {
-    e.dataTransfer.setData("text/plain", item.danish);
+    e.dataTransfer.setData("text/plain", item.somali);
   };
 
   const handleDrop = (e: React.DragEvent, position: number) => {
@@ -50,7 +61,7 @@ export default function CalendarDragDropActivity({ onBack }: Props) {
   };
 
   const checkAnswer = () => {
-    const correctOrder = currentItems.map(item => item.danish);
+    const correctOrder = currentItems.map(item => item.somali);
     const isCorrect = currentOrder.every((item, idx) => item === correctOrder[idx]);
     setShowResult(true);
     
@@ -91,12 +102,22 @@ export default function CalendarDragDropActivity({ onBack }: Props) {
                 onDragOver={handleDragOver}
               >
                 {currentOrder[idx] ? (
-                  <div
-                    className={`p-2 rounded-lg text-white font-medium cursor-pointer ${isMobile ? 'text-xs' : 'text-sm'}`}
-                    style={{ backgroundColor: getCalendarItemColor(idx, tab) }}
-                    onClick={() => removeFromOrder(idx)}
-                  >
-                    {currentOrder[idx]}
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`p-2 rounded-lg text-white font-medium cursor-pointer ${isMobile ? 'text-xs' : 'text-sm'}`}
+                      style={{ backgroundColor: getCalendarItemColor(idx, tab) }}
+                      onClick={() => removeFromOrder(idx)}
+                    >
+                      {currentOrder[idx]}
+                    </div>
+                    <Button
+                      onClick={() => playAudio(currentOrder[idx])}
+                      variant="outline"
+                      size="sm"
+                      className="p-1 h-6 w-6"
+                    >
+                      <Volume2 className="w-3 h-3" />
+                    </Button>
                   </div>
                 ) : (
                   <span className="text-gray-400 text-xs md:text-sm">Træk her</span>
@@ -112,19 +133,31 @@ export default function CalendarDragDropActivity({ onBack }: Props) {
             </h4>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
               {shuffledItems.map((item, idx) => {
-                const isUsed = currentOrder.includes(item.danish);
+                const isUsed = currentOrder.includes(item.somali);
                 return (
                   <div
-                    key={item.danish}
-                    draggable={!isUsed}
-                    onDragStart={(e) => handleDragStart(e, item)}
-                    className={`p-3 rounded-lg text-white font-medium text-center cursor-move transition-all ${
-                      isUsed ? 'opacity-30 cursor-not-allowed' : 'hover:scale-105'
-                    } ${isMobile ? 'text-xs' : 'text-sm'}`}
-                    style={{ backgroundColor: getCalendarItemColor(shuffledItems.indexOf(item), tab) }}
+                    key={item.somali}
+                    className="flex items-center gap-2"
                   >
-                    <div>{item.danish}</div>
-                    <div className="text-xs opacity-90">{item.somali}</div>
+                    <div
+                      draggable={!isUsed}
+                      onDragStart={(e) => handleDragStart(e, item)}
+                      className={`p-3 rounded-lg text-white font-medium text-center cursor-move transition-all flex-1 ${
+                        isUsed ? 'opacity-30 cursor-not-allowed' : 'hover:scale-105'
+                      } ${isMobile ? 'text-xs' : 'text-sm'}`}
+                      style={{ backgroundColor: getCalendarItemColor(shuffledItems.indexOf(item), tab) }}
+                    >
+                      {item.somali}
+                    </div>
+                    <Button
+                      onClick={() => playAudio(item.somali)}
+                      variant="outline"
+                      size="sm"
+                      className="p-1 h-8 w-8 flex-shrink-0"
+                      disabled={isUsed}
+                    >
+                      <Volume2 className="w-3 h-3" />
+                    </Button>
                   </div>
                 );
               })}
