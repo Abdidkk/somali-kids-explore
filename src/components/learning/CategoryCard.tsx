@@ -198,10 +198,10 @@ const CategoryHoverContent: React.FC<{ category: LearningCategory }> = ({ catego
         )}
         {category.name === "Kalender" && (
           <>
-            <li>Lære om årstiderne og deres navne</li>
-            <li>Forstå måneder og ugedage på somalisk</li>
-            <li>Lære om traditioner knyttet til forskellige årstider</li>
+            <li>Lære navnene på ugedage, måneder og årstider på somalisk</li>
             <li>Øve udtale af tidsrelaterede ord og begreber</li>
+            <li>Træne at sætte dage og måneder i korrekt rækkefølge</li>
+            <li>Forstå kalendersystemet gennem interaktive øvelser</li>
           </>
         )}
         {category.name === "Familie og venner" && (
