@@ -1,10 +1,10 @@
-
 import React, { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
 import { WEEKDAYS, MONTHS, getCalendarItemColor } from "@/constants/calendarData";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useToast } from "@/hooks/use-toast";
 
 interface Props {
   onBack: () => void;
@@ -12,6 +12,7 @@ interface Props {
 
 export default function CalendarDragDropActivity({ onBack }: Props) {
   const isMobile = useIsMobile();
+  const { toast } = useToast();
   const [tab, setTab] = useState<"weekdays" | "months">("weekdays");
   const [weekdayOrder, setWeekdayOrder] = useState<string[]>([]);
   const [monthOrder, setMonthOrder] = useState<string[]>([]);
@@ -33,6 +34,31 @@ export default function CalendarDragDropActivity({ onBack }: Props) {
     if (!hasSomali) utter.lang = "en-US";
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utter);
+  };
+
+  const playApplauseSound = () => {
+    // Create applause sound effect using Web Audio API
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Create a simple applause-like sound effect
+    const duration = 2; // 2 seconds
+    const sampleRate = audioContext.sampleRate;
+    const frameCount = sampleRate * duration;
+    const arrayBuffer = audioContext.createBuffer(1, frameCount, sampleRate);
+    const channelData = arrayBuffer.getChannelData(0);
+    
+    // Generate applause-like noise
+    for (let i = 0; i < frameCount; i++) {
+      // Create bursts of noise to simulate clapping
+      const time = i / sampleRate;
+      const envelope = Math.exp(-time * 2) * (0.5 + 0.5 * Math.sin(time * 20));
+      channelData[i] = (Math.random() * 2 - 1) * envelope * 0.3;
+    }
+    
+    const source = audioContext.createBufferSource();
+    source.buffer = arrayBuffer;
+    source.connect(audioContext.destination);
+    source.start();
   };
 
   const handleDragStart = (e: React.DragEvent, item: { danish: string; somali: string }) => {
@@ -66,9 +92,19 @@ export default function CalendarDragDropActivity({ onBack }: Props) {
     setShowResult(true);
     
     if (isCorrect) {
-      alert("Rigtig! Du har sat dem i korrekt rækkefølge!");
+      playApplauseSound();
+      toast({
+        title: "Fantastisk! 🎉",
+        description: "Du har sat dem i korrekt rækkefølge!",
+        duration: 3000,
+      });
     } else {
-      alert("Prøv igen! Nogle er ikke i den rigtige rækkefølge.");
+      toast({
+        title: "Prøv igen!",
+        description: "Nogle er ikke i den rigtige rækkefølge.",
+        variant: "destructive",
+        duration: 3000,
+      });
     }
   };
 
