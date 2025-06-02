@@ -8,10 +8,10 @@ import AnimalsModal from "@/components/AnimalsModal";
 import KropsdeleModal from "@/components/KropsdeleModal";
 import CalendarModal from "@/components/CalendarModal";
 import GeographyModal from "@/components/GeographyModal";
+import FamilyModal from "@/components/FamilyModal";
 import ProfileMenu from "@/components/ProfileMenu";
 import CategoryGrid from "@/components/learning/CategoryGrid";
 import LearningPageHeader from "@/components/learning/LearningPageHeader";
-import FamilyModal from "@/components/FamilyModal";
 
 // Mock child data for development
 const mockChild = {
@@ -80,7 +80,7 @@ export default function LearnCategoriesPage() {
         onBack={handleBack}
         onContinue={handleContinueLastCategory}
       />
-      
+
       <CategoryGrid 
         categories={learningCategories}
         finishedCategories={mockChild.finishedCategories}

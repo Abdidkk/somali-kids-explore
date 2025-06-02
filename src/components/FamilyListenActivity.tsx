@@ -1,8 +1,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Volume2, ArrowLeft } from "lucide-react";
-import { familyData, categoryTitles } from "@/constants/familyData";
+import { familyData, getFamilyByCategory } from "@/constants/familyData";
 import { speakUsingSynthesis } from "@/utils/speechUtils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -10,82 +9,75 @@ interface FamilyListenActivityProps {
   onBack: () => void;
 }
 
+type CategoryType = 'familie' | 'mennesker' | 'følelser';
+
 const FamilyListenActivity: React.FC<FamilyListenActivityProps> = ({ onBack }) => {
-  const [selectedCategory, setSelectedCategory] = useState<'family' | 'people' | 'feelings'>('family');
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType>('familie');
   const isMobile = useIsMobile();
 
-  const handlePlaySound = (somaliText: string) => {
-    speakUsingSynthesis(somaliText);
+  const handleItemClick = (somaliWord: string) => {
+    speakUsingSynthesis(somaliWord);
   };
 
-  const getCategoryData = (category: 'family' | 'people' | 'feelings') => {
-    return familyData.filter(item => item.category === category);
-  };
+  const categories = [
+    { key: 'familie' as CategoryType, name: 'Familie', color: 'bg-pink-100 border-pink-300', textColor: 'text-pink-700' },
+    { key: 'mennesker' as CategoryType, name: 'Mennesker', color: 'bg-blue-100 border-blue-300', textColor: 'text-blue-700' },
+    { key: 'følelser' as CategoryType, name: 'Følelser', color: 'bg-purple-100 border-purple-300', textColor: 'text-purple-700' }
+  ];
+
+  const currentItems = getFamilyByCategory(selectedCategory);
 
   return (
-    <div className="p-4 md:p-6">
-      <div className="flex items-center gap-4 mb-6">
-        <Button onClick={onBack} variant="outline" size="sm" className="flex items-center gap-2">
-          <ArrowLeft className="w-4 h-4" />
-          Tilbage
-        </Button>
-        <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold text-pink-700`}>
-          Lyt og lær - Familie og venner
-        </h3>
-      </div>
-
+    <div className="w-full max-w-6xl mx-auto">
       {/* Category Selection */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {Object.entries(categoryTitles).map(([key, title]) => (
+      <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-6 md:mb-8">
+        {categories.map((category) => (
           <Button
-            key={key}
-            onClick={() => setSelectedCategory(key as 'family' | 'people' | 'feelings')}
-            variant={selectedCategory === key ? "default" : "outline"}
-            className={`${isMobile ? 'text-sm px-3 py-2' : 'px-4 py-2'} ${
-              selectedCategory === key ? 'bg-pink-600 hover:bg-pink-700' : 'border-pink-300 text-pink-600 hover:bg-pink-50'
+            key={category.key}
+            variant={selectedCategory === category.key ? "default" : "outline"}
+            onClick={() => setSelectedCategory(category.key)}
+            className={`${isMobile ? 'text-sm px-3 py-2' : 'text-base px-4 py-2'} transition-all ${
+              selectedCategory === category.key 
+                ? `${category.color} ${category.textColor} border-2` 
+                : 'hover:bg-gray-50'
             }`}
           >
-            {title}
+            {category.name}
           </Button>
         ))}
       </div>
 
-      {/* Family Items Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {getCategoryData(selectedCategory).map((item, index) => (
-          <div 
-            key={index} 
-            className="bg-pink-50 border-2 border-pink-200 rounded-xl p-4 hover:shadow-lg transition-all cursor-pointer hover:bg-pink-100"
-            onClick={() => handlePlaySound(item.somali)}
+      {/* Items Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        {currentItems.map((item, index) => (
+          <div
+            key={index}
+            onClick={() => handleItemClick(item.somali)}
+            className="bg-white rounded-xl p-4 md:p-6 shadow-md hover:shadow-lg transition-all cursor-pointer hover:scale-105 border-2 border-transparent hover:border-blue-200"
           >
-            <div className="aspect-square bg-white rounded-lg mb-3 flex items-center justify-center overflow-hidden">
-              <img 
-                src={item.image} 
-                alt={item.danish}
-                className="w-full h-full object-contain"
-              />
+            {/* Placeholder for image */}
+            <div className="w-full h-24 md:h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg mb-3 md:mb-4 flex items-center justify-center">
+              <div className={`${isMobile ? 'text-2xl' : 'text-4xl'}`}>
+                {selectedCategory === 'familie' && '👨‍👩‍👧‍👦'}
+                {selectedCategory === 'mennesker' && '👫'}
+                {selectedCategory === 'følelser' && '😊'}
+              </div>
             </div>
-            <div className="text-center">
-              <p className={`font-semibold text-gray-800 ${isMobile ? 'text-sm' : 'text-base'} mb-1`}>
-                {item.danish}
-              </p>
-              <p className={`text-pink-600 ${isMobile ? 'text-xs' : 'text-sm'} mb-2`}>
-                {item.somali}
-              </p>
-              <Button 
-                size="sm" 
-                className="bg-pink-600 hover:bg-pink-700 text-white w-full flex items-center justify-center gap-2"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePlaySound(item.somali);
-                }}
-              >
-                <Volume2 className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'}`} />
-                {isMobile ? 'Lyt' : 'Lyt'}
-              </Button>
-            </div>
+            
+            <h3 className={`font-bold text-gray-800 mb-1 text-center ${isMobile ? 'text-sm' : 'text-base'}`}>
+              {item.danish}
+            </h3>
+            <p className={`text-blue-600 font-semibold text-center ${isMobile ? 'text-xs' : 'text-sm'}`}>
+              {item.somali}
+            </p>
           </div>
         ))}
+      </div>
+
+      <div className="mt-6 md:mt-8 text-center">
+        <p className={`text-gray-600 ${isMobile ? 'text-sm' : 'text-base'}`}>
+          Klik på et billede for at høre ordet på somalisk
+        </p>
       </div>
     </div>
   );

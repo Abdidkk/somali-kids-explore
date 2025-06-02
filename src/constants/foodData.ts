@@ -7,48 +7,36 @@ export interface FoodItem {
   category: "madvarer" | "frugter" | "grøntsager";
 }
 
-export const foodData: FoodItem[] = [
-  // Madvarer (General Food)
-  { id: "rice", danish: "Ris", somali: "Bariis", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "madvarer" },
-  { id: "bread", danish: "Brød", somali: "Rooti", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "madvarer" },
-  { id: "pasta", danish: "Pasta", somali: "Baasto", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "madvarer" },
-  { id: "meat", danish: "Kød", somali: "Hilib", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "madvarer" },
-  { id: "fish", danish: "Fisk", somali: "Kalluun", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "madvarer" },
-  { id: "chicken", danish: "Kylling", somali: "Digaag", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "madvarer" },
-  { id: "milk", danish: "Mælk", somali: "Caano", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "madvarer" },
-  { id: "cheese", danish: "Ost", somali: "Farmaajo", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "madvarer" },
-  { id: "eggs", danish: "Æg", somali: "Ukun", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "madvarer" },
-  { id: "yogurt", danish: "Yoghurt", somali: "Laban", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "madvarer" },
-
+export const FOOD_ITEMS: FoodItem[] = [
+  // Madvarer (Food items)
+  { id: "ris", danish: "ris", somali: "bariis", image: "/lovable-uploads/food-rice.png", category: "madvarer" },
+  { id: "bread", danish: "brød", somali: "rooti", image: "/lovable-uploads/food-bread.png", category: "madvarer" },
+  { id: "cake", danish: "kage", somali: "keeg", image: "/lovable-uploads/food-cake.png", category: "madvarer" },
+  { id: "milk", danish: "mælk", somali: "caano", image: "/lovable-uploads/food-milk.png", category: "madvarer" },
+  { id: "meat", danish: "kød", somali: "hilib", image: "/lovable-uploads/food-meat.png", category: "madvarer" },
+  { id: "fish", danish: "fisk", somali: "kalluun", image: "/lovable-uploads/food-fish.png", category: "madvarer" },
+  
   // Frugter (Fruits)
-  { id: "apple", danish: "Æble", somali: "Tufaax", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "frugter" },
-  { id: "banana", danish: "Banan", somali: "Muus", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "frugter" },
-  { id: "orange", danish: "Orange", somali: "Liin", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "frugter" },
-  { id: "grape", danish: "Druer", somali: "Canab", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "frugter" },
-  { id: "strawberry", danish: "Jordbær", somali: "Istarooberi", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "frugter" },
-  { id: "mango", danish: "Mango", somali: "Cambe", image: "/lovable-uploads/be828fee-3bf1-4cdc-9b7c-eec490be3769.png", category: "frugter" },
-  { id: "pineapple", danish: "Ananas", somali: "Canaanaas", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "frugter" },
-  { id: "watermelon", danish: "Vandmelon", somali: "Qarre", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "frugter" },
-  { id: "lemon", danish: "Citron", somali: "Liin", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "frugter" },
-  { id: "pear", danish: "Pære", somali: "Geedka pear", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "frugter" },
-
+  { id: "apple", danish: "æble", somali: "tufaax", image: "/lovable-uploads/food-apple.png", category: "frugter" },
+  { id: "mango", danish: "mango", somali: "cambe", image: "/lovable-uploads/food-mango.png", category: "frugter" },
+  { id: "banana", danish: "banan", somali: "muus", image: "/lovable-uploads/food-banana.png", category: "frugter" },
+  { id: "orange", danish: "appelsin", somali: "oorenji", image: "/lovable-uploads/food-orange.png", category: "frugter" },
+  { id: "grapes", danish: "druer", somali: "canab", image: "/lovable-uploads/food-grapes.png", category: "frugter" },
+  { id: "watermelon", danish: "vandmelon", somali: "qarax", image: "/lovable-uploads/food-watermelon.png", category: "frugter" },
+  
   // Grøntsager (Vegetables)
-  { id: "carrot", danish: "Gulerod", somali: "Dabliin", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "grøntsager" },
-  { id: "potato", danish: "Kartoffel", somali: "Bataato", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "grøntsager" },
-  { id: "tomato", danish: "Tomat", somali: "Yaanyo", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "grøntsager" },
-  { id: "cucumber", danish: "Agurk", somali: "Qajaar", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "grøntsager" },
-  { id: "onion", danish: "Løg", somali: "Basal", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "grøntsager" },
-  { id: "lettuce", danish: "Salat", somali: "Salad", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "grøntsager" },
-  { id: "pepper", danish: "Peber", somali: "Basbaas", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "grøntsager" },
-  { id: "broccoli", danish: "Broccoli", somali: "Broccoli", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "grøntsager" },
-  { id: "spinach", danish: "Spinat", somali: "Isbinaaj", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "grøntsager" },
-  { id: "corn", danish: "Majs", somali: "Galley", image: "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png", category: "grøntsager" },
+  { id: "tomato", danish: "tomat", somali: "yaanyo", image: "/lovable-uploads/food-tomato.png", category: "grøntsager" },
+  { id: "onion", danish: "løg", somali: "basal", image: "/lovable-uploads/food-onion.png", category: "grøntsager" },
+  { id: "cucumber", danish: "agurk", somali: "qajaar", image: "/lovable-uploads/food-cucumber.png", category: "grøntsager" },
+  { id: "carrot", danish: "gulerod", somali: "dabaqalin", image: "/lovable-uploads/food-carrot.png", category: "grøntsager" },
+  { id: "lettuce", danish: "salat", somali: "khudaar", image: "/lovable-uploads/food-lettuce.png", category: "grøntsager" },
+  { id: "potato", danish: "kartoffel", somali: "bataati", image: "/lovable-uploads/food-potato.png", category: "grøntsager" }
 ];
 
-export const getFoodByCategory = (category: "madvarer" | "frugter" | "grøntsager"): FoodItem[] => {
-  return foodData.filter(food => food.category === category);
-};
+export function getFoodByCategory(category: "madvarer" | "frugter" | "grøntsager"): FoodItem[] {
+  return FOOD_ITEMS.filter(item => item.category === category);
+}
 
-export const getAllFood = (): FoodItem[] => {
-  return foodData;
-};
+export function getAllFood(): FoodItem[] {
+  return FOOD_ITEMS;
+}

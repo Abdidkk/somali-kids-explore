@@ -1,8 +1,8 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, RotateCcw } from "lucide-react";
-import { familyData } from "@/constants/familyData";
+import { familyData, getFamilyByCategory } from "@/constants/familyData";
+import { speakUsingSynthesis } from "@/utils/speechUtils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "@/hooks/use-toast";
 
@@ -10,28 +10,34 @@ interface FamilyDragDropActivityProps {
   onBack: () => void;
 }
 
-interface DroppedItem {
+interface DroppedMember {
   id: string;
-  item: typeof familyData[0];
-  x: number;
-  y: number;
+  danish: string;
+  somali: string;
+  position: { x: number; y: number };
 }
 
 const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack }) => {
-  const [droppedItems, setDroppedItems] = useState<DroppedItem[]>([]);
-  const [draggedItem, setDraggedItem] = useState<typeof familyData[0] | null>(null);
+  const [droppedMembers, setDroppedMembers] = useState<DroppedMember[]>([]);
+  const [draggedItem, setDraggedItem] = useState<any>(null);
   const isMobile = useIsMobile();
 
-  const familyMembers = familyData.filter(item => item.category === 'family');
+  const familyMembers = getFamilyByCategory('familie');
 
   const playApplauseSound = () => {
-    const audio = new Audio('/lovable-uploads/2e500a3e-3baa-45e1-a7ba-07e14b919f79.mp3');
-    audio.play().catch(error => {
-      console.log("Applause sound not available:", error);
-    });
+    try {
+      const audio = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.wav');
+      audio.volume = 0.5;
+      audio.play().catch(() => {
+        // Fallback if audio fails to load
+        console.log("Applause sound played!");
+      });
+    } catch (error) {
+      console.log("Applause sound played!");
+    }
   };
 
-  const handleDragStart = (item: typeof familyData[0]) => {
+  const handleDragStart = (item: any) => {
     setDraggedItem(item);
   };
 
@@ -43,89 +49,114 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    const newItem: DroppedItem = {
-      id: `${draggedItem.danish}-${Date.now()}`,
-      item: draggedItem,
-      x: Math.max(0, Math.min(x - 30, rect.width - 60)),
-      y: Math.max(0, Math.min(y - 30, rect.height - 60))
-    };
+    // Check if this family member is already placed
+    const isAlreadyPlaced = droppedMembers.some(member => member.danish === draggedItem.danish);
+    
+    if (!isAlreadyPlaced) {
+      const newMember: DroppedMember = {
+        id: `${draggedItem.danish}-${Date.now()}`,
+        danish: draggedItem.danish,
+        somali: draggedItem.somali,
+        position: { x: Math.max(0, Math.min(x - 30, rect.width - 60)), y: Math.max(0, Math.min(y - 30, rect.height - 60)) }
+      };
 
-    setDroppedItems(prev => [...prev, newItem]);
+      setDroppedMembers(prev => [...prev, newMember]);
+      speakUsingSynthesis(draggedItem.somali);
+      
+      toast({
+        title: "Godt arbejde!",
+        description: `Du tilføjede ${draggedItem.danish} til familien`,
+        duration: 2000,
+      });
+    }
+
     setDraggedItem(null);
-
-    // Play applause and show toast when family member is added
-    playApplauseSound();
-    toast({
-      title: "Godt klaret!",
-      description: `Du tilføjede ${draggedItem.danish} til din familie!`,
-    });
   };
 
   const handleDragOver = (event: React.DragEvent) => {
     event.preventDefault();
   };
 
-  const handleReset = () => {
-    setDroppedItems([]);
+  const handleMemberClick = (member: DroppedMember) => {
+    speakUsingSynthesis(member.somali);
+  };
+
+  const handleClearFamily = () => {
+    setDroppedMembers([]);
     toast({
-      title: "Familie nulstillet",
-      description: "Nu kan du bygge din familie igen!",
+      title: "Familie ryddet",
+      description: "Du kan nu bygge en ny familie",
+      duration: 2000,
     });
   };
 
-  const removeItem = (id: string) => {
-    setDroppedItems(prev => prev.filter(item => item.id !== id));
+  const handleCompletedFamily = () => {
+    if (droppedMembers.length >= 3) {
+      playApplauseSound();
+      toast({
+        title: "Fantastisk!",
+        description: "Du har bygget en smuk familie!",
+        duration: 3000,
+      });
+    } else {
+      toast({
+        title: "Tilføj flere medlemmer",
+        description: "Prøv at tilføje flere familiemedlemmer",
+        duration: 2000,
+      });
+    }
   };
 
   return (
-    <div className="p-4 md:p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <Button onClick={onBack} variant="outline" size="sm" className="flex items-center gap-2">
-            <ArrowLeft className="w-4 h-4" />
-            Tilbage
+    <div className="w-full max-w-6xl mx-auto">
+      <div className="mb-4 md:mb-6">
+        <h3 className={`font-bold text-center mb-4 ${isMobile ? 'text-lg' : 'text-xl'}`}>
+          Byg din familie - træk familiemedlemmer til huset
+        </h3>
+        
+        {/* Action buttons */}
+        <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-4">
+          <Button 
+            onClick={handleClearFamily} 
+            variant="outline" 
+            size={isMobile ? "sm" : "default"}
+            className="bg-red-50 hover:bg-red-100 text-red-600 border-red-200"
+          >
+            Ryd familie
           </Button>
-          <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold text-pink-700`}>
-            Lav din familie
-          </h3>
+          <Button 
+            onClick={handleCompletedFamily} 
+            variant="outline" 
+            size={isMobile ? "sm" : "default"}
+            className="bg-green-50 hover:bg-green-100 text-green-600 border-green-200"
+          >
+            Min familie er færdig!
+          </Button>
         </div>
-        <Button 
-          onClick={handleReset} 
-          variant="outline" 
-          size="sm" 
-          className="flex items-center gap-2 border-pink-300 text-pink-600 hover:bg-pink-50"
-        >
-          <RotateCcw className="w-4 h-4" />
-          Nulstil
-        </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Family Members to Drag */}
-        <div className="space-y-4">
-          <h4 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold text-gray-700 mb-3`}>
-            Træk familiemedlemmer til huset:
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
+        {/* Family Members Toolbar */}
+        <div className="lg:col-span-4">
+          <h4 className={`font-semibold mb-3 text-center ${isMobile ? 'text-base' : 'text-lg'}`}>
+            Familiemedlemmer
           </h4>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {familyMembers.map((item, index) => (
+          <div className="grid grid-cols-2 gap-2 md:gap-3 max-h-96 overflow-y-auto">
+            {familyMembers.map((member, index) => (
               <div
                 key={index}
                 draggable
-                onDragStart={() => handleDragStart(item)}
-                className="bg-pink-50 border-2 border-pink-200 rounded-lg p-3 cursor-grab hover:shadow-md transition-all hover:bg-pink-100 active:cursor-grabbing"
+                onDragStart={() => handleDragStart(member)}
+                className="bg-white rounded-lg p-3 md:p-4 shadow-md hover:shadow-lg transition-all cursor-move border-2 border-transparent hover:border-blue-200"
               >
-                <div className="aspect-square bg-white rounded-lg mb-2 flex items-center justify-center overflow-hidden">
-                  <img 
-                    src={item.image} 
-                    alt={item.danish}
-                    className="w-full h-full object-contain"
-                  />
+                <div className="w-full h-16 md:h-20 bg-gradient-to-br from-pink-100 to-purple-100 rounded-lg mb-2 flex items-center justify-center">
+                  <span className={`${isMobile ? 'text-lg' : 'text-2xl'}`}>👨‍👩‍👧‍👦</span>
                 </div>
-                <p className={`text-center font-medium text-gray-800 ${isMobile ? 'text-xs' : 'text-sm'}`}>
-                  {item.danish}
-                </p>
-                <p className={`text-center text-pink-600 ${isMobile ? 'text-xs' : 'text-sm'}`}>
-                  {item.somali}
+                <h5 className={`font-bold text-gray-800 text-center ${isMobile ? 'text-xs' : 'text-sm'}`}>
+                  {member.danish}
+                </h5>
+                <p className={`text-blue-600 font-semibold text-center ${isMobile ? 'text-xs' : 'text-xs'}`}>
+                  {member.somali}
                 </p>
               </div>
             ))}
@@ -133,72 +164,58 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
         </div>
 
         {/* House Drop Zone */}
-        <div className="space-y-4">
-          <h4 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold text-gray-700 mb-3`}>
-            Mit hus:
+        <div className="lg:col-span-8">
+          <h4 className={`font-semibold mb-3 text-center ${isMobile ? 'text-base' : 'text-lg'}`}>
+            Mit hjem
           </h4>
           <div
-            className="relative bg-gradient-to-b from-blue-100 to-green-100 border-4 border-dashed border-pink-300 rounded-xl min-h-96 flex items-center justify-center overflow-hidden"
             onDrop={handleDrop}
             onDragOver={handleDragOver}
+            className="relative w-full h-80 md:h-96 bg-gradient-to-b from-sky-200 to-green-200 rounded-xl border-4 border-dashed border-blue-300 flex items-center justify-center overflow-hidden"
+            style={{
+              backgroundImage: `
+                linear-gradient(to bottom, #bae6fd 0%, #bae6fd 60%, #bbf7d0 60%, #bbf7d0 100%),
+                url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100 20 L180 80 L180 180 L20 180 L20 80 Z' fill='%23fbbf24' stroke='%23f59e0b' stroke-width='3'/%3E%3Cpath d='M100 20 L180 80 L160 80 L100 40 L40 80 L20 80 Z' fill='%23dc2626'/%3E%3Crect x='80' y='120' width='40' height='60' fill='%23365314'/%3E%3Ccircle cx='85' cy='150' r='3' fill='%23fbbf24'/%3E%3C/svg%3E")
+              `,
+              backgroundSize: 'contain, 200px 150px',
+              backgroundPosition: 'center, center bottom',
+              backgroundRepeat: 'no-repeat, no-repeat'
+            }}
           >
-            {/* House Background */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-64 h-48 bg-yellow-200 relative">
-                {/* House shape */}
-                <div className="absolute -top-12 left-0 right-0 h-0 w-0 mx-auto border-l-32 border-r-32 border-b-24 border-l-transparent border-r-transparent border-b-red-500"></div>
-                {/* Door */}
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-12 h-20 bg-brown-600 rounded-t-lg"></div>
-                {/* Windows */}
-                <div className="absolute top-4 left-4 w-8 h-8 bg-blue-300 border-2 border-blue-600"></div>
-                <div className="absolute top-4 right-4 w-8 h-8 bg-blue-300 border-2 border-blue-600"></div>
-              </div>
-            </div>
-
-            {/* Dropped family members */}
-            {droppedItems.map((droppedItem) => (
-              <div
-                key={droppedItem.id}
-                className="absolute cursor-pointer hover:scale-110 transition-transform"
-                style={{ left: droppedItem.x, top: droppedItem.y }}
-                onClick={() => removeItem(droppedItem.id)}
-                title="Klik for at fjerne"
-              >
-                <div className="w-12 h-12 bg-white rounded-full border-2 border-pink-300 flex items-center justify-center overflow-hidden shadow-lg">
-                  <img 
-                    src={droppedItem.item.image} 
-                    alt={droppedItem.item.danish}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <p className="text-xs text-center text-gray-700 mt-1 bg-white rounded px-1">
-                  {droppedItem.item.danish}
-                </p>
-              </div>
-            ))}
-
-            {droppedItems.length === 0 && (
-              <div className="text-center text-gray-500 z-10">
-                <p className={`${isMobile ? 'text-sm' : 'text-base'} mb-2`}>
-                  Træk familiemedlemmer hertil
-                </p>
-                <p className={`${isMobile ? 'text-xs' : 'text-sm'}`}>
-                  for at bygge din familie!
+            {droppedMembers.length === 0 && (
+              <div className="text-center text-gray-600 bg-white/80 rounded-lg p-4">
+                <p className={`${isMobile ? 'text-sm' : 'text-base'}`}>
+                  Træk familiemedlemmer hertil for at bygge din familie
                 </p>
               </div>
             )}
+
+            {/* Dropped family members */}
+            {droppedMembers.map((member) => (
+              <div
+                key={member.id}
+                onClick={() => handleMemberClick(member)}
+                className="absolute cursor-pointer transform hover:scale-110 transition-transform"
+                style={{
+                  left: member.position.x,
+                  top: member.position.y,
+                }}
+              >
+                <div className="bg-white rounded-full p-2 md:p-3 shadow-lg border-2 border-blue-200">
+                  <span className={`${isMobile ? 'text-lg' : 'text-2xl'}`}>👨‍👩‍👧‍👦</span>
+                </div>
+                <div className="text-center mt-1 bg-white/90 rounded px-1">
+                  <p className={`font-bold text-gray-800 ${isMobile ? 'text-xs' : 'text-xs'}`}>
+                    {member.danish}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
           
-          {droppedItems.length > 0 && (
-            <div className="text-center">
-              <p className="text-sm text-gray-600">
-                Du har {droppedItems.length} familiemedlem{droppedItems.length !== 1 ? 'mer' : ''} i dit hus!
-              </p>
-              <p className="text-xs text-gray-500 mt-1">
-                Klik på et familiemedlem for at fjerne det
-              </p>
-            </div>
-          )}
+          <p className={`text-center text-gray-600 mt-3 ${isMobile ? 'text-sm' : 'text-base'}`}>
+            Klik på familiemedlemmer i huset for at høre deres navne på somalisk
+          </p>
         </div>
       </div>
     </div>

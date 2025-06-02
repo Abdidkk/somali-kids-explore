@@ -63,7 +63,7 @@ const FamilyModal: React.FC<FamilyModalProps> = ({
               </div>
               <div>
                 <h4 className={`font-bold text-pink-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Lyt og lær</h4>
-                <p className={`${isMobile ? 'text-lg' : 'text-xl'} text-gray-600`}>Klik på familiemedlemmer, venner eller følelser og hør navnene på somalisk</p>
+                <p className={`${isMobile ? 'text-lg' : 'text-xl'} text-gray-600`}>Lær om familie, venner og følelser på somalisk</p>
               </div>
             </button>
             
@@ -77,7 +77,7 @@ const FamilyModal: React.FC<FamilyModalProps> = ({
               </div>
               <div>
                 <h4 className={`font-bold text-blue-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Lav din familie</h4>
-                <p className={`${isMobile ? 'text-lg' : 'text-xl'} text-gray-600`}>Træk familiemedlemmer ind i huset og byg din egen familie</p>
+                <p className={`${isMobile ? 'text-lg' : 'text-xl'} text-gray-600`}>Træk familiemedlemmer til huset og byg din familie</p>
               </div>
             </button>
           </div>
