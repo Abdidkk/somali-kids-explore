@@ -8,6 +8,7 @@ import FoodModal from "@/components/FoodModal";
 import AnimalsModal from "@/components/AnimalsModal";
 import KropsdeleModal from "@/components/KropsdeleModal";
 import CalendarModal from "@/components/CalendarModal";
+import GeographyModal from "@/components/GeographyModal";
 import ProfileMenu from "@/components/ProfileMenu";
 import CategoryGrid from "@/components/learning/CategoryGrid";
 import LearningPageHeader from "@/components/learning/LearningPageHeader";
@@ -31,6 +32,7 @@ export default function LearnCategoriesPage() {
   const [showAnimals, setShowAnimals] = useState(false);
   const [showKropsdele, setShowKropsdele] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
+  const [showGeography, setShowGeography] = useState(false);
 
   const handleBack = () => {
     window.history.back();
@@ -51,6 +53,8 @@ export default function LearnCategoriesPage() {
       setShowKropsdele(true);
     } else if (category.name === "Kalender") {
       setShowCalendar(true);
+    } else if (category.name === "Geografi") {
+      setShowGeography(true);
     }
   };
 
@@ -114,6 +118,11 @@ export default function LearnCategoriesPage() {
       <CalendarModal 
         open={showCalendar} 
         onClose={() => setShowCalendar(false)} 
+      />
+      
+      <GeographyModal 
+        open={showGeography} 
+        onClose={() => setShowGeography(false)} 
       />
     </div>
   );
