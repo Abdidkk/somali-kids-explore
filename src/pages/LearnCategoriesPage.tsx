@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { learningCategories } from "@/data/learningCategories";
 import AlphabetModal from "@/components/AlphabetModal";
@@ -8,7 +9,6 @@ import AnimalsModal from "@/components/AnimalsModal";
 import KropsdeleModal from "@/components/KropsdeleModal";
 import CalendarModal from "@/components/CalendarModal";
 import GeographyModal from "@/components/GeographyModal";
-import FamilyModal from "@/components/FamilyModal";
 import ProfileMenu from "@/components/ProfileMenu";
 import CategoryGrid from "@/components/learning/CategoryGrid";
 import LearningPageHeader from "@/components/learning/LearningPageHeader";
@@ -33,7 +33,6 @@ export default function LearnCategoriesPage() {
   const [showKropsdele, setShowKropsdele] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [showGeography, setShowGeography] = useState(false);
-  const [showFamily, setShowFamily] = useState(false);
 
   const handleBack = () => {
     window.history.back();
@@ -56,8 +55,6 @@ export default function LearnCategoriesPage() {
       setShowCalendar(true);
     } else if (category.name === "Geografi") {
       setShowGeography(true);
-    } else if (category.name === "Familie og venner") {
-      setShowFamily(true);
     }
   };
 
@@ -126,11 +123,6 @@ export default function LearnCategoriesPage() {
       <GeographyModal 
         open={showGeography} 
         onClose={() => setShowGeography(false)} 
-      />
-      
-      <FamilyModal 
-        open={showFamily} 
-        onClose={() => setShowFamily(false)} 
       />
     </div>
   );
