@@ -3,8 +3,8 @@
 export const SHORT_VOWELS = ["A", "E", "I", "O", "U"];
 export const LONG_VOWELS = ["AA", "EE", "II", "OO", "UU"];
 export const CONSONANTS = [
-  "B", "Tt", "J", "Xx", "KHkh", "Dd", "Rr", "Ss", "SHsh", "DHdh", 
-  "Cc", "Gg", "Ff", "Qq", "Kk", "Ll", "Mm", "Nn", "Ww", "Hh", "Yy"
+  "B", "T", "J", "X", "KH", "D", "R", "S", "SH", "DH", 
+  "C", "G", "F", "Q", "K", "L", "M", "N", "W", "H", "Y"
 ];
 
 export const GROUPS = {
@@ -97,27 +97,27 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/137c3493-d107-4ad6-bdfe-0d3ebde86557.png",
     alt: "Bogstavet "
   },
-  "Cc": {
+  "C": {
     img: "/lovable-uploads/2f53b20d-6439-420c-8bd8-f2b42e07562c.png",
     alt: "Bogstavet C"
   },
-  "Dd": {
+  "D": {
     img: "/lovable-uploads/21dbe823-efb8-4536-bae2-f0fa1b05135a.png",
     alt: "Bogstavet D"
   },
-  "DHdh": {
+  "DH": {
     img: "/lovable-uploads/fed49f42-48ff-4aa2-971d-914092d122a8.png", 
     alt: "Bogstavet DH"
   },
-  "Ff": {
+  "F": {
     img: "/lovable-uploads/e6aa3b70-3fa2-4c9e-af6a-398e0c5487f6.png",
     alt: "Bogstavet F"
   },
-  "Gg": {
+  "G": {
     img: "/lovable-uploads/4097f6e7-9f3a-423f-8959-f5b7d9b23ed7.png",
     alt: "Bogstavet G"
   },
-  "Hh": {
+  "H": {
     img: "/lovable-uploads/fadf7158-7c58-41a5-bc73-84baf9995109.png",
     alt: "Bogstavet H"
   },
@@ -125,55 +125,55 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/2880b50d-a895-4677-a7d9-680fa0c872f3.png",
     alt: "Bogstavet J"
   },
-  "Kk": {
+  "K": {
     img: "/lovable-uploads/5e9cedef-3d1e-4ca9-8f28-eac454a506e7.png",
     alt: "Bogstavet K"
   },
-  "KHkh": {
+  "KH": {
     img: "/lovable-uploads/a2da5f69-75bf-45a0-8325-4e3c1285929c.png",
     alt: "Bogstavet KH"
   },
-  "Ll": {
+  "L": {
     img: "/lovable-uploads/1dbfd78f-7c8b-4272-a674-10d38c20043d.png",
     alt: "Bogstavet L"
   },
-  "Mm": {
+  "M": {
     img: "/lovable-uploads/ad1381cf-5eeb-4fef-8af0-1dc5f93bf90b.png",
     alt: "Bogstavet M"
   },
-  "Nn": {
+  "N": {
     img: "/lovable-uploads/3b5c7f31-fb92-4d57-b31a-2b9f5e3f8f04.png",
     alt: "Bogstavet N"
   },
-  "Qq": {
+  "Q": {
     img: "/lovable-uploads/49106c52-e19b-492a-8642-9a326819df86.png",
     alt: "Bogstavet Q"
   },
-  "Rr": {
+  "R": {
     img: "/lovable-uploads/05aa24f3-bf74-4721-80fd-294bfe79b1eb.png",
     alt: "Bogstavet R"
   },
-  "Ss": {
+  "S": {
     img: "/lovable-uploads/7704660d-576e-4a7f-ac19-3aed5364351f.png",
     alt: "Bogstavet S"
   },
-  "SHsh": {
+  "SH": {
     img: "/lovable-uploads/0249030c-58e1-4fac-8541-4c83b0b41900.png",
     alt: "Bogstavet SH"
   },
-  "Tt": {
+  "T": {
     img: "/lovable-uploads/0e8c4234-8d4a-494f-ba70-7efa05bbf051.png",
     alt: "Bogstavet T"
   },
-  "Ww": {
+  "W": {
     img: "/lovable-uploads/1b83ffd6-177b-4abc-b5e8-ff1f289e98d6.png",
     alt: "Bogstavet W"
   },
-  "Xx": {
+  "X": {
     img: "/lovable-uploads/8caf3563-09bf-4bd5-a4ee-92b930b270a5.png",
     alt: "Bogstavet X"
   },
-  "Yy": {
+  "Y": {
     img: "/lovable-uploads/635670fe-f87e-4fb0-aec5-e1d0346b85c7.png",
     alt: "Bogstavet Y"
   }
