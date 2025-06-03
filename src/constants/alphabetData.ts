@@ -18,9 +18,9 @@ export const AUDIO_FILES: Record<string, string> = {
   // Korte vokaler
   "A": "public/A.MP3",
   "E": "public/E.MP3",
-  "I": "",
-  "O": "",
-  "U": "",
+  "I": "public/I.MP3",
+  "O": "public/O.MP3",
+  "U": "public/U.MP3",
   // Lange vokaler
   "AA": "",
   "EE": "",
