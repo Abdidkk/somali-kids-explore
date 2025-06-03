@@ -1,4 +1,3 @@
-
 // Bogstavgrupper - Updated with new order
 export const SHORT_VOWELS = ["A", "E", "I", "O", "U"];
 export const LONG_VOWELS = ["AA", "EE", "II", "OO", "UU"];
@@ -13,42 +12,42 @@ export const GROUPS = {
   long:     { label: "Lange vokaler", letters: LONG_VOWELS }
 };
 
-// Audio file mappings - Foreløbig tomme stier, der skal udfyldes med faktiske lydfilstier
+// Audio file mappings - Updated with new audio folder structure
 export const AUDIO_FILES: Record<string, string> = {
   // Korte vokaler
-  "A": "",
-  "E": "",
-  "I": "",
-  "O": "",
-  "U": "",
+  "A": "/audio/alphabet/A.mp3",
+  "E": "/audio/alphabet/E.mp3",
+  "I": "/audio/alphabet/I.mp3",
+  "O": "/audio/alphabet/O.mp3",
+  "U": "/audio/alphabet/U.mp3",
   // Lange vokaler
-  "AA": "",
-  "EE": "",
-  "II": "",
-  "OO": "",
-  "UU": "",
-  // Alfabetet - updated with new order
-  "Bb": "",
-  "Tt": "",
-  "Jj": "",
-  "Xx": "",
-  "KHkh": "",
-  "Dd": "",
-  "Rr": "",
-  "Ss": "",
-  "SHsh": "",
-  "DHdh": "",
-  "Cc": "",
-  "Gg": "",
-  "Ff": "",
-  "Qq": "",
-  "Kk": "",
-  "Ll": "",
-  "Mm": "",
-  "Nn": "",
-  "Ww": "",
-  "Hh": "",
-  "Yy": ""
+  "AA": "/audio/alphabet/AA.mp3",
+  "EE": "/audio/alphabet/EE.mp3",
+  "II": "/audio/alphabet/II.mp3",
+  "OO": "/audio/alphabet/OO.mp3",
+  "UU": "/audio/alphabet/UU.mp3",
+  // Alfabetet
+  "Bb": "/audio/alphabet/Bb.mp3",
+  "Tt": "/audio/alphabet/Tt.mp3",
+  "Jj": "/audio/alphabet/Jj.mp3",
+  "Xx": "/audio/alphabet/Xx.mp3",
+  "KHkh": "/audio/alphabet/KHkh.mp3",
+  "Dd": "/audio/alphabet/Dd.mp3",
+  "Rr": "/audio/alphabet/Rr.mp3",
+  "Ss": "/audio/alphabet/Ss.mp3",
+  "SHsh": "/audio/alphabet/SHsh.mp3",
+  "DHdh": "/audio/alphabet/DHdh.mp3",
+  "Cc": "/audio/alphabet/Cc.mp3",
+  "Gg": "/audio/alphabet/Gg.mp3",
+  "Ff": "/audio/alphabet/Ff.mp3",
+  "Qq": "/audio/alphabet/Qq.mp3",
+  "Kk": "/audio/alphabet/Kk.mp3",
+  "Ll": "/audio/alphabet/Ll.mp3",
+  "Mm": "/audio/alphabet/Mm.mp3",
+  "Nn": "/audio/alphabet/Nn.mp3",
+  "Ww": "/audio/alphabet/Ww.mp3",
+  "Hh": "/audio/alphabet/Hh.mp3",
+  "Yy": "/audio/alphabet/Yy.mp3"
 };
 
 export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {

@@ -1,8 +1,7 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { familyData, getFamilyByCategory } from "@/constants/familyData";
-import { speakUsingSynthesis } from "@/utils/speechUtils";
+import { speakCustomOrFallback } from "@/utils/speechUtils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface FamilyListenActivityProps {
@@ -15,8 +14,8 @@ const FamilyListenActivity: React.FC<FamilyListenActivityProps> = ({ onBack }) =
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('familie');
   const isMobile = useIsMobile();
 
-  const handleItemClick = (somaliWord: string) => {
-    speakUsingSynthesis(somaliWord);
+  const handleItemClick = (item: { somali: string; audioPath?: string }) => {
+    speakCustomOrFallback(item.audioPath, item.somali);
   };
 
   const categories = [
@@ -52,7 +51,7 @@ const FamilyListenActivity: React.FC<FamilyListenActivityProps> = ({ onBack }) =
         {currentItems.map((item, index) => (
           <div
             key={index}
-            onClick={() => handleItemClick(item.somali)}
+            onClick={() => handleItemClick(item)}
             className="bg-white rounded-xl p-4 md:p-6 shadow-md hover:shadow-lg transition-all cursor-pointer hover:scale-105 border-2 border-transparent hover:border-blue-200"
           >
             {/* Placeholder for image */}
