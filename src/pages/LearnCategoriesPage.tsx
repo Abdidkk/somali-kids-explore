@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { learningCategories } from "@/data/learningCategories";
+import { Button } from "@/components/ui/button";
 import AlphabetModal from "@/components/AlphabetModal";
 import ColorsModal from "@/components/ColorsModal";
 import NumbersModal from "@/components/NumbersModal";
@@ -12,6 +13,7 @@ import FamilyModal from "@/components/FamilyModal";
 import ProfileMenu from "@/components/ProfileMenu";
 import CategoryGrid from "@/components/learning/CategoryGrid";
 import LearningPageHeader from "@/components/learning/LearningPageHeader";
+import AudioUploadManager from "@/components/AudioUploadManager";
 
 // Mock child data for development
 const mockChild = {
@@ -34,6 +36,7 @@ export default function LearnCategoriesPage() {
   const [showCalendar, setShowCalendar] = useState(false);
   const [showGeography, setShowGeography] = useState(false);
   const [showFamily, setShowFamily] = useState(false);
+  const [showAudioManager, setShowAudioManager] = useState(false);
 
   const handleBack = () => {
     window.history.back();
@@ -71,6 +74,23 @@ export default function LearnCategoriesPage() {
     }
   };
 
+  if (showAudioManager) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white flex flex-col items-center py-10">
+        <div className="w-full max-w-4xl px-4">
+          <Button 
+            onClick={() => setShowAudioManager(false)} 
+            className="mb-4"
+            variant="outline"
+          >
+            ← Tilbage til kategorier
+          </Button>
+          <AudioUploadManager />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white flex flex-col items-center py-10 animate-fade-in relative">
       <ProfileMenu />
@@ -80,6 +100,17 @@ export default function LearnCategoriesPage() {
         onBack={handleBack}
         onContinue={handleContinueLastCategory}
       />
+
+      {/* Add Audio Manager Button */}
+      <div className="mb-4">
+        <Button 
+          onClick={() => setShowAudioManager(true)}
+          variant="outline"
+          className="text-sm"
+        >
+          🎵 Tjek lydfiler
+        </Button>
+      </div>
 
       <CategoryGrid 
         categories={learningCategories}
