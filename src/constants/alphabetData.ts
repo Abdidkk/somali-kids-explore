@@ -22,11 +22,11 @@ export const AUDIO_FILES: Record<string, string> = {
   "O": "public/O.mp3",
   "U": "public/U.mp3",
   // Lange vokaler
-  "AA": "",
-  "EE": "",
-  "II": "",
-  "OO": "",
-  "UU": "",
+  "AA": "public/AA.mp3",
+  "EE": "public/EE.mp3",
+  "II": "public/II.mp3",
+  "OO": "public/OO.mp3",
+  "UU": "public/UU.mp3",
   // Alfabetet - updated with new order
   "Bb": "",
   "Tt": "",
