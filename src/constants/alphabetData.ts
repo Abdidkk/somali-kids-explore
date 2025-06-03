@@ -28,7 +28,7 @@ export const AUDIO_FILES: Record<string, string> = {
   "OO": "",
   "UU": "",
   // Alfabetet - updated with new order
-  "B": "",
+  "Bb": "",
   "Tt": "",
   "Jj": "",
   "Xx": "",
