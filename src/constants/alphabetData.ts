@@ -15,7 +15,7 @@ export const GROUPS = {
 // Audio file mappings - Updated with new audio folder structure
 export const AUDIO_FILES: Record<string, string> = {
   // Korte vokaler
-  "A": "audio/alphabet/A.mp3",
+  "A": "/audio/alphabet/A.mp3",
   "E": "/audio/alphabet/E.mp3",
   "I": "/audio/alphabet/I.mp3",
   "O": "/audio/alphabet/O.mp3",
