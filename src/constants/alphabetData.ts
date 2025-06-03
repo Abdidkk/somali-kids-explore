@@ -2,7 +2,7 @@
 export const SHORT_VOWELS = ["A", "E", "I", "O", "U"];
 export const LONG_VOWELS = ["AA", "EE", "II", "OO", "UU"];
 export const CONSONANTS = [
-  "", "T", "J", "X", "KH", "D", "R", "S", "SH", "DH", 
+  "B", "T", "J", "X", "KH", "D", "R", "S", "SH", "DH", 
   "C", "G", "F", "Q", "K", "L", "M", "N", "W", "H", "Y"
 ];
 
