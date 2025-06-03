@@ -3,7 +3,7 @@
 export const SHORT_VOWELS = ["A", "E", "I", "O", "U"];
 export const LONG_VOWELS = ["AA", "EE", "II", "OO", "UU"];
 export const CONSONANTS = [
-  "B", "T", "Jj", "Xx", "KHkh", "Dd", "Rr", "Ss", "SHsh", "DHdh", 
+  "B", "Tt", "Jj", "Xx", "KHkh", "Dd", "Rr", "Ss", "SHsh", "DHdh", 
   "Cc", "Gg", "Ff", "Qq", "Kk", "Ll", "Mm", "Nn", "Ww", "Hh", "Yy"
 ];
 
@@ -121,7 +121,7 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/fadf7158-7c58-41a5-bc73-84baf9995109.png",
     alt: "Bogstavet H"
   },
-  "Jj": {
+  "J": {
     img: "/lovable-uploads/2880b50d-a895-4677-a7d9-680fa0c872f3.png",
     alt: "Bogstavet J"
   },
@@ -161,7 +161,7 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/0249030c-58e1-4fac-8541-4c83b0b41900.png",
     alt: "Bogstavet SH"
   },
-  "T": {
+  "Tt": {
     img: "/lovable-uploads/0e8c4234-8d4a-494f-ba70-7efa05bbf051.png",
     alt: "Bogstavet T"
   },
