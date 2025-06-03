@@ -2,8 +2,8 @@
 export const SHORT_VOWELS = ["A", "E", "I", "O", "U"];
 export const LONG_VOWELS = ["AA", "EE", "II", "OO", "UU"];
 export const CONSONANTS = [
-  "B", "T", "Jj", "Xx", "KHkh", "Dd", "Rr", "Ss", "SHsh", "DHdh", 
-  "Cc", "Gg", "Ff", "Qq", "Kk", "Ll", "Mm", "Nn", "Ww", "Hh", "Yy"
+  "B", "T", "J", "X", "KH", "D", "R", "S", "SH", "DH", 
+  "C", "G", "F", "Q", "K", "L", "M", "N", "W", "H", "Y"
 ];
 
 export const GROUPS = {
