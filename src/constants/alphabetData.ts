@@ -17,7 +17,7 @@ export const GROUPS = {
 export const AUDIO_FILES: Record<string, string> = {
   // Korte vokaler
   "A": "public/A.MP3",
-  "E": "",
+  "E": "public/E.MP3",
   "I": "",
   "O": "",
   "U": "",
