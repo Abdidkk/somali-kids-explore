@@ -3,7 +3,7 @@
 export const SHORT_VOWELS = ["A", "E", "I", "O", "U"];
 export const LONG_VOWELS = ["AA", "EE", "II", "OO", "UU"];
 export const CONSONANTS = [
-  "B", "Tt", "Jj", "Xx", "KHkh", "Dd", "Rr", "Ss", "SHsh", "DHdh", 
+  "B", "T", "Jj", "Xx", "KHkh", "Dd", "Rr", "Ss", "SHsh", "DHdh", 
   "Cc", "Gg", "Ff", "Qq", "Kk", "Ll", "Mm", "Nn", "Ww", "Hh", "Yy"
 ];
 
@@ -16,7 +16,7 @@ export const GROUPS = {
 // Audio file mappings - Foreløbig tomme stier, der skal udfyldes med faktiske lydfilstier
 export const AUDIO_FILES: Record<string, string> = {
   // Korte vokaler
-  "A": "/Audio/A.MP3",
+  "A": "",
   "E": "",
   "I": "",
   "O": "",
@@ -93,7 +93,7 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/a519a572-4893-49e9-baee-965f0243deb5.png",
     alt: "Bogstavet UU"
   },
-  "B": {
+  "": {
     img: "/lovable-uploads/137c3493-d107-4ad6-bdfe-0d3ebde86557.png",
     alt: "Bogstavet "
   },
