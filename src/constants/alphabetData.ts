@@ -93,7 +93,7 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/a519a572-4893-49e9-baee-965f0243deb5.png",
     alt: "Bogstavet UU"
   },
-  "": {
+  "B": {
     img: "/lovable-uploads/137c3493-d107-4ad6-bdfe-0d3ebde86557.png",
     alt: "Bogstavet "
   },
@@ -161,7 +161,7 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
     img: "/lovable-uploads/0249030c-58e1-4fac-8541-4c83b0b41900.png",
     alt: "Bogstavet SH"
   },
-  "Tt": {
+  "T": {
     img: "/lovable-uploads/0e8c4234-8d4a-494f-ba70-7efa05bbf051.png",
     alt: "Bogstavet T"
   },
