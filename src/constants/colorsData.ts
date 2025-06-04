@@ -5,6 +5,7 @@ export interface ColorData {
   danish: string;
   hex: string;
   image?: string;
+  audioPath: string;
 }
 
 export const COLORS_DATA: ColorData[] = [
