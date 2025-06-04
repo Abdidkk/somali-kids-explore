@@ -20,7 +20,7 @@ export const COLORS_DATA: ColorData[] = [
     somali: "buluug",
     danish: "blå",
     hex: "#0000FF",
-    audioPath:"/Buluug.mp3",
+    audioPath:"/public/Buluug.mp3",
   },
   {
     name: "green",
