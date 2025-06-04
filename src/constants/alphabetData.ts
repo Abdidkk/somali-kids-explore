@@ -16,17 +16,17 @@ export const GROUPS = {
 // Audio file mappings - Foreløbig tomme stier, der skal udfyldes med faktiske lydfilstier
 export const AUDIO_FILES: Record<string, string> = {
   // Korte vokaler
-  "A": "public/A.MP3",
-  "E": "public/E.MP3",
-  "I": "public/I.mp3",
-  "O": "public/O.mp3",
-  "U": "public/U.mp3",
+  "A": "/A.MP3",
+  "E": "/E.MP3",
+  "I": "/I.mp3",
+  "O": "/O.mp3",
+  "U": "/U.mp3",
   // Lange vokaler
-  "AA": "public/AA.mp3",
-  "EE": "public/EE.mp3",
-  "II": "public/II.mp3",
-  "OO": "public/OO.mp3",
-  "UU": "public/UU.mp3",
+  "AA": "/AA.mp3",
+  "EE": "/EE.mp3",
+  "II": "/II.mp3",
+  "OO": "/OO.mp3",
+  "UU": "/UU.mp3",
   // Alfabetet - updated with new order
   "Bb": "",
   "Tt": "",
