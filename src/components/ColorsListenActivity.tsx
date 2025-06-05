@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Volume2, ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { COLORS_DATA } from "@/constants/colorsData";
+import { COLORS_DATA, hasColorAudio } from "@/constants/colorsData";
 
 interface ColorsListenActivityProps {
   onBack: () => void;
@@ -12,10 +12,28 @@ export default function ColorsListenActivity({ onBack }: ColorsListenActivityPro
   const [currentColorIndex, setCurrentColorIndex] = useState(0);
   const currentColor = COLORS_DATA[currentColorIndex];
 
-  const speakColor = (text: string) => {
+  const speakColor = (color: typeof currentColor) => {
+    // Try to use custom audio file first
+    if (hasColorAudio(color)) {
+      const audio = new Audio(color.audioPath);
+      audio.play().catch(error => {
+        console.error("Failed to play custom audio:", error);
+        // Fallback to speech synthesis if audio file fails
+        speakUsingSynthesis(color.somali);
+      });
+    } else {
+      // Use speech synthesis as fallback
+      speakUsingSynthesis(color.somali);
+    }
+  };
+
+  const speakUsingSynthesis = (text: string) => {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "so-SO";
     utterance.rate = 0.7;
+    const hasSomali = speechSynthesis.getVoices().some(v => v.lang === "so-SO");
+    if (!hasSomali) utterance.lang = "en-US";
+    speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
   };
 
@@ -38,7 +56,7 @@ export default function ColorsListenActivity({ onBack }: ColorsListenActivityPro
         />
         
         <Button
-          onClick={() => speakColor(currentColor.somali)}
+          onClick={() => speakColor(currentColor)}
           className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-pink-600 hover:bg-pink-700 rounded-full p-3"
           size="icon"
         >
@@ -49,6 +67,9 @@ export default function ColorsListenActivity({ onBack }: ColorsListenActivityPro
       <div className="text-center space-y-2">
         <h4 className="text-3xl font-bold text-pink-700">{currentColor.somali}</h4>
         <p className="text-lg text-gray-600">({currentColor.danish})</p>
+        {hasColorAudio(currentColor) && (
+          <p className="text-sm text-green-600">🎵 Custom audio available</p>
+        )}
       </div>
 
       <div className="flex items-center gap-4">

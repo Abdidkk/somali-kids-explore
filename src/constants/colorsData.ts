@@ -5,7 +5,7 @@ export interface ColorData {
   danish: string;
   hex: string;
   image?: string;
-  audioPath: string;
+  audioPath?: string; // Made optional to fix build errors
 }
 
 export const COLORS_DATA: ColorData[] = [
@@ -20,7 +20,7 @@ export const COLORS_DATA: ColorData[] = [
     somali: "buluug",
     danish: "blå",
     hex: "#0000FF",
-    audioPath:"Buluug.mp3",
+    audioPath: "Buluug.mp3", // Only blue has audio file currently
   },
   {
     name: "green",
@@ -71,3 +71,8 @@ export const COLORS_DATA: ColorData[] = [
     hex: "#FFFFFF",
   },
 ];
+
+// Utility function to check if color has audio
+export const hasColorAudio = (color: ColorData): boolean => {
+  return !!color.audioPath;
+};
