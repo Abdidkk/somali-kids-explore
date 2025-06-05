@@ -11,8 +11,8 @@ export interface ColorData {
 export const COLORS_DATA: ColorData[] = [
   {
     name: "red",
-    somali: "cas",
-    danish: "rød",
+    somali: "Gaduud",
+    danish: "Rød",
     hex: "#FF0000",
   },
   {
