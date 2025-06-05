@@ -2,8 +2,9 @@
 export interface FamilyItem {
   danish: string;
   somali: string;
-  category: 'familie' | 'mennesker' | 'følelser';
   image?: string;
+  category: 'Familie' | 'Mennesker' | 'Følelser';
+  
 }
 
 export const familyData: FamilyItem[] = [
