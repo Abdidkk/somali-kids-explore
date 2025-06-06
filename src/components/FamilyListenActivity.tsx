@@ -9,10 +9,10 @@ interface FamilyListenActivityProps {
   onBack: () => void;
 }
 
-type CategoryType = 'familie' | 'mennesker' | 'følelser';
+type CategoryType = 'Familie' | 'Mennesker' | 'Følelser';
 
 const FamilyListenActivity: React.FC<FamilyListenActivityProps> = ({ onBack }) => {
-  const [selectedCategory, setSelectedCategory] = useState<CategoryType>('familie');
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType>('Familie');
   const isMobile = useIsMobile();
 
   const handleItemClick = (somaliWord: string) => {
@@ -20,9 +20,9 @@ const FamilyListenActivity: React.FC<FamilyListenActivityProps> = ({ onBack }) =
   };
 
   const categories = [
-    { key: 'familie' as CategoryType, name: 'Familie', color: 'bg-pink-100 border-pink-300', textColor: 'text-pink-700' },
-    { key: 'mennesker' as CategoryType, name: 'Mennesker', color: 'bg-blue-100 border-blue-300', textColor: 'text-blue-700' },
-    { key: 'følelser' as CategoryType, name: 'Følelser', color: 'bg-purple-100 border-purple-300', textColor: 'text-purple-700' }
+    { key: 'Familie' as CategoryType, name: 'Familie', color: 'bg-pink-100 border-pink-300', textColor: 'text-pink-700' },
+    { key: 'Mennesker' as CategoryType, name: 'Mennesker', color: 'bg-blue-100 border-blue-300', textColor: 'text-blue-700' },
+    { key: 'Følelser' as CategoryType, name: 'Følelser', color: 'bg-purple-100 border-purple-300', textColor: 'text-purple-700' }
   ];
 
   const currentItems = getFamilyByCategory(selectedCategory);
@@ -58,9 +58,9 @@ const FamilyListenActivity: React.FC<FamilyListenActivityProps> = ({ onBack }) =
             {/* Placeholder for image */}
             <div className="w-full h-24 md:h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg mb-3 md:mb-4 flex items-center justify-center">
               <div className={`${isMobile ? 'text-2xl' : 'text-4xl'}`}>
-                {selectedCategory === 'familie' && '👨‍👩‍👧‍👦'}
-                {selectedCategory === 'mennesker' && '👫'}
-                {selectedCategory === 'følelser' && '😊'}
+                {selectedCategory === 'Familie' && '👨‍👩‍👧‍👦'}
+                {selectedCategory === 'Mennesker' && '👫'}
+                {selectedCategory === 'Følelser' && '😊'}
               </div>
             </div>
             

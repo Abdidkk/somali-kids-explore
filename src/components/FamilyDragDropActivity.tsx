@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { familyData, getFamilyByCategory } from "@/constants/familyData";
@@ -22,7 +21,7 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
   const [draggedItem, setDraggedItem] = useState<any>(null);
   const isMobile = useIsMobile();
 
-  const familyMembers = getFamilyByCategory('familie');
+  const familyMembers = getFamilyByCategory('Familie');
 
   const playApplauseSound = () => {
     try {
