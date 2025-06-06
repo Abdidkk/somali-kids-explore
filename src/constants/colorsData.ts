@@ -21,55 +21,63 @@ export const COLORS_DATA: ColorData[] = [
     somali: "Buluug",
     danish: "Blå",
     hex: "#0000FF",
-    audioPath: "Buluug.mp3", // Only blue has audio file currently
+    audioPath: "/Farver/Buluug.mp3", // Only blue has audio file currently
   },
   {
     name: "green",
     somali: "Cagaar",
     danish: "grøn", 
     hex: "#00FF00",
+    audioPath:"/Farver/Cagaar.mp3",
   },
   {
     name: "yellow",
     somali: "Jaalle",
     danish: "Gul",
     hex: "#FFFF00",
+    audioPath:"/Farver/Jaalle.mp3",
   },
   {
     name: "orange",
     somali: "Oranji",
     danish: "Orange",
     hex: "#FFA500",
+    audioPath:"/Farver/oranji.mp3",
   },
   {
     name: "purple",
     somali: "Fiyoole",
     danish: "Lilla",
     hex: "#800080",
+    audioPath:"/Farver/Lilla.mp3",
   },
   {
     name: "pink",
     somali: "Basli",
     danish: "lyserød",
     hex: "#FFC0CB",
+    audioPath:"/Farver/Lyserød.mp3",
   },
   {
     name: "brown",
     somali: "Bunni",
     danish: "Brun",
     hex: "#8B4513",
+    audioPath:"/Farver/Bunni.mp3",
   },
   {
     name: "black",
     somali: "Madow",
     danish: "Sort",
     hex: "#000000",
+    audioPath:"/Farver/Madow.mp3",
   },
   {
     name: "white",
     somali: "Caddaan",
     danish: "Hvid",
     hex: "#FFFFFF",
+    audioPath:"/Farver/Hvid.mp3",
   },
 ];
 
