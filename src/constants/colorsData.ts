@@ -28,14 +28,14 @@ export const COLORS_DATA: ColorData[] = [
     somali: "Cagaar",
     danish: "grøn", 
     hex: "#00FF00",
-    audioPath:"/Farver/Cagaar.mp3"
+    audioPath:"/Farver/Cagaar.mp3",
   },
   {
     name: "yellow",
     somali: "Jaalle",
     danish: "Gul",
     hex: "#FFFF00",
-    audioPath:"/Farver/Jaalle.mp3"
+    audioPath:"/Farver/Jaalle.mp3",
   },
   {
     name: "orange",
