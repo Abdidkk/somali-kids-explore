@@ -4,6 +4,7 @@ import { Volume2, ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { getNumbersForTab } from "@/constants/numbersData";
+import type { NumberData } from "@/constants/numbersData";
 
 interface NumbersListenActivityProps {
   onBack: () => void;
@@ -14,13 +15,20 @@ export default function NumbersListenActivity({ onBack }: NumbersListenActivityP
   const [currentIndex, setCurrentIndex] = useState(0);
   
   const numbers = getNumbersForTab(activeTab);
-  const currentNumber = numbers[currentIndex];
+  const currentNumber: NumberData = numbers[currentIndex];
+  if (!currentNumber) return null;
 
-  const speakNumber = (text: string) => {
-    const utterance = new SpeechSynthesisUtterance(text);
+  const speakNumber = () => {
+    const audio = currentNumber.audioPath? new Audio(currentNumber.audioPath): null;
+
+  if (audio) {audio.play(); }
+  else 
+{ const utterance = new SpeechSynthesisUtterance(currentNumber.somali);
+
     utterance.lang = "so-SO";
     utterance.rate = 0.7;
     speechSynthesis.speak(utterance);
+    }
   };
 
   const nextNumber = () => {

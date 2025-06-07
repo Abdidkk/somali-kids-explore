@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Volume2 } from "lucide-react";
 import { getNumbersForTab } from "@/constants/numbersData";
+import type { NumberData } from "@/constants/numbersData";
 
 interface NumbersGuessActivityProps {
   onBack: () => void;
@@ -47,8 +48,10 @@ export default function NumbersGuessActivity({ onBack }: NumbersGuessActivityPro
   };
 
   const speakNumber = () => {
-    if (currentNumber) {
-      const utterance = new SpeechSynthesisUtterance(currentNumber.somali);
+    if (!currentNumber) return;
+const audio = currentNumber.audioPath ? new Audio(currentNumber.audioPath) : null;
+if (audio) { audio.play();
+} else { const utterance = new SpeechSynthesisUtterance(currentNumber.somali);
       utterance.lang = "so-SO";
       utterance.rate = 0.7;
       speechSynthesis.speak(utterance);
