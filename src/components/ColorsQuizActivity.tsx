@@ -35,12 +35,19 @@ export default function ColorsQuizActivity({ onBack }: ColorsQuizActivityProps) 
     setQuestions(newQuestions);
   };
 
-  const speakColor = (text: string) => {
-    const utterance = new SpeechSynthesisUtterance(text);
+ const speakColor = (audioPath?: string, fallbackText?: string) => {
+  if (audioPath) {
+    const audio = new Audio(audioPath);
+    audio.play().catch((error) => {
+      console.error("Lydafspilning fejl:", error);
+    });
+  } else if (fallbackText) {
+    const utterance = new SpeechSynthesisUtterance(fallbackText);
     utterance.lang = "so-SO";
     utterance.rate = 0.7;
     speechSynthesis.speak(utterance);
-  };
+  }
+};
 
   const handleAnswerSelect = (answer: string) => {
     setSelectedAnswer(answer);
@@ -99,7 +106,7 @@ export default function ColorsQuizActivity({ onBack }: ColorsQuizActivityProps) 
               />
               
               <Button
-                onClick={() => speakColor(question.color.somali)}
+                onClick={() => speakColor(question.color.audioPath, question.color.somali)}
                 className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-pink-600 hover:bg-pink-700 rounded-full p-2"
                 size="icon"
               >
@@ -127,7 +134,7 @@ export default function ColorsQuizActivity({ onBack }: ColorsQuizActivityProps) 
               >
                 <div className="text-center">
                   <div className="font-semibold text-lg">{option.somali}</div>
-                  <div className="text-sm text-gray-600">({option.danish})</div>
+                  <div className="text-sm text-gray-600"></div>
                 </div>
               </Button>
             ))}

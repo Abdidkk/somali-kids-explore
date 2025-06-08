@@ -28,6 +28,20 @@ export default function ColorsMemoryGame({ onBack }: ColorsMemoryGameProps) {
       { id: index * 2 + 1, colorData: color, isFlipped: false, isMatched: false },
     ]);
     
+    const speakColor = (audioPath?: string, fallbackText?: string) => {
+      if (audioPath) {
+        const audio = new Audio(audioPath);
+        audio.play().catch((error) => {
+          console.error("Fejl ved afspilning:", error);
+        });
+      } else if (fallbackText) {
+        const utterance = new SpeechSynthesisUtterance(fallbackText);
+        utterance.lang = "so-SO";
+        utterance.rate = 0.7;
+        speechSynthesis.speak(utterance);
+      }
+    }; 
+
     // Shuffle cards
     const shuffled = cardPairs.sort(() => Math.random() - 0.5);
     setCards(shuffled);
@@ -102,9 +116,14 @@ export default function ColorsMemoryGame({ onBack }: ColorsMemoryGameProps) {
           const isFlipped = flippedCards.includes(card.id) || card.isMatched;
           
           return (
-            <button
-              key={card.id}
-              onClick={() => flipCard(card.id)}
+           <button
+  key={card.id}
+  onClick={() => {
+    const didFlip = flipCard(card.id);
+    if (didFlip) {
+      speakColor(card.colorData.audioPath, card.colorData.somali);
+    }
+  }} 
               className="w-16 h-16 rounded-lg border-2 border-pink-300 transition-all duration-300 transform hover:scale-105"
               style={{
                 backgroundColor: isFlipped ? card.colorData.hex : '#fce7f3',
@@ -114,7 +133,7 @@ export default function ColorsMemoryGame({ onBack }: ColorsMemoryGameProps) {
             >
               {isFlipped && (
                 <span className="text-xs font-bold text-white drop-shadow-lg">
-                  {card.colorData.danish}
+                  {card.colorData.somali}
                 </span>
               )}
             </button>
