@@ -14,12 +14,17 @@ export default function FoodListenActivity({ onBack }: FoodListenActivityProps) 
   
   const foods = getFoodByCategory(activeTab);
 
-  const speakFood = (text: string) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "so-SO";
-    utterance.rate = 0.7;
-    speechSynthesis.speak(utterance);
-  };
+  const speakFood = (audioPath?: string, fallbackText?: string) => {
+    if (audioPath) {
+      const audio = new Audio(audioPath);
+      audio.play().catch((err) => console.error("Lydfejl:", err));
+    } else if (fallbackText) {
+      const utterance = new SpeechSynthesisUtterance(fallbackText);
+      utterance.lang = "so-SO";
+      utterance.rate = 0.7;
+      speechSynthesis.speak(utterance);
+    }
+  }; 
 
   const handleTabChange = (newTab: string) => {
     setActiveTab(newTab as "madvarer" | "frugter" | "grøntsager");
@@ -38,27 +43,27 @@ export default function FoodListenActivity({ onBack }: FoodListenActivityProps) 
         
         <TabsContent value={activeTab} className="mt-6">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {foods.map((food) => (
-              <div
-                key={food.id}
-                className="relative bg-white rounded-xl border-2 border-orange-200 shadow-lg hover:shadow-xl transition-all cursor-pointer group"
-                onClick={() => speakFood(food.somali)}
-              >
-                <div className="p-4 text-center">
-                  <div className="w-20 h-20 mx-auto mb-3 bg-orange-50 rounded-full flex items-center justify-center">
-                    <span className="text-3xl">🍎</span>
-                  </div>
-                  <h4 className="text-lg font-bold text-orange-700 mb-1">{food.somali}</h4>
-                  <p className="text-sm text-gray-600">({food.danish})</p>
-                </div>
-                
-                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="bg-orange-600 text-white p-2 rounded-full">
-                    <Volume2 className="w-4 h-4" />
-                  </div>
-                </div>
-              </div>
-            ))}
+          {foods.map((food) => (
+            <div
+             key={food.id}
+              className="relative bg-white rounded-xl border-2 border-orange-200 shadow-lg hover:shadow-xl transition-all cursor-pointer group"
+             >
+              <div className="p-4 text-center">
+              <div className="w-20 h-20 mx-auto mb-3 bg-orange-50 rounded-full flex items-center justify-center">
+        <span className="text-3xl">🍎</span>
+      </div>
+      <h4 className="text-lg font-bold text-orange-700 mb-1">{food.somali}</h4>
+      <p className="text-sm text-gray-600">{food.danish}</p>
+    </div>
+
+    {/* 🎧 Lyd-knap */}
+     <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <Button onClick={() => speakFood(food.audio, food.somali)} size="icon">
+        <Volume2 className="w-5 h-5" />
+        </Button>
+        </div>
+        </div>
+        ))} 
           </div>
         </TabsContent>
       </Tabs>

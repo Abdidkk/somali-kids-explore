@@ -22,30 +22,25 @@ export default function FoodQuizActivity({ onBack }: FoodQuizActivityProps) {
 
   // Generate quiz questions
   useEffect(() => {
-    const allFoods = getAllFood();
-    const generatedQuestions = [];
-
-    for (let i = 0; i < totalQuestions; i++) {
-      const correct = allFoods[Math.floor(Math.random() * allFoods.length)];
-      const wrongOptions = allFoods
-        .filter(food => food.id !== correct.id)
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 2);
-      
-      const options = [correct, ...wrongOptions].sort(() => Math.random() - 0.5);
-      
-      generatedQuestions.push({ correct, options });
+    const current = questions[currentQuestion];
+    if (current?.correct) {
+      speakFood(current.correct.audio, current.correct.somali);
     }
+  }, [currentQuestion, questions]); 
 
-    setQuestions(generatedQuestions);
-  }, []);
-
-  const speakFood = (text: string) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "so-SO";
-    utterance.rate = 0.7;
-    speechSynthesis.speak(utterance);
-  };
+  const speakFood = (audioPath?: string, fallbackText?: string) => {
+    if (audioPath) {
+      const audio = new Audio(audioPath);
+      audio.play().catch((error) => {
+        console.error("Fejl ved afspilning:", error);
+      });
+    } else if (fallbackText) {
+      const utterance = new SpeechSynthesisUtterance(fallbackText);
+      utterance.lang = "so-SO";
+      utterance.rate = 0.7;
+      speechSynthesis.speak(utterance);
+    }
+  }; 
 
   const handleAnswer = (selectedFood: FoodItem) => {
     if (selectedAnswer) return;
