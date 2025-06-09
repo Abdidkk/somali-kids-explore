@@ -19,15 +19,21 @@ export default function NumbersListenActivity({ onBack }: NumbersListenActivityP
   if (!currentNumber) return null;
 
   const speakNumber = () => {
-    const audio = currentNumber.audioPath? new Audio(currentNumber.audioPath): null;
-
-  if (audio) {audio.play(); }
-  else 
-{ const utterance = new SpeechSynthesisUtterance(currentNumber.somali);
-
-    utterance.lang = "so-SO";
-    utterance.rate = 0.7;
-    speechSynthesis.speak(utterance);
+    if (currentNumber.audioPath) {
+      const audio = new Audio(currentNumber.audioPath);
+      audio.play().catch((error) => {
+        console.error("Failed to play custom audio:", error);
+        // Fallback to speech synthesis if audio file fails
+        const utterance = new SpeechSynthesisUtterance(currentNumber.somali);
+        utterance.lang = "so-SO";
+        utterance.rate = 0.7;
+        speechSynthesis.speak(utterance);
+      });
+    } else {
+      const utterance = new SpeechSynthesisUtterance(currentNumber.somali);
+      utterance.lang = "so-SO";
+      utterance.rate = 0.7;
+      speechSynthesis.speak(utterance);
     }
   };
 
@@ -63,7 +69,7 @@ export default function NumbersListenActivity({ onBack }: NumbersListenActivityP
               </div>
               
               <Button
-                onClick={() => speakNumber(currentNumber.somali)}
+                onClick={speakNumber}
                 className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-blue-600 hover:bg-blue-700 rounded-full p-3"
                 size="icon"
               >
