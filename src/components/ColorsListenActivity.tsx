@@ -67,9 +67,6 @@ export default function ColorsListenActivity({ onBack }: ColorsListenActivityPro
       <div className="text-center space-y-2">
         <h4 className="text-3xl font-bold text-pink-700">{currentColor.somali}</h4>
         <p className="text-lg text-gray-600">({currentColor.danish})</p>
-        {hasColorAudio(currentColor) && (
-          <p className="text-sm text-green-600">🎵 Custom audio available</p>
-        )}
       </div>
 
       <div className="flex items-center gap-4">
