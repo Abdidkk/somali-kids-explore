@@ -20,6 +20,27 @@ export default function ColorsMemoryGame({ onBack }: ColorsMemoryGameProps) {
   const [matches, setMatches] = useState(0);
   const [moves, setMoves] = useState(0);
 
+  const speakColor = (audioPath?: string, fallbackText?: string) => {
+    if (audioPath) {
+      const audio = new Audio(audioPath);
+      audio.play().catch((error) => {
+        console.error("Fejl ved afspilning:", error);
+        // Fallback to speech synthesis if audio file fails
+        if (fallbackText) {
+          const utterance = new SpeechSynthesisUtterance(fallbackText);
+          utterance.lang = "so-SO";
+          utterance.rate = 0.7;
+          speechSynthesis.speak(utterance);
+        }
+      });
+    } else if (fallbackText) {
+      const utterance = new SpeechSynthesisUtterance(fallbackText);
+      utterance.lang = "so-SO";
+      utterance.rate = 0.7;
+      speechSynthesis.speak(utterance);
+    }
+  };
+
   useEffect(() => {
     // Create pairs of cards (6 colors, 12 cards total)
     const selectedColors = COLORS_DATA.slice(0, 6);
@@ -27,30 +48,16 @@ export default function ColorsMemoryGame({ onBack }: ColorsMemoryGameProps) {
       { id: index * 2, colorData: color, isFlipped: false, isMatched: false },
       { id: index * 2 + 1, colorData: color, isFlipped: false, isMatched: false },
     ]);
-    
-    const speakColor = (audioPath?: string, fallbackText?: string) => {
-      if (audioPath) {
-        const audio = new Audio(audioPath);
-        audio.play().catch((error) => {
-          console.error("Fejl ved afspilning:", error);
-        });
-      } else if (fallbackText) {
-        const utterance = new SpeechSynthesisUtterance(fallbackText);
-        utterance.lang = "so-SO";
-        utterance.rate = 0.7;
-        speechSynthesis.speak(utterance);
-      }
-    }; 
 
     // Shuffle cards
     const shuffled = cardPairs.sort(() => Math.random() - 0.5);
     setCards(shuffled);
   }, []);
 
-  const flipCard = (cardId: number) => {
-    if (flippedCards.length === 2) return;
-    if (flippedCards.includes(cardId)) return;
-    if (cards.find(c => c.id === cardId)?.isMatched) return;
+  const flipCard = (cardId: number): boolean => {
+    if (flippedCards.length === 2) return false;
+    if (flippedCards.includes(cardId)) return false;
+    if (cards.find(c => c.id === cardId)?.isMatched) return false;
 
     const newFlippedCards = [...flippedCards, cardId];
     setFlippedCards(newFlippedCards);
@@ -77,6 +84,8 @@ export default function ColorsMemoryGame({ onBack }: ColorsMemoryGameProps) {
         }, 1000);
       }
     }
+
+    return true; // Card was successfully flipped
   };
 
   const resetGame = () => {
@@ -116,14 +125,14 @@ export default function ColorsMemoryGame({ onBack }: ColorsMemoryGameProps) {
           const isFlipped = flippedCards.includes(card.id) || card.isMatched;
           
           return (
-           <button
-  key={card.id}
-  onClick={() => {
-    const didFlip = flipCard(card.id);
-    if (didFlip) {
-      speakColor(card.colorData.audioPath, card.colorData.somali);
-    }
-  }} 
+            <button
+              key={card.id}
+              onClick={() => {
+                const wasFlipped = flipCard(card.id);
+                if (wasFlipped) {
+                  speakColor(card.colorData.audioPath, card.colorData.somali);
+                }
+              }} 
               className="w-16 h-16 rounded-lg border-2 border-pink-300 transition-all duration-300 transform hover:scale-105"
               style={{
                 backgroundColor: isFlipped ? card.colorData.hex : '#fce7f3',
