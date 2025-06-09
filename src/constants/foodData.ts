@@ -17,7 +17,7 @@ export const FOOD_ITEMS: FoodItem[] = [
   { id: "meat", danish: "kød", somali: "Hilib", image: "/lovable-uploads/food-meat.png", category: "madvarer" },
   { id: "fish", danish: "fisk", somali: "Kalluun", image: "/lovable-uploads/food-fish.png", category: "madvarer" },
   { id: "pandecake", danish: "pandekage", somali: "Malawa", image: "/lovable-uploads/food-rice.png", category: "madvarer" },
-  { id: "samos", danish: "samos", somali: "Sambus", image: "/lovable-uploads/food-rice.png", category: "madvarer" },
+  { id: "samos", danish: "samos", somali: "Sambuus", image: "/lovable-uploads/food-rice.png", category: "madvarer" },
   { id: "candy", danish: "slik", somali: "Nacnac", image: "/lovable-uploads/food-rice.png", category: "madvarer" },
   { id: "soup", danish: "suppe", somali: "Maraq", image: "/lovable-uploads/food-rice.png", category: "madvarer" },
   { id: "water", danish: "vand", somali: "Biyo", image: "/lovable-uploads/food-rice.png", category: "madvarer" },
@@ -35,11 +35,10 @@ export const FOOD_ITEMS: FoodItem[] = [
   { id: "tomato", danish: "tomat", somali: "Yaanyo", image: "/lovable-uploads/food-tomato.png", category: "grøntsager" },
   { id: "onion", danish: "løg", somali: "Basal", image: "/lovable-uploads/food-onion.png", category: "grøntsager" },
   { id: "cucumber", danish: "agurk", somali: "Qajaar", image: "/lovable-uploads/food-cucumber.png", category: "grøntsager" },
-  { id: "carrot", danish: "gulerod", somali: "Dabaqalin", image: "/lovable-uploads/food-carrot.png", category: "grøntsager" },
+  { id: "carrot", danish: "gulerod", somali: "Karooto", image: "/lovable-uploads/food-carrot.png", category: "grøntsager" },
   { id: "lettuce", danish: "salat", somali: "Khudaar", image: "/lovable-uploads/food-lettuce.png", category: "grøntsager" },
   { id: "potato", danish: "kartoffel", somali: "Bataati", image: "/lovable-uploads/food-potato.png", category: "grøntsager" },
-  { id: "chili", danish: "chili", somali: "Basbaas", image: "/lovable-uploads/food-potato.png", category: "grøntsager" },
-  { id: "carrots", danish: "gulerod", somali: "Karootada", image: "/lovable-uploads/food-potato.png", category: "grøntsager" }
+  { id: "chili", danish: "chili", somali: "Bisbaas", image: "/lovable-uploads/food-potato.png", category: "grøntsager" },
 ];
 
 export function getFoodByCategory(category: "madvarer" | "frugter" | "grøntsager"): FoodItem[] {
