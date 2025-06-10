@@ -20,19 +20,59 @@ export default function FoodQuizActivity({ onBack }: FoodQuizActivityProps) {
 
   const totalQuestions = 5;
 
-  // Generate quiz questions
+  // Generate initial quiz questions
   useEffect(() => {
-    const current = questions[currentQuestion];
-    if (current?.correct) {
-      speakFood(current.correct.audio, current.correct.somali);
+    console.log("Generating initial quiz questions...");
+    generateQuestions();
+  }, []);
+
+  // Play audio when question changes
+  useEffect(() => {
+    if (questions.length > 0) {
+      const current = questions[currentQuestion];
+      if (current?.correct) {
+        console.log("Playing audio for:", current.correct.somali);
+        speakFood(current.correct.audio, current.correct.somali);
+      }
     }
-  }, [currentQuestion, questions]); 
+  }, [currentQuestion, questions]);
+
+  const generateQuestions = () => {
+    const allFoods = getAllFood();
+    console.log("Total foods available:", allFoods.length);
+    
+    const generatedQuestions = [];
+
+    for (let i = 0; i < totalQuestions; i++) {
+      const correct = allFoods[Math.floor(Math.random() * allFoods.length)];
+      const wrongOptions = allFoods
+        .filter(food => food.id !== correct.id)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 2);
+      
+      const options = [correct, ...wrongOptions].sort(() => Math.random() - 0.5);
+      
+      generatedQuestions.push({ correct, options });
+      console.log(`Question ${i + 1}: Correct answer is ${correct.somali} (${correct.danish})`);
+    }
+
+    setQuestions(generatedQuestions);
+    console.log("Questions generated:", generatedQuestions.length);
+    console.log("questions.length > 0:", generatedQuestions.length > 0);
+  };
 
   const speakFood = (audioPath?: string, fallbackText?: string) => {
     if (audioPath) {
       const audio = new Audio(audioPath);
       audio.play().catch((error) => {
         console.error("Fejl ved afspilning:", error);
+        // Fallback to speech synthesis if audio file fails
+        if (fallbackText) {
+          const utterance = new SpeechSynthesisUtterance(fallbackText);
+          utterance.lang = "so-SO";
+          utterance.rate = 0.7;
+          speechSynthesis.speak(utterance);
+        }
       });
     } else if (fallbackText) {
       const utterance = new SpeechSynthesisUtterance(fallbackText);
@@ -62,27 +102,12 @@ export default function FoodQuizActivity({ onBack }: FoodQuizActivityProps) {
   };
 
   const resetQuiz = () => {
+    console.log("Resetting quiz...");
     setCurrentQuestion(0);
     setScore(0);
     setSelectedAnswer(null);
     setShowResult(false);
-    // Regenerate questions
-    const allFoods = getAllFood();
-    const generatedQuestions = [];
-
-    for (let i = 0; i < totalQuestions; i++) {
-      const correct = allFoods[Math.floor(Math.random() * allFoods.length)];
-      const wrongOptions = allFoods
-        .filter(food => food.id !== correct.id)
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 2);
-      
-      const options = [correct, ...wrongOptions].sort(() => Math.random() - 0.5);
-      
-      generatedQuestions.push({ correct, options });
-    }
-
-    setQuestions(generatedQuestions);
+    generateQuestions();
   };
 
   if (questions.length === 0) {
@@ -139,7 +164,7 @@ export default function FoodQuizActivity({ onBack }: FoodQuizActivityProps) {
           <p className="text-lg text-gray-700 mb-4">Hør ordet og klik på det rigtige billede:</p>
           
           <Button
-            onClick={() => speakFood(currentQ.correct.somali)}
+            onClick={() => speakFood(currentQ.correct.audio, currentQ.correct.somali)}
             className="bg-purple-600 hover:bg-purple-700 text-lg px-8 py-4"
           >
             <Volume2 className="w-6 h-6 mr-2" />
