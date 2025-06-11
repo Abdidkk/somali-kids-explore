@@ -13,10 +13,10 @@ export const GROUPS = {
   long:     { label: "Lange vokaler", letters: LONG_VOWELS }
 };
 
-// Audio file mappings - Foreløbig tomme stier, der skal udfyldes med faktiske lydfilstier
+// Audio file mappings - Fixed path inconsistency
 export const AUDIO_FILES: Record<string, string> = {
   // Korte vokaler
-  "A": "Alfabet/A.MP3",
+  "A": "/Alfabet/A.MP3",
   "E": "/Alfabet/E.MP3",
   "I": "/Alfabet/I.mp3",
   "O": "/Alfabet/O.mp3",
@@ -95,7 +95,7 @@ export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
   },
   "B": {
     img: "/lovable-uploads/137c3493-d107-4ad6-bdfe-0d3ebde86557.png",
-    alt: "Bogstavet "
+    alt: "Bogstavet B"
   },
   "C": {
     img: "/lovable-uploads/2f53b20d-6439-420c-8bd8-f2b42e07562c.png",
