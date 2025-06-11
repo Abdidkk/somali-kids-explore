@@ -16,7 +16,7 @@ export const GROUPS = {
 // Audio file mappings - Foreløbig tomme stier, der skal udfyldes med faktiske lydfilstier
 export const AUDIO_FILES: Record<string, string> = {
   // Korte vokaler
-  "A": "/Alfabet/A.MP3",
+  "A": "Alfabet/A.MP3",
   "E": "/Alfabet/E.MP3",
   "I": "/Alfabet/I.mp3",
   "O": "/Alfabet/O.mp3",
