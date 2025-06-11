@@ -31,6 +31,7 @@ export default function FoodListenActivity({ onBack }: FoodListenActivityProps) 
   };
 
   return (
+    
     <div className="flex flex-col items-center space-y-6 p-6">
       <h3 className="text-2xl font-bold text-orange-700 mb-4">Lyt og lær mad</h3>
       
@@ -44,13 +45,22 @@ export default function FoodListenActivity({ onBack }: FoodListenActivityProps) 
         <TabsContent value={activeTab} className="mt-6">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {foods.map((food) => (
+          
             <div
              key={food.id}
               className="relative bg-white rounded-xl border-2 border-orange-200 shadow-lg hover:shadow-xl transition-all cursor-pointer group"
              >
               <div className="p-4 text-center">
               <div className="w-20 h-20 mx-auto mb-3 bg-orange-50 rounded-full flex items-center justify-center">
-        <span className="text-3xl">🍎</span>
+      
+            <div className="p-0.1 text-center">
+          <img
+          src={food.image}
+          alt={food.somali}
+                  className="w-20 h-20 mx-auto mb-1.5 rounded-full cover"
+  />
+</div> 
+
       </div>
       <h4 className="text-lg font-bold text-orange-700 mb-1">{food.somali}</h4>
       <p className="text-sm text-gray-600">{food.danish}</p>
@@ -65,6 +75,7 @@ export default function FoodListenActivity({ onBack }: FoodListenActivityProps) 
         </div>
         ))} 
           </div>
+          
         </TabsContent>
       </Tabs>
 

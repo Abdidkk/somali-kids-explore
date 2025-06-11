@@ -123,6 +123,7 @@ export default function FoodQuizActivity({ onBack }: FoodQuizActivityProps) {
           <div className="text-6xl mb-4">
             {score === totalQuestions ? "🎉" : score >= totalQuestions / 2 ? "😊" : "😔"}
           </div>
+          
           <h4 className="text-3xl font-bold text-purple-700 mb-2">
             {score} / {totalQuestions}
           </h4>
