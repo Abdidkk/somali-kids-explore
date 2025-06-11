@@ -10,7 +10,7 @@ export interface FoodItem {
 
 export const FOOD_ITEMS: FoodItem[] = [
   // Madvarer (Food items)
-  { id: "ris", danish: "Ris", somali: "Bariis", image: "/image/ris.png", audio: "/Mad/Bariis.mp3", category: "madvarer" },
+  { id: "ris", danish: "Ris", somali: "Bariis", image: "/Image/ris.png", audio: "/Mad/Bariis.mp3", category: "madvarer" },
   { id: "pasta", danish: "pasta", somali: "Baasto", image: "/lovable-uploads/food-rice.png", audio: "/Mad/Baasto.mp3", category: "madvarer" },
   { id: "bread", danish: "Brød", somali: "Rooti", image: "/lovable-uploads/food-bread.png", audio: "/Mad/Rooti.mp3", category: "madvarer" },
   { id: "cake", danish: "kage", somali: "Keeg", image: "/lovable-uploads/food-cake.png", audio: "/Mad/Keeg.mp3", category: "madvarer" },
