@@ -16,17 +16,17 @@ export const GROUPS = {
 // Audio file mappings - Fixed path inconsistency
 export const AUDIO_FILES: Record<string, string> = {
   // Korte vokaler
-  "A": "/Alfabet/A.MP3",
-  "E": "/Alfabet/E.MP3",
-  "I": "/Alfabet/I.mp3",
-  "O": "/Alfabet/O.mp3",
-  "U": "/Alfabet/U.mp3",
+  "A": "/alfabet/A.MP3",
+  "E": "/alfabet/E.mp3",
+  "I": "/alfabet/I.mp3",
+  "O": "/alfabet/O.mp3",
+  "U": "/alfabet/U.mp3",
   // Lange vokaler
-  "AA": "/Alfabet/AA.mp3",
-  "EE": "/Alfabet/EE.mp3",
-  "II": "/Alfabet/II.mp3",
-  "OO": "/Alfabet/OO.mp3",
-  "UU": "/Alfabet/UU.mp3",
+  "AA": "/alfabet/AA.mp3",
+  "EE": "/alfabet/EE.mp3",
+  "II": "/alfabet/II.mp3",
+  "OO": "/alfabet/OO.mp3",
+  "UU": "/alfabet/UU.mp3",
   // Alfabetet - updated with new order
   "Bb": "",
   "Tt": "",
@@ -54,127 +54,127 @@ export const AUDIO_FILES: Record<string, string> = {
 export const ALPHABET_IMAGES: Record<string, { img: string; alt: string }> = {
   // Korte vokaler - updated with new uploaded images
   "A": {
-    img: "/lovable-uploads/f584a67e-2b87-4d62-86dc-f19fdabc6fa9.png",
+    img: "billeder/a.png",
     alt: "Bogstavet A"
   },
   "E": {
-    img: "/lovable-uploads/6b8402cb-3183-4698-a050-5c9030cbdccd.png",
+    img: "billeder/e.png",
     alt: "Bogstavet E"
   },
   "I": {
-    img: "/lovable-uploads/baeff668-cdc5-49e6-91f8-39f8a79ef959.png",
+    img: "billeder/i.png",
     alt: "Bogstavet I"
   },
   "O": {
-    img: "/lovable-uploads/e920e3c0-12e4-42f6-887d-4a0c1d2af2dc.png",
+    img: "billeder/o.png",
     alt: "Bogstavet O"
   },
   "U": {
-    img: "/lovable-uploads/061ec32d-c737-4aba-bb96-e1924b0c39a6.png",
+    img: "billeder/u.png",
     alt: "Bogstavet U"
   },
   "AA": {
-    img: "/lovable-uploads/c7e639a4-cc13-4207-aeb6-641c37cb7565.png",
+    img: "billeder/aa.png",
     alt: "Bogstavet AA"
   },
   "EE": {
-    img: "/lovable-uploads/237b7523-c439-422c-a3e6-e3fc2fa4a508.png",
+    img: "billeder/ee.png",
     alt: "Bogstavet EE"
   },
   "II": {
-    img: "/lovable-uploads/d287a2a9-249c-4973-b525-d3117639bee9.png",
+    img: "billeder/ii.png",
     alt: "Bogstavet II"
   },
   "OO": {
-    img: "/lovable-uploads/db1c1aca-aa6e-4bb1-b0fd-bf1f2f34539b.png",
+    img: "billeder/oo.png",
     alt: "Bogstavet OO"
   },
   "UU": {
-    img: "/lovable-uploads/a519a572-4893-49e9-baee-965f0243deb5.png",
+    img: "billeder/uu.png",
     alt: "Bogstavet UU"
   },
   "B": {
-    img: "/lovable-uploads/137c3493-d107-4ad6-bdfe-0d3ebde86557.png",
+    img: "billeder/b.png",
     alt: "Bogstavet B"
   },
   "C": {
-    img: "/lovable-uploads/2f53b20d-6439-420c-8bd8-f2b42e07562c.png",
+    img: "billeder/c.png",
     alt: "Bogstavet C"
   },
   "D": {
-    img: "/lovable-uploads/21dbe823-efb8-4536-bae2-f0fa1b05135a.png",
+    img: "billeder/d.png",
     alt: "Bogstavet D"
   },
   "DH": {
-    img: "/lovable-uploads/fed49f42-48ff-4aa2-971d-914092d122a8.png", 
+    img: "billeder/dh.png", 
     alt: "Bogstavet DH"
   },
   "F": {
-    img: "/lovable-uploads/e6aa3b70-3fa2-4c9e-af6a-398e0c5487f6.png",
+    img: "billeder/f.png",
     alt: "Bogstavet F"
   },
   "G": {
-    img: "/lovable-uploads/4097f6e7-9f3a-423f-8959-f5b7d9b23ed7.png",
+    img: "billeder/g.png",
     alt: "Bogstavet G"
   },
   "H": {
-    img: "/lovable-uploads/fadf7158-7c58-41a5-bc73-84baf9995109.png",
+    img: "billeder/h.png",
     alt: "Bogstavet H"
   },
   "J": {
-    img: "/lovable-uploads/2880b50d-a895-4677-a7d9-680fa0c872f3.png",
+    img: "billeder/j.png",
     alt: "Bogstavet J"
   },
   "K": {
-    img: "/lovable-uploads/5e9cedef-3d1e-4ca9-8f28-eac454a506e7.png",
+    img: "billeder/k.png",
     alt: "Bogstavet K"
   },
   "KH": {
-    img: "/lovable-uploads/a2da5f69-75bf-45a0-8325-4e3c1285929c.png",
+    img: "billeder/kh.png",
     alt: "Bogstavet KH"
   },
   "L": {
-    img: "/lovable-uploads/1dbfd78f-7c8b-4272-a674-10d38c20043d.png",
+    img: "billeder/l.png",
     alt: "Bogstavet L"
   },
   "M": {
-    img: "/lovable-uploads/ad1381cf-5eeb-4fef-8af0-1dc5f93bf90b.png",
+    img: "billeder/m.png",
     alt: "Bogstavet M"
   },
   "N": {
-    img: "/lovable-uploads/3b5c7f31-fb92-4d57-b31a-2b9f5e3f8f04.png",
+    img: "billeder/n.png",
     alt: "Bogstavet N"
   },
   "Q": {
-    img: "/lovable-uploads/49106c52-e19b-492a-8642-9a326819df86.png",
+    img: "billeder/q.png",
     alt: "Bogstavet Q"
   },
   "R": {
-    img: "/lovable-uploads/05aa24f3-bf74-4721-80fd-294bfe79b1eb.png",
+    img: "billeder/r.png",
     alt: "Bogstavet R"
   },
   "S": {
-    img: "/lovable-uploads/7704660d-576e-4a7f-ac19-3aed5364351f.png",
+    img: "billeder/s.png",
     alt: "Bogstavet S"
   },
   "SH": {
-    img: "/lovable-uploads/0249030c-58e1-4fac-8541-4c83b0b41900.png",
+    img: "billeder/sh.png",
     alt: "Bogstavet SH"
   },
   "T": {
-    img: "/lovable-uploads/0e8c4234-8d4a-494f-ba70-7efa05bbf051.png",
+    img: "billeder/t.png",
     alt: "Bogstavet T"
   },
   "W": {
-    img: "/lovable-uploads/1b83ffd6-177b-4abc-b5e8-ff1f289e98d6.png",
+    img: "billeder/w.png",
     alt: "Bogstavet W"
   },
   "X": {
-    img: "/lovable-uploads/8caf3563-09bf-4bd5-a4ee-92b930b270a5.png",
+    img: "billeder/x.png",
     alt: "Bogstavet X"
   },
   "Y": {
-    img: "/lovable-uploads/635670fe-f87e-4fb0-aec5-e1d0346b85c7.png",
+    img: "billeder/y.png",
     alt: "Bogstavet Y"
   }
 };
