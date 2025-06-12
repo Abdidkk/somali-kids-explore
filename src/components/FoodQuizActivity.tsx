@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Volume2, CheckCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getAllFood, FoodItem } from "@/constants/foodData";
+import { getAllFood, FoodItem } from "../constants/foodData";
 
 interface FoodQuizActivityProps {
   onBack: () => void;

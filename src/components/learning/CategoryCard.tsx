@@ -36,20 +36,21 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLas
                          isKultureltIndhold || isLaeseBøger || isQuiz;
   
   const getCategoryImage = () => {
-    if (isAlphabet) return "/lovable-uploads/0d3cffdb-ae5f-47c7-921d-87af02dceffe.png";
-    if (isColors) return "/lovable-uploads/2b3d5738-fe36-44c4-8d12-40c95bb1c0f8.png";
-    if (isFood) return "/lovable-uploads/d53ddb64-53af-4bd5-a6c6-c7cd8495bda0.png";
-    if (isAnimals) return "/lovable-uploads/5b82e785-bd89-4559-81c7-048e78c263ff.png";
-    if (isKropsdele) return "/lovable-uploads/ae3f224d-137a-48d2-bfd6-2ec7db22aec3.png";
-    if (isGeografi) return "/lovable-uploads/96a8e74c-d203-46ea-a5b3-62d43488681b.png";
-    if (isKalender) return "/lovable-uploads/0435c435-2eb6-4de9-a68e-d3a18fd524e5.png";
-    if (isFamilie) return "/lovable-uploads/bf322fd4-1e3c-47c6-ad3c-26b80dabb788.png";
-    if (isOrd) return "/lovable-uploads/a57afdc1-14bd-4e86-87d9-907a566e2c64.png";
-    if (isDagligeAktiviteter) return "/lovable-uploads/cffd237e-6a54-4fc2-8948-ab03ee00399a.png";
-    if (isSaetninger) return "/lovable-uploads/a1b97193-b26e-42a5-90f1-0ee432386d70.png";
-    if (isKultureltIndhold) return "/lovable-uploads/5226a33a-bf7f-4cc7-ace6-28b7484c60ce.png";
-    if (isLaeseBøger) return "/lovable-uploads/5ea2439d-4fd6-419d-a5b6-9afb3d0362dd.png";
-    if (isQuiz) return "/lovable-uploads/4bdde527-cfcd-4a08-bf5c-65c9f1b9127f.png";
+    if (isAlphabet) return "/kategorier/alfabet.png";
+    if (isColors) return "/kategorier/farver.png";
+    if (isNumbers) return "/kategorier/tal.png";
+    if (isFood) return "/kategorier/mad.png";
+    if (isAnimals) return "/kategorier/dyr.png";
+    if (isKropsdele) return "/kategorier/krop.png";
+    if (isGeografi) return "/kategorier/verden.png";
+    if (isKalender) return "/kategorier/kalender.png";
+    if (isFamilie) return "/kategorier/familie.png";
+    if (isOrd) return "/kategorier/hjem.png";
+    if (isDagligeAktiviteter) return "/kategorier/hverdag.png";
+    if (isSaetninger) return "/kategorier/snak.png";
+    if (isKultureltIndhold) return "/kategorier/kultur.png";
+    if (isLaeseBøger) return "/kategorier/bog.png";
+    if (isQuiz) return "/kategorier/quiz.png";
     return "/lovable-uploads/04d6bd8a-13b1-43ae-9c27-983dac50c5be.png";
   };
   
