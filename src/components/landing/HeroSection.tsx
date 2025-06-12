@@ -48,7 +48,7 @@ const HeroSection = () => {
             <div className="relative">
               <div className="absolute -top-4 -left-4 w-full h-full bg-yellow-100 rounded-lg"></div>
               <div className="relative bg-white p-3 border-2 border-blue-300 rounded-lg shadow-lg">
-                <img alt="Dugsi børn" className="w-full h-auto rounded" src="/lovable-uploads/1fab73b2-2b8f-42c9-99cc-c168c63c5e92.png" />
+                <img alt="Dugsi børn" className="w-full h-auto rounded" src="/billeder/skole.png" />
                 {/* Removed the overlay text with "Dugsi" */}
               </div>
             </div>
