@@ -16,7 +16,7 @@ const bulletImages = [{
   alt: "Barn, bøger og læring – Sprog og læring",
   bg: "bg-[#E5DEFF]"
 }, {
-  src: "billeder/sprogmuligheder.png",
+  src: "/billeder/sprogmuligheder.png",
   alt: "Illustration af flere sprogmuligheder med børn foran skærm med flag – Flere sprogmuligheder",
   bg: "bg-[#FFDEE2]"
 }];
