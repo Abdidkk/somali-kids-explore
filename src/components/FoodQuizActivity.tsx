@@ -198,9 +198,15 @@ export default function FoodQuizActivity({ onBack }: FoodQuizActivityProps) {
                 `}
               >
                 <div className="w-16 h-16 mx-auto mb-2 bg-purple-50 rounded-full flex items-center justify-center">
-                  <span className="text-2xl">🍎</span>
+                <div className="p-0.1 text-center">
+                 <img
+                  src={food.image}
+                  alt={food.somali}
+                  className="w-20 h-20 mx-auto mb-1.5 rounded-full cover"
+                  />
+                </div> 
                 </div>
-                <p className="text-sm font-medium text-gray-700">{food.danish}</p>
+              
                 
                 {showFeedback && isCorrect && (
                   <div className="absolute top-2 right-2">
