@@ -4,19 +4,19 @@ import { Button } from "@/components/ui/button";
 
 // Nye, mere illustrative billeder - midlertidigt brugt Unsplash
 const bulletImages = [{
-  src: "/lovable-uploads/c14144b9-9843-4d08-ac21-d439ebef2ad0.png",
+  src: "/billeder/rødder.png",
   alt: "Stamtræ – Identitet & rødder",
   bg: "bg-[#FDE1D3]"
 }, {
-  src: "/lovable-uploads/c7a740c6-588d-44dc-ba26-f1f0a1d10531.png",
+  src: "/billeder/Fællesskab.png",
   alt: "Gruppe børn i dialog – Kommunikation & Fællesskab",
   bg: "bg-[#D3E4FD]"
 }, {
-  src: "/lovable-uploads/85f38696-d894-4781-a2e8-210a91796896.png",
+  src: "/billeder/læring.png",
   alt: "Barn, bøger og læring – Sprog og læring",
   bg: "bg-[#E5DEFF]"
 }, {
-  src: "/lovable-uploads/e07592ff-5948-45cb-a7a5-de1ab3075b22.png",
+  src: "billeder/sprogmuligheder.png",
   alt: "Illustration af flere sprogmuligheder med børn foran skærm med flag – Flere sprogmuligheder",
   bg: "bg-[#FFDEE2]"
 }];
