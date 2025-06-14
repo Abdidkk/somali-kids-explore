@@ -31,8 +31,7 @@ export default function AnimalsQuizActivity({ onBack }: AnimalsQuizActivityProps
     setShowFeedback(false);
     
     // Auto-play the word
-    setTimeout(() => {
-      speakAnimal(correctAnimal.somali);
+    setTimeout(() => { speakAnimal(correctAnimal.audio, correctAnimal.somali);
     }, 500);
   };
 
@@ -40,12 +39,25 @@ export default function AnimalsQuizActivity({ onBack }: AnimalsQuizActivityProps
     generateQuestion();
   }, []);
 
-  const speakAnimal = (text: string) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "so-SO";
-    utterance.rate = 0.7;
-    speechSynthesis.speak(utterance);
-  };
+  const speakAnimal = (audioPath?: string, fallbackText?: string) => {
+    if (audioPath) {
+      const audio = new Audio(audioPath);
+      audio.play().catch(() => {
+        console.error("Kunne ikke afspille lydfil:", audioPath);
+        if (fallbackText) {
+          const utterance = new SpeechSynthesisUtterance(fallbackText);
+          utterance.lang = "so-SO";
+          utterance.rate = 0.7;
+          speechSynthesis.speak(utterance);
+        }
+      });
+    } else if (fallbackText) {
+      const utterance = new SpeechSynthesisUtterance(fallbackText);
+      utterance.lang = "so-SO";
+      utterance.rate = 0.7;
+      speechSynthesis.speak(utterance);
+    }
+  }; 
 
   const handleAnswer = (animalId: string) => {
     if (showFeedback) return;
@@ -72,7 +84,7 @@ export default function AnimalsQuizActivity({ onBack }: AnimalsQuizActivityProps
 
   const playCurrentAnimal = () => {
     if (currentQuestion) {
-      speakAnimal(currentQuestion.somali);
+      speakAnimal(currentQuestion.audio, currentQuestion.somali);
     }
   };
 
@@ -110,7 +122,8 @@ export default function AnimalsQuizActivity({ onBack }: AnimalsQuizActivityProps
 
       {currentQuestion && (
         <div className="text-center mb-6">
-          <div className="w-32 h-32 mx-auto mb-4 bg-green-50 rounded-full flex items-center justify-center overflow-hidden border-4 border-green-200">
+          <div className="w-32 h-32 mx-auto mb-4 bg-green-50 rounded-full
+           flex items-center justify-center overflow-hidden border-4 border-green-200">
             <img 
               src={currentQuestion.image} 
               alt={currentQuestion.danish}

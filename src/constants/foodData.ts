@@ -3,7 +3,7 @@ export interface FoodItem {
     danish: string;
     somali: string;
     image: string;
-    audio?: string;
+    audio: string;
     category: "madvarer" | "frugter" | "grøntsager";
   }
   

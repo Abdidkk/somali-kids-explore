@@ -14,12 +14,27 @@ export default function AnimalsListenActivity({ onBack }: AnimalsListenActivityP
   
   const animals = getAnimalsByCategory(activeTab);
 
-  const speakAnimal = (text: string) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "so-SO";
-    utterance.rate = 0.7;
-    speechSynthesis.speak(utterance);
-  };
+  const speakAnimal = (audioPath?: string, fallbackText?: string) => {
+    if (audioPath) {
+      const audio = new Audio(audioPath);
+      audio.play().catch((error) => {
+        console.error("Fejl ved afspilning", error);
+  
+        // Hvis mp3 fejler, brug fallback text-to-speech
+        if (fallbackText) {
+          const utterance = new SpeechSynthesisUtterance(fallbackText);
+          utterance.lang = "so-SO";
+          utterance.rate = 0.7;
+          speechSynthesis.speak(utterance);
+        }
+      });
+    } else if (fallbackText) {
+      const utterance = new SpeechSynthesisUtterance(fallbackText);
+      utterance.lang = "so-SO";
+      utterance.rate = 0.7;
+      speechSynthesis.speak(utterance);
+    }
+  }; 
 
   const handleTabChange = (newTab: string) => {
     setActiveTab(newTab as "husdyr" | "savannedyr" | "fugle_og_smådyr");
@@ -42,7 +57,7 @@ export default function AnimalsListenActivity({ onBack }: AnimalsListenActivityP
               <div
                 key={animal.id}
                 className="relative bg-white rounded-xl border-2 border-green-200 shadow-lg hover:shadow-xl transition-all cursor-pointer group"
-                onClick={() => speakAnimal(animal.somali)}
+                onClick={() => speakAnimal(animal.audio, animal.somali)}
               >
                 <div className="p-4 text-center">
                   <div className="w-21 h-20 mx-auto mb-6 bg-green-50 rounded-full flex items-center justify-center overflow-hidden">
