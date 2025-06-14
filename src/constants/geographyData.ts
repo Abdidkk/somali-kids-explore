@@ -79,7 +79,11 @@ export const getGeographyItemColor = (index: number, type: 'continents' | 'count
 };
 
 // Audio filer - placeholder til senere implementering
-export const GEOGRAPHY_AUDIO_FILES: Record<string, string> = {};
+export const GEOGRAPHY_AUDIO_FILES: Record<string, string> = {
+// Kontinenter
+  "Afrika": ""
+
+};
 
 export function hasGeographyAudio(word: string): boolean {
   return GEOGRAPHY_AUDIO_FILES[word] && GEOGRAPHY_AUDIO_FILES[word] !== "";

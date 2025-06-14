@@ -71,10 +71,18 @@ const KropsdeleQuizActivity: React.FC<KropsdeleQuizActivityProps> = ({ onBack })
 
   const playCurrentWord = () => {
     const currentQuestion = questions[currentQuestionIndex];
-    if (currentQuestion) {
+    if (!currentQuestion) return;
+  
+    if (currentQuestion.audio) {
+      const audio = new Audio(currentQuestion.audio);
+      audio.play().catch(() => {
+        // fallback hvis lyd fejler
+        speakUsingSynthesis(currentQuestion.somali);
+      });
+    } else {
       speakUsingSynthesis(currentQuestion.somali);
     }
-  };
+  }; 
 
   const restartQuiz = () => {
     generateQuiz();
@@ -182,7 +190,7 @@ const KropsdeleQuizActivity: React.FC<KropsdeleQuizActivityProps> = ({ onBack })
                     alt={option.danish}
                     className="w-20 h-20 object-contain"
                   />
-                  <span className="font-medium text-gray-800">{option.danish}</span>
+                  
                   {showResult && option.id === currentQuestion.id && (
                     <CheckCircle className="w-6 h-6 text-green-600 mx-auto" />
                   )}

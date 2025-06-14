@@ -54,9 +54,28 @@ const KropsdeleGuessActivity: React.FC<KropsdeleGuessActivityProps> = ({ onBack 
     generateQuestion();
   };
 
+  const speakWord = (audioPath?: string, fallbackText?: string) => {
+    if (audioPath) {
+      const audio = new Audio(audioPath);
+      audio.play().catch(() => {
+        if (fallbackText) {
+          const utterance = new SpeechSynthesisUtterance(fallbackText);
+          utterance.lang = "so-SO";
+          utterance.rate = 0.7;
+          speechSynthesis.speak(utterance);
+        }
+      });
+    } else if (fallbackText) {
+      const utterance = new SpeechSynthesisUtterance(fallbackText);
+      utterance.lang = "so-SO";
+      utterance.rate = 0.7;
+      speechSynthesis.speak(utterance);
+    }
+  }; 
+
   const playCurrentWord = () => {
     if (currentQuestion) {
-      speakUsingSynthesis(currentQuestion.somali);
+      speakWord(currentQuestion.audio, currentQuestion.somali);
     }
   };
 

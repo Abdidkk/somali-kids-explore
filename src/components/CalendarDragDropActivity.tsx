@@ -158,7 +158,7 @@ export default function CalendarDragDropActivity({ onBack }: Props) {
                     </Button>
                   </div>
                 ) : (
-                  <span className="text-gray-400 text-xs md:text-sm">Træk her</span>
+                  <span className="text-gray-400 text-xs md:text-sm">Træk her.{idx + 1}</span>
                 )}
               </div>
             ))}

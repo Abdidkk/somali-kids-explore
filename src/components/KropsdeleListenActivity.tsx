@@ -12,8 +12,15 @@ const KropsdeleListenActivity: React.FC<KropsdeleListenActivityProps> = ({ onBac
   const [activeTab, setActiveTab] = useState("kropsdele");
 
   const handleItemClick = (item: BodyPartItem) => {
-    speakUsingSynthesis(item.somali);
-  };
+    if (item.audio) {
+      const audio = new Audio(item.audio);
+      audio.play().catch(() => {
+        speakUsingSynthesis(item.somali);
+      });
+    } else {
+      speakUsingSynthesis(item.somali);
+    }
+  }; 
 
   const getItemsForTab = (tab: string): BodyPartItem[] => {
     switch (tab) {
