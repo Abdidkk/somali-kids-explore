@@ -45,11 +45,11 @@ export default function AnimalsListenActivity({ onBack }: AnimalsListenActivityP
                 onClick={() => speakAnimal(animal.somali)}
               >
                 <div className="p-4 text-center">
-                  <div className="w-20 h-20 mx-auto mb-3 bg-green-50 rounded-full flex items-center justify-center overflow-hidden">
+                  <div className="w-21 h-20 mx-auto mb-6 bg-green-50 rounded-full flex items-center justify-center overflow-hidden">
                     <img 
                       src={animal.image} 
                       alt={animal.danish}
-                      className="w-full h-full object-cover rounded-full"
+                      className="w-18 h-16 object-fit "
                     />
                   </div>
                   <h4 className="text-lg font-bold text-green-700 mb-1">{animal.somali}</h4>

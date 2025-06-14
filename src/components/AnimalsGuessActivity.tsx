@@ -131,14 +131,13 @@ export default function AnimalsGuessActivity({ onBack }: AnimalsGuessActivityPro
             }`}
             onClick={() => handleAnswer(animal.id)}
           >
-            <div className="w-20 h-20 mx-auto mb-3 bg-green-50 rounded-full flex items-center justify-center overflow-hidden">
+            <div className="w-21 h-20 mx-auto mb-3 bg-green-50 rounded-full flex items-center justify-center overflow-hidden">
               <img 
                 src={animal.image} 
                 alt={animal.danish}
-                className="w-full h-full object-cover rounded-full"
+                className="w-18 h-16 object-fit "
               />
             </div>
-            <p className="text-sm text-gray-700">{animal.danish}</p>
             
             {showFeedback && selectedAnswer === animal.id && (
               <div className="absolute top-2 right-2">

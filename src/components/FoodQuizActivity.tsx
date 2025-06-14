@@ -61,14 +61,14 @@ export default function FoodQuizActivity({ onBack }: FoodQuizActivityProps) {
     console.log("questions.length > 0:", generatedQuestions.length > 0);
   };
 
-  const speakFood = (audioPath?: string) => {
-    if (!audioPath) return;
-  
-    const audio = new Audio(audioPath);
-    audio.play().catch((error) => {
-      console.error("Fejl ved afspilning:", error);
-    });
-  };
+ const speakFood = (audioPath?: string) => {
+  if (!audioPath) return;
+
+  const audio = new Audio(audioPath);
+  audio.play().catch((error) => {
+    console.error("Fejl ved afspilning:", error);
+  });
+};
 
   const handleAnswer = (selectedFood: FoodItem) => {
     if (selectedAnswer) return;
