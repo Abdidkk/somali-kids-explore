@@ -33,15 +33,18 @@ export default function GeographyDragDropActivity({ onBack }: Props) {
     return [...items].sort(() => Math.random() - 0.5);
   }, [items, tab]);
 
-  const playAudio = (text: string) => {
-    const utter = new window.SpeechSynthesisUtterance(text);
-    utter.lang = "so-SO";
-    utter.rate = 0.7;
-    const hasSomali = window.speechSynthesis.getVoices().some(v => v.lang === "so-SO");
-    if (!hasSomali) utter.lang = "en-US";
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utter);
-  };
+  const playAudio = (item: any) => {
+    if (item.audio) {
+        const audio = new Audio(item.audio);
+        audio.play()
+        .then(() => {
+            console.log("Audio played successfully");
+        })
+        .catch((error) => {
+            console.error("Error playing audio:", error);
+        });
+    }
+}; 
 
   const playApplauseSound = () => {
     const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
@@ -200,7 +203,7 @@ export default function GeographyDragDropActivity({ onBack }: Props) {
                       {item.somali}
                     </div>
                     <Button
-                      onClick={() => playAudio(item.somali)}
+                      onClick={() => playAudio(item)}
                       variant="outline"
                       size="sm"
                       className="p-1 h-8 w-8 flex-shrink-0"
