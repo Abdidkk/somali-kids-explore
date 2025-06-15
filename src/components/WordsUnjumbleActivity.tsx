@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { WORD_SENTENCES } from "@/constants/wordsData";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 // Bruger drag-and-drop (touch og mus) for at arrangere ordene korrekt
 
@@ -61,40 +62,77 @@ export default function WordsUnjumbleActivity({ onBack }: { onBack: () => void }
   }
 
   return (
-    <div>
-      <h3 className="font-semibold mb-2 text-center">Træk ordene så sætningen bliver rigtig</h3>
-      <div className="bg-blue-50 rounded-md py-2 px-3 mb-3 text-center">{curr.danish}</div>
-      <div className="flex flex-wrap gap-2 justify-center mb-3 min-h-12">
-        {selected.map((word, idx) => (
-          <button 
-            key={idx} 
-            onClick={() => handleUndo(idx)}
-            className="bg-green-300 px-2 py-1 rounded-full text-base shadow hover:bg-green-400 transition"
-          >
-            {word}
-          </button>
-        ))}
+    <div className="flex flex-col items-center space-y-6 p-4">
+      <h3 className="text-2xl font-bold text-green-700 mb-4">Sammensæt sætning</h3>
+      
+      <Card className="w-full max-w-lg">
+        <CardContent className="p-6">
+          {curr.image && (
+            <div className="mb-4 text-center">
+              <img
+                src={curr.image}
+                alt={curr.danish}
+                className="w-24 h-24 mx-auto rounded-lg object-cover shadow-md"
+              />
+            </div>
+          )}
+          
+          <div className="bg-blue-50 rounded-lg p-4 mb-4 text-center">
+            <p className="text-lg font-medium text-blue-800">{curr.danish}</p>
+          </div>
+          
+          <p className="text-center text-gray-600 mb-4">Træk ordene i den rigtige rækkefølge:</p>
+          
+          {/* Selected words */}
+          <div className="flex flex-wrap gap-2 justify-center mb-4 min-h-12 p-2 bg-gray-50 rounded-lg">
+            {selected.map((word, idx) => (
+              <button 
+                key={idx} 
+                onClick={() => handleUndo(idx)}
+                className="bg-green-300 hover:bg-green-400 px-3 py-2 rounded-full text-sm font-medium shadow transition-colors"
+              >
+                {word}
+              </button>
+            ))}
+          </div>
+          
+          {/* Available words */}
+          <div className="flex flex-wrap gap-2 justify-center mb-4">
+            {shuffled.map(word => (
+              <button
+                key={word}
+                onClick={() => handleSelect(word)}
+                className="bg-purple-200 hover:bg-purple-300 active:bg-purple-400 px-3 py-2 rounded-full text-sm font-medium shadow transition-colors"
+              >
+                {word}
+              </button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex gap-3">
+        <Button onClick={reset} variant="secondary">
+          Nulstil
+        </Button>
+        <Button 
+          onClick={check} 
+          disabled={selected.length !== curr.words.length}
+          className="bg-green-600 hover:bg-green-700"
+        >
+          Tjek svar
+        </Button>
       </div>
-      <div className="flex flex-wrap gap-2 justify-center mb-4">
-        {shuffled.map(word => (
-          <button
-            key={word}
-            onClick={() => handleSelect(word)}
-            className="bg-violet-200 shadow px-2 py-1 rounded-full text-base hover:bg-violet-300 active:bg-violet-400 animate-fade-in"
-            style={{ minWidth: 60 }}
-          >
-            {word}
-          </button>
-        ))}
-      </div>
-      <div className="flex justify-center gap-2">
-        <Button size="sm" onClick={onBack} variant="ghost">Tilbage</Button>
-        <Button size="sm" onClick={reset} variant="secondary">Nulstil</Button>
-        <Button size="sm" onClick={check} disabled={selected.length !== curr.words.length}>Tjek</Button>
-      </div>
+      
       {showCorrect && (
-        <div className="mt-3 text-green-700 text-center font-semibold animate-bounce">Korrekt! 🎉</div>
+        <div className="text-green-600 text-xl font-bold animate-bounce">
+          Korrekt! 🎉
+        </div>
       )}
+
+      <Button onClick={onBack} variant="ghost">
+        Tilbage til menu
+      </Button>
     </div>
   );
 }
