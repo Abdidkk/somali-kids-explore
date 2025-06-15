@@ -58,9 +58,9 @@ const ColorsModal: React.FC<ColorsModalProps> = ({ open, onClose }) => {
             >
               <div className="bg-pink-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
                 <img 
-                  src="/lovable-uploads/4b8dc6fc-aca1-44d7-9188-920521dc6d81.png" 
+                  src="/kategorier/farver1.png" 
                   alt="Lyt og lær" 
-                  className="w-20 h-20 md:w-24 md:h-24 object-contain" 
+                  className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover" 
                 />
               </div>
               <div>
@@ -76,9 +76,9 @@ const ColorsModal: React.FC<ColorsModalProps> = ({ open, onClose }) => {
             >
               <div className="bg-purple-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
                 <img 
-                  src="/lovable-uploads/72e8879d-c2fa-4fbe-982b-eb59d9fa37c5.png" 
+                  src="/kategorier/farver2.png" 
                   alt="Hukommelsesspil" 
-                  className="w-20 h-20 md:w-24 md:h-24 object-contain" 
+                  className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover" 
                 />
               </div>
               <div>
@@ -94,9 +94,9 @@ const ColorsModal: React.FC<ColorsModalProps> = ({ open, onClose }) => {
             >
               <div className="bg-green-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
                 <img 
-                  src="/lovable-uploads/1e80efba-0e83-48c7-aa88-40fa3c48f0a9.png" 
+                  src="/kategorier/farver3.png" 
                   alt="Quiz" 
-                  className="w-20 h-20 md:w-24 md:h-24 object-contain" 
+                  className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover" 
                 />
               </div>
               <div>

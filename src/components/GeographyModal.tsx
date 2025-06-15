@@ -59,7 +59,7 @@ const GeographyModal: React.FC<GeographyModalProps> = ({
               className="bg-green-50 hover:bg-green-100 border-2 border-green-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
             >
               <div className="bg-green-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
-                <img src="/lovable-uploads/4b8dc6fc-aca1-44d7-9188-920521dc6d81.png" alt="Lyt og lær" className="w-20 h-20 md:w-24 md:h-24 object-contain" />
+                <img src="/kategorier/geografi1.png" alt="Lyt og lær" className="w-20 h-20 md:w-25 md:h-25 rounded-full object-cover" />
               </div>
               <div>
                 <h4 className={`font-bold text-green-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Lyt og lær</h4>
@@ -73,7 +73,7 @@ const GeographyModal: React.FC<GeographyModalProps> = ({
               className="bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
             >
               <div className="bg-blue-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
-                <img src="/lovable-uploads/72e8879d-c2fa-4fbe-982b-eb59d9fa37c5.png" alt="Test din viden" className="w-20 h-20 md:w-24 md:h-24 object-contain" />
+                <img src="/kategorier/geografi2.png" alt="Test din viden" className="w-20 h-20 md:w-25 md:h-25 rounded-full object-cover" />
               </div>
               <div>
                 <h4 className={`font-bold text-blue-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Test din viden</h4>

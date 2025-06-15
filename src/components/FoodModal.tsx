@@ -59,7 +59,7 @@ const FoodModal: React.FC<FoodModalProps> = ({
               className="bg-orange-50 hover:bg-orange-100 border-2 border-orange-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
             >
               <div className="bg-orange-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
-                <img src="/lovable-uploads/4b8dc6fc-aca1-44d7-9188-920521dc6d81.png" alt="Lyt og lær" className="w-20 h-20 md:w-24 md:h-24 object-contain" />
+                <img src="/kategorier/mad1.png" alt="Lyt og lær" className="w-20 h-20 md:w-25 md:h-25 rounded-full object-cover" />
               </div>
               <div>
                 <h4 className={`font-bold text-orange-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Lyt og lær</h4>
@@ -73,7 +73,7 @@ const FoodModal: React.FC<FoodModalProps> = ({
               className="bg-purple-50 hover:bg-purple-100 border-2 border-purple-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
             >
               <div className="bg-purple-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
-                <img src="/lovable-uploads/4bdde527-cfcd-4a08-bf5c-65c9f1b9127f.png" alt="Test din viden" className="w-20 h-20 md:w-24 md:h-24 object-contain" />
+                <img src="/kategorier/mad2.png" alt="Test din viden" className="w-20 h-20 md:w-25 md:h-25 rounded-full object-cover" />
               </div>
               <div>
                 <h4 className={`font-bold text-purple-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Test din viden</h4>
