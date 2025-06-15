@@ -32,7 +32,7 @@ export default function FoodQuizActivity({ onBack }: FoodQuizActivityProps) {
       const current = questions[currentQuestion];
       if (current?.correct) {
         console.log("Playing audio for:", current.correct.somali);
-        speakFood(current.correct.audio, current.correct.somali);
+        speakFood(current.correct.audio);
       }
     }
   }, [currentQuestion, questions]);
@@ -153,7 +153,7 @@ export default function FoodQuizActivity({ onBack }: FoodQuizActivityProps) {
           <p className="text-lg text-gray-700 mb-4">Hør ordet og klik på det rigtige billede:</p>
           
           <Button
-            onClick={() => speakFood(currentQ.correct.audio,currentQ.correct.somali)}
+            onClick={() => speakFood(currentQ.correct.audio)}
             className="bg-purple-600 hover:bg-purple-700 text-lg px-8 py-4"
           >
             <Volume2 className="w-6 h-6 mr-2" />
