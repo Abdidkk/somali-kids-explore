@@ -19,15 +19,20 @@ export default function CalendarListenActivity({ onBack }: Props) {
   const selectedItem = currentGroup.items[selectedIdx] || currentGroup.items[0];
 
   const playAudio = () => {
-    // Brug browser's speech synthesis som fallback
-    const utter = new window.SpeechSynthesisUtterance(selectedItem.somali);
-    utter.lang = "so-SO";
-    utter.rate = 0.7;
-    const hasSomali = window.speechSynthesis.getVoices().some(v => v.lang === "so-SO");
-    if (!hasSomali) utter.lang = "en-US";
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utter);
-  };
+    if (selectedItem.audio) {
+      const audio = new Audio(selectedItem.audio);
+      audio.play().catch(err => console.error("Fejl med lyd:", err));
+    } else {
+      // Brug browserens stemme som fallback
+      const utter = new window.SpeechSynthesisUtterance(selectedItem.somali);
+      utter.lang = "so-SO";
+      utter.rate = 0.7;
+      const hasSomali = window.speechSynthesis.getVoices().some(v => v.lang === "so-SO");
+      if (!hasSomali) utter.lang = "en-US";
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utter);
+    }
+  }; 
 
   return (
     <div className="flex flex-col items-center mt-3 md:mt-5 gap-4 md:gap-5">

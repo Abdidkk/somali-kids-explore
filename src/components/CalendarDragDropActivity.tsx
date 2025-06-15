@@ -27,15 +27,18 @@ export default function CalendarDragDropActivity({ onBack }: Props) {
     return [...currentItems].sort(() => Math.random() - 0.5);
   }, [currentItems, tab]);
 
-  const playAudio = (text: string) => {
-    const utter = new window.SpeechSynthesisUtterance(text);
-    utter.lang = "so-SO";
-    utter.rate = 0.7;
-    const hasSomali = window.speechSynthesis.getVoices().some(v => v.lang === "so-SO");
-    if (!hasSomali) utter.lang = "en-US";
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utter);
-  };
+  const playAudio = (item: any) => {
+    if (item.audio) {
+        const audio = new Audio(item.audio);
+        audio.play()
+        .then(() => {
+            console.log("Audio played successfully");
+        })
+        .catch((error) => {
+            console.error("Error playing audio:", error);
+        });
+    }
+}; 
 
   const playApplauseSound = () => {
     // Create applause sound effect using Web Audio API
@@ -188,7 +191,7 @@ export default function CalendarDragDropActivity({ onBack }: Props) {
                       {item.somali}
                     </div>
                     <Button
-                      onClick={() => playAudio(item.somali)}
+                      onClick={() => playAudio(item)}
                       variant="outline"
                       size="sm"
                       className="p-1 h-8 w-8 flex-shrink-0"
