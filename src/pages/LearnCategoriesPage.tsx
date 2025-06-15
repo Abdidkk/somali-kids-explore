@@ -12,6 +12,7 @@ import FamilyModal from "@/components/FamilyModal";
 import ProfileMenu from "@/components/ProfileMenu";
 import CategoryGrid from "@/components/learning/CategoryGrid";
 import LearningPageHeader from "@/components/learning/LearningPageHeader";
+import WordsModal from "@/components/WordsModal";
 
 // Mock child data for development
 const mockChild = {
@@ -34,6 +35,7 @@ export default function LearnCategoriesPage() {
   const [showCalendar, setShowCalendar] = useState(false);
   const [showGeography, setShowGeography] = useState(false);
   const [showFamily, setShowFamily] = useState(false);
+  const [showWords, setShowWords] = useState(false);
 
   const handleBack = () => {
     window.history.back();
@@ -58,6 +60,8 @@ export default function LearnCategoriesPage() {
       setShowGeography(true);
     } else if (category.name === "Familie og venner") {
       setShowFamily(true);
+    } else if (category.name === "Ord") {
+      setShowWords(true);
     }
   };
 
@@ -131,6 +135,11 @@ export default function LearnCategoriesPage() {
       <FamilyModal 
         open={showFamily} 
         onClose={() => setShowFamily(false)} 
+      />
+      
+      <WordsModal 
+        open={showWords}
+        onClose={() => setShowWords(false)}
       />
     </div>
   );
