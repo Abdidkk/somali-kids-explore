@@ -79,19 +79,21 @@ const KropsdeleGuessActivity: React.FC<KropsdeleGuessActivityProps> = ({ onBack 
     }
   };
 
+  const getItemImage = (item: BodyPartItem) => {
+    return item.image || "/billeder/placeholder.png";
+  };
+
   const resetGame = () => {
     setScore(0);
     setTotalQuestions(0);
     generateQuestion();
   };
 
-  const getItemImage = (item: BodyPartItem) => {
-    return "/lovable-uploads/5f3c2e5c-8a56-4baf-8c3f-4d8ecbe1f924.png";
-  };
-
+ 
   useEffect(() => {
     generateQuestion();
   }, []);
+
 
   useEffect(() => {
     if (currentQuestion) {
@@ -102,7 +104,7 @@ const KropsdeleGuessActivity: React.FC<KropsdeleGuessActivityProps> = ({ onBack 
       return () => clearTimeout(timer);
     }
   }, [currentQuestion]);
-
+  
   return (
     <div className="max-w-2xl mx-auto p-4 text-center">
       <div className="mb-6">

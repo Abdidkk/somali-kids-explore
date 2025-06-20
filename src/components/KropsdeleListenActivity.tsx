@@ -50,9 +50,9 @@ const KropsdeleListenActivity: React.FC<KropsdeleListenActivityProps> = ({ onBac
         >
           <div className="flex flex-col items-center gap-2">
             <img
-              src={getItemImage(item)}
+              src={item.image}
               alt={item.danish}
-              className="w-16 h-16 object-contain"
+              className="w-20 h-20 object-contain"
             />
             <div className="text-center">
               <div className="font-semibold text-gray-800 text-sm">{item.danish}</div>

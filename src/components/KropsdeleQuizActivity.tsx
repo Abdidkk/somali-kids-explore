@@ -87,10 +87,11 @@ const KropsdeleQuizActivity: React.FC<KropsdeleQuizActivityProps> = ({ onBack })
   const restartQuiz = () => {
     generateQuiz();
   };
+  
 
   const getItemImage = (item: BodyPartItem) => {
-    return "/lovable-uploads/5f3c2e5c-8a56-4baf-8c3f-4d8ecbe1f924.png";
-  };
+  return item.image ?? "/billeder/placeholder.png";
+};
 
   const getScoreMessage = () => {
     const percentage = (score / totalQuestions) * 100;
