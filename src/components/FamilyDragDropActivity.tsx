@@ -14,6 +14,7 @@ interface DroppedMember {
   danish: string;
   somali: string;
   position: { x: number; y: number };
+  audio?: string;
 }
 
 const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack }) => {
@@ -33,6 +34,21 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
       });
     } catch (error) {
       console.log("Applause sound played!");
+    }
+  };
+
+  const playCustomAudio = (audioPath?: string, fallbackText?: string) => {
+    if (audioPath) {
+      const audio = new Audio(audioPath);
+      audio.play().catch((error) => {
+        console.error("Custom audio failed:", error);
+        // Fallback to speech synthesis
+        if (fallbackText) {
+          speakUsingSynthesis(fallbackText);
+        }
+      });
+    } else if (fallbackText) {
+      speakUsingSynthesis(fallbackText);
     }
   };
 
@@ -56,11 +72,12 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
         id: `${draggedItem.danish}-${Date.now()}`,
         danish: draggedItem.danish,
         somali: draggedItem.somali,
+        audio: draggedItem.audio,
         position: { x: Math.max(0, Math.min(x - 30, rect.width - 60)), y: Math.max(0, Math.min(y - 30, rect.height - 60)) }
       };
 
       setDroppedMembers(prev => [...prev, newMember]);
-      speakUsingSynthesis(draggedItem.somali);
+      playCustomAudio(draggedItem.audio, draggedItem.somali);
       
       toast({
         title: "Godt arbejde!",
@@ -77,7 +94,7 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
   };
 
   const handleMemberClick = (member: DroppedMember) => {
-    speakUsingSynthesis(member.somali);
+    playCustomAudio(member.audio, member.somali);
   };
 
   const handleClearFamily = () => {
