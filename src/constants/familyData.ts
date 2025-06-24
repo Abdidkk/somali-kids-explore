@@ -3,41 +3,42 @@ export interface FamilyItem {
   danish: string;
   somali: string;
   image?: string;
+  audio?: string
   category: 'Familie' | 'Mennesker' | 'Følelser';
   
 }
 
 export const familyData: FamilyItem[] = [
   // Familie
-  { danish: "Mor", somali: "Hooyo", category: "Familie", image: "/lovable-uploads/mother.png" },
-  { danish: "Far", somali: "Aabo", category: "Familie", image: "/lovable-uploads/father.png" },
-  { danish: "Søster", somali: "Walaal dumar", category: "Familie", image: "/lovable-uploads/sister.png" },
-  { danish: "Bror", somali: "Walaal lab", category: "Familie", image: "/lovable-uploads/brother.png" },
-  { danish: "Baby", somali: "Ilmo", category: "Familie", image: "/lovable-uploads/baby.png" },
-  { danish: "Barn", somali: "Carruur", category: "Familie", image: "/lovable-uploads/child.png" },
-  { danish: "Bedstemor", somali: "Ayeeyo", category: "Familie", image: "/lovable-uploads/grandmother.png" },
-  { danish: "Bedstefar", somali: "Awoowe", category: "Familie", image: "/lovable-uploads/grandfather.png" },
-  { danish: "Tante", somali: "Habaryar", category: "Familie", image: "/lovable-uploads/aunt.png" },
-  { danish: "Onkel", somali: "Adeer", category: "Familie", image: "/lovable-uploads/uncle.png" },
-  { danish: "Forældre", somali: "Waalidiin", category: "Familie", image: "/lovable-uploads/parents.png" },
-  { danish: "Familie", somali: "Qoyska", category: "Familie", image: "/lovable-uploads/family.png" },
+  { danish: "Mor", somali: "Hooyo", category: "Familie", image: "/familie/mor.png", audio: "/familie/mor.mp3" },
+  { danish: "Far", somali: "Aabo", category: "Familie", image: "/familie/far.png", audio: "/familie/far.mp3" },
+  { danish: "Søster", somali: "Walaal dumar", category: "Familie", image: "/familie/soster.png", audio: "/familie/soster.mp3" },
+  { danish: "Bror", somali: "Walaal lab", category: "Familie", image: "/familie/bror.png", audio: "/familie/bror.mp3" },
+  { danish: "Baby", somali: "Ilmo", category: "Familie", image: "/familie/baby.png", audio: "/familie/baby.mp3" },
+  { danish: "Barn", somali: "Carruur", category: "Familie", image: "/familie/barn.png", audio: "/familie/barn.mp3" },
+  { danish: "Bedstemor", somali: "Ayeeyo", category: "Familie", image: "/familie/bedstemor.png", audio: "/familie/bedstemor.mp3" },
+  { danish: "Bedstefar", somali: "Awoowe", category: "Familie", image: "/familie/bedstefar.png", audio: "/familie/bedstefar.mp3" },
+  { danish: "Tante", somali: "Habaryar", category: "Familie", image: "/familie/tante.png", audio: "/familie/tante.mp3" },
+  { danish: "Onkel", somali: "Adeer", category: "Familie", image: "/familie/onkel.png", audio: "/familie/onkel.mp3" },
+  { danish: "Forældre", somali: "Waalidiin", category: "Familie", image: "/familie/foraldre.png", audio: "/familie/foraldre.mp3" },
+  { danish: "Familie", somali: "Qoyska", category: "Familie", image: "/familie/familie.png", audio: "/familie/familie.mp3" },
 
   // Mennesker
-  { danish: "Ven (dreng)", somali: "Saaxiib", category: "Mennesker", image: "/lovable-uploads/boy-friend.png" },
-  { danish: "Veninde (pige)", somali: "Saaxiibad", category: "Mennesker", image: "/lovable-uploads/girl-friend.png" },
-  { danish: "Klassekammerat", somali: "La dhigto iskuul", category: "Mennesker", image: "/lovable-uploads/classmate.png" },
-  { danish: "Nabo", somali: "Deris", category: "Mennesker", image: "/lovable-uploads/neighbor.png" },
-  { danish: "Lærer", somali: "Macallin", category: "Mennesker", image: "/lovable-uploads/teacher.png" },
-  { danish: "Kammerat", somali: "Walaal ciyaarta", category: "Mennesker", image: "/lovable-uploads/playmate.png" },
-  { danish: "Gruppe", somali: "Koox", category: "Mennesker", image: "/lovable-uploads/group.png" },
+  { danish: "Ven (dreng)", somali: "Saaxiib", category: "Mennesker", image: "/familie/ven.png", audio: "/familie/ven.mp3" },
+  { danish: "Veninde (pige)", somali: "Saaxiibad", category: "Mennesker", image: "/familie/veninde.png", audio: "/familie/veninde.mp3" },
+  { danish: "Klassekammerat", somali: "La dhigto iskuul", category: "Mennesker", image: "/familie/klassekamrat.png", audio: "/familie/Kammerat.mp3" },
+  { danish: "Nabo", somali: "Deris", category: "Mennesker", image: "/familie/nabo.png", audio: "/familie/nabo.mp3" },
+  { danish: "Lærer", somali: "Macallin", category: "Mennesker", image: "/familie/lare.png", audio: "/familie/lare.mp3" },
+  { danish: "Kammerat", somali: "Walaal ciyaarta", category: "Mennesker", image: "/familie/klassekamrat.png", audio: "/familie/klasse.mp3" },
+  { danish: "Gruppe", somali: "Koox", category: "Mennesker", image: "/familie/gruppe.png", audio: "/familie/gruppe.mp3" },
 
   // Følelser
-  { danish: "Jeg elsker dig", somali: "Waan ku jeclahay", category: "Følelser", image: "/lovable-uploads/love.png" },
-  { danish: "Jeg savner dig", somali: "Waan ku tabayaa", category: "Følelser", image: "/lovable-uploads/miss.png" },
-  { danish: "Venlig", somali: "Naxariis leh", category: "Følelser", image: "/lovable-uploads/kind.png" },
-  { danish: "Hjælpsom", somali: "Gargaaraya", category: "Følelser", image: "/lovable-uploads/helpful.png" },
-  { danish: "Sammen", somali: "Wadajir", category: "Følelser", image: "/lovable-uploads/together.png" },
-  { danish: "Ensom", somali: "Kelinimo", category: "Følelser", image: "/lovable-uploads/lonely.png" },
+  { danish: "Jeg elsker dig", somali: "Waan ku jeclahay", category: "Følelser", image: "/familie/jegelskerdig.png", audio: "/familie/jegelskerdig.mp3" },
+  { danish: "Jeg savner dig", somali: "Waan ku tabayaa", category: "Følelser", image: "/familie/savn.png", audio: "/familie/jegsavnerdig.mp3" },
+  { danish: "Venlig", somali: "Naxariis leh", category: "Følelser", image: "/familie/venlig.png", audio: "/familie/venlig.mp3" },
+  { danish: "Hjælpsom", somali: "Gargaaraya", category: "Følelser", image: "/familie/hjalpsom.png", audio: "/familie/hjalpsom.mp3" },
+  { danish: "Sammen", somali: "Wadajir", category: "Følelser", image: "/familie/sammen.png", audio: "/familie/sammen.mp3" },
+  { danish: "Ensom", somali: "Kelinimo", category: "Følelser", image: "/familie/ensom.png", audio: "/familie/ensom.mp3" },
 ];
 
 export const getFamilyByCategory = (category: 'Familie' | 'Mennesker' | 'Følelser') => {

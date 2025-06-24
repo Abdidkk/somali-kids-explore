@@ -15,8 +15,19 @@ const FamilyListenActivity: React.FC<FamilyListenActivityProps> = ({ onBack }) =
   const [activeTab, setActiveTab] = useState<CategoryType>('Familie');
   const isMobile = useIsMobile();
 
-  const handleItemClick = (somaliWord: string) => {
-    speakUsingSynthesis(somaliWord);
+  const handleItemClick = (item: FamilyItem) => {
+    if (item.audio) {
+      // Spil din egen audio-fil
+      const audio = new Audio(item.audio);
+      audio.play().catch((error) => {
+        console.error("Audio kunne ikke afspilles:", error);
+        // Fallback til speech synthesis hvis audio fejler
+        speakUsingSynthesis(item.somali);
+      });
+    } else {
+      // Brug speech synthesis hvis ingen audio-fil
+      speakUsingSynthesis(item.somali);
+    }
   };
 
   const handleTabChange = (newTab: string) => {
@@ -31,17 +42,19 @@ const FamilyListenActivity: React.FC<FamilyListenActivityProps> = ({ onBack }) =
         {items.map((item, index) => (
           <div
             key={index}
-            onClick={() => handleItemClick(item.somali)}
+            onClick={() => handleItemClick(item)}
             className="bg-white rounded-xl p-4 md:p-6 shadow-md hover:shadow-lg transition-all cursor-pointer hover:scale-105 border-2 border-transparent hover:border-blue-200"
           >
-            {/* Placeholder for image */}
-            <div className="w-full h-24 md:h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg mb-3 md:mb-4 flex items-center justify-center">
-              <div className={`${isMobile ? 'text-2xl' : 'text-4xl'}`}>
-                {category === 'Familie' && '👨‍👩‍👧‍👦'}
-                {category === 'Mennesker' && '👫'}
-                {category === 'Følelser' && '😊'}
-              </div>
-            </div>
+    
+          {/* Rigtige billeder */}
+          <div className="w-full h-24 md:h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg mb-3 md:mb-4 flex items-center justify-center overflow-hidden">
+          <img
+          src={item.image}
+          alt={item.danish}
+          className="w-full h-full object-cover rounded-lg"
+          />
+          </div>
+
             
             <h3 className={`font-bold text-gray-800 mb-1 text-center ${isMobile ? 'text-sm' : 'text-base'}`}>
               {item.danish}

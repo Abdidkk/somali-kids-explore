@@ -15,6 +15,7 @@ interface DroppedMember {
   somali: string;
   position: { x: number; y: number };
   audio?: string;
+  image?: string;
 }
 
 const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack }) => {
@@ -29,11 +30,25 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
       const audio = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.wav');
       audio.volume = 0.5;
       audio.play().catch(() => {
-        // Fallback if audio fails to load
         console.log("Applause sound played!");
       });
     } catch (error) {
       console.log("Applause sound played!");
+    }
+  };
+
+  const playCustomAudio = (audioPath?: string, fallbackText?: string) => {
+    if (audioPath) {
+      const audio = new Audio(audioPath);
+      audio.play().catch((error) => {
+        console.error("Custom audio failed:", error);
+        // Fallback to speech synthesis
+        if (fallbackText) {
+          speakUsingSynthesis(fallbackText);
+        }
+      });
+    } else if (fallbackText) {
+      speakUsingSynthesis(fallbackText);
     }
   };
 
@@ -64,7 +79,6 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    // Check if this family member is already placed
     const isAlreadyPlaced = droppedMembers.some(member => member.danish === draggedItem.danish);
     
     if (!isAlreadyPlaced) {
@@ -73,10 +87,12 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
         danish: draggedItem.danish,
         somali: draggedItem.somali,
         audio: draggedItem.audio,
+        image: draggedItem.image,
         position: { x: Math.max(0, Math.min(x - 30, rect.width - 60)), y: Math.max(0, Math.min(y - 30, rect.height - 60)) }
       };
 
       setDroppedMembers(prev => [...prev, newMember]);
+      playCustomAudio(draggedItem.audio, draggedItem.somali);
       playCustomAudio(draggedItem.audio, draggedItem.somali);
       
       toast({
@@ -94,6 +110,7 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
   };
 
   const handleMemberClick = (member: DroppedMember) => {
+    playCustomAudio(member.audio, member.somali);
     playCustomAudio(member.audio, member.somali);
   };
 
@@ -130,7 +147,6 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
           Byg din familie - træk familiemedlemmer til huset
         </h3>
         
-        {/* Action buttons */}
         <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-4">
           <Button 
             onClick={handleClearFamily} 
@@ -165,8 +181,16 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
                 onDragStart={() => handleDragStart(member)}
                 className="bg-white rounded-lg p-3 md:p-4 shadow-md hover:shadow-lg transition-all cursor-move border-2 border-transparent hover:border-blue-200"
               >
-                <div className="w-full h-16 md:h-20 bg-gradient-to-br from-pink-100 to-purple-100 rounded-lg mb-2 flex items-center justify-center">
-                  <span className={`${isMobile ? 'text-lg' : 'text-2xl'}`}>👨‍👩‍👧‍👦</span>
+                <div className="w-full h-16 md:h-20 bg-gradient-to-br from-pink-100 to-purple-100 rounded-lg mb-2 flex items-center justify-center overflow-hidden">
+                  {member.image ? (
+                    <img 
+                      src={member.image} 
+                      alt={member.danish}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                  ) : (
+                    <span className={`${isMobile ? 'text-lg' : 'text-2xl'}`}>👨‍👩‍👧‍👦</span>
+                  )}
                 </div>
                 <h5 className={`font-bold text-gray-800 text-center ${isMobile ? 'text-xs' : 'text-sm'}`}>
                   {member.danish}
@@ -217,8 +241,16 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
                   top: member.position.y,
                 }}
               >
-                <div className="bg-white rounded-full p-2 md:p-3 shadow-lg border-2 border-blue-200">
-                  <span className={`${isMobile ? 'text-lg' : 'text-2xl'}`}>👨‍👩‍👧‍👦</span>
+                <div className="bg-white rounded-full p-2 md:p-3 shadow-lg border-2 border-blue-200 w-12 h-12 md:w-16 md:h-16 flex items-center justify-center overflow-hidden">
+                  {member.image ? (
+                    <img 
+                      src={member.image} 
+                      alt={member.danish}
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  ) : (
+                    <span className={`${isMobile ? 'text-lg' : 'text-2xl'}`}>👨‍👩‍👧‍👦</span>
+                  )}
                 </div>
                 <div className="text-center mt-1 bg-white/90 rounded px-1">
                   <p className={`font-bold text-gray-800 ${isMobile ? 'text-xs' : 'text-xs'}`}>
