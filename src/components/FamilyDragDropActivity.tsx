@@ -42,7 +42,6 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
       const audio = new Audio(audioPath);
       audio.play().catch((error) => {
         console.error("Custom audio failed:", error);
-        // Fallback to speech synthesis
         if (fallbackText) {
           speakUsingSynthesis(fallbackText);
         }
@@ -67,13 +66,20 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
     const isAlreadyPlaced = droppedMembers.some(member => member.danish === draggedItem.danish);
     
     if (!isAlreadyPlaced) {
+      // Responsiv størrelse baseret på skærmstørrelse
+      const memberSize = isMobile ? 40 : 60;
+      const halfSize = memberSize / 2;
+      
       const newMember: DroppedMember = {
         id: `${draggedItem.danish}-${Date.now()}`,
         danish: draggedItem.danish,
         somali: draggedItem.somali,
         audio: draggedItem.audio,
         image: draggedItem.image,
-        position: { x: Math.max(0, Math.min(x - 30, rect.width - 60)), y: Math.max(0, Math.min(y - 30, rect.height - 60)) }
+        position: { 
+          x: Math.max(0, Math.min(x - halfSize, rect.width - memberSize)), 
+          y: Math.max(0, Math.min(y - halfSize, rect.height - memberSize)) 
+        }
       };
 
       setDroppedMembers(prev => [...prev, newMember]);
@@ -124,9 +130,9 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto">
+    <div className="w-full max-w-6xl mx-auto p-2 sm:p-4">
       <div className="mb-4 md:mb-6">
-        <h3 className={`font-bold text-center mb-4 ${isMobile ? 'text-lg' : 'text-xl'}`}>
+        <h3 className={`font-bold text-center mb-4 ${isMobile ? 'text-base' : 'text-xl'}`}>
           Byg din familie - træk familiemedlemmer til huset
         </h3>
         
@@ -135,7 +141,7 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
             onClick={handleClearFamily} 
             variant="outline" 
             size={isMobile ? "sm" : "default"}
-            className="bg-red-50 hover:bg-red-100 text-red-600 border-red-200"
+            className="bg-red-50 hover:bg-red-100 text-red-600 border-red-200 text-xs sm:text-sm"
           >
             Ryd familie
           </Button>
@@ -143,42 +149,41 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
             onClick={handleCompletedFamily} 
             variant="outline" 
             size={isMobile ? "sm" : "default"}
-            className="bg-green-50 hover:bg-green-100 text-green-600 border-green-200"
+            className="bg-green-50 hover:bg-green-100 text-green-600 border-green-200 text-xs sm:text-sm"
           >
             Min familie er færdig!
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-4 md:gap-6">
         {/* Family Members Toolbar */}
         <div className="lg:col-span-4">
-          <h4 className={`font-semibold mb-3 text-center ${isMobile ? 'text-base' : 'text-lg'}`}>
+          <h4 className={`font-semibold mb-3 text-center ${isMobile ? 'text-sm' : 'text-lg'}`}>
             Familiemedlemmer
           </h4>
-          <div className="grid grid-cols-2 gap-2 md:gap-3 max-h-96 overflow-y-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-2 gap-1 sm:gap-2 md:gap-3 max-h-64 sm:max-h-80 md:max-h-96 overflow-y-auto">
             {familyMembers.map((member, index) => (
               <div
                 key={index}
                 draggable
                 onDragStart={() => handleDragStart(member)}
-                className="bg-white rounded-lg p-3 md:p-4 shadow-md hover:shadow-lg transition-all cursor-move border-2 border-transparent hover:border-blue-200"
+                className="bg-white rounded-lg p-2 sm:p-3 md:p-4 shadow-md hover:shadow-lg transition-all cursor-move border-2 border-transparent hover:border-blue-200"
               >
-                <div className="w-full h-16 md:h-20 bg-gradient-to-br from-pink-100 to-purple-100 rounded-lg mb-2 flex items-center justify-center overflow-hidden">
+                {/* Responsiv billedcontainer */}
+                <div className="w-full h-12 sm:h-16 md:h-20 bg-gradient-to-br from-pink-100 to-purple-100 rounded-lg mb-1 sm:mb-2 flex items-center justify-center overflow-hidden">
                   {member.image ? (
                     <img 
                       src={member.image} 
                       alt={member.danish}
-                      className="w-full h-full object-cover rounded-lg"
+                      className="w-24 h-24 object-fill object-center rounded-lg"
+                      style={{ objectFit: 'cover' }}
                     />
                   ) : (
-                    <span className={`${isMobile ? 'text-lg' : 'text-2xl'}`}>👨‍👩‍👧‍👦</span>
+                    <span className={`${isMobile ? 'text-sm' : 'text-2xl'}`}>👨‍👩‍👧‍👦</span>
                   )}
                 </div>
-                <h5 className={`font-bold text-gray-800 text-center ${isMobile ? 'text-xs' : 'text-sm'}`}>
-                  {member.danish}
-                </h5>
-                <p className={`text-blue-600 font-semibold text-center ${isMobile ? 'text-xs' : 'text-xs'}`}>
+                <p className="text-blue-600 font-semibold text-center text-xs leading-tight">
                   {member.somali}
                 </p>
               </div>
@@ -188,32 +193,32 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
 
         {/* House Drop Zone */}
         <div className="lg:col-span-8">
-          <h4 className={`font-semibold mb-3 text-center ${isMobile ? 'text-base' : 'text-lg'}`}>
+          <h4 className={`font-semibold mb-3 text-center ${isMobile ? 'text-sm' : 'text-lg'}`}>
             Mit hjem
           </h4>
           <div
             onDrop={handleDrop}
             onDragOver={handleDragOver}
-            className="relative w-full h-80 md:h-96 bg-gradient-to-b from-sky-200 to-green-200 rounded-xl border-4 border-dashed border-blue-300 flex items-center justify-center overflow-hidden"
+            className="relative w-full h-64 sm:h-80 md:h-96 bg-gradient-to-b from-sky-200 to-green-200 rounded-xl border-4 border-dashed border-blue-300 flex items-center justify-center overflow-hidden"
             style={{
               backgroundImage: `
                 linear-gradient(to bottom, #bae6fd 0%, #bae6fd 60%, #bbf7d0 60%, #bbf7d0 100%),
                 url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100 20 L180 80 L180 180 L20 180 L20 80 Z' fill='%23fbbf24' stroke='%23f59e0b' stroke-width='3'/%3E%3Cpath d='M100 20 L180 80 L160 80 L100 40 L40 80 L20 80 Z' fill='%23dc2626'/%3E%3Crect x='80' y='120' width='40' height='60' fill='%23365314'/%3E%3Ccircle cx='85' cy='150' r='3' fill='%23fbbf24'/%3E%3C/svg%3E")
               `,
-              backgroundSize: 'contain, 200px 150px',
+              backgroundSize: isMobile ? 'contain, 120px 100px' : 'contain, 200px 150px',
               backgroundPosition: 'center, center bottom',
               backgroundRepeat: 'no-repeat, no-repeat'
             }}
           >
             {droppedMembers.length === 0 && (
-              <div className="text-center text-gray-600 bg-white/80 rounded-lg p-4">
-                <p className={`${isMobile ? 'text-sm' : 'text-base'}`}>
+              <div className="text-center text-gray-600 bg-white/80 rounded-lg p-2 sm:p-4 mx-2">
+                <p className="text-xs sm:text-sm md:text-base">
                   Træk familiemedlemmer hertil for at bygge din familie
                 </p>
               </div>
             )}
 
-            {/* Dropped family members */}
+            {/* Dropped family members - responsiv størrelse */}
             {droppedMembers.map((member) => (
               <div
                 key={member.id}
@@ -224,27 +229,34 @@ const FamilyDragDropActivity: React.FC<FamilyDragDropActivityProps> = ({ onBack 
                   top: member.position.y,
                 }}
               >
-                <div className="bg-white rounded-full p-2 md:p-3 shadow-lg border-2 border-blue-200 w-12 h-12 md:w-16 md:h-16 flex items-center justify-center overflow-hidden">
+                {/* Responsiv medlem-container */}
+                <div className={`bg-white rounded-full shadow-lg border-2 border-blue-200 flex items-center justify-center overflow-hidden ${
+                  isMobile 
+                    ? 'w-10 h-10 p-1' 
+                    : 'w-12 h-12 p-2 sm:w-14 sm:h-14 md:w-16 md:h-16 md:p-3'
+                }`}>
                   {member.image ? (
                     <img 
                       src={member.image} 
                       alt={member.danish}
-                      className="w-full h-full object-cover rounded-full"
+                      className="w-full h-full object-fit object-center rounded-full"
+                      style={{ objectFit: 'cover' }}
                     />
                   ) : (
-                    <span className={`${isMobile ? 'text-lg' : 'text-2xl'}`}>👨‍👩‍👧‍👦</span>
+                    <span className={`${isMobile ? 'text-xs' : 'text-sm sm:text-base md:text-lg'}`}>👨‍👩‍👧‍👦</span>
                   )}
                 </div>
-                <div className="text-center mt-1 bg-white/90 rounded px-1">
-                  <p className={`font-bold text-gray-800 ${isMobile ? 'text-xs' : 'text-xs'}`}>
-                    {member.danish}
+                {/* Responsiv tekst under medlem */}
+                <div className="text-center mt-1 bg-white/90 rounded px-1 max-w-16 sm:max-w-20">
+                  <p className="font-bold text-gray-800 text-xs leading-tight truncate">
+                    {member.somali}
                   </p>
                 </div>
               </div>
             ))}
           </div>
           
-          <p className={`text-center text-gray-600 mt-3 ${isMobile ? 'text-sm' : 'text-base'}`}>
+          <p className="text-center text-gray-600 mt-2 sm:mt-3 text-xs sm:text-sm md:text-base px-2">
             Klik på familiemedlemmer i huset for at høre deres navne på somalisk
           </p>
         </div>

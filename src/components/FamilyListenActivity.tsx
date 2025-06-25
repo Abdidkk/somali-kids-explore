@@ -47,11 +47,11 @@ const FamilyListenActivity: React.FC<FamilyListenActivityProps> = ({ onBack }) =
           >
     
           {/* Rigtige billeder */}
-          <div className="w-full h-24 md:h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg mb-3 md:mb-4 flex items-center justify-center overflow-hidden">
+          <div className="w-full h-24 md:h-32  rounded-lg mb-3 md:mb-4 flex items-center justify-center overflow-hidden">
           <img
           src={item.image}
           alt={item.danish}
-          className="w-full h-full object-cover rounded-lg"
+          className="w-24 h-24 object-cover rounded-lg"
           />
           </div>
 
