@@ -11,16 +11,12 @@ export const WORDS: WordItem[] = [
   {
     danish: "Stol",
     somali: "Kursi",
-    audio: "/Words/Kursi.mp3",
+    audio: "/ord/stol.mp3",
     image: "https://images.unsplash.com/photo-1721322800607-8c38375eef04",
     category: "hjem", // 👈 tilføj kategori
   },
   {
-    danish: "Sofa",
-    somali: "Sariir",
-    audio: "/Words/Sariir.mp3",
-    image: "https://images.unsplash.com/photo-1721322800607-8c38375eef04",
-    category: "stuen",
+    danish: "Sofa", somali: "Sariir", audio: "/Words/Sariir.mp3", image: "https://images.unsplash.com/photo-1721322800607-8c38375eef04", category: "stuen",
   },
   {
     danish: "Bord",
