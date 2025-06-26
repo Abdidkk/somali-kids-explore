@@ -74,7 +74,7 @@ const KropsdeleModal: React.FC<KropsdeleModalProps> = ({
               className="bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
             >
               <div className="bg-emerald-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
-                <img src="/kategorier/kro.png" alt="Hør og vælg" className="w-20 h-20 md:w-25 md:h-25 rounded-full object-cover" />
+                <img src="/kategorier/krop3.png" alt="Hør og vælg" className="w-20 h-20 md:w-27 md:h-27 rounded-full object-cover" />
               </div>
               <div>
                 <h4 className={`font-bold text-emerald-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Hør og vælg</h4>
