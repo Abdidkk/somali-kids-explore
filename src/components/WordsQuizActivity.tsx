@@ -84,11 +84,11 @@ export default function WordsQuizActivity({ onBack }: { onBack: () => void }) {
         <Card>
           <CardContent className="p-6 text-center">
             {q.image && (
-              <div className="mb-4">
+              <div className="w-21 h-20 mx-auto mb-6 bg-green-50 rounded-full flex items-center justify-center overflow-hidden">
                 <img
                   src={q.image}
                   alt="Quiz billede"
-                  className="w-32 h-32 mx-auto rounded-lg object-cover shadow-md"
+                  className="w-18 h-16 object-fit "
                 />
               </div>
             )}

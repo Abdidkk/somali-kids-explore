@@ -48,11 +48,11 @@ export default function WordsListenActivity({ onBack }: WordsListenActivityProps
                 className="relative bg-white rounded-xl border-2 border-pink-200 shadow-lg hover:shadow-xl transition-all cursor-pointer group"
               >
                 <div className="p-4 text-center">
-                  <div className="w-20 h-20 mx-auto mb-3 bg-gray-50 rounded-full flex items-center justify-center">
+                  <div className="w-21 h-20 mx-auto mb-6 bg-green-50 rounded-full flex items-center justify-center overflow-hidden">
                     <img
                       src={word.image}
                       alt={word.somali}
-                      className="w-20 h-20 mx-auto mb-1.5 rounded-full object-cover"
+                      className="w-18 h-16 object-fit "
                     />
                   </div>
                   <h4 className="text-lg font-bold text-gray-700 mb-1">{word.somali}</h4>

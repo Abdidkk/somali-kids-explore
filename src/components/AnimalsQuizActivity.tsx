@@ -122,14 +122,6 @@ export default function AnimalsQuizActivity({ onBack }: AnimalsQuizActivityProps
 
       {currentQuestion && (
         <div className="text-center mb-6">
-          <div className="w-32 h-32 mx-auto mb-4 bg-green-50 rounded-full
-           flex items-center justify-center overflow-hidden border-4 border-green-200">
-            <img 
-              src={currentQuestion.image} 
-              alt={currentQuestion.danish}
-              className="w-18 h-16 object-fit rounded-full"
-            />
-          </div>
           <p className="text-lg mb-4">Hør og se dette dyr, vælg derefter det rigtige billede:</p>
           <Button 
             onClick={playCurrentAnimal}
