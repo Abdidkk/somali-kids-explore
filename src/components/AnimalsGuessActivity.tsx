@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Volume2, CheckCircle, XCircle, Star } from "lucide-react";
+import { Volume2, CheckCircle, XCircle, Star, X } from "lucide-react";
 import { getAllAnimals, AnimalItem } from "@/constants/animalsData";
 import { toast } from "sonner";
 
@@ -150,6 +150,19 @@ export default function AnimalsGuessActivity({ onBack }: AnimalsGuessActivityPro
     setMatches([...filteredMatches, newMatch]);
   };
 
+  // NYT: Fjern match (fortryd funktion)
+  const removeMatch = (animalId: string) => {
+    // Kun tillad fjernelse før resultater vises
+    if (showResults) return;
+    
+    setMatches(prevMatches => 
+      prevMatches.filter(match => match.animalId !== animalId)
+    );
+    
+    // Visual feedback
+    toast.info("Ordet er returneret til listen");
+  };
+
   // Tjek alle svar
   const checkAnswers = () => {
     if (matches.length !== 8) {
@@ -167,7 +180,7 @@ export default function AnimalsGuessActivity({ onBack }: AnimalsGuessActivityPro
       
       // Spil succeslyd
       setTimeout(() => {
-        const audio = new Audio('/success.mp3');
+        const audio = new Audio('/feedback/waa-sax.mp3');
         audio.play().catch(() => {
           // Fallback til speech synthesis
           const utterance = new SpeechSynthesisUtterance("Godt klaret!");
@@ -238,9 +251,14 @@ export default function AnimalsGuessActivity({ onBack }: AnimalsGuessActivityPro
         <p className="text-sm md:text-base text-gray-600 mb-4">
           Træk de somaliske ord hen til det rigtige dyr
         </p>
-        <p className="text-sm text-gray-500">
+        <p className="text-xs md:text-sm text-gray-500 mb-2">
           Matches: {matches.length}/8
         </p>
+        {!showResults && matches.length > 0 && (
+          <p className="text-xs text-blue-600">
+            💡 Klik på matchede ord for at fjerne dem
+          </p>
+        )}
       </div>
 
       {/* Dyr billeder grid */}
@@ -277,14 +295,34 @@ export default function AnimalsGuessActivity({ onBack }: AnimalsGuessActivityPro
                 {animal.danish}
               </p>
               
-              {/* Matchet ord */}
+              {/* Matchet ord - NU KLIKBART */}
               {isMatched && (
-                <div className={`
-                  text-xs md:text-sm font-bold px-2 py-1 rounded
-                  ${showResults && isCorrect ? 'text-green-700' : ''}
-                  ${showResults && !isCorrect ? 'text-red-700' : 'text-blue-700'}
-                `}>
+                <div 
+                  className={`
+                    relative text-xs md:text-sm font-bold px-2 py-1 rounded transition-all
+                    ${showResults && isCorrect ? 'text-green-700' : ''}
+                    ${showResults && !isCorrect ? 'text-red-700' : 'text-blue-700'}
+                    ${!showResults ? 'cursor-pointer hover:bg-blue-200 hover:scale-105 group' : ''}
+                  `}
+                  onClick={() => !showResults && removeMatch(animal.id)}
+                  title={!showResults ? "Klik for at fjerne match" : ""}
+                >
                   {selectedAnimals.find(a => a.id === match.wordId)?.somali}
+                  
+                  {/* X-knap for at fjerne match */}
+                  {!showResults && (
+                    <button
+                      className="ml-1 p-0.5 rounded-full hover:bg-red-100 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeMatch(animal.id);
+                      }}
+                    >
+                      <X className="w-3 h-3 text-red-600" />
+                    </button>
+                  )}
+                  
+                  {/* Resultat ikon */}
                   {showResults && (
                     <span className="ml-1">
                       {isCorrect ? '✓' : '✗'}

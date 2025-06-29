@@ -16,7 +16,7 @@ export default function WordsQuizActivity({ onBack }: { onBack: () => void }) {
   const q = WORDS[step % WORDS.length];
   // Genererer simple multiple choice spørgsmål: 'Hvad betyder X?'
   const choices = [q.danish, ...WORDS.filter(w => w !== q).map(w => w.danish)];
-  const shuffled = choices.sort(() => Math.random() - 0.5).slice(0, 3);
+  const shuffled = choices.sort(() => Math.random() - 0.1).slice(0, 3);
 
   function check(ans: string) {
     const isCorrect = ans === q.danish;
