@@ -14,6 +14,7 @@ import CategoryGrid from "@/components/learning/CategoryGrid";
 import LearningPageHeader from "@/components/learning/LearningPageHeader";
 import WordsModal from "@/components/WordsModal";
 import DailyActivitiesModal from "@/components/DailyActivitiesModal";
+import SentencesModal from "@/components/SentencesModal";
 
 // Mock child data for development
 const mockChild = {
@@ -38,6 +39,7 @@ export default function LearnCategoriesPage() {
   const [showFamily, setShowFamily] = useState(false);
   const [showWords, setShowWords] = useState(false);
   const [showDailyActivities, setShowDailyActivities] = useState(false);
+  const [showSentences, setShowSentences] = useState(false);
 
   const handleBack = () => {
     window.history.back();
@@ -64,9 +66,10 @@ export default function LearnCategoriesPage() {
       setShowFamily(true);
     } else if (category.name === "Ord") {
       setShowWords(true);
-    }
-    else if (category.name === "Daglige aktiviteter") {
+    }else if (category.name === "Daglige aktiviteter") {
       setShowDailyActivities(true);
+    }else if (category.name === "Sætninger") {
+      setShowSentences(true);
     }
   };
 
@@ -147,9 +150,13 @@ export default function LearnCategoriesPage() {
         onClose={() => setShowWords(false)}
       />
       <DailyActivitiesModal 
-  open={showDailyActivities}
-  onClose={() => setShowDailyActivities(false)}
+        open={showDailyActivities}
+        onClose={() => setShowDailyActivities(false)}
       />
+      <SentencesModal 
+        open={showSentences}
+        onClose={() => setShowSentences(false)}
+/>
     </div>
   );
 }
