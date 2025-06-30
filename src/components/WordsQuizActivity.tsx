@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { WORDS } from "@/constants/wordsData";
 import { Button } from "@/components/ui/button";
@@ -20,24 +19,16 @@ export default function WordsQuizActivity({ onBack }: { onBack: () => void }) {
   const [step, setStep] = useState(0);
   const [result, setResult] = useState<null | boolean>(null);
   const [score, setScore] = useState(0);
-  const [shuffledWords, setShuffledWords] = useState(WORDS);
+  const [shuffledWords, setShuffledWords] = useState<any[]>([]);
 
-  // Bland ordene når komponenten loader
+  // Bland ordene når komponenten loader og vælg kun 12
   useEffect(() => {
-    setShuffledWords(shuffleArray(WORDS));
+    const randomWords = shuffleArray(WORDS).slice(0, QUIZ_LENGTH);
+    setShuffledWords(randomWords);
   }, []);
 
-  const q = shuffledWords[step % shuffledWords.length];
-  
-  // Genererer simple multiple choice spørgsmål: 'Hvad betyder X?'
-  const choices = [q.danish, ...WORDS.filter(w => w !== q).map(w => w.danish)];
-  const shuffled = choices.sort(() => Math.random() - 0.).slice(0, 4);
-
-  const wrongChoices = shuffleArray(WORDS.filter(w => w !== q)).slice(0, 4);
-  // Lav en liste af de 4 mulige svar (1 rigtig + 3 forkerte)
-const answerChoices = shuffleArray([q, ...wrongChoices]); 
-
   function playAudio() {
+    const q = shuffledWords[step];
     if (q.audio) {
       const audio = new Audio(q.audio);
       audio.play().catch(error => {
@@ -56,6 +47,7 @@ const answerChoices = shuffleArray([q, ...wrongChoices]);
   }
 
   function check(ans: string) {
+    const q = shuffledWords[step];
     const isCorrect = ans === q.danish;
     setResult(isCorrect);
     if (isCorrect) setScore(score + 1);
@@ -70,26 +62,37 @@ const answerChoices = shuffleArray([q, ...wrongChoices]);
     setStep(0);
     setScore(0);
     setResult(null);
-    setShuffledWords(shuffleArray(WORDS)); // Bland ordene igen
+    const randomWords = shuffleArray(WORDS).slice(0, QUIZ_LENGTH);
+    setShuffledWords(randomWords);
   }
 
-  if (step >= shuffledWords.length) {
+  // Loading state
+  if (shuffledWords.length === 0) {
+    return (
+      <div className="flex flex-col items-center space-y-6 p-6">
+        <div className="text-xl text-gray-600">Indlæser quiz...</div>
+      </div>
+    );
+  }
+
+  // VIGTIG ÆNDRING: Brug QUIZ_LENGTH i stedet for shuffledWords.length
+  if (step >= QUIZ_LENGTH) {
     return (
       <div className="flex flex-col items-center space-y-6 p-6">
         <h3 className="text-2xl font-bold text-purple-700">Quiz færdig!</h3>
         
         <div className="text-center">
           <div className="text-6xl mb-4">
-            {score === shuffledWords.length ? "🎉" : score >= shuffledWords.length / 2 ? "😊" : "😔"}
+            {score === QUIZ_LENGTH ? "🎉" : score >= QUIZ_LENGTH / 2 ? "😊" : "😔"}
           </div>
           
           <div className="text-3xl font-bold text-purple-700 mb-2">
-            {score} / {shuffledWords.length}
+            {score} / {QUIZ_LENGTH}
           </div>
           <p className="text-lg text-gray-600">
-            {score === shuffledWords.length 
+            {score === QUIZ_LENGTH 
               ? "Fantastisk! Du fik alle rigtige!" 
-              : score >= shuffledWords.length / 2 
+              : score >= QUIZ_LENGTH / 2 
               ? "Godt klaret!"
               : "Øv dig lidt mere og prøv igen!"
             }
@@ -111,13 +114,21 @@ const answerChoices = shuffleArray([q, ...wrongChoices]);
     );
   }
 
+  const q = shuffledWords[step];
+  
+  // Genererer simple multiple choice spørgsmål med bedre shuffling
+  const wrongChoices = WORDS.filter(w => w !== q).map(w => w.danish);
+  const randomWrongChoices = shuffleArray(wrongChoices).slice(0, 2);
+  const allChoices = [q.danish, ...randomWrongChoices];
+  const shuffled = shuffleArray(allChoices); // Korrekt shuffling
+
   return (
     <div className="flex flex-col items-center space-y-6 p-4">
       <div className="w-full max-w-lg">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-2xl font-bold text-purple-700">Ord Quiz</h3>
           <div className="text-lg font-semibold text-gray-600">
-            {step + 1} / {shuffledWords.length}
+            {step + 1} / {QUIZ_LENGTH}
           </div>
         </div>
 
@@ -183,7 +194,7 @@ const answerChoices = shuffleArray([q, ...wrongChoices]);
         )}
 
         <div className="text-center">
-          <div className="text-sm text-gray-600">Score: {score} / {shuffledWords.length}</div>
+          <div className="text-sm text-gray-600">Score: {score} / {QUIZ_LENGTH}</div>
         </div>
       </div>
 

@@ -27,16 +27,43 @@ export interface SentenceItem {
     // Familie tema - Let
     {
       id: "s1",
-      danish: "Min mor hedder Anna",
-      somali: "Hooyada magaceeda waa Anna",
+      danish: "Min mor hedder Libin",
+      somali: "Hooyada magaceeda waa Libin",
       incomplete: "Hooyada magaceeda waa ____",
-      options: ["Anna", "Ahmed", "Fatima", "Omar"],
-      correct: "Anna",
-      audio: "/saetninger/sentence1.mp3",
+      options: ["Libin", "Sarah", "Fatima", "Nimco"],
+      correct: "Libin",
+      audio: "/familie/minmor.mp3",
       image: "/familie/mor.png",
       difficulty: "let",
       theme: "familie"
     },
+
+    {
+    id: "s1",
+    danish: "Jeg elsker dig",
+    somali: "Waan ku jeclahay",
+    incomplete: "Waan ku  ____",
+    options: ["ku", "jeclahay", "Waan",],
+    correct: "jeclahay",
+    audio: "/familie/jegelskerdig.mp3",
+    image: "/familie/jegelskerdig.png",
+    difficulty: "let",
+    theme: "familie"
+  },
+
+  {
+    id: "s1",
+    danish: "jeg savner dig",
+    somali: "Waan ku xisey",
+    incomplete: "Waan ___ xisey",
+    options: ["waan", "ku", "xisey",],
+    correct: "ku",
+    audio: "/familie/jegsavnerdig.mp3",
+    image: "/familie/savn.png",
+    difficulty: "let",
+    theme: "familie"
+  },
+
     {
       id: "s2", 
       danish: "Jeg elsker min familie",

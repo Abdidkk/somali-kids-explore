@@ -34,7 +34,7 @@ export const familyData: FamilyItem[] = [
 
   // Følelser
   { danish: "Jeg elsker dig", somali: "Waan ku jeclahay", category: "Følelser", image: "/familie/jegelskerdig.png", audio: "/familie/jegelskerdig.mp3" },
-  { danish: "Jeg savner dig", somali: "Waan ku tabayaa", category: "Følelser", image: "/familie/savn.png", audio: "/familie/jegsavnerdig.mp3" },
+  { danish: "Jeg savner dig", somali: "Waan ku xisey", category: "Følelser", image: "/familie/savn.png", audio: "/familie/jegsavnerdig.mp3" },
   { danish: "Venlig", somali: "Naxariis leh", category: "Følelser", image: "/familie/venlig.png", audio: "/familie/venlig.mp3" },
   { danish: "Hjælpsom", somali: "Gargaaraya", category: "Følelser", image: "/familie/hjalpsom.png", audio: "/familie/hjalpsom.mp3" },
   { danish: "Sammen", somali: "Wadajir", category: "Følelser", image: "/familie/sammen.png", audio: "/familie/sammen.mp3" },
