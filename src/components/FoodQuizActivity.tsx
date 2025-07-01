@@ -89,6 +89,7 @@ export default function FoodQuizActivity({ onBack }: FoodQuizActivityProps) {
     }, 1500);
   };
 
+
   const resetQuiz = () => {
     console.log("Resetting quiz...");
     setCurrentQuestion(0);

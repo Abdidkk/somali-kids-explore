@@ -49,11 +49,11 @@ export default function DailyListenActivity({ onBack }: DailyListenActivityProps
                 onClick={() => speakActivity(activity.audio, activity.somali)}
               >
                 <div className="p-4 text-center">
-                  <div className="w-20 h-20 mx-auto mb-3 bg-gray-50 rounded-full flex items-center justify-center overflow-hidden">
+                  <div className="w-20 h-20 mx-auto mb-3 bg-gray-50  flex items-center justify-center overflow-hidden">
                     <img
                       src={activity.image}
                       alt={activity.somali}
-                      className="w-full h-full object-cover"
+                      className="w-26 h-26 object-cover"
                     />
                   </div>
                   <h4 className="text-lg font-bold text-gray-700 mb-1">{activity.somali}</h4>

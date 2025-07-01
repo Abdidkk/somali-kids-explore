@@ -68,9 +68,9 @@ const DailyActivitiesModal: React.FC<DailyActivitiesModalProps> = ({ open, onClo
             >
               <div className="bg-gray-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
                 <img
-                  src="/lovable-uploads/4b8dc6fc-aca1-44d7-9188-920521dc6d81.png"
+                  src="/kategorier/daglig1.png"
                   alt="Lyt og lær"
-                  className="w-20 h-20 md:w-24 md:h-24 object-contain"
+                  className="w-20 h-20 md:w-25 md:h-25 rounded-full object-cover"
                 />
               </div>
               <div>
@@ -98,9 +98,9 @@ const DailyActivitiesModal: React.FC<DailyActivitiesModalProps> = ({ open, onClo
             >
               <div className="bg-blue-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
                 <img
-                  src="/lovable-uploads/4bdde527-cfcd-4a08-bf5c-65c9f1b9127f.png"
+                  src="/kategorier/daglig2.png"
                   alt="Sammensæt sætninger"
-                  className="w-20 h-20 md:w-24 md:h-24 object-contain"
+                  className="w-20 h-20 md:w-25 md:h-25 rounded-full object-cover"
                 />
               </div>
               <div>
