@@ -161,7 +161,7 @@ export interface SentenceItem {
     // Svær niveau
     {
       id: "u4",
-      danish: "Vi spiser morgenmad sammen hver morgen",
+      danish: "Vi er søskende",
       somali: "Subax walba quraac ayaanu isla cunaa",
       words: ["isla", "quraac", "cunaa", "Subax", "walba", "ayaanu"],
       correct: ["Subax", "walba", "quraac", "ayaanu", "isla", "cunaa"],
@@ -169,7 +169,8 @@ export interface SentenceItem {
       image: "/familie/sammen.png",
       difficulty: "svær",
       theme: "daglig"
-    }
+    },
+    
   ];
   
   export const getSentencesByDifficulty = (difficulty: 'let' | 'mellem' | 'svær') => {
