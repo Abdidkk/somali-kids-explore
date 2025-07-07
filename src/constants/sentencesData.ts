@@ -24,7 +24,7 @@ export interface SentenceItem {
   }
   
   export const sentenceData: SentenceItem[] = [
-    // Familie tema - Let
+    // Let
     {
       id: "s1",
       danish: "Min mor hedder Libin",
@@ -52,7 +52,7 @@ export interface SentenceItem {
   },
 
   {
-    id: "s1",
+    id: "s2",
     danish: "jeg savner dig",
     somali: "Waan ku xisey",
     incomplete: "Waan ___ xisey",
@@ -65,59 +65,164 @@ export interface SentenceItem {
   },
 
     {
-      id: "s2", 
+      id: "s3", 
       danish: "Jeg elsker min familie",
       somali: "Waan jeclahay qoyskayga",
       incomplete: "Waan jeclahay ____",
       options: ["qoyskayga", "macalinlka", "dugsiga", "cuntada"],
       correct: "qoyskayga",
-      audio: "/saetninger/sentence2.mp3", 
+      audio: "/sætninger/jegelskerminfamilie.mp3", 
       image: "/familie/familie.png",
       difficulty: "let",
       theme: "familie"
     },
     
-    // Mad tema - Let
     {
-      id: "s3",
-      danish: "Jeg kan lide æbler",
-      somali: "Waxaan jeclahay tufaax",
-      incomplete: "Waxaan jeclahay ____",
+      id: "s4",
+      danish: "Jeg spiser en æble",
+      somali: "Waxaan cunayaa tufaax",
+      incomplete: "Waxaan cunayaa ____",
       options: ["tufaax", "hilib", "caano", "bariis"],
       correct: "tufaax",
-      audio: "/saetninger/sentence3.mp3",
-      image: "/Mad/Tufaax.mp3",
+      audio: "/daglig/jegspiseræble.mp3",
+      image: "/daglig/jegspiseræble.png",
       difficulty: "let", 
       theme: "mad"
     },
     
-    // Daglig tema - Mellem
+    //  Mellem
+
     {
-      id: "s4",
+      id: "s5",
       danish: "Jeg går i skole hver dag",
       somali: "Maalin walba dugsiga baan tagaa",
       incomplete: "Maalin walba ____ baan tagaa",
       options: ["dugsiga", "suuqa", "guriga", "beerta"],
       correct: "dugsiga",
-      audio: "/saetninger/sentence4.mp3",
-      image: "/billeder/skole.png",
+      audio: "/sætninger/jeggårhverdag.mp3",
+      image: "/daglig/jeggårskole.png",
       difficulty: "mellem",
       theme: "daglig"
     },
-    
-    // Følelser tema - Mellem  
+      
     {
-      id: "s5",
+      id: "s6",
       danish: "Jeg er glad i dag",
       somali: "Maanta waan faraxsanahay",
       incomplete: "Maanta waan ____",
       options: ["faraxsanahay", "cabanayaa", "baqayaa", "neefsanayaa"],
       correct: "faraxsanahay",
-      audio: "/saetninger/sentence5.mp3",
+      audio: "/sætninger/idagerjegglad.mp3",
       image: "/billeder/glad.png", 
       difficulty: "mellem",
       theme: "følelser"
     },
+
+    {
+      id: "s7",
+      danish: "Jeg er glad i dag",
+      somali: "Maanta waan faraxsanahay",
+      incomplete: "Maanta waan ____",
+      options: ["faraxsanahay", "cabanayaa", "baqayaa", "neefsanayaa"],
+      correct: "faraxsanahay",
+      audio: "/sætninger/idagerjegglad.mp3",
+      image: "/sætninger/3bolde.png", 
+      difficulty: "mellem",
+      theme: "følelser"
+    },
+
+    {
+      id: "s8",
+      danish: "Jeg er glad i dag",
+      somali: "Maanta waan faraxsanahay",
+      incomplete: "Maanta waan ____",
+      options: ["faraxsanahay", "cabanayaa", "baqayaa", "neefsanayaa"],
+      correct: "faraxsanahay",
+      audio: "/sætninger/idagerjegglad.mp3",
+      image: "/sætninger/banangul.png", 
+      difficulty: "mellem",
+      theme: "følelser"
+    },
+
+    {
+      id: "s9",
+      danish: "Jeg er glad i dag",
+      somali: "Maanta waan faraxsanahay",
+      incomplete: "Maanta waan ____",
+      options: ["faraxsanahay", "cabanayaa", "baqayaa", "neefsanayaa"],
+      correct: "faraxsanahay",
+      audio: "/sætninger/idagerjegglad.mp3",
+      image: "/sætninger/blåtrøje.png", 
+      difficulty: "mellem",
+      theme: "følelser"
+    },
+
+    // svær
+    {
+      id: "s10",
+      danish: "Jeg er glad i dag",
+      somali: "Maanta waan faraxsanahay",
+      incomplete: "Maanta waan ____",
+      options: ["faraxsanahay", "cabanayaa", "baqayaa", "neefsanayaa"],
+      correct: "faraxsanahay",
+      audio: "/sætninger/idagerjegglad.mp3",
+      image: "/sætninger/jegbliver9.png", 
+      difficulty: "svær",
+      theme: "følelser"
+    },
+
+    {
+      id: "s11",
+      danish: "Jeg er glad i dag",
+      somali: "Maanta waan faraxsanahay",
+      incomplete: "Maanta waan ____",
+      options: ["faraxsanahay", "cabanayaa", "baqayaa", "neefsanayaa"],
+      correct: "faraxsanahay",
+      audio: "/sætninger/idagerjegglad.mp3",
+      image: "/sætninger/hvidbil.png", 
+      difficulty: "svær",
+      theme: "følelser"
+    },
+
+    {
+      id: "s12",
+      danish: "Jeg er glad i dag",
+      somali: "Maanta waan faraxsanahay",
+      incomplete: "Maanta waan ____",
+      options: ["faraxsanahay", "cabanayaa", "baqayaa", "neefsanayaa"],
+      correct: "faraxsanahay",
+      audio: "/sætninger/idagerjegglad.mp3",
+      image: "/sætninger/slåetfinger.png", 
+      difficulty: "svær",
+      theme: "følelser"
+    },
+
+    {
+      id: "s13",
+      danish: "Jeg er glad i dag",
+      somali: "Maanta waan faraxsanahay",
+      incomplete: "Maanta waan ____",
+      options: ["faraxsanahay", "cabanayaa", "baqayaa", "neefsanayaa"],
+      correct: "faraxsanahay",
+      audio: "/sætninger/idagerjegglad.mp3",
+      image: "/sætninger/jegspiserslik.png", 
+      difficulty: "svær",
+      theme: "følelser"
+    },
+
+    {
+      id: "s14",
+      danish: "Jeg er glad i dag",
+      somali: "Maanta waan faraxsanahay",
+      incomplete: "Maanta waan ____",
+      options: ["faraxsanahay", "cabanayaa", "baqayaa", "neefsanayaa"],
+      correct: "faraxsanahay",
+      audio: "/sætninger/idagerjegglad.mp3",
+      image: "/sætninger/katmad.png", 
+      difficulty: "svær",
+      theme: "følelser"
+    },
+
   ];
   
   export const unjumbleData: UnjumbleItem[] = [
@@ -140,7 +245,7 @@ export interface SentenceItem {
       words: ["cabbaa", "Biyo", "baan"],
       correct: ["Biyo", "baan", "cabbaa"],
       audio: "/saetninger/unjumble2.mp3",
-      image: "/Mad/Biyo.mp3",
+      image: "/sætninger/drikkervand.png",
       difficulty: "let",
       theme: "mad"
     },

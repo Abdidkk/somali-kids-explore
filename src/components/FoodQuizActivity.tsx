@@ -26,6 +26,7 @@ export default function FoodQuizActivity({ onBack }: FoodQuizActivityProps) {
     generateQuestions();
   }, []);
 
+
   // Play audio when question changes
   useEffect(() => {
     if (questions.length > 0) {

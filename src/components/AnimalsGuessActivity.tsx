@@ -180,7 +180,7 @@ export default function AnimalsGuessActivity({ onBack }: AnimalsGuessActivityPro
       
       // Spil succeslyd
       setTimeout(() => {
-        const audio = new Audio('/feedback/waa-sax.mp3');
+        const audio = new Audio('/feedback/sifiicanayuusamaysay.mp3');
         audio.play().catch(() => {
           // Fallback til speech synthesis
           const utterance = new SpeechSynthesisUtterance("Godt klaret!");

@@ -14,13 +14,13 @@ const AboutPage = () => {
           <CardHeader className="flex flex-row items-center gap-4">
             <Info className="h-8 w-8 text-blue-500" />
             <div>
-              <CardTitle>Vores Mission</CardTitle>
-              <CardDescription>Hvad vi arbejder for</CardDescription>
+              <CardTitle>Min Mission</CardTitle>
+              <CardDescription>Hvad jeg arbejder for</CardDescription>
             </div>
           </CardHeader>
           <CardContent className="pt-4">
             <p className="text-lg">
-              Vi arbejder for at skabe en bro mellem dansk og somalisk kultur gennem sprog. Vores mål er at hjælpe somaliske børn i Danmark med at bevare deres modersmål, samtidig med at de bliver integreret i det danske samfund.
+            Jeg arbejder for at bygge en bro mellem dansk og somalisk kultur gennem sproget. Mit mål er at hjælpe somaliske børn i Danmark med at bevare deres modersmål og få en stærk kulturel identitet. Som forældre har vi ofte travlt i hverdagen og kan have svært ved at finde tid og materiale til at lære børnene somalisk. Derfor har jeg skabt Dugsi en platform, hvor børn kan lære sproget på en sjov, visuel og enkel måde, uanset hvor man er.
             </p>
           </CardContent>
         </Card>
@@ -29,13 +29,13 @@ const AboutPage = () => {
           <CardHeader className="flex flex-row items-center gap-4">
             <Users className="h-8 w-8 text-blue-500" />
             <div>
-              <CardTitle>Vores Team</CardTitle>
-              <CardDescription>Hvem er vi</CardDescription>
+              <CardTitle>Om mig</CardTitle>
+              <CardDescription>Hvem jeg er</CardDescription>
             </div>
           </CardHeader>
           <CardContent className="pt-4">
             <p className="text-lg">
-              Vores team består af pædagoger, lærere og sprogeksperter med dyb forståelse for både dansk og somalisk kultur. Vi kombinerer vores ekspertise for at skabe den bedste læringsoplevelse for børn.
+            Jeg står selv bag Dugsi og med passion for sprog, læring og kultur. Som somalier i Danmark ved jeg, hvor vigtigt det er, at børn lærer deres rødder at kende, samtidig med at de bliver integreret. Jeg udvikler alt indhold selv og bygger platformen med børnenes læring i fokus.
             </p>
           </CardContent>
         </Card>
@@ -43,10 +43,9 @@ const AboutPage = () => {
       
       {/* Additional content */}
       <div className="max-w-3xl mx-auto text-center mb-16">
-        <h2 className="text-3xl font-bold mb-6 text-blue-600">Vores Historie</h2>
+        <h2 className="text-3xl font-bold mb-6 text-blue-600">Min Historie</h2>
         <p className="text-lg mb-8">
-          Kaalay Dugsiga startede som et lille projekt i 2022, da en gruppe lærere og forældre så et behov for bedre somaliske læringsressourcer til børn i Danmark. I dag er vi vokset til at blive en førende platform for tosprogede familier.
-        </p>
+        Dugsi startede som en idé i 2022, da jeg så, hvor svært det var for somaliske børn at lære deres sprog gennem sjove og tilgængelige metoder. Jeg besluttede at skabe noget selv – en platform, hvor børn kan lære somalisk på en måde, der er legende, visuel og tilpasset deres hverdag i Danmark.        </p>
         <Button size="lg" className="bg-blue-500 hover:bg-blue-600 transition-colors">
           Læs mere om vores rejse
         </Button>

@@ -78,7 +78,7 @@ const ColorsModal: React.FC<ColorsModalProps> = ({ open, onClose }) => {
                 <img 
                   src="/kategorier/farver2.png" 
                   alt="Hukommelsesspil" 
-                  className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover" 
+                  className="w-20 h-20 md:w-23 md:h-23 rounded-full object-cover" 
                 />
               </div>
               <div>

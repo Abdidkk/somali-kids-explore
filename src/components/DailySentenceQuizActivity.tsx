@@ -16,6 +16,8 @@ export default function DailySentenceQuizActivity({ onBack }: { onBack: () => vo
   const [result, setResult] = useState<null | boolean>(null);
   const [score, setScore] = useState(0);
   const [showHint, setShowHint] = useState(false);
+  const [helpUsed, setHelpUsed] = useState(0);
+  const [nextWordHint, setNextWordHint] = useState<string | null>(null);
 
   const currentSentence = DAILY_SENTENCES[step % DAILY_SENTENCES.length];
 
@@ -26,6 +28,8 @@ export default function DailySentenceQuizActivity({ onBack }: { onBack: () => vo
     setUserOrder([]);
     setResult(null);
     setShowHint(false);
+    setHelpUsed(0);
+    setNextWordHint(null);
   }, [step]);
 
   const addWordToSentence = (word: string) => {
@@ -33,6 +37,8 @@ export default function DailySentenceQuizActivity({ onBack }: { onBack: () => vo
     
     setUserOrder([...userOrder, word]);
     setAvailableWords(availableWords.filter(w => w !== word));
+    // Fjern næste ord hint når et ord er valgt
+    setNextWordHint(null);
   };
 
   const removeWordFromSentence = (index: number) => {
@@ -41,6 +47,18 @@ export default function DailySentenceQuizActivity({ onBack }: { onBack: () => vo
     const wordToRemove = userOrder[index];
     setUserOrder(userOrder.filter((_, i) => i !== index));
     setAvailableWords([...availableWords, wordToRemove]);
+    // Fjern næste ord hint når et ord fjernes
+    setNextWordHint(null);
+  };
+
+  const getNextWordHelp = () => {
+    // Find det næste korrekte ord baseret på brugerens nuværende fremskridt
+    const nextWordIndex = userOrder.length;
+    if (nextWordIndex < currentSentence.correctOrder.length) {
+      const nextWord = currentSentence.correctOrder[nextWordIndex];
+      setNextWordHint(nextWord);
+      setHelpUsed(helpUsed + 1);
+    }
   };
 
   const checkAnswer = () => {
@@ -48,9 +66,21 @@ export default function DailySentenceQuizActivity({ onBack }: { onBack: () => vo
     setResult(isCorrect);
     if (isCorrect) setScore(score + 1);
     
+    // Afspil feedback lyd
+    playFeedbackAudio(isCorrect);
+    
     setTimeout(() => {
       setStep(s => s + 1);
     }, 2000);
+  };
+
+  // Funktion til at afspille feedback lyd
+  const playFeedbackAudio = (isCorrect: boolean) => {
+    const audioPath = isCorrect ? '/feedback/waa-sax.mp3' : '/feedback/waa-qalad.mp3'; // Du kan tilføje en fejl-lyd senere
+    const audio = new Audio(audioPath);
+    audio.play().catch(() => {
+      console.log("Kunne ikke afspille feedback lyd");
+    });
   };
 
   const resetCurrentQuestion = () => {
@@ -58,6 +88,8 @@ export default function DailySentenceQuizActivity({ onBack }: { onBack: () => vo
     setAvailableWords([...currentSentence.words].sort(() => Math.random() - 0.5));
     setResult(null);
     setShowHint(false);
+    setHelpUsed(0);
+    setNextWordHint(null);
   };
 
   const getDifficultyColor = (difficulty: string) => {
@@ -131,11 +163,21 @@ export default function DailySentenceQuizActivity({ onBack }: { onBack: () => vo
                 <Button
                   variant="outline"
                   size="sm"
+                  onClick={getNextWordHelp}
+                  disabled={userOrder.length >= currentSentence.correctOrder.length || result !== null}
+                  className="flex items-center gap-1"
+                >
+                  <HelpCircle className="w-4 h-4" />
+                  Næste ord ({helpUsed})
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => setShowHint(!showHint)}
                   className="flex items-center gap-1"
                 >
                   <HelpCircle className="w-4 h-4" />
-                  Hjælp
+                  Hele løsning
                 </Button>
                 <Button
                   variant="outline"
@@ -153,10 +195,18 @@ export default function DailySentenceQuizActivity({ onBack }: { onBack: () => vo
               {currentSentence.danish}
             </div>
 
+            {nextWordHint && (
+              <div className="bg-green-50 border border-green-200 p-3 rounded-lg mb-4">
+                <p className="text-sm text-green-800">
+                  <strong>💡 Næste ord:</strong> <span className="font-bold text-green-700">{nextWordHint}</span>
+                </p>
+              </div>
+            )}
+
             {showHint && (
               <div className="bg-yellow-50 border border-yellow-200 p-3 rounded-lg mb-4">
                 <p className="text-sm text-yellow-800">
-                  <strong>Hjælp:</strong> Korrekt rækkefølge: {currentSentence.correctOrder.join(" → ")}
+                  <strong>Komplet løsning:</strong> {currentSentence.correctOrder.join(" → ")}
                 </p>
               </div>
             )}
@@ -177,7 +227,7 @@ export default function DailySentenceQuizActivity({ onBack }: { onBack: () => vo
                   </Button>
                 ))}
                 {userOrder.length === 0 && (
-                  <p className="text-gray-500 italic">Træk ord herhen...</p>
+                  <p className="text-gray-500 italic">Klik på ord nedenfor for at bygge sætningen...</p>
                 )}
               </div>
             </div>
@@ -192,9 +242,16 @@ export default function DailySentenceQuizActivity({ onBack }: { onBack: () => vo
                     variant="outline"
                     size="sm"
                     onClick={() => addWordToSentence(word)}
-                    className="hover:bg-blue-50"
+                    className={`hover:bg-blue-50 ${
+                      nextWordHint === word 
+                        ? 'bg-green-100 border-green-300 text-green-700 animate-pulse shadow-md' 
+                        : ''
+                    }`}
                   >
                     {word}
+                    {nextWordHint === word && (
+                      <span className="ml-1 text-green-600">👈</span>
+                    )}
                   </Button>
                 ))}
               </div>
@@ -227,7 +284,9 @@ export default function DailySentenceQuizActivity({ onBack }: { onBack: () => vo
         )}
 
         <div className="text-center mt-4">
-          <div className="text-sm text-gray-600">Score: {score} / {DAILY_SENTENCES.length}</div>
+          <div className="text-sm text-gray-600">
+            Score: {score} / {DAILY_SENTENCES.length} | Hjælp brugt: {helpUsed}
+          </div>
         </div>
       </div>
 

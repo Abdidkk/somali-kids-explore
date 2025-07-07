@@ -58,7 +58,7 @@ const SentencesModal: React.FC<SentencesModalProps> = ({
               className="bg-green-50 hover:bg-green-100 border-2 border-green-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
             >
               <div className="bg-green-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
-                <span className="text-4xl">✏️</span>
+              <img src="/kategorier/sætninger2.png" alt="Lyt og lær" className="w-20 h-20 md:w-24 md:h-24 rounded-full object-contain" />
               </div>
               <div>
                 <h4 className={`font-bold text-green-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Fuldfør sætningen</h4>
@@ -72,7 +72,7 @@ const SentencesModal: React.FC<SentencesModalProps> = ({
               className="bg-purple-50 hover:bg-purple-100 border-2 border-purple-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
             >
               <div className="bg-purple-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
-                <span className="text-4xl">🔀</span>
+              <img src="/kategorier/sætninger1.png" alt="Lyt og lær" className="w-20 h-20 md:w-24 md:h-24 rounded-full object-contain" />
               </div>
               <div>
                 <h4 className={`font-bold text-purple-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Arranger ord</h4>

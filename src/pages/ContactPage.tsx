@@ -53,11 +53,11 @@ export default function ContactPage() {
             </div>
             <div className="flex items-center gap-3">
               <Phone className="text-blue-500 w-6 h-6" />
-              <span className="text-base text-gray-700">+45 12 34 56 78</span>
+              <span className="text-base text-gray-700">+45 -- -- -- --</span>
             </div>
             <div className="flex items-center gap-3">
               <MapPin className="text-blue-500 w-6 h-6" />
-              <span className="text-base text-gray-700">København, Danmark</span>
+              <span className="text-base text-gray-700">Århus, Danmark</span>
             </div>
           </CardContent>
         </Card>
