@@ -15,6 +15,7 @@ import LearningPageHeader from "@/components/learning/LearningPageHeader";
 import WordsModal from "@/components/WordsModal";
 import DailyActivitiesModal from "@/components/DailyActivitiesModal";
 import SentencesModal from "@/components/SentencesModal";
+import ReadBooksModal from "@/components/ReadBooksModal";
 
 // Mock child data for development
 const mockChild = {
@@ -40,6 +41,7 @@ export default function LearnCategoriesPage() {
   const [showWords, setShowWords] = useState(false);
   const [showDailyActivities, setShowDailyActivities] = useState(false);
   const [showSentences, setShowSentences] = useState(false);
+  const [showReadBooks, setShowReadBooks] = useState(false);
 
   const handleBack = () => {
     window.history.back();
@@ -70,6 +72,9 @@ export default function LearnCategoriesPage() {
       setShowDailyActivities(true);
     }else if (category.name === "Sætninger") {
       setShowSentences(true);
+    }
+    else if (category.name === "Læse bøger") {
+      setShowReadBooks(true);
     }
   };
 
@@ -156,6 +161,10 @@ export default function LearnCategoriesPage() {
       <SentencesModal 
         open={showSentences}
         onClose={() => setShowSentences(false)}
+      />
+      <ReadBooksModal 
+  open={showReadBooks}
+  onClose={() => setShowReadBooks(false)}
 />
     </div>
   );
