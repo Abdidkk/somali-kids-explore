@@ -17,9 +17,9 @@ export interface BookData {
       title: "Labo",
       somali: "Labo",
       danish: "To",
-      description: "En introduktionsbog til somalisk sprog og kultur",
+      description: "Bogen To handler om alt det, man kan gøre med kroppen.",
       coverImage: "/bog/tokrop.png",
-      fliphtml5Url: "https://online.fliphtml5.com/yditr/rbcc/",
+      fliphtml5Url: "https://heyzine.com/flip-book/d5f00d5ba4.html",
       ageGroup: "3-6 år",
       difficulty: "let",
       category: "sprog"

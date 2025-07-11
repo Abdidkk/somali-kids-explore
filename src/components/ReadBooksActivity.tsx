@@ -80,9 +80,21 @@ const ReadBooksActivity: React.FC<ReadBooksActivityProps> = ({ onBack }) => {
                 </div>
               </div>
               
-              <div className="aspect-[3/4] bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg mb-4 flex items-center justify-center border-2 border-dashed border-blue-200">
-                <BookOpen className="w-12 h-12 text-blue-400" />
-              </div>
+              <div className="aspect-[3/4] bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg mb-4 overflow-hidden">
+               <img 
+                   src={book.coverImage} 
+                  alt={`Cover for ${book.title}`}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.nextElementSibling.style.display = 'flex';
+                  }}
+                  />
+                  <div className="w-full h-full flex items-center justify-center" style={{display: 'none'}}>
+                  <BookOpen className="w-12 h-12 text-blue-400" />
+                  </div>
+                  </div>
+
               
               <CardTitle className={`${isMobile ? 'text-lg' : 'text-xl'} text-blue-700 mb-2`}>
                 {book.title}
