@@ -14,12 +14,12 @@ export interface BookData {
   export const BOOKS_DATA: BookData[] = [
     {
       id: "book1",
-      title: "Min første somaliske bog",
-      somali: "Buuggayga ugu horeeyay ee Soomaaliga ah",
-      danish: "Min første somaliske bog",
+      title: "Labo",
+      somali: "Labo",
+      danish: "To",
       description: "En introduktionsbog til somalisk sprog og kultur",
-      coverImage: "/books/book1-cover.png",
-      fliphtml5Url: "https://online.fliphtml5.com/your-flipbook-1/",
+      coverImage: "/bog/tokrop.png",
+      fliphtml5Url: "https://online.fliphtml5.com/yditr/rbcc/",
       ageGroup: "3-6 år",
       difficulty: "let",
       category: "sprog"
