@@ -1,9 +1,9 @@
-
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { familyData, getFamilyByCategory } from "@/constants/familyData";
+import { familyData, getFamilyByCategory, FamilyItem } from "@/constants/familyData";
 import { speakUsingSynthesis } from "@/utils/speechUtils";
 import { useIsMobile } from "@/hooks/use-mobile";
+
 
 interface FamilyListenActivityProps {
   onBack: () => void;

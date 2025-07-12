@@ -86,8 +86,9 @@ const ReadBooksActivity: React.FC<ReadBooksActivityProps> = ({ onBack }) => {
                   alt={`Cover for ${book.title}`}
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.nextElementSibling.style.display = 'flex';
+                    e.currentTarget.style.display = 'none';
+                    const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                    if (sibling) sibling.style.display = 'flex';
                   }}
                   />
                   <div className="w-full h-full flex items-center justify-center" style={{display: 'none'}}>

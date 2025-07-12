@@ -9,7 +9,7 @@ interface WordsListenActivityProps {
 }
 
 export default function WordsListenActivity({ onBack }: WordsListenActivityProps) {
-  const [activeTab, setActiveTab] = useState<"hjem" | "Stuen" | "køkken">("hjem");
+  const [activeTab, setActiveTab] = useState<"hjem" | "stuen" | "køkken">("hjem");
   
   const words = getWordsByCategory(activeTab); 
 
