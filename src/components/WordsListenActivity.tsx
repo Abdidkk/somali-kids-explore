@@ -44,7 +44,7 @@ export default function WordsListenActivity({ onBack }: WordsListenActivityProps
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {words.map((word) => (
               <div
-                key={word.id}
+              key={`${word.category}-${word.danish}`}
                 className="relative bg-white rounded-xl border-2 border-pink-200 shadow-lg hover:shadow-xl transition-all cursor-pointer group"
               >
                 <div className="p-4 text-center">
