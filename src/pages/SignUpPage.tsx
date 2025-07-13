@@ -1,26 +1,95 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mail, Lock, User, Facebook } from "lucide-react";
 import SomaliFlag from "@/components/landing/SomaliFlag";
 import { Link, useNavigate } from "react-router-dom";
 import SocialLoginButton from "@/components/SocialLoginButton";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 const HERO_BLUE = "#4CA6FE";
 
 export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
+
+    try {
+      const redirectUrl = `${window.location.origin}/choose-plan`;
+      
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: {
+            name: name
+          }
+        }
+      });
+
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("Bekræftelsesmail sendt! Tjek din indbakke.");
+        navigate('/choose-plan');
+      }
+    } catch (error) {
+      toast.error("Der opstod en fejl ved oprettelse af konto");
+    } finally {
       setLoading(false);
-      // Efter signup send til abonnementvalg
-      navigate("/choose-plan");
-    }, 1000);
+    }
+  };
+
+  const handleGoogleSignup = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/choose-plan`
+        }
+      });
+      
+      if (error) {
+        toast.error(error.message);
+      }
+    } catch (error) {
+      toast.error("Der opstod en fejl ved Google signup");
+    }
+  };
+
+  const handleFacebookSignup = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'facebook',
+        options: {
+          redirectTo: `${window.location.origin}/choose-plan`
+        }
+      });
+      
+      if (error) {
+        toast.error(error.message);
+      }
+    } catch (error) {
+      toast.error("Der opstod en fejl ved Facebook signup");
+    }
   };
 
   return (
@@ -41,6 +110,8 @@ export default function SignUpPage() {
               type="text"
               placeholder="Dit navn"
               required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="bg-blue-50 focus:bg-white"
               autoComplete="name"
             />
@@ -54,6 +125,8 @@ export default function SignUpPage() {
               type="email"
               placeholder="din@email.dk"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="bg-blue-50 focus:bg-white"
               autoComplete="email"
             />
@@ -68,6 +141,8 @@ export default function SignUpPage() {
               placeholder="●●●●●●●●"
               required
               minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="bg-blue-50 focus:bg-white"
               autoComplete="new-password"
             />
@@ -91,11 +166,13 @@ export default function SignUpPage() {
             icon={Mail}
             label="Fortsæt med Gmail"
             colorClass="border-[#ea384c] text-[#ea384c] hover:border-[#d32e22]/90"
+            onClick={handleGoogleSignup}
           />
           <SocialLoginButton
             icon={Facebook}
             label="Fortsæt med Facebook"
             colorClass="border-[#1877f3] text-[#1877f3] hover:border-[#1557b8]/90"
+            onClick={handleFacebookSignup}
           />
         </div>
         <div className="mt-3 flex flex-col items-center space-y-1">

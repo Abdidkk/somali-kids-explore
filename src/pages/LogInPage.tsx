@@ -1,23 +1,87 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mail, Lock, LogIn, Facebook } from "lucide-react";
 import SomaliFlag from "@/components/landing/SomaliFlag";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SocialLoginButton from "@/components/SocialLoginButton";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 const HERO_BLUE = "#4CA6FE";
 const VIVID_PURPLE = "#8B5CF6";
 
 export default function LogInPage() {
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
-  // Dummy handler – i backend version integrerer vi authentication!
-  const handleSubmit = (e: React.FormEvent) => {
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => setLoading(false), 1000);
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("Velkommen tilbage!");
+        navigate('/dashboard');
+      }
+    } catch (error) {
+      toast.error("Der opstod en fejl ved login");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`
+        }
+      });
+      
+      if (error) {
+        toast.error(error.message);
+      }
+    } catch (error) {
+      toast.error("Der opstod en fejl ved Google login");
+    }
+  };
+
+  const handleFacebookLogin = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'facebook',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`
+        }
+      });
+      
+      if (error) {
+        toast.error(error.message);
+      }
+    } catch (error) {
+      toast.error("Der opstod en fejl ved Facebook login");
+    }
   };
 
   return (
@@ -38,6 +102,8 @@ export default function LogInPage() {
               type="email"
               placeholder="din@email.dk"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="bg-blue-50 focus:bg-white"
               autoComplete="email"
             />
@@ -52,6 +118,8 @@ export default function LogInPage() {
               placeholder="●●●●●●●●"
               required
               minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="bg-blue-50 focus:bg-white"
               autoComplete="current-password"
             />
@@ -75,11 +143,13 @@ export default function LogInPage() {
             icon={Mail}
             label="Fortsæt med Gmail"
             colorClass="border-[#ea384c] text-[#ea384c] hover:border-[#d32e22]/90"
+            onClick={handleGoogleLogin}
           />
           <SocialLoginButton
             icon={Facebook}
             label="Fortsæt med Facebook"
             colorClass="border-[#1877f3] text-[#1877f3] hover:border-[#1557b8]/90"
+            onClick={handleFacebookLogin}
           />
         </div>
         <div className="mt-3 flex flex-col items-center space-y-1">

@@ -22,7 +22,6 @@ const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
     variant="outline"
     size="lg"
     className={`w-full transition hover:scale-105 border-gray-200 ${colorClass} flex items-center justify-center`}
-    disabled
     aria-label={label}
   >
     <Icon className="mr-2" size={22} />
