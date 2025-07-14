@@ -15,7 +15,6 @@ const MainNavbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const isHome = location.pathname === "/";
   const isLearningPage = location.pathname === "/laer";
 
   // Don't render the navbar on the learning page
@@ -69,27 +68,25 @@ const MainNavbar = () => {
                 Log ud
               </Button>
             ) : (
-              // Login/signup knapper kun på forsiden når ikke authenticated
-              isHome && (
-                <>
-                  <Link
-                    to="/login"
-                    className="px-2 sm:px-3 py-1 sm:py-2 rounded-md text-sm sm:text-base font-medium text-[#4CA6FE] hover:bg-[#4CA6FE]/10 transition"
-                  >
-                    Log ind
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className="px-2 sm:px-3 py-1 sm:py-2 rounded-md text-sm sm:text-base font-medium text-white bg-[#4CA6FE] hover:bg-[#3b95e9] transition"
-                  >
-                    Opret bruger
-                  </Link>
-                </>
-              )
+              // Login/signup knapper når ikke authenticated (fjernet isHome betingelse)
+              <>
+                <Link
+                  to="/login"
+                  className="px-2 sm:px-3 py-1 sm:py-2 rounded-md text-sm sm:text-base font-medium text-[#4CA6FE] hover:bg-[#4CA6FE]/10 transition"
+                >
+                  Log ind
+                </Link>
+                <Link
+                  to="/signup"
+                  className="px-2 sm:px-3 py-1 sm:py-2 rounded-md text-sm sm:text-base font-medium text-white bg-[#4CA6FE] hover:bg-[#3b95e9] transition"
+                >
+                  Opret bruger
+                </Link>
+              </>
             )}
           </div>
         )}
-        {/* Mobil menu ikon – beholdes */}
+        {/* Mobil menu ikon */}
         {isMobile && (
           <button
             type="button"
@@ -123,25 +120,23 @@ const MainNavbar = () => {
                   Log ud
                 </Button>
               ) : (
-                // Login/signup knapper kun på forsiden når ikke authenticated
-                isHome && (
-                  <>
-                    <Link
-                      to="/login"
-                      className="px-3 py-2 rounded-md font-medium text-[#4CA6FE] hover:bg-[#4CA6FE]/10 transition text-center"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Log ind
-                    </Link>
-                    <Link
-                      to="/signup"
-                      className="px-3 py-2 rounded-md font-medium text-white bg-[#4CA6FE] hover:bg-[#3b95e9] transition text-center"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Opret bruger
-                    </Link>
-                  </>
-                )
+                // Login/signup knapper når ikke authenticated (fjernet isHome betingelse)
+                <>
+                  <Link
+                    to="/login"
+                    className="px-3 py-2 rounded-md font-medium text-[#4CA6FE] hover:bg-[#4CA6FE]/10 transition text-center"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Log ind
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="px-3 py-2 rounded-md font-medium text-white bg-[#4CA6FE] hover:bg-[#3b95e9] transition text-center"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Opret bruger
+                  </Link>
+                </>
               )}
             </div>
           </div>
