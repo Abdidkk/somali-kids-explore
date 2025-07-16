@@ -1,200 +1,162 @@
 
-import { Progress } from "@/components/ui/progress";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { LayoutDashboard, ChartBar, Check, Users, Badge, MessageSquare } from "lucide-react";
-import { learningCategories } from "@/data/learningCategories";
-import { Link } from "react-router-dom";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import SubscriptionStatus from "@/components/SubscriptionStatus";
+import { BookOpen, Users, TrendingUp, Settings } from "lucide-react";
 
-const mockKids = [
-  {
-    name: "Amina",
-    progress: 58,
-    streak: 8,
-    activities: [
-      { time: "i dag kl. 17:23", text: "Færdiggjorde Alfabetet" },
-      { time: "i går kl. 19:02", text: "Badges optjent: Streak 7 dage" },
-    ],
-    weeklyStats: [
-      { day: "Man", score: 12 },
-      { day: "Tir", score: 8 },
-      { day: "Ons", score: 10 },
-      { day: "Tor", score: 6 },
-      { day: "Fre", score: 7 },
-      { day: "Lør", score: 9 },
-      { day: "Søn", score: 6 },
-    ],
-    badges: ["Streak 7 dage", "Flittig Lærer"],
-  },
-  {
-    name: "Yusuf",
-    progress: 32,
-    streak: 3,
-    activities: [
-      { time: "i dag kl. 16:10", text: "Besvarede opgaver i Talforståelse" },
-    ],
-    weeklyStats: [
-      { day: "Man", score: 3 },
-      { day: "Tir", score: 5 },
-      { day: "Ons", score: 0 },
-      { day: "Tor", score: 6 },
-      { day: "Fre", score: 3 },
-      { day: "Lør", score: 9 },
-      { day: "Søn", score: 6 },
-    ],
-    badges: [],
-  },
-];
+const DashboardPage = () => {
+  const { user, loading: authLoading } = useAuth();
+  const { subscribed, inTrial, subscriptionTier } = useSubscription();
+  const navigate = useNavigate();
 
-// Simpel motiverende besked baseret på streaks
-function getMotivationMsg(kid) {
-  if (kid.streak >= 7) return `Fantastisk, ${kid.name}! Du har holdt streaken i ${kid.streak} dage! 🔥`;
-  if (kid.progress >= 50) return `Super flot, ${kid.name}! Mere end halvdelen færdiggjort! 🎉`;
-  if (kid.progress < 50 && kid.progress > 0) return `Godt begyndt, ${kid.name}! Du er allerede godt i gang 👍`;
-  return null;
-}
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/login');
+    }
+  }, [user, authLoading, navigate]);
 
-export default function DashboardPage() {
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-lg">Indlæser...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
+
+  const stats = [
+    {
+      title: "Børneprofiler",
+      value: subscriptionTier === "Basic" ? "5" : "Ubegrænset",
+      icon: Users,
+      description: "Aktive profiler"
+    },
+    {
+      title: "Lektioner gennemført",
+      value: "0",
+      icon: BookOpen,
+      description: "Denne måned"
+    },
+    {
+      title: "Fremgang",
+      value: "0%",
+      icon: TrendingUp,
+      description: "Denne uge"
+    }
+  ];
+
   return (
-    <div className="min-h-screen p-6 md:p-10 bg-gradient-to-b from-blue-50 via-white to-white animate-fade-in">
-      <h1 className="text-3xl font-bold text-blue-700 mb-4 flex items-center gap-2">
-        <LayoutDashboard className="w-8 h-8 text-blue-500" /> Forældre Dashboard
-      </h1>
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Børneliste med fremskridt, badges, aktiviteter, osv. */}
-        <div className="flex-1 space-y-6">
-          {mockKids.map((kid, idx) => (
-            <Card key={idx} className="border-blue-100">
-              <CardHeader>
-                <div className="flex items-center justify-between gap-2">
-                  <CardTitle className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-blue-500" />
-                    <span className="text-lg font-semibold">{kid.name}</span>
-                    <span className="text-blue-500 text-xs bg-blue-100 rounded-full px-2 py-1 font-mono">Streak: {kid.streak} 🔥</span>
-                  </CardTitle>
-                  <div>
-                    <Link to="/admin-kids" className="text-xs bg-blue-50 px-3 py-1 rounded-md border border-blue-200 text-blue-600 hover:bg-blue-100 transition hover:underline">Administrer</Link>
-                  </div>
-                </div>
-                <CardDescription>
-                  Fremgang i forløb
-                </CardDescription>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-20 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            Velkommen tilbage, {user.user_metadata?.name || user.email?.split('@')[0] || 'Bruger'}!
+          </h1>
+          <p className="text-xl text-gray-600">
+            Her er din personlige dashboard
+          </p>
+        </div>
+
+        {/* Subscription Status */}
+        <div className="mb-8">
+          <SubscriptionStatus />
+        </div>
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {stats.map((stat) => (
+            <Card key={stat.title}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  {stat.title}
+                </CardTitle>
+                <stat.icon className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                {/* Progress bar og procent */}
-                <div className="mb-2">
-                  <Progress value={kid.progress} className="bg-blue-100" />
-                  <div className="text-right text-xs text-gray-600 mt-1">
-                    {kid.progress}% gennemført
-                  </div>
-                </div>
-                {/* Motiverende besked */}
-                {getMotivationMsg(kid) && (
-                  <div className="mb-2 flex items-center gap-2 text-blue-700">
-                    <MessageSquare className="w-4 h-4 text-blue-500" />
-                    <span>{getMotivationMsg(kid)}</span>
-                  </div>
-                )}
-                {/* Seneste aktiviteter */}
-                <div className="mb-3">
-                  <div className="font-medium text-xs text-gray-500 mb-1 flex items-center gap-2">
-                    <ChartBar className="w-4 h-4 text-blue-500" />
-                    Seneste aktivitet
-                  </div>
-                  <ul className="ml-1 list-disc pl-4 text-xs text-gray-800">
-                    {kid.activities.map((act, ai) => (
-                      <li key={ai}>{act.text} <span className="text-gray-400">({act.time})</span></li>
-                    ))}
-                  </ul>
-                </div>
-                {/* Badges, hvis nogen */}
-                {kid.badges && kid.badges.length > 0 && (
-                  <div className="mb-2 flex flex-wrap gap-2 items-center">
-                    <span className="text-xs font-semibold text-blue-600 flex items-center gap-1"><Badge className="w-4 h-4" /> Badges:</span>
-                    {kid.badges.map((badge, bi) => (
-                      <span key={bi} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-mono">{badge}</span>
-                    ))}
-                  </div>
-                )}
-                {/* Progress graf */}
-                <div className="mb-2">
-                  <div className="font-medium text-xs text-gray-500 mb-1 flex items-center gap-2">
-                    <ChartBar className="w-4 h-4 text-blue-500" />
-                    Aktivitet denne uge
-                  </div>
-                  <ResponsiveContainer width="100%" height={80}>
-                    <BarChart data={kid.weeklyStats}>
-                      <XAxis dataKey="day" axisLine={false} tickLine={false} />
-                      <YAxis hide />
-                      <Tooltip />
-                      <Bar dataKey="score" fill="#4388f5" radius={[8,8,0,0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-                {/* Læringskategorier */}
-                <div className="flex flex-wrap gap-2">
-                  {learningCategories.map((cat, i) => (
-                    <span key={cat.name} className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
-                      <Check className="w-3 h-3" /> {cat.name}
-                    </span>
-                  ))}
-                </div>
+                <div className="text-2xl font-bold">{stat.value}</div>
+                <p className="text-xs text-muted-foreground">
+                  {stat.description}
+                </p>
               </CardContent>
             </Card>
           ))}
         </div>
-        {/* Læringskategorier (hentet fra forsiden) */}
-        <div className="min-w-[260px] flex flex-col gap-4">
-          <Card className="border-blue-100">
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2 text-blue-700">
-                <ChartBar className="w-5 h-5 text-blue-500" />
-                Kategorier for læring
-              </CardTitle>
+              <CardTitle>Børneprofiler</CardTitle>
               <CardDescription>
-                Opdag de samme sjove og lærerige kategorier som på forsiden
+                Administrer børneprofiler og se fremgang
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ul className="grid grid-cols-2 gap-3">
-                {learningCategories.map((cat, idx) => {
-                  const Icon = cat.icon;
-                  return (
-                    <li key={cat.name} className="flex flex-col items-center gap-2">
-                      <span
-                        className="rounded-full flex items-center justify-center shadow mb-1"
-                        style={{ background: "#fff", width: 48, height: 48 }}
-                      >
-                        <Icon className="w-6 h-6" />
-                      </span>
-                      <span className="text-xs text-gray-700 font-semibold" style={{ background: cat.bgColor, borderRadius: "0.5rem", padding: "2px 8px" }}>
-                        {cat.name}
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
+              <Button 
+                onClick={() => navigate('/admin-kids')}
+                className="w-full bg-[#4CA6FE] hover:bg-[#3b95e9]"
+              >
+                <Users className="mr-2 h-4 w-4" />
+                Administrer børn
+              </Button>
             </CardContent>
           </Card>
-          {/* Hurtig navigation */}
-          <Card className="border-blue-100">
+
+          <Card>
             <CardHeader>
-              <CardTitle className="text-md flex items-center gap-2 text-blue-800">
-                <Users className="w-5 h-5 text-blue-500" />
-                Forældre links
-              </CardTitle>
+              <CardTitle>Start læring</CardTitle>
+              <CardDescription>
+                Gå til læringsmodulet og start lektioner
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <Link to="/admin-kids" className="block px-4 py-2 mb-2 rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 text-sm font-medium transition">
-                Administrer børn
-              </Link>
-              <Link to="/laer" className="block px-4 py-2 rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 text-sm font-medium transition">
-                Se alle læringskategorier
-              </Link>
+              <Button 
+                onClick={() => navigate('/laer')}
+                variant="outline"
+                className="w-full"
+                disabled={!subscribed && !inTrial}
+              >
+                <BookOpen className="mr-2 h-4 w-4" />
+                {!subscribed && !inTrial ? "Kræver abonnement" : "Start læring"}
+              </Button>
             </CardContent>
           </Card>
         </div>
+
+        {/* Trial/Subscription Notice */}
+        {inTrial && !subscribed && (
+          <Card className="mt-8 border-blue-200 bg-blue-50">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-blue-900">
+                    Du er i din gratis prøveperiode
+                  </h3>
+                  <p className="text-blue-700 text-sm mt-1">
+                    Vælg en plan for at fortsætte efter prøveperioden udløber.
+                  </p>
+                </div>
+                <Button 
+                  onClick={() => navigate('/choose-plan')}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  Vælg plan
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
-}
+};
+
+export default DashboardPage;
