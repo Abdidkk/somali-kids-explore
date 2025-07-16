@@ -85,19 +85,14 @@ serve(async (req) => {
       subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
       logStep("Active subscription found", { subscriptionId: subscription.id, endDate: subscriptionEnd });
       
-      // Determine subscription tier from price
-      const priceId = subscription.items.data[0].price.id;
-      const price = await stripe.prices.retrieve(priceId);
-      const amount = price.unit_amount || 0;
+      // Determine subscription tier from billing interval
+      const billingInterval = subscription.items.data[0].price.recurring?.interval === "year" ? "yearly" : "monthly";
+      subscriptionTier = billingInterval === "monthly" ? "Månedlig" : "Årlig";
       
-      if (amount <= 9900) { // 99 kr or less
-        subscriptionTier = "Basic";
-      } else if (amount <= 19900) { // 199 kr or less
-        subscriptionTier = "Premium";
-      } else {
-        subscriptionTier = "Enterprise";
-      }
-      logStep("Determined subscription tier", { priceId, amount, subscriptionTier });
+      // Count kids from line items (first is base, rest are kids)
+      const numKids = subscription.items.data.length > 1 ? subscription.items.data[1].quantity : 0;
+      
+      logStep("Determined subscription details", { subscriptionTier, billingInterval, numKids });
     } else {
       logStep("No active subscription found");
     }
@@ -109,6 +104,10 @@ serve(async (req) => {
       subscribed: hasActiveSub,
       subscription_tier: subscriptionTier,
       subscription_end: subscriptionEnd,
+      billing_interval: hasActiveSub ? 
+        (subscriptions.data[0].items.data[0].price.recurring?.interval === "year" ? "yearly" : "monthly") : "monthly",
+      num_kids: hasActiveSub && subscriptions.data[0].items.data.length > 1 ? 
+        subscriptions.data[0].items.data[1].quantity : 0,
       updated_at: new Date().toISOString(),
     }, { onConflict: 'email' });
 

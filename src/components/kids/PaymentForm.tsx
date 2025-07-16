@@ -11,6 +11,7 @@ interface PaymentFormProps {
   cardCvc: string;
   setCardCvc: (val: string) => void;
   handlePay: () => void;
+  isLoading?: boolean;
 }
 
 const PaymentForm = ({
@@ -21,6 +22,7 @@ const PaymentForm = ({
   cardCvc,
   setCardCvc,
   handlePay,
+  isLoading = false,
 }: PaymentFormProps) => (
   <div className="mt-10">
     <h2 className="text-lg font-semibold text-blue-700 mb-3">Betalingsoplysninger</h2>
@@ -62,8 +64,10 @@ const PaymentForm = ({
       className="w-full mt-7 bg-blue-600 hover:bg-blue-700 text-white font-bold flex items-center justify-center gap-2 py-3 text-base shadow transition-all"
       type="button"
       onClick={handlePay}
+      disabled={isLoading}
     >
-      <CreditCard className="mr-1" size={21} /> Betal
+      <CreditCard className="mr-1" size={21} /> 
+      {isLoading ? "Opretter..." : "Betal"}
     </Button>
     <div className="flex flex-col gap-3 mt-5">
       <Button

@@ -33,8 +33,8 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    const { priceId, planName } = await req.json();
-    logStep("Request data received", { priceId, planName });
+    const { priceId, planName, billingInterval = "monthly", numKids = 0 } = await req.json();
+    logStep("Request data received", { priceId, planName, billingInterval, numKids });
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { 
       apiVersion: "2023-10-16" 
@@ -50,21 +50,26 @@ serve(async (req) => {
       logStep("No existing customer found");
     }
 
+    // Build line items - base + kids
+    const lineItems = [{ price: priceId, quantity: 1 }];
+    if (numKids > 0) {
+      const kidPriceId = billingInterval === "monthly" ? 
+        "price_1RlZQVHugRjwpvWt7BKwjRTr" : "price_1RlZR3HugRjwpvWtv2fdRbkX";
+      lineItems.push({ price: kidPriceId, quantity: numKids });
+    }
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
+      line_items: lineItems,
       mode: "subscription",
       success_url: `${req.headers.get("origin")}/congratulations`,
       cancel_url: `${req.headers.get("origin")}/choose-plan`,
       metadata: {
         plan_name: planName,
         user_id: user.id,
+        billing_interval: billingInterval,
+        num_kids: numKids.toString(),
       },
     });
 

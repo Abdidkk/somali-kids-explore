@@ -17,51 +17,38 @@ const ChoosePlanPage = () => {
 
   const plans = [
     {
-      name: "Basic",
-      price: "99",
-      priceId: "price_1QdHhkEj5Vg1qlpnKzD3ESpH", // Du skal erstatte med dine rigtige Stripe Price IDs
-      description: "Perfekt til at komme i gang",
+      name: "Månedlig",
+      price: 45,
+      priceId: "price_1RlZK0HugRjwpvWtOzopzx3y",
+      description: "Perfekt for familier der ønsker fleksibilitet",
       features: [
-        "Adgang til grundlæggende læring",
-        "5 børneprofiler",
-        "Email support",
-        "Månedlige rapporter"
-      ],
-      popular: false
-    },
-    {
-      name: "Premium",
-      price: "199",
-      priceId: "price_1QdHhkEj5Vg1qlpnKzD3ESpI", // Du skal erstatte med dine rigtige Stripe Price IDs
-      description: "Mest populære plan for familier",
-      features: [
-        "Alt fra Basic",
-        "Ubegrænsede børneprofiler",
-        "AI-baseret personlig læring",
+        "Fuld adgang til alle funktioner",
+        "Ubegrænsede profiler",
         "Prioriteret support",
-        "Ugentlige rapporter",
-        "Avanceret analyse"
+        "Børneprofiler: 15 kr/måned ekstra",
       ],
-      popular: true
+      popular: false,
+      billingInterval: "monthly",
     },
     {
-      name: "Enterprise",
-      price: "399",
-      priceId: "price_1QdHhkEj5Vg1qlpnKzD3ESpJ", // Du skal erstatte med dine rigtige Stripe Price IDs
-      description: "For skoler og store familier",
+      name: "Årlig",
+      price: 405,
+      priceId: "price_1RlZKXHugRjwpvWtRzuNYmYq",
+      description: "Spar 135 kr/år med årlig betaling",
       features: [
-        "Alt fra Premium",
-        "Skole administration",
-        "Bulk bruger management",
-        "24/7 telefon support",
-        "Daglige rapporter",
-        "Custom integrationer"
+        "Fuld adgang til alle funktioner",
+        "Ubegrænsede profiler", 
+        "Prioriteret support",
+        "Børneprofiler: 135 kr/år ekstra",
+        "25% rabat på årsbasis",
       ],
-      popular: false
-    }
+      popular: true,
+      billingInterval: "yearly",
+      savings: 135,
+    },
   ];
 
-  const handleSubscribe = async (priceId: string, planName: string) => {
+  const handleSubscribe = async (priceId: string, planName: string, billingInterval: string) => {
     if (!user || !session) {
       navigate('/login');
       return;
@@ -70,7 +57,12 @@ const ChoosePlanPage = () => {
     setLoading(priceId);
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { priceId, planName },
+        body: { 
+          priceId, 
+          planName, 
+          billingInterval,
+          numKids: 0 // Base subscription only
+        },
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
@@ -134,7 +126,7 @@ const ChoosePlanPage = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {plans.map((plan) => (
             <Card 
               key={plan.name} 
@@ -154,9 +146,21 @@ const ChoosePlanPage = () => {
                 <CardDescription className="text-gray-600">
                   {plan.description}
                 </CardDescription>
+                {'savings' in plan && (
+                  <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 mt-2">
+                    Spar {plan.savings} kr/år
+                  </div>
+                )}
                 <div className="mt-4">
                   <span className="text-4xl font-bold">{plan.price} kr</span>
-                  <span className="text-gray-600">/måned</span>
+                  <span className="text-gray-600">
+                    {plan.billingInterval === "monthly" ? "/måned" : "/år"}
+                  </span>
+                  {plan.billingInterval === "yearly" && (
+                    <div className="text-sm text-green-600 font-medium mt-1">
+                      ({Math.round(plan.price / 12)} kr/måned)
+                    </div>
+                  )}
                 </div>
               </CardHeader>
 
@@ -179,7 +183,7 @@ const ChoosePlanPage = () => {
                       : 'bg-gray-800 hover:bg-gray-700'
                   } text-white font-semibold py-3`}
                   disabled={loading === plan.priceId || (subscribed && subscriptionTier === plan.name)}
-                  onClick={() => handleSubscribe(plan.priceId, plan.name)}
+                  onClick={() => handleSubscribe(plan.priceId, plan.name, plan.billingInterval)}
                 >
                   {loading === plan.priceId ? (
                     "Opretter..."

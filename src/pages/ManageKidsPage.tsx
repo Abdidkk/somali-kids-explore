@@ -7,17 +7,27 @@ import KidList from "@/components/kids/KidList";
 import PaymentSummary from "@/components/kids/PaymentSummary";
 import PaymentForm from "@/components/kids/PaymentForm";
 import { Kid } from "@/types/Kid";
+import { supabase } from "@/integrations/supabase/client";
 
 const BASE_MONTHLY = 45;
 const KID_MONTHLY = 15;
 const BASE_YEARLY = 405;
 const KID_YEARLY = 135;
 
+const PRICE_IDS = {
+  BASE_MONTHLY: "price_1RlZK0HugRjwpvWtOzopzx3y",
+  BASE_YEARLY: "price_1RlZKXHugRjwpvWtRzuNYmYq",
+  KID_MONTHLY: "price_1RlZQVHugRjwpvWt7BKwjRTr",
+  KID_YEARLY: "price_1RlZR3HugRjwpvWtv2fdRbkX",
+};
+
 const ManageKidsPage = () => {
   const [kids, setKids] = useState<Kid[]>([]);
   const [cardNumber, setCardNumber] = useState("");
   const [cardExpiry, setCardExpiry] = useState("");
   const [cardCvc, setCardCvc] = useState("");
+  const [billingInterval, setBillingInterval] = useState<"monthly" | "yearly">("monthly");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleAddKid = (name: string, age: string) => {
     setKids([...kids, { id: crypto.randomUUID(), name, age }]);
@@ -27,8 +37,39 @@ const ManageKidsPage = () => {
     setKids(kids.filter((k) => k.id !== id));
   };
 
-  const handlePay = () => {
-    alert("Betaling kan kun simuleres i denne prototype.");
+  const handlePay = async () => {
+    if (kids.length === 0) {
+      alert("Tilføj mindst én børneprofil for at fortsætte.");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: {
+          priceId: billingInterval === "monthly" ? PRICE_IDS.BASE_MONTHLY : PRICE_IDS.BASE_YEARLY,
+          planName: billingInterval === "monthly" ? "Månedlig + Børn" : "Årlig + Børn",
+          billingInterval,
+          numKids: kids.length,
+        },
+      });
+
+      if (error) {
+        console.error("Error creating checkout:", error);
+        alert("Der opstod en fejl ved oprettelse af betalingsession. Prøv igen.");
+        return;
+      }
+
+      if (data?.url) {
+        // Open Stripe checkout in a new tab
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error("Error calling create-checkout:", error);
+      alert("Der opstod en fejl. Prøv igen senere.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -41,12 +82,27 @@ const ManageKidsPage = () => {
           Hver børneprofil koster <span className="font-bold">15 kr/md.</span> ekstra.<br />
           (Eller 135 kr/år hvis du har årlig betaling)
         </div>
+        
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Betalingsinterval
+          </label>
+          <select
+            value={billingInterval}
+            onChange={(e) => setBillingInterval(e.target.value as "monthly" | "yearly")}
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="monthly">Månedlig betaling</option>
+            <option value="yearly">Årlig betaling (spar 25%)</option>
+          </select>
+        </div>
         <PaymentSummary
           baseMonthly={BASE_MONTHLY}
           kidMonthly={KID_MONTHLY}
           baseYearly={BASE_YEARLY}
           kidYearly={KID_YEARLY}
           numKids={kids.length}
+          billingInterval={billingInterval}
         />
         <div className="mb-6">
           <AddKidForm onAdd={handleAddKid} />
@@ -60,6 +116,7 @@ const ManageKidsPage = () => {
           cardCvc={cardCvc}
           setCardCvc={setCardCvc}
           handlePay={handlePay}
+          isLoading={isLoading}
         />
       </div>
     </div>

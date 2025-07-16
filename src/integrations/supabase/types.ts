@@ -16,9 +16,11 @@ export type Database = {
     Tables: {
       subscribers: {
         Row: {
+          billing_interval: string | null
           created_at: string
           email: string
           id: string
+          num_kids: number | null
           stripe_customer_id: string | null
           subscribed: boolean
           subscription_end: string | null
@@ -28,9 +30,11 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          billing_interval?: string | null
           created_at?: string
           email: string
           id?: string
+          num_kids?: number | null
           stripe_customer_id?: string | null
           subscribed?: boolean
           subscription_end?: string | null
@@ -40,9 +44,11 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          billing_interval?: string | null
           created_at?: string
           email?: string
           id?: string
+          num_kids?: number | null
           stripe_customer_id?: string | null
           subscribed?: boolean
           subscription_end?: string | null

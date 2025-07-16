@@ -5,6 +5,7 @@ interface PaymentSummaryProps {
   baseYearly: number;
   kidYearly: number;
   numKids: number;
+  billingInterval?: "monthly" | "yearly";
 }
 
 const PaymentSummary = ({
@@ -13,10 +14,11 @@ const PaymentSummary = ({
   baseYearly,
   kidYearly,
   numKids,
+  billingInterval = "monthly",
 }: PaymentSummaryProps) => {
-  const extraKids = numKids > 1 ? numKids - 1 : 0;
-  const totalMonthly = baseMonthly + kidMonthly * extraKids;
-  const totalYearly = baseYearly + kidYearly * extraKids;
+  const totalMonthly = baseMonthly + kidMonthly * numKids;
+  const totalYearly = baseYearly + kidYearly * numKids;
+  const currentTotal = billingInterval === "monthly" ? totalMonthly : totalYearly;
 
   return (
     <div className="mb-6 text-center bg-blue-50 border border-blue-200 rounded py-3 px-3 text-blue-800 font-semibold">
@@ -25,9 +27,13 @@ const PaymentSummary = ({
           <span className="text-base">Din samlede pris:</span>
         </span>
         <span>
-          <b>{totalMonthly} kr/md.</b>&nbsp;eller&nbsp;
-          <b>{totalYearly} kr/år</b>
+          <b>{currentTotal} kr{billingInterval === "monthly" ? "/md." : "/år"}</b>
         </span>
+        {billingInterval === "yearly" && (
+          <div className="text-sm text-green-600 mt-1">
+            Sparer {(totalMonthly * 12) - totalYearly} kr/år
+          </div>
+        )}
       </div>
       <div className="mt-1 text-xs text-gray-500">
         (Inkluderer basispris + {numKids} børneprofil{numKids === 1 ? "" : "er"})
