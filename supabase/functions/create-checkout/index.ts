@@ -81,7 +81,14 @@ serve(async (req) => {
     });
   } catch (error) {
     logStep("ERROR in create-checkout", { message: error.message });
-    return new Response(JSON.stringify({ error: error.message }), {
+    
+    // Handle specific Stripe errors with Danish messages
+    let userMessage = error.message;
+    if (error.message.includes("set an account or business name")) {
+      userMessage = "Du skal indstille et firmanavn i din Stripe-konto før du kan oprette betalinger. Gå til https://dashboard.stripe.com/account og udfyld 'Business Information'.";
+    }
+    
+    return new Response(JSON.stringify({ error: userMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
