@@ -1,11 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Apple, CreditCard } from "lucide-react";
+import { CreditCard } from "lucide-react";
 import AddKidForm from "@/components/kids/AddKidForm";
 import KidList from "@/components/kids/KidList";
 import PaymentSummary from "@/components/kids/PaymentSummary";
-import PaymentForm from "@/components/kids/PaymentForm";
 import { Kid } from "@/types/Kid";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -23,9 +21,6 @@ const PRICE_IDS = {
 
 const ManageKidsPage = () => {
   const [kids, setKids] = useState<Kid[]>([]);
-  const [cardNumber, setCardNumber] = useState("");
-  const [cardExpiry, setCardExpiry] = useState("");
-  const [cardCvc, setCardCvc] = useState("");
   const [billingInterval, setBillingInterval] = useState<"monthly" | "yearly">("monthly");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -108,16 +103,22 @@ const ManageKidsPage = () => {
           <AddKidForm onAdd={handleAddKid} />
         </div>
         <KidList kids={kids} onDelete={handleDeleteKid} />
-        <PaymentForm
-          cardNumber={cardNumber}
-          setCardNumber={setCardNumber}
-          cardExpiry={cardExpiry}
-          setCardExpiry={setCardExpiry}
-          cardCvc={cardCvc}
-          setCardCvc={setCardCvc}
-          handlePay={handlePay}
-          isLoading={isLoading}
-        />
+        {kids.length > 0 && (
+          <div className="mt-8">
+            <Button
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold flex items-center justify-center gap-2 py-3 text-base shadow transition-all"
+              type="button"
+              onClick={handlePay}
+              disabled={isLoading}
+            >
+              <CreditCard className="mr-1" size={21} />
+              {isLoading ? "Opretter..." : "Næste til Betaling"}
+            </Button>
+            <p className="text-xs text-gray-500 text-center mt-3">
+              Du vil blive viderestillet til sikker Stripe betaling
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
