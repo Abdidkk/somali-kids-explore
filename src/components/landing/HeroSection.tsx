@@ -31,7 +31,7 @@ const HeroSection = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/choose-plan">
                 <Button size="lg" className="bg-blue-500 hover:bg-blue-600 transition-colors w-full sm:w-auto">
-                  Start 14-Dages Gratis Prøve
+                  Start 24-Timers Gratis Prøve
                 </Button>
               </Link>
               <Link to="/priser">
@@ -41,7 +41,7 @@ const HeroSection = () => {
               </Link>
             </div>
             <p className="text-sm text-gray-500">
-              14 dage gratis, derefter normal pris. Kreditkort påkrævet.
+              24 timer gratis, derefter normal pris. Kreditkort påkrævet.
             </p>
           </div>
           <div className="lg:w-1/2">
