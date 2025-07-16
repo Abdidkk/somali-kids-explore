@@ -1,4 +1,3 @@
-
 import { Sparkles } from "lucide-react";
 import { Trophy } from "lucide-react";
 import SomaliFlag from "@/components/landing/SomaliFlag";
