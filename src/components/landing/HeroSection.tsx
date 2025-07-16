@@ -29,9 +29,9 @@ const HeroSection = () => {
               En sjov og interaktiv måde for børn at lære somalisk sprog gennem dansk. Perfekt til tosprogede familier og kulturel læring.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/laer">
+              <Link to="/choose-plan">
                 <Button size="lg" className="bg-blue-500 hover:bg-blue-600 transition-colors w-full sm:w-auto">
-                  Start Gratis Prøve
+                  Start 14-Dages Gratis Prøve
                 </Button>
               </Link>
               <Link to="/priser">
@@ -41,7 +41,7 @@ const HeroSection = () => {
               </Link>
             </div>
             <p className="text-sm text-gray-500">
-              24-timers gratis prøveperiode. Intet kreditkort påkrævet.
+              14 dage gratis, derefter normal pris. Kreditkort påkrævet.
             </p>
           </div>
           <div className="lg:w-1/2">

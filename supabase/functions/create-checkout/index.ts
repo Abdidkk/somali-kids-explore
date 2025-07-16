@@ -65,6 +65,9 @@ serve(async (req) => {
       mode: "subscription",
       success_url: `${req.headers.get("origin")}/congratulations`,
       cancel_url: `${req.headers.get("origin")}/choose-plan`,
+      subscription_data: {
+        trial_period_days: 14,
+      },
       metadata: {
         plan_name: planName,
         user_id: user.id,

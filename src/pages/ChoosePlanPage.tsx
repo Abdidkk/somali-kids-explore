@@ -122,7 +122,7 @@ const ChoosePlanPage = () => {
             Vælg den rigtige plan for din familie
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Start med en 24-timers gratis prøveperiode. Ingen forpligtelser.
+            Start med 14 dages gratis prøveperiode. Kreditkort påkrævet - du betaler først efter prøveperioden.
           </p>
         </div>
 
@@ -200,7 +200,7 @@ const ChoosePlanPage = () => {
 
         <div className="text-center mt-12">
           <p className="text-gray-600">
-            Alle planer inkluderer 24-timers gratis prøveperiode. Annuller når som helst.
+            Alle planer inkluderer 14 dages gratis prøveperiode. Annuller når som helst.
           </p>
         </div>
       </div>
