@@ -41,8 +41,9 @@ const DashboardPage = () => {
       try {
         setLoading(true);
         
-        // Set current child
+        // Set current child in PointsManager for sync with learning app
         PointsManager.setCurrentChild(selectedChild);
+        console.log('Dashboard: Set current child to', selectedChild);
         
         // Get progress data
         const progress = await PointsManager.getProgress();
@@ -120,8 +121,10 @@ const DashboardPage = () => {
         )
       );
 
+      console.log('Dashboard: Toggled category', categoryName, 'to', enabled, 'for child', selectedChild);
+      
       toast({
-        title: enabled ? "Kategori aktiveret" : "Kategori deaktiveret",
+        title: enabled ? "Kategori aktiveret" : "Kategori deaktiveret", 
         description: `${categoryName} er nu ${enabled ? 'tilgængelig' : 'skjult'} for ${selectedChild}`,
       });
     } catch (error) {

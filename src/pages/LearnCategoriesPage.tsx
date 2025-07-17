@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { learningCategories } from "@/data/learningCategories";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { PointsManager } from "@/utils/pointsManager";
 import AlphabetModal from "@/components/AlphabetModal";
 import ColorsModal from "@/components/ColorsModal";
 import NumbersModal from "@/components/NumbersModal";
@@ -36,7 +37,7 @@ export default function LearnCategoriesPage() {
   const { user } = useAuth();
   const [filteredCategories, setFilteredCategories] = useState(learningCategories);
   const [loading, setLoading] = useState(true);
-  const [selectedChild, setSelectedChild] = useState("Sami"); // Default child for now
+  const [selectedChild, setSelectedChild] = useState("default"); // Use same default as dashboard
   
   const [showAlphabet, setShowAlphabet] = useState(false);
   const [showColors, setShowColors] = useState(false);
@@ -61,12 +62,18 @@ export default function LearnCategoriesPage() {
       try {
         setLoading(true);
         
+        // Sync with PointsManager's current child
+        const currentChild = PointsManager.getCurrentChild();
+        if (currentChild !== selectedChild) {
+          setSelectedChild(currentChild);
+        }
+        
         // Fetch category settings from Supabase
         const { data: categorySettings, error } = await supabase
           .from('progress')
           .select('category, category_enabled')
           .eq('user_id', user.id)
-          .eq('child_name', selectedChild);
+          .eq('child_name', currentChild);
 
         if (error) {
           console.error('Error fetching category settings:', error);
@@ -85,6 +92,7 @@ export default function LearnCategoriesPage() {
           return settingsMap.get(category.name) !== false;
         });
 
+        console.log('Filtered categories:', enabledCategories.map(c => c.name));
         setFilteredCategories(enabledCategories);
       } catch (error) {
         console.error('Error in fetchCategorySettings:', error);
@@ -96,6 +104,52 @@ export default function LearnCategoriesPage() {
 
     fetchCategorySettings();
   }, [user, selectedChild]);
+
+  // Set up real-time listener for category changes
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel('progress-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'progress',
+          filter: `user_id=eq.${user.id}`
+        },
+        async (payload) => {
+          console.log('Real-time category change detected:', payload);
+          
+          // Re-fetch category settings when changes occur
+          const currentChild = PointsManager.getCurrentChild();
+          const { data: categorySettings } = await supabase
+            .from('progress')
+            .select('category, category_enabled')
+            .eq('user_id', user.id)
+            .eq('child_name', currentChild);
+
+          if (categorySettings) {
+            const settingsMap = new Map(
+              categorySettings.map(setting => [setting.category, setting.category_enabled])
+            );
+
+            const enabledCategories = learningCategories.filter(category => {
+              return settingsMap.get(category.name) !== false;
+            });
+
+            console.log('Updated filtered categories:', enabledCategories.map(c => c.name));
+            setFilteredCategories(enabledCategories);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
 
   const handleBack = () => {
     window.history.back();
