@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { BadgeCheck } from "lucide-react";
+import { BadgeCheck, Lock } from "lucide-react";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { LearningCategory } from "@/data/learningCategories";
 
@@ -8,11 +8,12 @@ interface CategoryCardProps {
   category: LearningCategory;
   isFinished: boolean;
   isLastCat: boolean;
+  isEnabled: boolean;
   onSelect: () => void;
   index: number;
 }
 
-const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLastCat, onSelect, index }) => {
+const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLastCat, isEnabled, onSelect, index }) => {
   const Icon = category.icon;
   const isAlphabet = category.name === "Alfabet";
   const isColors = category.name === "Farver";
@@ -58,16 +59,17 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLas
     <Card 
       id={`learn-cat-${index}`} 
       className={[
-        "cursor-pointer transition-transform hover:scale-105 border-none shadow-lg hover:shadow-xl focus:scale-105 animate-fade-in relative", 
+        "transition-transform border-none shadow-lg animate-fade-in relative",
+        isEnabled ? "cursor-pointer hover:scale-105 hover:shadow-xl focus:scale-105" : "cursor-not-allowed opacity-60 grayscale",
         isLastCat ? "outline outline-blue-400 outline-2 z-10" : ""
       ].join(" ")} 
       style={{
         background: category.bgColor,
         borderRadius: "1.1rem"
       }} 
-      tabIndex={0} 
-      aria-label={`Lær om ${category.name}`} 
-      onClick={onSelect}
+      tabIndex={isEnabled ? 0 : -1} 
+      aria-label={isEnabled ? `Lær om ${category.name}` : `${category.name} er låst`} 
+      onClick={isEnabled ? onSelect : undefined}
     >
       <CardContent className="p-0 relative">
         {hasCustomImage ? (
@@ -75,17 +77,29 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLas
             <img 
               src={getCategoryImage()} 
               alt={`${category.name} illustration`} 
-              className="w-full h-48 object-fill"
+              className={`w-full h-48 object-fill ${!isEnabled ? 'grayscale' : ''}`}
             />
-            {isFinished && (
+            {!isEnabled && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 rounded-t-lg">
+                <div className="bg-white bg-opacity-90 rounded-full p-2">
+                  <Lock className="w-6 h-6 text-gray-600" />
+                </div>
+              </div>
+            )}
+            {isFinished && isEnabled && (
               <span className="absolute top-2 right-2 bg-blue-500 p-1 rounded-full animate-bounce shadow z-10">
                 <BadgeCheck className="w-5 h-5 text-white" />
               </span>
             )}
             <div className="p-6">
-              <div className="font-bold text-lg text-gray-900 mb-2">{category.name}</div>
-              <div className="text-gray-700 text-center text-sm">{category.description}</div>
-              {isLastCat && (
+              <div className={`font-bold text-lg mb-2 ${isEnabled ? 'text-gray-900' : 'text-gray-500'}`}>
+                {category.name}
+                {!isEnabled && <Lock className="inline w-4 h-4 ml-1" />}
+              </div>
+              <div className={`text-center text-sm ${isEnabled ? 'text-gray-700' : 'text-gray-400'}`}>
+                {isEnabled ? category.description : 'Kategori låst af forældre'}
+              </div>
+              {isLastCat && isEnabled && (
                 <div className="mt-2 text-xs text-blue-700 font-semibold animate-pulse bg-blue-100 rounded py-1 px-2">
                   Sidste kategori
                 </div>
@@ -101,16 +115,26 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLas
                 height: 64
               }}
             >
-              <Icon className="w-9 h-9" />
-              {isFinished && (
+              <Icon className={`w-9 h-9 ${!isEnabled ? 'text-gray-400' : ''}`} />
+              {!isEnabled && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Lock className="w-5 h-5 text-gray-500" />
+                </div>
+              )}
+              {isFinished && isEnabled && (
                 <span className="absolute -top-3 -right-3 bg-blue-500 p-1 rounded-full animate-bounce shadow">
                   <BadgeCheck className="w-5 h-5 text-white" />
                 </span>
               )}
             </div>
-            <div className="font-bold text-lg text-gray-900 mb-2">{category.name}</div>
-            <div className="text-gray-700 text-center text-sm">{category.description}</div>
-            {isLastCat && (
+            <div className={`font-bold text-lg mb-2 ${isEnabled ? 'text-gray-900' : 'text-gray-500'}`}>
+              {category.name}
+              {!isEnabled && <Lock className="inline w-4 h-4 ml-1" />}
+            </div>
+            <div className={`text-center text-sm ${isEnabled ? 'text-gray-700' : 'text-gray-400'}`}>
+              {isEnabled ? category.description : 'Kategori låst af forældre'}
+            </div>
+            {isLastCat && isEnabled && (
               <div className="mt-2 text-xs text-blue-700 font-semibold animate-pulse bg-blue-100 rounded py-1 px-2">
                 Sidste kategori
               </div>
@@ -121,7 +145,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLas
     </Card>
   );
 
-  return hasCustomImage ? (
+  return hasCustomImage && isEnabled ? (
     <HoverCard>
       <HoverCardTrigger asChild>
         {categoryCard}

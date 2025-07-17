@@ -5,6 +5,7 @@ import CategoryCard from "./CategoryCard";
 
 interface CategoryGridProps {
   categories: LearningCategory[];
+  categorySettings: Map<string, boolean>;
   finishedCategories: string[];
   lastCategory: string | null;
   onCategorySelect: (category: LearningCategory) => void;
@@ -12,6 +13,7 @@ interface CategoryGridProps {
 
 const CategoryGrid: React.FC<CategoryGridProps> = ({ 
   categories, 
+  categorySettings,
   finishedCategories, 
   lastCategory, 
   onCategorySelect 
@@ -21,7 +23,7 @@ const CategoryGrid: React.FC<CategoryGridProps> = ({
       {categories.map((category, idx) => {
         const isFinished = finishedCategories.includes(category.name);
         const isLastCat = category.name === lastCategory;
-        const isAlphabet = category.name === "Alfabet";
+        const isEnabled = categorySettings.get(category.name) !== false; // Default to enabled if no setting
         
         return (
           <CategoryCard 
@@ -29,6 +31,7 @@ const CategoryGrid: React.FC<CategoryGridProps> = ({
             category={category}
             isFinished={isFinished}
             isLastCat={isLastCat}
+            isEnabled={isEnabled}
             onSelect={() => onCategorySelect(category)}
             index={idx}
           />

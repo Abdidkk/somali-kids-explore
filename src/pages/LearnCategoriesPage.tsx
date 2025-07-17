@@ -35,7 +35,7 @@ const mockChild = {
 
 export default function LearnCategoriesPage() {
   const { user } = useAuth();
-  const [filteredCategories, setFilteredCategories] = useState(learningCategories);
+  const [categorySettings, setCategorySettings] = useState(new Map());
   const [loading, setLoading] = useState(true);
   const [selectedChild, setSelectedChild] = useState("default"); // Use same default as dashboard
   
@@ -77,7 +77,7 @@ export default function LearnCategoriesPage() {
 
         if (error) {
           console.error('Error fetching category settings:', error);
-          setFilteredCategories(learningCategories); // Show all categories on error
+          setCategorySettings(new Map()); // Show all categories as enabled on error
           return;
         }
 
@@ -86,17 +86,11 @@ export default function LearnCategoriesPage() {
           categorySettings?.map(setting => [setting.category, setting.category_enabled]) || []
         );
 
-        // Filter categories based on enabled status
-        const enabledCategories = learningCategories.filter(category => {
-          // If no setting exists for this category, default to enabled
-          return settingsMap.get(category.name) !== false;
-        });
-
-        console.log('Filtered categories:', enabledCategories.map(c => c.name));
-        setFilteredCategories(enabledCategories);
+        console.log('Category settings map:', settingsMap);
+        setCategorySettings(settingsMap);
       } catch (error) {
         console.error('Error in fetchCategorySettings:', error);
-        setFilteredCategories(learningCategories); // Show all categories on error
+        setCategorySettings(new Map()); // Show all categories as enabled on error
       } finally {
         setLoading(false);
       }
@@ -135,12 +129,8 @@ export default function LearnCategoriesPage() {
               categorySettings.map(setting => [setting.category, setting.category_enabled])
             );
 
-            const enabledCategories = learningCategories.filter(category => {
-              return settingsMap.get(category.name) !== false;
-            });
-
-            console.log('Updated filtered categories:', enabledCategories.map(c => c.name));
-            setFilteredCategories(enabledCategories);
+            console.log('Updated category settings map:', settingsMap);
+            setCategorySettings(settingsMap);
           }
         }
       )
@@ -193,7 +183,7 @@ export default function LearnCategoriesPage() {
   };
 
   const handleContinueLastCategory = (categoryName) => {
-    const idx = filteredCategories.findIndex(c => c.name === categoryName);
+    const idx = learningCategories.findIndex(c => c.name === categoryName);
     if (idx !== -1) {
       document.getElementById(`learn-cat-${idx}`)?.scrollIntoView({
         behavior: "smooth",
@@ -223,19 +213,13 @@ export default function LearnCategoriesPage() {
         onContinue={handleContinueLastCategory}
       />
 
-      {filteredCategories.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-gray-600 text-lg">Ingen kategorier er tilgængelige.</p>
-          <p className="text-gray-500 mt-2">Kontakt en forælder for at aktivere kategorier.</p>
-        </div>
-      ) : (
-        <CategoryGrid 
-          categories={filteredCategories}
-          finishedCategories={mockChild.finishedCategories}
-          lastCategory={mockChild.lastCategory}
-          onCategorySelect={handleCategorySelect}
-        />
-      )}
+      <CategoryGrid 
+        categories={learningCategories}
+        categorySettings={categorySettings}
+        finishedCategories={mockChild.finishedCategories}
+        lastCategory={mockChild.lastCategory}
+        onCategorySelect={handleCategorySelect}
+      />
       
       <AlphabetModal 
         open={showAlphabet} 
