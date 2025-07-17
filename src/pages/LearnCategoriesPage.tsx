@@ -22,22 +22,75 @@ import ReadBooksModal from "@/components/ReadBooksModal";
 import CulturalModal from "@/components/CulturalModal";
 import QuizModal from "@/components/QuizModal";
 
-// Mock child data for development
-const mockChild = {
-  name: "Sami",
-  progress: 38,
-  streak: 5,
-  badges: ["Streak 3 dage", "Flittig Lærer"],
-  lastCategory: "Tal",
-  lastPercent: 30,
-  finishedCategories: ["Alfabet"]
-};
-
 export default function LearnCategoriesPage() {
   const { user } = useAuth();
   const [categorySettings, setCategorySettings] = useState(new Map());
   const [loading, setLoading] = useState(true);
   const [selectedChild, setSelectedChild] = useState("default"); // Use same default as dashboard
+  
+  // Real child data state
+  const [childData, setChildData] = useState({
+    name: "default",
+    progress: 0,
+    streak: 0,
+    badges: [],
+    lastCategory: null,
+    lastPercent: 0,
+    finishedCategories: []
+  });
+  
+  const [recentActivity, setRecentActivity] = useState([]);
+  
+  // Fetch real child data
+  const fetchChildData = async () => {
+    if (!user) return;
+    
+    try {
+      // Get progress data from PointsManager
+      const progressData = await PointsManager.getProgress();
+      
+      // Get recent activity from Supabase
+      const { data: recentQuizResults } = await supabase
+        .from('quiz_results')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('child_name', selectedChild)
+        .order('created_at', { ascending: false })
+        .limit(10);
+      
+      if (recentQuizResults) {
+        setRecentActivity(recentQuizResults);
+      }
+      
+      // Calculate badges based on progress
+      const badges = [];
+      if (progressData.totalPoints > 100) badges.push("Flittig Lærer");
+      if (progressData.totalPoints > 500) badges.push("Vidunderlig Elev");
+      
+      // Find last category and percent from recent activity
+      const lastQuiz = recentQuizResults?.[0];
+      const lastCategory = lastQuiz?.category || null;
+      const lastPercent = lastQuiz ? Math.round((lastQuiz.score / lastQuiz.max_score) * 100) : 0;
+      
+      // Get finished categories (categories with high completion rate)
+      const finishedCategories = Object.entries(progressData.categoryScores)
+        .filter(([_, score]) => score > 80)
+        .map(([category, _]) => category);
+      
+      setChildData({
+        name: selectedChild,
+        progress: Math.min(Math.round(progressData.totalPoints / 10), 100), // Convert points to percentage
+        streak: 0, // Would need to calculate from daily activity
+        badges,
+        lastCategory,
+        lastPercent,
+        finishedCategories
+      });
+      
+    } catch (error) {
+      console.error('Error fetching child data:', error);
+    }
+  };
   
   const [showAlphabet, setShowAlphabet] = useState(false);
   const [showColors, setShowColors] = useState(false);
@@ -99,6 +152,7 @@ export default function LearnCategoriesPage() {
     };
 
     fetchCategorySettings();
+    fetchChildData();
   }, [user, selectedChild]);
 
   // Set up real-time listener for category changes
@@ -134,6 +188,9 @@ export default function LearnCategoriesPage() {
             console.log('Updated category settings map:', settingsMap);
             setCategorySettings(settingsMap);
           }
+          
+          // Also refetch child data when progress changes
+          fetchChildData();
         }
       )
       .subscribe();
@@ -210,7 +267,7 @@ export default function LearnCategoriesPage() {
       <ProfileMenu />
       
       <LearningPageHeader 
-        child={mockChild} 
+        child={childData} 
         onBack={handleBack}
         onContinue={handleContinueLastCategory}
       />
@@ -218,8 +275,8 @@ export default function LearnCategoriesPage() {
       <CategoryGrid 
         categories={learningCategories}
         categorySettings={categorySettings}
-        finishedCategories={mockChild.finishedCategories}
-        lastCategory={mockChild.lastCategory}
+        finishedCategories={childData.finishedCategories}
+        lastCategory={childData.lastCategory}
         onCategorySelect={handleCategorySelect}
       />
       
