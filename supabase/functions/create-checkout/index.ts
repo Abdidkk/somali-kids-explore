@@ -63,6 +63,7 @@ serve(async (req) => {
       customer_email: customerId ? undefined : user.email,
       line_items: lineItems,
       mode: "subscription",
+      payment_method_types: ["card", "mobilepay"],
       success_url: `${req.headers.get("origin")}/congratulations`,
       cancel_url: `${req.headers.get("origin")}/choose-plan`,
       subscription_data: {
