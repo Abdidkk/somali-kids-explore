@@ -115,7 +115,7 @@ const ManageKidsPage = () => {
               {isLoading ? "Opretter..." : "Næste til Betaling"}
             </Button>
             <p className="text-xs text-gray-500 text-center mt-3">
-              Du vil blive viderestillet til sikker betaling via kort eller MobilePay
+              Du vil blive viderestillet til sikker kortbetaling
             </p>
           </div>
         )}
