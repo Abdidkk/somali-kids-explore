@@ -74,6 +74,7 @@ const DashboardPage = () => {
             enabled: row.category_enabled
           });
         });
+        console.log('Category settings map:', categoryMap);
 
         // Get all categories from data
         const allCategories = learningCategories.map(cat => cat.name);
@@ -108,6 +109,95 @@ const DashboardPage = () => {
     if (user) {
       loadDashboardData();
     }
+  }, [user, selectedChild]);
+
+  // Real-time listeners for progress and quiz results
+  useEffect(() => {
+    if (!user) return;
+
+    const progressChannel = supabase
+      .channel('progress-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'progress',
+          filter: `user_id=eq.${user.id}`
+        },
+        async (payload) => {
+          console.log('Real-time progress update:', payload);
+          
+          // Only update if it's for the current child
+          if ((payload.new as any)?.child_name === selectedChild || (payload.old as any)?.child_name === selectedChild) {
+            // Refresh progress data
+            const progress = await PointsManager.getProgress();
+            setProgressData(progress);
+            
+            // Update categories
+            const { data: progressRows } = await supabase
+              .from('progress')
+              .select('*')
+              .eq('user_id', user.id)
+              .eq('child_name', selectedChild);
+
+            const categoryMap = new Map();
+            progressRows?.forEach(row => {
+              categoryMap.set(row.category, {
+                ...row,
+                enabled: row.category_enabled
+              });
+            });
+            console.log('Updated category settings map:', categoryMap);
+
+            const allCategories = learningCategories.map(cat => cat.name);
+            const categoryList = allCategories.map(cat => ({
+              name: cat,
+              enabled: categoryMap.get(cat)?.enabled ?? true,
+              points: categoryMap.get(cat)?.total_points ?? 0,
+              activities: categoryMap.get(cat)?.activities_completed ?? 0
+            }));
+
+            setCategories(categoryList);
+          }
+        }
+      )
+      .subscribe();
+
+    const quizResultsChannel = supabase
+      .channel('quiz-results-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'quiz_results',
+          filter: `user_id=eq.${user.id}`
+        },
+        async (payload) => {
+          console.log('Real-time quiz result added:', payload);
+          
+          // Only update if it's for the current child
+          if ((payload.new as any)?.child_name === selectedChild) {
+            // Refresh recent activity
+            const { data: quizResults } = await supabase
+              .from('quiz_results')
+              .select('*')
+              .eq('user_id', user.id)
+              .eq('child_name', selectedChild)
+              .order('created_at', { ascending: false })
+              .limit(5);
+
+            setRecentActivity(quizResults || []);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(progressChannel);
+      supabase.removeChannel(quizResultsChannel);
+    };
   }, [user, selectedChild]);
 
   const handleCategoryToggle = async (categoryName: string, enabled: boolean) => {
