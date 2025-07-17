@@ -123,14 +123,24 @@ export class PointsManager {
 
   // Add points for an activity
   static async addScore(activityScore: ActivityScore): Promise<void> {
+    console.log('PointsManager.addScore called with:', {
+      category: activityScore.category,
+      activity: activityScore.activity,
+      score: activityScore.score,
+      currentChild: this.currentChildName,
+      timestamp: new Date().toISOString()
+    });
+    
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        // Fallback to localStorage if not authenticated
+        console.log('No user found, falling back to localStorage');
         this.addLocalScore(activityScore);
         return;
       }
+
+      console.log('Saving score to Supabase for user:', user.id, 'child:', this.currentChildName);
 
       // Update or create progress record
       const { data: existingProgress } = await supabase
@@ -166,7 +176,7 @@ export class PointsManager {
       }
 
       // Add quiz result
-      await supabase
+      const quizResult = await supabase
         .from('quiz_results')
         .insert({
           user_id: user.id,
@@ -178,6 +188,14 @@ export class PointsManager {
           answers: [],
           completion_time: activityScore.timeSpent
         });
+
+      console.log('Score saved successfully to Supabase for child:', this.currentChildName);
+      
+      if (quizResult.error) {
+        console.error('Error inserting quiz result:', quizResult.error);
+      } else {
+        console.log('Quiz result inserted successfully');
+      }
 
     } catch (error) {
       console.error('Error saving score to Supabase:', error);

@@ -62,11 +62,13 @@ export default function LearnCategoriesPage() {
       try {
         setLoading(true);
         
+        // CRITICAL: Set current child in PointsManager before any operations
+        PointsManager.setCurrentChild(selectedChild);
+        console.log('LearnCategoriesPage: Set current child to:', selectedChild);
+        
         // Sync with PointsManager's current child
         const currentChild = PointsManager.getCurrentChild();
-        if (currentChild !== selectedChild) {
-          setSelectedChild(currentChild);
-        }
+        console.log('LearnCategoriesPage: Current child in PointsManager:', currentChild);
         
         // Fetch category settings from Supabase
         const { data: categorySettings, error } = await supabase
