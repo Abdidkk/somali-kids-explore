@@ -254,8 +254,11 @@ export class PointsManager {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
+        console.error('No user found when toggling category');
         return;
       }
+
+      console.log('PointsManager: Toggling category', category, 'to', enabled, 'for child', this.currentChildName);
 
       const { data: existingProgress } = await supabase
         .from('progress')
@@ -267,13 +270,19 @@ export class PointsManager {
 
       if (existingProgress) {
         // Update existing progress
-        await supabase
+        const { error } = await supabase
           .from('progress')
           .update({ category_enabled: enabled })
           .eq('id', existingProgress.id);
+        
+        if (error) {
+          console.error('Error updating category:', error);
+        } else {
+          console.log('Successfully updated category', category, 'to', enabled);
+        }
       } else {
         // Create new progress record with category disabled
-        await supabase
+        const { error } = await supabase
           .from('progress')
           .insert({
             user_id: user.id,
@@ -281,6 +290,12 @@ export class PointsManager {
             category: category,
             category_enabled: enabled
           });
+        
+        if (error) {
+          console.error('Error creating category record:', error);
+        } else {
+          console.log('Successfully created category record for', category, 'with enabled:', enabled);
+        }
       }
     } catch (error) {
       console.error('Error toggling category:', error);
