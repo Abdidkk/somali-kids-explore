@@ -12,6 +12,7 @@ import { BookOpen, Users, TrendingUp, Settings, Activity, Award, Clock } from "l
 import { PointsManager } from "@/utils/pointsManager";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { learningCategories } from "@/data/learningCategories";
 
 const DashboardPage = () => {
   const { user, loading: authLoading } = useAuth();
@@ -73,9 +74,9 @@ const DashboardPage = () => {
           });
         });
 
-        // Default categories
-        const defaultCategories = ['Alfabet', 'Tal', 'Farver', 'Dyr', 'Mad', 'Geografi', 'Quiz', 'Kulturelt indhold'];
-        const categoryList = defaultCategories.map(cat => ({
+        // Get all categories from data
+        const allCategories = learningCategories.map(cat => cat.name);
+        const categoryList = allCategories.map(cat => ({
           name: cat,
           enabled: categoryMap.get(cat)?.enabled ?? true,
           points: categoryMap.get(cat)?.total_points ?? 0,
