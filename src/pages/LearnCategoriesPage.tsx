@@ -12,7 +12,6 @@ import KropsdeleModal from "@/components/KropsdeleModal";
 import CalendarModal from "@/components/CalendarModal";
 import GeographyModal from "@/components/GeographyModal";
 import FamilyModal from "@/components/FamilyModal";
-import ProfileMenu from "@/components/ProfileMenu";
 import CategoryGrid from "@/components/learning/CategoryGrid";
 import LearningPageHeader from "@/components/learning/LearningPageHeader";
 import WordsModal from "@/components/WordsModal";
@@ -264,7 +263,7 @@ export default function LearnCategoriesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white flex flex-col items-center py-10 animate-fade-in relative">
-      <ProfileMenu />
+      
       
       <LearningPageHeader 
         child={childData} 
