@@ -6,6 +6,8 @@ import { Volume2 } from "lucide-react";
 import { CONTINENTS, COUNTRIES, NATURE_LANDSCAPES, getGeographyItemColor } from "@/constants/geographyData";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
+import ScoreDisplay from "@/components/alphabet/guess/ScoreDisplay";
+import { PointsManager } from "@/utils/pointsManager";
 
 interface Props {
   onBack: () => void;
@@ -18,6 +20,8 @@ export default function GeographyDragDropActivity({ onBack }: Props) {
   const [continentOrder, setContinentOrder] = useState<string[]>([]);
   const [countryOrder, setCountryOrder] = useState<string[]>([]);
   const [natureOrder, setNatureOrder] = useState<string[]>([]);
+  const [score, setScore] = useState(() => PointsManager.getCategoryScore("Geografi"));
+  const [showScoreAnimation, setShowScoreAnimation] = useState(false);
 
   const getCurrentData = () => {
     switch (tab) {
@@ -97,12 +101,27 @@ export default function GeographyDragDropActivity({ onBack }: Props) {
   const checkAnswer = () => {
     const correctMatches = items.filter((item, idx) => order[idx] === item.somali);
     const isCorrect = correctMatches.length === items.length;
+    const earnedPoints = PointsManager.calculatePoints(correctMatches.length, items.length, isCorrect);
     
     if (isCorrect) {
       playApplauseSound();
+      
+      // Add points and update score
+      PointsManager.addScore({
+        category: "Geografi",
+        activity: `Drag & Drop - ${tab}`,
+        score: earnedPoints,
+        maxScore: 100,
+        timestamp: new Date().toISOString()
+      });
+      
+      setScore(prev => prev + earnedPoints);
+      setShowScoreAnimation(true);
+      setTimeout(() => setShowScoreAnimation(false), 2000);
+      
       toast({
         title: "Fantastisk! 🎉",
-        description: "Du har matchet alle korrekt!",
+        description: `Du har matchet alle korrekt og fået ${earnedPoints} point!`,
         duration: 3000,
       });
     } else {
@@ -120,7 +139,8 @@ export default function GeographyDragDropActivity({ onBack }: Props) {
   };
 
   return (
-    <div className="flex flex-col items-center mt-3 md:mt-5 gap-4 md:gap-5">
+    <div className="flex flex-col items-center mt-3 md:mt-5 gap-4 md:gap-5 relative">
+      <ScoreDisplay score={score} animate={showScoreAnimation} />
       <Tabs value={tab} onValueChange={v => setTab(v as "continents" | "countries" | "nature")} className="w-full flex flex-col items-center">
         <TabsList className={`mb-3 md:mb-4 bg-green-50 ${isMobile ? 'text-xs' : ''}`}>
           <TabsTrigger value="continents">Kontinenter</TabsTrigger>

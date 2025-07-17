@@ -16,6 +16,8 @@ import WordsModal from "@/components/WordsModal";
 import DailyActivitiesModal from "@/components/DailyActivitiesModal";
 import SentencesModal from "@/components/SentencesModal";
 import ReadBooksModal from "@/components/ReadBooksModal";
+import CulturalModal from "@/components/CulturalModal";
+import QuizModal from "@/components/QuizModal";
 
 // Mock child data for development
 const mockChild = {
@@ -42,6 +44,8 @@ export default function LearnCategoriesPage() {
   const [showDailyActivities, setShowDailyActivities] = useState(false);
   const [showSentences, setShowSentences] = useState(false);
   const [showReadBooks, setShowReadBooks] = useState(false);
+  const [showCultural, setShowCultural] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
 
   const handleBack = () => {
     window.history.back();
@@ -75,6 +79,12 @@ export default function LearnCategoriesPage() {
     }
     else if (category.name === "Læse bøger") {
       setShowReadBooks(true);
+    }
+    else if (category.name === "Kulturelt indhold") {
+      setShowCultural(true);
+    }
+    else if (category.name === "Quiz") {
+      setShowQuiz(true);
     }
   };
 
@@ -163,9 +173,19 @@ export default function LearnCategoriesPage() {
         onClose={() => setShowSentences(false)}
       />
       <ReadBooksModal 
-  open={showReadBooks}
-  onClose={() => setShowReadBooks(false)}
-/>
+        open={showReadBooks} 
+        onClose={() => setShowReadBooks(false)} 
+      />
+      
+      <CulturalModal 
+        open={showCultural} 
+        onClose={() => setShowCultural(false)} 
+      />
+      
+      <QuizModal 
+        open={showQuiz} 
+        onClose={() => setShowQuiz(false)} 
+      />
     </div>
   );
 }
