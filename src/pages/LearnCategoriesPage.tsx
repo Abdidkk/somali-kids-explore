@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { learningCategories } from "@/data/learningCategories";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import AlphabetModal from "@/components/AlphabetModal";
 import ColorsModal from "@/components/ColorsModal";
 import NumbersModal from "@/components/NumbersModal";
@@ -31,6 +33,11 @@ const mockChild = {
 };
 
 export default function LearnCategoriesPage() {
+  const { user } = useAuth();
+  const [filteredCategories, setFilteredCategories] = useState(learningCategories);
+  const [loading, setLoading] = useState(true);
+  const [selectedChild, setSelectedChild] = useState("Sami"); // Default child for now
+  
   const [showAlphabet, setShowAlphabet] = useState(false);
   const [showColors, setShowColors] = useState(false);
   const [showNumbers, setShowNumbers] = useState(false);
@@ -46,6 +53,49 @@ export default function LearnCategoriesPage() {
   const [showReadBooks, setShowReadBooks] = useState(false);
   const [showCultural, setShowCultural] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
+
+  useEffect(() => {
+    const fetchCategorySettings = async () => {
+      if (!user) return;
+
+      try {
+        setLoading(true);
+        
+        // Fetch category settings from Supabase
+        const { data: categorySettings, error } = await supabase
+          .from('progress')
+          .select('category, category_enabled')
+          .eq('user_id', user.id)
+          .eq('child_name', selectedChild);
+
+        if (error) {
+          console.error('Error fetching category settings:', error);
+          setFilteredCategories(learningCategories); // Show all categories on error
+          return;
+        }
+
+        // Create a map of category settings
+        const settingsMap = new Map(
+          categorySettings?.map(setting => [setting.category, setting.category_enabled]) || []
+        );
+
+        // Filter categories based on enabled status
+        const enabledCategories = learningCategories.filter(category => {
+          // If no setting exists for this category, default to enabled
+          return settingsMap.get(category.name) !== false;
+        });
+
+        setFilteredCategories(enabledCategories);
+      } catch (error) {
+        console.error('Error in fetchCategorySettings:', error);
+        setFilteredCategories(learningCategories); // Show all categories on error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategorySettings();
+  }, [user, selectedChild]);
 
   const handleBack = () => {
     window.history.back();
@@ -89,7 +139,7 @@ export default function LearnCategoriesPage() {
   };
 
   const handleContinueLastCategory = (categoryName) => {
-    const idx = learningCategories.findIndex(c => c.name === categoryName);
+    const idx = filteredCategories.findIndex(c => c.name === categoryName);
     if (idx !== -1) {
       document.getElementById(`learn-cat-${idx}`)?.scrollIntoView({
         behavior: "smooth",
@@ -97,6 +147,17 @@ export default function LearnCategoriesPage() {
       });
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white flex flex-col items-center justify-center py-10">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Indlæser kategorier...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white flex flex-col items-center py-10 animate-fade-in relative">
@@ -108,12 +169,19 @@ export default function LearnCategoriesPage() {
         onContinue={handleContinueLastCategory}
       />
 
-      <CategoryGrid 
-        categories={learningCategories}
-        finishedCategories={mockChild.finishedCategories}
-        lastCategory={mockChild.lastCategory}
-        onCategorySelect={handleCategorySelect}
-      />
+      {filteredCategories.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-gray-600 text-lg">Ingen kategorier er tilgængelige.</p>
+          <p className="text-gray-500 mt-2">Kontakt en forælder for at aktivere kategorier.</p>
+        </div>
+      ) : (
+        <CategoryGrid 
+          categories={filteredCategories}
+          finishedCategories={mockChild.finishedCategories}
+          lastCategory={mockChild.lastCategory}
+          onCategorySelect={handleCategorySelect}
+        />
+      )}
       
       <AlphabetModal 
         open={showAlphabet} 
