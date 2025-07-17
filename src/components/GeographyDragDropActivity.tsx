@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
@@ -20,8 +20,17 @@ export default function GeographyDragDropActivity({ onBack }: Props) {
   const [continentOrder, setContinentOrder] = useState<string[]>([]);
   const [countryOrder, setCountryOrder] = useState<string[]>([]);
   const [natureOrder, setNatureOrder] = useState<string[]>([]);
-  const [score, setScore] = useState(() => PointsManager.getCategoryScore("Geografi"));
+  const [score, setScore] = useState(0);
   const [showScoreAnimation, setShowScoreAnimation] = useState(false);
+
+  // Load initial score
+  useEffect(() => {
+    const loadScore = async () => {
+      const initialScore = await PointsManager.getCategoryScore("Geografi");
+      setScore(initialScore);
+    };
+    loadScore();
+  }, []);
 
   const getCurrentData = () => {
     switch (tab) {

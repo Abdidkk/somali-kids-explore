@@ -56,9 +56,18 @@ export default function CulturalQuizActivity({ onBack }: Props) {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [score, setScore] = useState(() => PointsManager.getCategoryScore("Kulturelt indhold"));
+  const [score, setScore] = useState(0);
   const [showScoreAnimation, setShowScoreAnimation] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
+
+  // Load initial score
+  useEffect(() => {
+    const loadScore = async () => {
+      const initialScore = await PointsManager.getCategoryScore("Kulturelt indhold");
+      setScore(initialScore);
+    };
+    loadScore();
+  }, []);
 
   const handleAnswer = (answerIndex: number) => {
     setSelectedAnswer(answerIndex);
@@ -68,7 +77,7 @@ export default function CulturalQuizActivity({ onBack }: Props) {
       setCorrectAnswers(prev => prev + 1);
     }
 
-    setTimeout(() => {
+    setTimeout(async () => {
       if (currentQuestion < culturalQuestions.length - 1) {
         setCurrentQuestion(prev => prev + 1);
         setSelectedAnswer(null);
@@ -78,7 +87,7 @@ export default function CulturalQuizActivity({ onBack }: Props) {
         const finalCorrect = correctAnswers + (answerIndex === culturalQuestions[currentQuestion].correct ? 1 : 0);
         const earnedPoints = PointsManager.calculatePoints(finalCorrect, culturalQuestions.length, true);
         
-        PointsManager.addScore({
+        await PointsManager.addScore({
           category: "Kulturelt indhold",
           activity: "Kultur Quiz",
           score: earnedPoints,

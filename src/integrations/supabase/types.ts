@@ -14,6 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
+      progress: {
+        Row: {
+          activities_completed: number
+          category: string
+          category_enabled: boolean
+          child_name: string
+          created_at: string
+          id: string
+          time_spent: number
+          total_points: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activities_completed?: number
+          category: string
+          category_enabled?: boolean
+          child_name: string
+          created_at?: string
+          id?: string
+          time_spent?: number
+          total_points?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activities_completed?: number
+          category?: string
+          category_enabled?: boolean
+          child_name?: string
+          created_at?: string
+          id?: string
+          time_spent?: number
+          total_points?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      quiz_results: {
+        Row: {
+          activity_name: string
+          answers: Json
+          category: string
+          child_name: string
+          completion_time: number | null
+          created_at: string
+          id: string
+          max_score: number
+          score: number
+          user_id: string
+        }
+        Insert: {
+          activity_name: string
+          answers: Json
+          category: string
+          child_name: string
+          completion_time?: number | null
+          created_at?: string
+          id?: string
+          max_score: number
+          score: number
+          user_id: string
+        }
+        Update: {
+          activity_name?: string
+          answers?: Json
+          category?: string
+          child_name?: string
+          completion_time?: number | null
+          created_at?: string
+          id?: string
+          max_score?: number
+          score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscribers: {
         Row: {
           billing_interval: string | null

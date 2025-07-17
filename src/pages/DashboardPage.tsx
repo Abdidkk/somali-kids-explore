@@ -2,17 +2,29 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import SubscriptionStatus from "@/components/SubscriptionStatus";
-import { BookOpen, Users, TrendingUp, Settings } from "lucide-react";
+import { BookOpen, Users, TrendingUp, Settings, Activity, Award, Clock } from "lucide-react";
+import { PointsManager } from "@/utils/pointsManager";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const DashboardPage = () => {
   const { user, loading: authLoading } = useAuth();
   const { subscribed, inTrial, subscriptionTier } = useSubscription();
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const [progressData, setProgressData] = useState<any>(null);
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [childrenList, setChildrenList] = useState<string[]>([]);
+  const [selectedChild, setSelectedChild] = useState("default");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -20,7 +32,108 @@ const DashboardPage = () => {
     }
   }, [user, authLoading, navigate]);
 
-  if (authLoading) {
+  // Load progress data
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      if (!user) return;
+      
+      try {
+        setLoading(true);
+        
+        // Set current child
+        PointsManager.setCurrentChild(selectedChild);
+        
+        // Get progress data
+        const progress = await PointsManager.getProgress();
+        setProgressData(progress);
+
+        // Get recent quiz results
+        const { data: quizResults } = await supabase
+          .from('quiz_results')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('child_name', selectedChild)
+          .order('created_at', { ascending: false })
+          .limit(5);
+
+        setRecentActivity(quizResults || []);
+
+        // Get categories with their enabled status
+        const { data: progressRows } = await supabase
+          .from('progress')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('child_name', selectedChild);
+
+        const categoryMap = new Map();
+        progressRows?.forEach(row => {
+          categoryMap.set(row.category, {
+            ...row,
+            enabled: row.category_enabled
+          });
+        });
+
+        // Default categories
+        const defaultCategories = ['Alfabet', 'Tal', 'Farver', 'Dyr', 'Mad', 'Geografi', 'Quiz', 'Kulturelt indhold'];
+        const categoryList = defaultCategories.map(cat => ({
+          name: cat,
+          enabled: categoryMap.get(cat)?.enabled ?? true,
+          points: categoryMap.get(cat)?.total_points ?? 0,
+          activities: categoryMap.get(cat)?.activities_completed ?? 0
+        }));
+
+        setCategories(categoryList);
+
+        // Get children list
+        const { data: childrenData } = await supabase
+          .from('progress')
+          .select('child_name')
+          .eq('user_id', user.id);
+
+        const uniqueChildren = [...new Set(childrenData?.map(c => c.child_name) || [])];
+        if (uniqueChildren.length === 0) {
+          uniqueChildren.push('default');
+        }
+        setChildrenList(uniqueChildren);
+
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      loadDashboardData();
+    }
+  }, [user, selectedChild]);
+
+  const handleCategoryToggle = async (categoryName: string, enabled: boolean) => {
+    try {
+      await PointsManager.toggleCategory(categoryName, enabled);
+      
+      // Update local state
+      setCategories(prev => 
+        prev.map(cat => 
+          cat.name === categoryName ? { ...cat, enabled } : cat
+        )
+      );
+
+      toast({
+        title: enabled ? "Kategori aktiveret" : "Kategori deaktiveret",
+        description: `${categoryName} er nu ${enabled ? 'tilgængelig' : 'skjult'} for ${selectedChild}`,
+      });
+    } catch (error) {
+      console.error('Error toggling category:', error);
+      toast({
+        title: "Fejl",
+        description: "Kunne ikke opdatere kategori-indstillinger",
+        variant: "destructive"
+      });
+    }
+  };
+
+  if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-lg">Indlæser...</div>
@@ -34,22 +147,28 @@ const DashboardPage = () => {
 
   const stats = [
     {
-      title: "Børneprofiler",
-      value: subscriptionTier === "Basic" ? "5" : "Ubegrænset",
+      title: "Samlede Point",
+      value: progressData?.totalPoints?.toString() || "0",
+      icon: Award,
+      description: "Optjent i alt"
+    },
+    {
+      title: "Afsluttede Aktiviteter",
+      value: progressData?.activitiesCompleted?.toString() || "0",
+      icon: Activity,
+      description: "Gennemført"
+    },
+    {
+      title: "Aktive Kategorier",
+      value: categories.filter(c => c.enabled).length.toString(),
       icon: Users,
-      description: "Aktive profiler"
+      description: "Tilgængelige"
     },
     {
-      title: "Lektioner gennemført",
-      value: "0",
-      icon: BookOpen,
-      description: "Denne måned"
-    },
-    {
-      title: "Fremgang",
-      value: "0%",
-      icon: TrendingUp,
-      description: "Denne uge"
+      title: "Seneste Aktivitet",
+      value: recentActivity.length > 0 ? "I dag" : "Ingen",
+      icon: Clock,
+      description: "Sidste aktivitet"
     }
   ];
 
@@ -89,6 +208,89 @@ const DashboardPage = () => {
             </Card>
           ))}
         </div>
+
+        {/* Child Selection */}
+        {childrenList.length > 1 && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Vælg Barn</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-2 flex-wrap">
+                {childrenList.map(child => (
+                  <Button
+                    key={child}
+                    variant={selectedChild === child ? "default" : "outline"}
+                    onClick={() => setSelectedChild(child)}
+                    size="sm"
+                  >
+                    {child === 'default' ? 'Standard' : child}
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Category Controls */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5" />
+              Kategori Kontrol - {selectedChild === 'default' ? 'Standard' : selectedChild}
+            </CardTitle>
+            <CardDescription>
+              Aktivér eller deaktivér kategorier for dit barn
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {categories.map(category => (
+                <div key={category.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex-1">
+                    <h4 className="font-medium text-gray-900">{category.name}</h4>
+                    <p className="text-sm text-gray-600">
+                      {category.points} point • {category.activities} aktiviteter
+                    </p>
+                  </div>
+                  <Switch
+                    checked={category.enabled}
+                    onCheckedChange={(enabled) => handleCategoryToggle(category.name, enabled)}
+                  />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Recent Activity */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>Seneste Aktivitet</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {recentActivity.length > 0 ? (
+                recentActivity.map((activity, index) => (
+                  <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium">{activity.activity_name}</p>
+                      <p className="text-sm text-gray-600">{activity.category}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium">{activity.score}/{activity.max_score}</p>
+                      <p className="text-xs text-gray-500">
+                        {new Date(activity.created_at).toLocaleDateString('da-DK')}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500 text-center py-4">Ingen aktivitet endnu</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

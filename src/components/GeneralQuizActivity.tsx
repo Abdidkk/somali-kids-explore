@@ -74,10 +74,19 @@ export default function GeneralQuizActivity({ onBack }: Props) {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [score, setScore] = useState(() => PointsManager.getCategoryScore("Quiz"));
+  const [score, setScore] = useState(0);
   const [showScoreAnimation, setShowScoreAnimation] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [shuffledQuestions, setShuffledQuestions] = useState<QuizQuestion[]>([]);
+
+  // Load initial score
+  useEffect(() => {
+    const loadScore = async () => {
+      const initialScore = await PointsManager.getCategoryScore("Quiz");
+      setScore(initialScore);
+    };
+    loadScore();
+  }, []);
 
   useEffect(() => {
     // Shuffle questions when component mounts
@@ -93,7 +102,7 @@ export default function GeneralQuizActivity({ onBack }: Props) {
       setCorrectAnswers(prev => prev + 1);
     }
 
-    setTimeout(() => {
+    setTimeout(async () => {
       if (currentQuestion < shuffledQuestions.length - 1) {
         setCurrentQuestion(prev => prev + 1);
         setSelectedAnswer(null);
@@ -103,7 +112,7 @@ export default function GeneralQuizActivity({ onBack }: Props) {
         const finalCorrect = correctAnswers + (answerIndex === shuffledQuestions[currentQuestion].correct ? 1 : 0);
         const earnedPoints = PointsManager.calculatePoints(finalCorrect, shuffledQuestions.length, true);
         
-        PointsManager.addScore({
+        await PointsManager.addScore({
           category: "Quiz",
           activity: "Generel Quiz",
           score: earnedPoints,
