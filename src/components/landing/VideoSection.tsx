@@ -5,7 +5,7 @@ import React, { useRef, useState } from "react";
 const HERO_BLUE = "#4CA6FE";
 
 const VIDEO_SRC =
-  "https://www.w3schools.com/html/mov_bbb.mp4"; // Demo video (kan ændres)
+  "/Video/Dugsi.mp4"; // Demo video (kan ændres)
 
 // Custom hook til at detektere tablet
 function useIsTablet() {
