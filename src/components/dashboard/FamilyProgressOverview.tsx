@@ -76,7 +76,7 @@ export default function FamilyProgressOverview({ children, onChildSelect }: Fami
               >
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-medium text-gray-900 flex items-center gap-2">
-                    {child.name === 'default' ? 'Standard' : child.name}
+                    <span className="capitalize">{child.name}</span>
                     {child.streak > 0 && (
                       <span className="inline-flex items-center bg-orange-100 text-orange-800 text-xs font-medium px-2 py-1 rounded-full">
                         <Flame className="w-3 h-3 mr-1" />

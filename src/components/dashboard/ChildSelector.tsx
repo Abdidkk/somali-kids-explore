@@ -21,12 +21,11 @@ interface ChildSelectorProps {
 
 export default function ChildSelector({ children, selectedChild, onChildSelect }: ChildSelectorProps) {
   const getInitials = (name: string) => {
-    if (name === 'default') return 'S';
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   };
 
   const getDisplayName = (name: string) => {
-    return name === 'default' ? 'Standard' : name;
+    return name;
   };
 
   return (

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { PointsManager } from "@/utils/pointsManager";
 import { useAuth } from "@/hooks/useAuth";
+import { useChildren } from "@/hooks/useChildren";
 
 export interface ChildProgressData {
   name: string;
@@ -16,6 +17,7 @@ export interface ChildProgressData {
 
 export function useMultiChildProgress() {
   const { user } = useAuth();
+  const { children } = useChildren();
   const [childrenData, setChildrenData] = useState<ChildProgressData[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,20 +27,26 @@ export function useMultiChildProgress() {
     try {
       setLoading(true);
 
-      // Get all unique children
-      const { data: childrenList } = await supabase
-        .from('progress')
-        .select('child_name')
-        .eq('user_id', user.id);
+      // Get registered children from database
+      let childrenToProcess = children.map(child => child.name);
+      
+      // If no registered children, check for existing progress data
+      if (childrenToProcess.length === 0) {
+        const { data: childrenList } = await supabase
+          .from('progress')
+          .select('child_name')
+          .eq('user_id', user.id);
 
-      const uniqueChildren = [...new Set(childrenList?.map(c => c.child_name) || [])];
-      if (uniqueChildren.length === 0) {
-        uniqueChildren.push('default');
+        const uniqueChildren = [...new Set(childrenList?.map(c => c.child_name) || [])];
+        if (uniqueChildren.length === 0) {
+          uniqueChildren.push('default');
+        }
+        childrenToProcess = uniqueChildren;
       }
 
       const allChildrenData: ChildProgressData[] = [];
 
-      for (const childName of uniqueChildren) {
+      for (const childName of childrenToProcess) {
         // Set current child and get progress
         PointsManager.setCurrentChild(childName);
         const progress = await PointsManager.getProgress();
@@ -83,7 +91,7 @@ export function useMultiChildProgress() {
     if (user) {
       loadAllChildrenProgress();
     }
-  }, [user]);
+  }, [user, children]);
 
   return {
     childrenData,

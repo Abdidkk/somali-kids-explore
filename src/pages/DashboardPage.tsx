@@ -12,6 +12,7 @@ import FamilyProgressOverview from "@/components/dashboard/FamilyProgressOvervie
 import ChildProgressChart from "@/components/dashboard/ChildProgressChart";
 import ChildSelector from "@/components/dashboard/ChildSelector";
 import { useMultiChildProgress } from "@/hooks/useMultiChildProgress";
+import { ChildrenManager } from "@/components/kids/ChildrenManager";
 import { BookOpen, Users, Settings, Activity, Award, Clock } from "lucide-react";
 import { PointsManager } from "@/utils/pointsManager";
 import { supabase } from "@/integrations/supabase/client";
@@ -347,23 +348,10 @@ const DashboardPage = () => {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Børneprofiler</CardTitle>
-              <CardDescription>
-                Administrer børneprofiler og se fremgang
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button 
-                onClick={() => navigate('/admin-kids')}
-                className="w-full bg-[#4CA6FE] hover:bg-[#3b95e9]"
-              >
-                <Users className="mr-2 h-4 w-4" />
-                Administrer børn
-              </Button>
-            </CardContent>
-          </Card>
+          <ChildrenManager 
+            onChildSelect={handleChildSelect}
+            selectedChild={selectedChild}
+          />
 
           <Card>
             <CardHeader>
