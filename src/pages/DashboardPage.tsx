@@ -5,10 +5,14 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SubscriptionStatus from "@/components/SubscriptionStatus";
-import { BookOpen, Users, TrendingUp, Settings, Activity, Award, Clock } from "lucide-react";
+import FamilyProgressOverview from "@/components/dashboard/FamilyProgressOverview";
+import ChildProgressChart from "@/components/dashboard/ChildProgressChart";
+import ChildSelector from "@/components/dashboard/ChildSelector";
+import { useMultiChildProgress } from "@/hooks/useMultiChildProgress";
+import { BookOpen, Users, Settings, Activity, Award, Clock } from "lucide-react";
 import { PointsManager } from "@/utils/pointsManager";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -19,11 +23,11 @@ const DashboardPage = () => {
   const { subscribed, inTrial, subscriptionTier } = useSubscription();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { childrenData, loading: childrenLoading, refreshData } = useMultiChildProgress();
 
   const [progressData, setProgressData] = useState<any>(null);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
-  const [childrenList, setChildrenList] = useState<string[]>([]);
   const [selectedChild, setSelectedChild] = useState("default");
   const [loading, setLoading] = useState(true);
 
@@ -33,15 +37,15 @@ const DashboardPage = () => {
     }
   }, [user, authLoading, navigate]);
 
-  // Load progress data
+  // Load progress data for selected child
   useEffect(() => {
-    const loadDashboardData = async () => {
+    const loadSelectedChildData = async () => {
       if (!user) return;
       
       try {
         setLoading(true);
         
-        // Set current child in PointsManager for sync with learning app
+        // Set current child in PointsManager
         PointsManager.setCurrentChild(selectedChild);
         console.log('Dashboard: Set current child to', selectedChild);
         
@@ -74,9 +78,7 @@ const DashboardPage = () => {
             enabled: row.category_enabled
           });
         });
-        console.log('Category settings map:', categoryMap);
 
-        // Get all categories from data
         const allCategories = learningCategories.map(cat => cat.name);
         const categoryList = allCategories.map(cat => ({
           name: cat,
@@ -87,31 +89,19 @@ const DashboardPage = () => {
 
         setCategories(categoryList);
 
-        // Get children list
-        const { data: childrenData } = await supabase
-          .from('progress')
-          .select('child_name')
-          .eq('user_id', user.id);
-
-        const uniqueChildren = [...new Set(childrenData?.map(c => c.child_name) || [])];
-        if (uniqueChildren.length === 0) {
-          uniqueChildren.push('default');
-        }
-        setChildrenList(uniqueChildren);
-
       } catch (error) {
-        console.error('Error loading dashboard data:', error);
+        console.error('Error loading selected child data:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    if (user) {
-      loadDashboardData();
+    if (user && selectedChild) {
+      loadSelectedChildData();
     }
   }, [user, selectedChild]);
 
-  // Real-time listeners for progress and quiz results
+  // Real-time listeners for progress updates
   useEffect(() => {
     if (!user) return;
 
@@ -127,39 +117,7 @@ const DashboardPage = () => {
         },
         async (payload) => {
           console.log('Real-time progress update:', payload);
-          
-          // Only update if it's for the current child
-          if ((payload.new as any)?.child_name === selectedChild || (payload.old as any)?.child_name === selectedChild) {
-            // Refresh progress data
-            const progress = await PointsManager.getProgress();
-            setProgressData(progress);
-            
-            // Update categories
-            const { data: progressRows } = await supabase
-              .from('progress')
-              .select('*')
-              .eq('user_id', user.id)
-              .eq('child_name', selectedChild);
-
-            const categoryMap = new Map();
-            progressRows?.forEach(row => {
-              categoryMap.set(row.category, {
-                ...row,
-                enabled: row.category_enabled
-              });
-            });
-            console.log('Updated category settings map:', categoryMap);
-
-            const allCategories = learningCategories.map(cat => cat.name);
-            const categoryList = allCategories.map(cat => ({
-              name: cat,
-              enabled: categoryMap.get(cat)?.enabled ?? true,
-              points: categoryMap.get(cat)?.total_points ?? 0,
-              activities: categoryMap.get(cat)?.activities_completed ?? 0
-            }));
-
-            setCategories(categoryList);
-          }
+          refreshData(); // Refresh all children data
         }
       )
       .subscribe();
@@ -176,20 +134,7 @@ const DashboardPage = () => {
         },
         async (payload) => {
           console.log('Real-time quiz result added:', payload);
-          
-          // Only update if it's for the current child
-          if ((payload.new as any)?.child_name === selectedChild) {
-            // Refresh recent activity
-            const { data: quizResults } = await supabase
-              .from('quiz_results')
-              .select('*')
-              .eq('user_id', user.id)
-              .eq('child_name', selectedChild)
-              .order('created_at', { ascending: false })
-              .limit(5);
-
-            setRecentActivity(quizResults || []);
-          }
+          refreshData(); // Refresh all children data
         }
       )
       .subscribe();
@@ -198,21 +143,18 @@ const DashboardPage = () => {
       supabase.removeChannel(progressChannel);
       supabase.removeChannel(quizResultsChannel);
     };
-  }, [user, selectedChild]);
+  }, [user, refreshData]);
 
   const handleCategoryToggle = async (categoryName: string, enabled: boolean) => {
     try {
       await PointsManager.toggleCategory(categoryName, enabled);
       
-      // Update local state
       setCategories(prev => 
         prev.map(cat => 
           cat.name === categoryName ? { ...cat, enabled } : cat
         )
       );
 
-      console.log('Dashboard: Toggled category', categoryName, 'to', enabled, 'for child', selectedChild);
-      
       toast({
         title: enabled ? "Kategori aktiveret" : "Kategori deaktiveret", 
         description: `${categoryName} er nu ${enabled ? 'tilgængelig' : 'skjult'} for ${selectedChild}`,
@@ -227,7 +169,11 @@ const DashboardPage = () => {
     }
   };
 
-  if (authLoading || loading) {
+  const handleChildSelect = (childName: string) => {
+    setSelectedChild(childName);
+  };
+
+  if (authLoading || loading || childrenLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-lg">Indlæser...</div>
@@ -283,111 +229,124 @@ const DashboardPage = () => {
           <SubscriptionStatus />
         </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {stats.map((stat) => (
-            <Card key={stat.title}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {stat.title}
-                </CardTitle>
-                <stat.icon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-muted-foreground">
-                  {stat.description}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="overview">Overblik</TabsTrigger>
+            <TabsTrigger value="family">Familie Fremgang</TabsTrigger>
+            <TabsTrigger value="settings">Indstillinger</TabsTrigger>
+          </TabsList>
 
-        {/* Child Selection */}
-        {childrenList.length > 1 && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>Vælg Barn</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex gap-2 flex-wrap">
-                {childrenList.map(child => (
-                  <Button
-                    key={child}
-                    variant={selectedChild === child ? "default" : "outline"}
-                    onClick={() => setSelectedChild(child)}
-                    size="sm"
-                  >
-                    {child === 'default' ? 'Standard' : child}
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+          <TabsContent value="overview" className="space-y-6">
+            {/* Child Selection */}
+            {childrenData.length > 1 && (
+              <ChildSelector 
+                children={childrenData}
+                selectedChild={selectedChild}
+                onChildSelect={handleChildSelect}
+              />
+            )}
 
-        {/* Category Controls */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Settings className="h-5 w-5" />
-              Kategori Kontrol - {selectedChild === 'default' ? 'Standard' : selectedChild}
-            </CardTitle>
-            <CardDescription>
-              Aktivér eller deaktivér kategorier for dit barn
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {categories.map(category => (
-                <div key={category.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex-1">
-                    <h4 className="font-medium text-gray-900">{category.name}</h4>
-                    <p className="text-sm text-gray-600">
-                      {category.points} point • {category.activities} aktiviteter
+            {/* Quick Stats for Selected Child */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              {stats.map((stat) => (
+                <Card key={stat.title}>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      {stat.title}
+                    </CardTitle>
+                    <stat.icon className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{stat.value}</div>
+                    <p className="text-xs text-muted-foreground">
+                      {stat.description}
                     </p>
-                  </div>
-                  <Switch
-                    checked={category.enabled}
-                    onCheckedChange={(enabled) => handleCategoryToggle(category.name, enabled)}
-                  />
-                </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Recent Activity */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Seneste Aktivitet</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {recentActivity.length > 0 ? (
-                recentActivity.map((activity, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                    <div>
-                      <p className="font-medium">{activity.activity_name}</p>
-                      <p className="text-sm text-gray-600">{activity.category}</p>
+            {/* Recent Activity for Selected Child */}
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  Seneste Aktivitet - {selectedChild === 'default' ? 'Standard' : selectedChild}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {recentActivity.length > 0 ? (
+                    recentActivity.map((activity, index) => (
+                      <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                        <div>
+                          <p className="font-medium">{activity.activity_name}</p>
+                          <p className="text-sm text-gray-600">{activity.category}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-medium">{activity.score}/{activity.max_score}</p>
+                          <p className="text-xs text-gray-500">
+                            {new Date(activity.created_at).toLocaleDateString('da-DK')}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 text-center py-4">Ingen aktivitet endnu</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="family" className="space-y-6">
+            {/* Family Progress Overview */}
+            <FamilyProgressOverview 
+              children={childrenData}
+              onChildSelect={handleChildSelect}
+            />
+
+            {/* Progress Charts */}
+            {childrenData.length > 1 && (
+              <ChildProgressChart children={childrenData} />
+            )}
+          </TabsContent>
+
+          <TabsContent value="settings" className="space-y-6">
+            {/* Category Controls for Selected Child */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="h-5 w-5" />
+                  Kategori Kontrol - {selectedChild === 'default' ? 'Standard' : selectedChild}
+                </CardTitle>
+                <CardDescription>
+                  Aktivér eller deaktivér kategorier for dette barn
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {categories.map(category => (
+                    <div key={category.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-900">{category.name}</h4>
+                        <p className="text-sm text-gray-600">
+                          {category.points} point • {category.activities} aktiviteter
+                        </p>
+                      </div>
+                      <Switch
+                        checked={category.enabled}
+                        onCheckedChange={(enabled) => handleCategoryToggle(category.name, enabled)}
+                      />
                     </div>
-                    <div className="text-right">
-                      <p className="font-medium">{activity.score}/{activity.max_score}</p>
-                      <p className="text-xs text-gray-500">
-                        {new Date(activity.created_at).toLocaleDateString('da-DK')}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-500 text-center py-4">Ingen aktivitet endnu</p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           <Card>
             <CardHeader>
               <CardTitle>Børneprofiler</CardTitle>
