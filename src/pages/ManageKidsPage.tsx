@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { CreditCard } from "lucide-react";
@@ -7,14 +8,10 @@ import PaymentSummary from "@/components/kids/PaymentSummary";
 import { Kid } from "@/types/Kid";
 import { supabase } from "@/integrations/supabase/client";
 
-const BASE_MONTHLY = 45;
 const KID_MONTHLY = 15;
-const BASE_YEARLY = 405;
 const KID_YEARLY = 135;
 
 const PRICE_IDS = {
-  BASE_MONTHLY: "price_1RlZK0HugRjwpvWtOzopzx3y",
-  BASE_YEARLY: "price_1RlZKXHugRjwpvWtRzuNYmYq",
   KID_MONTHLY: "price_1RlZQVHugRjwpvWt7BKwjRTr",
   KID_YEARLY: "price_1RlZR3HugRjwpvWtv2fdRbkX",
 };
@@ -42,10 +39,11 @@ const ManageKidsPage = () => {
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         body: {
-          priceId: billingInterval === "monthly" ? PRICE_IDS.BASE_MONTHLY : PRICE_IDS.BASE_YEARLY,
-          planName: billingInterval === "monthly" ? "Månedlig + Børn" : "Årlig + Børn",
+          priceId: billingInterval === "monthly" ? PRICE_IDS.KID_MONTHLY : PRICE_IDS.KID_YEARLY,
+          planName: billingInterval === "monthly" ? "Børneprofiler (Månedlig)" : "Børneprofiler (Årlig)",
           billingInterval,
           numKids: kids.length,
+          childrenOnly: true, // Flag to indicate this is only for children
         },
       });
 
@@ -92,9 +90,7 @@ const ManageKidsPage = () => {
           </select>
         </div>
         <PaymentSummary
-          baseMonthly={BASE_MONTHLY}
           kidMonthly={KID_MONTHLY}
-          baseYearly={BASE_YEARLY}
           kidYearly={KID_YEARLY}
           numKids={kids.length}
           billingInterval={billingInterval}
@@ -112,7 +108,7 @@ const ManageKidsPage = () => {
               disabled={isLoading}
             >
               <CreditCard className="mr-1" size={21} />
-              {isLoading ? "Opretter..." : "Næste til Betaling"}
+              {isLoading ? "Opretter..." : "Betal for børneprofiler"}
             </Button>
             <p className="text-xs text-gray-500 text-center mt-3">
               Du vil blive viderestillet til sikker kortbetaling

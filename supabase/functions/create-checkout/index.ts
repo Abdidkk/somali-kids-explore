@@ -33,8 +33,8 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    const { priceId, planName, billingInterval = "monthly", numKids = 0 } = await req.json();
-    logStep("Request data received", { priceId, planName, billingInterval, numKids });
+    const { priceId, planName, billingInterval = "monthly", numKids = 0, childrenOnly = false } = await req.json();
+    logStep("Request data received", { priceId, planName, billingInterval, numKids, childrenOnly });
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { 
       apiVersion: "2023-10-16" 
@@ -50,12 +50,21 @@ serve(async (req) => {
       logStep("No existing customer found");
     }
 
-    // Build line items - base + kids
-    const lineItems = [{ price: priceId, quantity: 1 }];
-    if (numKids > 0) {
-      const kidPriceId = billingInterval === "monthly" ? 
-        "price_1RlZQVHugRjwpvWt7BKwjRTr" : "price_1RlZR3HugRjwpvWtv2fdRbkX";
-      lineItems.push({ price: kidPriceId, quantity: numKids });
+    // Build line items based on whether this is children only or full subscription
+    let lineItems;
+    if (childrenOnly) {
+      // Only add children profiles, no base subscription
+      lineItems = [{ price: priceId, quantity: numKids }];
+      logStep("Creating children-only checkout", { priceId, quantity: numKids });
+    } else {
+      // Original logic for full subscriptions
+      lineItems = [{ price: priceId, quantity: 1 }];
+      if (numKids > 0) {
+        const kidPriceId = billingInterval === "monthly" ? 
+          "price_1RlZQVHugRjwpvWt7BKwjRTr" : "price_1RlZR3HugRjwpvWtv2fdRbkX";
+        lineItems.push({ price: kidPriceId, quantity: numKids });
+      }
+      logStep("Creating full subscription checkout", { basePrice: priceId, kidPrice: numKids > 0 ? (billingInterval === "monthly" ? "price_1RlZQVHugRjwpvWt7BKwjRTr" : "price_1RlZR3HugRjwpvWtv2fdRbkX") : null, numKids });
     }
 
     const session = await stripe.checkout.sessions.create({
@@ -67,13 +76,14 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/congratulations`,
       cancel_url: `${req.headers.get("origin")}/choose-plan`,
       subscription_data: {
-        trial_period_days: 1,
+        trial_period_days: childrenOnly ? 0 : 1, // No trial for children-only subscriptions
       },
       metadata: {
         plan_name: planName,
         user_id: user.id,
         billing_interval: billingInterval,
         num_kids: numKids.toString(),
+        children_only: childrenOnly.toString(),
       },
     });
 
