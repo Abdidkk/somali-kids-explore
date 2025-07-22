@@ -3,16 +3,18 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Crown, RefreshCw, Settings } from "lucide-react";
+import { Crown, RefreshCw, Settings, ExternalLink } from "lucide-react";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const SubscriptionStatus = () => {
   const [loading, setLoading] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
+  const [portalError, setPortalError] = useState<string | null>(null);
   const { subscribed, inTrial, subscriptionTier, subscriptionEnd, checkSubscription } = useSubscription();
   const { session } = useAuth();
   const navigate = useNavigate();
@@ -28,9 +30,18 @@ const SubscriptionStatus = () => {
   };
 
   const handleManageSubscription = async () => {
-    if (!session) return;
+    if (!session) {
+      toast({
+        title: "Fejl",
+        description: "Du skal være logget ind for at administrere dit abonnement",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setPortalLoading(true);
+    setPortalError(null);
+    
     try {
       const { data, error } = await supabase.functions.invoke('customer-portal', {
         headers: {
@@ -40,19 +51,33 @@ const SubscriptionStatus = () => {
 
       if (error) {
         console.error('Error opening customer portal:', error);
+        setPortalError("Kunne ikke åbne kundeportalen. Kontakt venligst support.");
         toast({
           title: "Fejl",
-          description: "Kunne ikke åbne kundeportal. Prøv igen.",
+          description: "Kunne ikke åbne kundeportal. Prøv igen senere.",
           variant: "destructive",
         });
         return;
       }
 
       if (data?.url) {
+        // Open in a new tab instead of redirecting
         window.open(data.url, '_blank');
+        toast({
+          title: "Kundeportal",
+          description: "Kundeportalen er åbnet i en ny fane",
+        });
+      } else {
+        setPortalError("Ingen portal URL returneret. Kontakt venligst support.");
+        toast({
+          title: "Fejl",
+          description: "Kunne ikke åbne kundeportal. Prøv igen senere.",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error('Error in handleManageSubscription:', error);
+      setPortalError("Der opstod en teknisk fejl. Kontakt venligst support.");
       toast({
         title: "Fejl",
         description: "Der opstod en fejl. Prøv igen senere.",
@@ -132,6 +157,14 @@ const SubscriptionStatus = () => {
           </div>
         )}
 
+        {portalError && (
+          <Alert variant="destructive">
+            <AlertDescription>
+              {portalError}
+            </AlertDescription>
+          </Alert>
+        )}
+
         <div className="flex gap-3 pt-4">
           {!subscribed ? (
             <Button 
@@ -147,11 +180,25 @@ const SubscriptionStatus = () => {
               disabled={portalLoading}
               className="flex-1"
             >
-              <Settings className="mr-2 h-4 w-4" />
-              {portalLoading ? "Åbner..." : "Administrer abonnement"}
+              {portalLoading ? (
+                <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Administrer abonnement</span>
+                  <ExternalLink className="ml-2 h-4 w-4" />
+                </>
+              )}
             </Button>
           )}
         </div>
+        
+        {subscribed && (
+          <p className="text-xs text-gray-500 text-center mt-2">
+            Kundeportalen åbnes i en ny fane, hvor du kan ændre betalingsmetode, 
+            skifte abonnement eller opsige dit abonnement.
+          </p>
+        )}
       </CardContent>
     </Card>
   );
