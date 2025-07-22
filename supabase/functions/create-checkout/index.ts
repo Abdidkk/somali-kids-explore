@@ -67,7 +67,8 @@ serve(async (req) => {
       logStep("Creating full subscription checkout", { basePrice: priceId, kidPrice: numKids > 0 ? (billingInterval === "monthly" ? "price_1RlZQVHugRjwpvWt7BKwjRTr" : "price_1RlZR3HugRjwpvWtv2fdRbkX") : null, numKids });
     }
 
-    const session = await stripe.checkout.sessions.create({
+    // Build session configuration
+    const sessionConfig: any = {
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: lineItems,
@@ -75,9 +76,6 @@ serve(async (req) => {
       payment_method_types: ["card"],
       success_url: `${req.headers.get("origin")}/congratulations`,
       cancel_url: `${req.headers.get("origin")}/choose-plan`,
-      subscription_data: {
-        trial_period_days: childrenOnly ? 0 : 1, // No trial for children-only subscriptions
-      },
       metadata: {
         plan_name: planName,
         user_id: user.id,
@@ -85,7 +83,19 @@ serve(async (req) => {
         num_kids: numKids.toString(),
         children_only: childrenOnly.toString(),
       },
-    });
+    };
+
+    // Only add trial period for full subscriptions, not for children-only purchases
+    if (!childrenOnly) {
+      sessionConfig.subscription_data = {
+        trial_period_days: 1,
+      };
+      logStep("Added trial period for full subscription");
+    } else {
+      logStep("Skipping trial period for children-only purchase");
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
 
     logStep("Checkout session created", { sessionId: session.id, url: session.url });
 
