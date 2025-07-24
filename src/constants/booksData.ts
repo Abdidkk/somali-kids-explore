@@ -26,15 +26,15 @@ export interface BookData {
     },
     {
       id: "book2", 
-      title: "Somaliske eventyr",
-      somali: "Sheekooyin Soomaaliyeed",
-      danish: "Somaliske eventyr",
-      description: "Klassiske somaliske folk eventyr og historier",
-      coverImage: "/books/book2-cover.png", 
-      fliphtml5Url: "https://online.fliphtml5.com/your-flipbook-2/",
-      ageGroup: "5-8 år",
-      difficulty: "mellem", 
-      category: "eventyr"
+      title: "Jirkeyga",
+      somali: "Jirkeyga",
+      danish: "Min krop",
+      description: "Bogen Min krop handler om et barn, der fortæller, hvad kroppen kan.",
+      coverImage: "/bog/Minkrop.png", 
+      fliphtml5Url: "https://heyzine.com/flip-book/09ffa3cde2.html",
+      ageGroup: "3-6 år",
+      difficulty: "let", 
+      category: "læring"
     },
     {
       id: "book3",
