@@ -18,7 +18,14 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Use the anon key for user authentication
   const supabaseClient = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+  );
+
+  // Service role client for database operations that bypass RLS
+  const supabaseService = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     { auth: { persistSession: false } }
@@ -27,7 +34,7 @@ serve(async (req) => {
   // Enhanced logging function
   const logEvent = async (event_type: string, user_id: string, metadata: Record<string, any>) => {
     try {
-      await supabaseClient.from('event_logs').insert({
+      await supabaseService.from('event_logs').insert({
         event_type,
         user_id,
         metadata,
@@ -61,7 +68,7 @@ serve(async (req) => {
     
     if (customers.data.length === 0) {
       logStep("No customer found, updating unsubscribed state");
-      await supabaseClient.from("subscribers").upsert({
+      await supabaseService.from("subscribers").upsert({
         email: user.email,
         user_id: user.id,
         stripe_customer_id: null,
@@ -112,7 +119,7 @@ serve(async (req) => {
       logStep("No active subscription found");
     }
 
-    await supabaseClient.from("subscribers").upsert({
+    await supabaseService.from("subscribers").upsert({
       email: user.email,
       user_id: user.id,
       stripe_customer_id: customerId,

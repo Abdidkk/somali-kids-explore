@@ -42,6 +42,11 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
 
       if (error) {
         console.error('Error checking subscription:', error);
+        // Set default values on error to prevent UI issues
+        setSubscribed(false);
+        setInTrial(true);
+        setSubscriptionTier(null);
+        setSubscriptionEnd(null);
         return;
       }
 
@@ -52,6 +57,11 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       setSubscriptionEnd(data.subscription_end || null);
     } catch (error) {
       console.error('Error in checkSubscription:', error);
+      // Set default values on error to prevent UI issues
+      setSubscribed(false);
+      setInTrial(true);
+      setSubscriptionTier(null);
+      setSubscriptionEnd(null);
     } finally {
       setLoading(false);
     }
