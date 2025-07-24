@@ -44,6 +44,39 @@ export type Database = {
         }
         Relationships: []
       }
+      event_logs: {
+        Row: {
+          child_name: string | null
+          created_at: string
+          event_type: string
+          id: string
+          ip_address: unknown | null
+          metadata: Json | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          child_name?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          child_name?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       progress: {
         Row: {
           activities_completed: number
@@ -166,6 +199,65 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      transactions: {
+        Row: {
+          amount: number
+          billing_interval: string | null
+          created_at: string
+          currency: string
+          id: string
+          metadata: Json | null
+          num_kids: number | null
+          status: string
+          stripe_session_id: string | null
+          stripe_transaction_id: string | null
+          subscriber_id: string | null
+          subscription_tier: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          billing_interval?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          metadata?: Json | null
+          num_kids?: number | null
+          status: string
+          stripe_session_id?: string | null
+          stripe_transaction_id?: string | null
+          subscriber_id?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          billing_interval?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          metadata?: Json | null
+          num_kids?: number | null
+          status?: string
+          stripe_session_id?: string | null
+          stripe_transaction_id?: string | null
+          subscriber_id?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_subscriber_id_fkey"
+            columns: ["subscriber_id"]
+            isOneToOne: false
+            referencedRelation: "subscribers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       users: {
         Row: {

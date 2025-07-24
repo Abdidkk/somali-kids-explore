@@ -24,6 +24,21 @@ serve(async (req) => {
     { auth: { persistSession: false } }
   );
 
+  // Enhanced logging function
+  const logEvent = async (event_type: string, user_id: string, metadata: Record<string, any>) => {
+    try {
+      await supabaseClient.from('event_logs').insert({
+        event_type,
+        user_id,
+        metadata,
+        ip_address: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip'),
+        user_agent: req.headers.get('user-agent')
+      });
+    } catch (error) {
+      console.error('Event logging failed:', error);
+    }
+  };
+
   try {
     logStep("Function started");
 
@@ -112,6 +127,14 @@ serve(async (req) => {
     }, { onConflict: 'email' });
 
     logStep("Updated database with subscription info", { subscribed: hasActiveSub, subscriptionTier });
+    
+    // Log subscription check event
+    await logEvent('subscription_status_checked', user.id, {
+      subscribed: hasActiveSub,
+      subscription_tier: subscriptionTier,
+      subscription_end: subscriptionEnd,
+      customer_id: customerId
+    });
     
     return new Response(JSON.stringify({
       subscribed: hasActiveSub,

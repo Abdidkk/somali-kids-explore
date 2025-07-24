@@ -23,6 +23,28 @@ serve(async (req) => {
     Deno.env.get("SUPABASE_ANON_KEY") ?? ""
   );
 
+  // Service role client for logging and transactions
+  const supabaseService = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    { auth: { persistSession: false } }
+  );
+
+  // Enhanced logging function
+  const logEvent = async (event_type: string, user_id: string, metadata: Record<string, any>) => {
+    try {
+      await supabaseService.from('event_logs').insert({
+        event_type,
+        user_id,
+        metadata,
+        ip_address: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip'),
+        user_agent: req.headers.get('user-agent')
+      });
+    } catch (error) {
+      console.error('Event logging failed:', error);
+    }
+  };
+
   try {
     logStep("Function started");
 
@@ -98,6 +120,49 @@ serve(async (req) => {
     const session = await stripe.checkout.sessions.create(sessionConfig);
 
     logStep("Checkout session created", { sessionId: session.id, url: session.url });
+
+    // Calculate total amount from line items (for logging)
+    let totalAmount = 0;
+    for (const item of lineItems) {
+      try {
+        const price = await stripe.prices.retrieve(item.price);
+        totalAmount += (price.unit_amount || 0) * item.quantity;
+      } catch (priceError) {
+        console.error('Failed to retrieve price for amount calculation:', priceError);
+      }
+    }
+
+    // Log transaction creation
+    try {
+      await supabaseService.from('transactions').insert({
+        user_id: user.id,
+        stripe_session_id: session.id,
+        amount: totalAmount / 100, // Convert from cents to currency units
+        currency: 'DKK',
+        status: 'pending',
+        subscription_tier: planName,
+        billing_interval: billingInterval,
+        num_kids: numKids,
+        metadata: {
+          children_only: childrenOnly,
+          line_items: lineItems,
+          stripe_metadata: sessionConfig.metadata
+        }
+      });
+      logStep("Transaction logged", { sessionId: session.id, amount: totalAmount / 100 });
+    } catch (transactionError) {
+      console.error('Transaction logging failed:', transactionError);
+    }
+
+    // Log checkout event
+    await logEvent('checkout_session_created', user.id, {
+      session_id: session.id,
+      plan_name: planName,
+      billing_interval: billingInterval,
+      num_kids: numKids,
+      children_only: childrenOnly,
+      amount: totalAmount / 100
+    });
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
