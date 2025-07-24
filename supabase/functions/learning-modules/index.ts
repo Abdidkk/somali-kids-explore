@@ -231,10 +231,27 @@ async function getChildBadges(supabase: any, childId: string) {
 }
 
 function getCategoryFromModule(moduleId: string): string {
-  if (moduleId.includes('alfabet') || moduleId.includes('bogstav')) return 'alfabet'
-  if (moduleId.includes('matematik') || moduleId.includes('tal')) return 'matematik'
-  if (moduleId.includes('sprog') || moduleId.includes('ord')) return 'sprog'
-  if (moduleId.includes('videnskab')) return 'videnskab'
-  if (moduleId.includes('kreativ')) return 'kreativitet'
-  return 'læsning'
+  const id = moduleId.toLowerCase();
+  
+  console.log(`Categorizing module: ${moduleId}`);
+  
+  // Map moduleId to actual learning categories
+  if (id.includes('alfabet') || id.includes('bogstav')) return 'Alfabet';
+  if (id.includes('farve') || id.includes('color')) return 'Farver';
+  if (id.includes('tal') || id.includes('nummer') || id.includes('matematik')) return 'Tal';
+  if (id.includes('mad') || id.includes('food')) return 'Mad';
+  if (id.includes('dyr') || id.includes('animal')) return 'Dyr';
+  if (id.includes('krop') || id.includes('body')) return 'Kropsdel';
+  if (id.includes('geografi') || id.includes('geography')) return 'Geografi';
+  if (id.includes('kalender') || id.includes('calendar') || id.includes('dato')) return 'Kalender';
+  if (id.includes('familie') || id.includes('family') || id.includes('ven')) return 'Familie og venner';
+  if (id.includes('ord') || id.includes('word') || id.includes('vocabular')) return 'Ord';
+  if (id.includes('daglig') || id.includes('aktivitet') || id.includes('daily')) return 'Daglige aktiviteter';
+  if (id.includes('sætning') || id.includes('sentence')) return 'Sætninger';
+  if (id.includes('kultur') || id.includes('culture')) return 'Kulturelt indhold';
+  if (id.includes('læs') || id.includes('bog') || id.includes('read') || id.includes('book')) return 'Læse bøger';
+  if (id.includes('quiz') || id.includes('test')) return 'Quiz';
+  
+  console.log(`No specific category found for ${moduleId}, defaulting to Alfabet`);
+  return 'Alfabet'; // Default to main learning category
 }
