@@ -34,9 +34,21 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
 
     try {
       setLoading(true);
+      // Get a fresh session to avoid stale token issues
+      const { data: { session: freshSession }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !freshSession) {
+        console.warn('No valid session found, setting default values');
+        setSubscribed(false);
+        setInTrial(true);
+        setSubscriptionTier(null);
+        setSubscriptionEnd(null);
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke('check-subscription', {
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${freshSession.access_token}`,
         },
       });
 
