@@ -87,6 +87,24 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     }
   }, [user, session]);
 
+  // Listen for page focus to refresh subscription status (when returning from Stripe)
+  useEffect(() => {
+    const handleFocus = () => {
+      if (user && session && document.visibilityState === 'visible') {
+        console.log('Page focused - refreshing subscription status');
+        checkSubscription();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    document.addEventListener('visibilitychange', handleFocus);
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleFocus);
+    };
+  }, [user, session, checkSubscription]);
+
   return (
     <SubscriptionContext.Provider value={{ 
       subscribed, 

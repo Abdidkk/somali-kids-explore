@@ -95,18 +95,36 @@ serve(async (req) => {
     const customerId = customers.data[0].id;
     logStep("Found Stripe customer", { customerId });
 
+    // Check for all active subscription statuses including trialing
     const subscriptions = await stripe.subscriptions.list({
       customer: customerId,
-      status: "active",
-      limit: 1,
+      status: "all",
+      limit: 10,
     });
     
-    const hasActiveSub = subscriptions.data.length > 0;
+    // Filter for active subscriptions (active, trialing, past_due)
+    const activeSubscriptions = subscriptions.data.filter(sub => 
+      ['active', 'trialing', 'past_due'].includes(sub.status)
+    );
+    
+    logStep("Found subscriptions", { 
+      total: subscriptions.data.length, 
+      active: activeSubscriptions.length,
+      statuses: subscriptions.data.map(s => ({ id: s.id, status: s.status }))
+    });
+    
+    const hasActiveSub = activeSubscriptions.length > 0;
     let subscriptionTier = null;
     let subscriptionEnd = null;
 
     if (hasActiveSub) {
-      const subscription = subscriptions.data[0];
+      const subscription = activeSubscriptions[0];
+      logStep("Processing subscription", { 
+        id: subscription.id, 
+        status: subscription.status,
+        trial_end: subscription.trial_end,
+        current_period_end: subscription.current_period_end
+      });
       subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
       logStep("Active subscription found", { subscriptionId: subscription.id, endDate: subscriptionEnd });
       
@@ -130,9 +148,9 @@ serve(async (req) => {
       subscription_tier: subscriptionTier,
       subscription_end: subscriptionEnd,
       billing_interval: hasActiveSub ? 
-        (subscriptions.data[0].items.data[0].price.recurring?.interval === "year" ? "yearly" : "monthly") : "monthly",
-      num_kids: hasActiveSub && subscriptions.data[0].items.data.length > 1 ? 
-        subscriptions.data[0].items.data[1].quantity : 0,
+        (activeSubscriptions[0].items.data[0].price.recurring?.interval === "year" ? "yearly" : "monthly") : "monthly",
+      num_kids: hasActiveSub && activeSubscriptions[0].items.data.length > 1 ? 
+        activeSubscriptions[0].items.data[1].quantity : 0,
       updated_at: new Date().toISOString(),
     }, { onConflict: 'email' });
 

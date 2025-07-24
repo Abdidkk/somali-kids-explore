@@ -4,6 +4,7 @@ import SomaliFlag from "@/components/landing/SomaliFlag";
 import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useSubscription } from "@/hooks/useSubscription";
 
 const COLORS = [
   "text-blue-400",
@@ -25,15 +26,20 @@ const SOUND_SRC = "/lovable-uploads/LYDFIL_NAVN.mp3";
 
 export default function CongratulationsPage() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { checkSubscription } = useSubscription();
 
-  // Afspil lyd automatisk når siden indlæses (én gang)
+  // Afspil lyd automatisk når siden indlæses (én gang) og refresh subscription
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.play().catch(() => {
         // Autoplay kan blive blokeret – så gør ingenting.
       });
     }
-  }, []);
+    
+    // Refresh subscription status after checkout completion
+    console.log('Congratulations page loaded - refreshing subscription status');
+    checkSubscription();
+  }, [checkSubscription]);
 
   // Manuel afspilning via knap
   const handlePlay = () => {
