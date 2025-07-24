@@ -52,6 +52,7 @@ export type Database = {
           id: string
           ip_address: unknown | null
           metadata: Json | null
+          severity: string | null
           user_agent: string | null
           user_id: string | null
         }
@@ -62,6 +63,7 @@ export type Database = {
           id?: string
           ip_address?: unknown | null
           metadata?: Json | null
+          severity?: string | null
           user_agent?: string | null
           user_id?: string | null
         }
@@ -72,6 +74,7 @@ export type Database = {
           id?: string
           ip_address?: unknown | null
           metadata?: Json | null
+          severity?: string | null
           user_agent?: string | null
           user_id?: string | null
         }
@@ -294,7 +297,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      log_event: {
+        Args: {
+          p_event_type: string
+          p_user_id?: string
+          p_metadata?: Json
+          p_severity?: string
+          p_child_name?: string
+          p_ip_address?: unknown
+          p_user_agent?: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
