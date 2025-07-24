@@ -18,3 +18,9 @@ verify_jwt = false
 
 [functions.performance-monitor]
 verify_jwt = false
+
+[functions.learning-modules]
+verify_jwt = false
+
+[functions.parent-dashboard]
+verify_jwt = false

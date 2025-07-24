@@ -14,6 +14,86 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievement_badges: {
+        Row: {
+          badge_description: string | null
+          badge_name: string
+          category: string | null
+          child_id: string
+          earned_date: string | null
+          id: string
+        }
+        Insert: {
+          badge_description?: string | null
+          badge_name: string
+          category?: string | null
+          child_id: string
+          earned_date?: string | null
+          id?: string
+        }
+        Update: {
+          badge_description?: string | null
+          badge_name?: string
+          category?: string | null
+          child_id?: string
+          earned_date?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "achievement_badges_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      child_profiles: {
+        Row: {
+          age: number | null
+          avatar_color: string | null
+          avatar_url: string | null
+          created_at: string | null
+          id: string
+          interests: string[] | null
+          learning_level: string | null
+          name: string
+          parent_user_id: string
+          preferred_learning_style: string | null
+          special_needs: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          age?: number | null
+          avatar_color?: string | null
+          avatar_url?: string | null
+          created_at?: string | null
+          id?: string
+          interests?: string[] | null
+          learning_level?: string | null
+          name: string
+          parent_user_id: string
+          preferred_learning_style?: string | null
+          special_needs?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          age?: number | null
+          avatar_color?: string | null
+          avatar_url?: string | null
+          created_at?: string | null
+          id?: string
+          interests?: string[] | null
+          learning_level?: string | null
+          name?: string
+          parent_user_id?: string
+          preferred_learning_style?: string | null
+          special_needs?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       children: {
         Row: {
           age: number | null
@@ -79,6 +159,56 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      learning_progress: {
+        Row: {
+          child_id: string
+          completed_lessons: number | null
+          created_at: string | null
+          difficulty_level: string | null
+          id: string
+          last_completed_lesson_date: string | null
+          mastery_level: string | null
+          module_id: string
+          progress_percentage: number | null
+          total_lessons: number
+          updated_at: string | null
+        }
+        Insert: {
+          child_id: string
+          completed_lessons?: number | null
+          created_at?: string | null
+          difficulty_level?: string | null
+          id?: string
+          last_completed_lesson_date?: string | null
+          mastery_level?: string | null
+          module_id: string
+          progress_percentage?: number | null
+          total_lessons?: number
+          updated_at?: string | null
+        }
+        Update: {
+          child_id?: string
+          completed_lessons?: number | null
+          created_at?: string | null
+          difficulty_level?: string | null
+          id?: string
+          last_completed_lesson_date?: string | null
+          mastery_level?: string | null
+          module_id?: string
+          progress_percentage?: number | null
+          total_lessons?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_progress_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       progress: {
         Row: {
@@ -155,6 +285,36 @@ export type Database = {
           max_score?: number
           score?: number
           user_id?: string
+        }
+        Relationships: []
+      }
+      security_audit_log: {
+        Row: {
+          action: string
+          details: Json | null
+          id: string
+          ip_address: string | null
+          timestamp: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          timestamp?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          timestamp?: string | null
+          user_agent?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -262,6 +422,33 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          permissions: string[] | null
+          role: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          permissions?: string[] | null
+          role?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          permissions?: string[] | null
+          role?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           created_at: string
@@ -297,6 +484,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_user_permission: {
+        Args: { p_required_permission: string }
+        Returns: boolean
+      }
       log_event: {
         Args: {
           p_event_type: string
@@ -305,6 +496,16 @@ export type Database = {
           p_severity?: string
           p_child_name?: string
           p_ip_address?: unknown
+          p_user_agent?: string
+        }
+        Returns: undefined
+      }
+      log_security_event: {
+        Args: {
+          p_user_id: string
+          p_action: string
+          p_details?: Json
+          p_ip_address?: string
           p_user_agent?: string
         }
         Returns: undefined
