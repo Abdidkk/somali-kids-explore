@@ -15,6 +15,7 @@ import ChoosePlanPage from "./pages/ChoosePlanPage";
 import ManageKidsPage from "./pages/ManageKidsPage";
 import CongratulationsPage from "./pages/CongratulationsPage";
 import DashboardPage from "./pages/DashboardPage";
+import SystemTestPage from "./pages/SystemTestPage";
 import LearnCategoriesPage from "./pages/LearnCategoriesPage";
 import ContactPage from "./pages/ContactPage";
 import AboutPage from "./pages/AboutPage";
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="/admin-kids" element={<ManageKidsPage />} />
               <Route path="/congratulations" element={<CongratulationsPage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/system-test" element={<SystemTestPage />} />
               <Route path="/laer" element={<LearnCategoriesPage />} />
               <Route path="/kontakt" element={<ContactPage />} />
               <Route path="/om-os" element={<AboutPage />} />
