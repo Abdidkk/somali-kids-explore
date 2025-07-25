@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { SubscriptionProvider } from "@/hooks/useSubscription";
+import { RouteGuard } from "@/components/routing/RouteGuard";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import MainNavbar from "./components/MainNavbar";
@@ -40,10 +41,26 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<LogInPage />} />
               <Route path="/signup" element={<SignUpPage />} />
-              <Route path="/choose-plan" element={<ChoosePlanPage />} />
-              <Route path="/admin-kids" element={<ManageKidsPage />} />
-              <Route path="/congratulations" element={<CongratulationsPage />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/choose-plan" element={
+                <RouteGuard requireAuth>
+                  <ChoosePlanPage />
+                </RouteGuard>
+              } />
+              <Route path="/admin-kids" element={
+                <RouteGuard requireAuth requirePayment>
+                  <ManageKidsPage />
+                </RouteGuard>
+              } />
+              <Route path="/congratulations" element={
+                <RouteGuard requireAuth requirePayment>
+                  <CongratulationsPage />
+                </RouteGuard>
+              } />
+              <Route path="/dashboard" element={
+                <RouteGuard requireAuth requirePayment>
+                  <DashboardPage />
+                </RouteGuard>
+              } />
               <Route path="/system-test" element={<SystemTestPage />} />
               <Route path="/laer" element={<LearnCategoriesPage />} />
               <Route path="/kontakt" element={<ContactPage />} />

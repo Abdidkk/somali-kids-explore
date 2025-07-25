@@ -7,6 +7,8 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  userState: 'loading' | 'unauthenticated' | 'authenticated' | 'needs_payment' | 'paid' | 'onboarding';
+  refreshUserState: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -15,28 +17,77 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userState, setUserState] = useState<'loading' | 'unauthenticated' | 'authenticated' | 'needs_payment' | 'paid' | 'onboarding'>('loading');
+
+  const determineUserState = async (currentUser: User | null, currentSession: Session | null) => {
+    if (!currentUser) {
+      setUserState('unauthenticated');
+      return;
+    }
+
+    setUserState('authenticated');
+
+    // Check subscription status asynchronously
+    setTimeout(async () => {
+      try {
+        const { data: subscriptionData } = await supabase.functions.invoke('check-subscription', {
+          headers: { Authorization: `Bearer ${currentSession?.access_token}` }
+        });
+
+        if (subscriptionData?.subscribed) {
+          // Check if user has children profiles
+          const { data: childrenData } = await supabase
+            .from('children')
+            .select('id')
+            .eq('user_id', currentUser.id)
+            .limit(1);
+
+          if (childrenData && childrenData.length > 0) {
+            setUserState('paid');
+          } else {
+            setUserState('onboarding');
+          }
+        } else {
+          setUserState('needs_payment');
+        }
+      } catch (error) {
+        console.error('Error determining user state:', error);
+        setUserState('needs_payment');
+      }
+    }, 0);
+  };
+
+  const refreshUserState = async () => {
+    await determineUserState(user, session);
+  };
 
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-
-        // Defer Supabase calls with setTimeout to prevent deadlocks
-        if (session?.user && event === 'SIGNED_IN') {
+      async (event, newSession) => {
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
+        
+        if (newSession?.user) {
+          // Defer profile creation to prevent deadlocks
           setTimeout(() => {
-            ensureUserProfile(session.user);
+            ensureUserProfile(newSession.user);
           }, 0);
         }
+        
+        await determineUserState(newSession?.user ?? null, newSession);
+        setLoading(false);
       }
     );
 
     // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    supabase.auth.getSession().then(async ({ data: { session: initialSession } }) => {
+      setSession(initialSession);
+      setUser(initialSession?.user ?? null);
+      if (initialSession?.user) {
+        await ensureUserProfile(initialSession.user);
+      }
+      await determineUserState(initialSession?.user ?? null, initialSession);
       setLoading(false);
     });
 
@@ -86,16 +137,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Clear local state regardless of server response
       setUser(null);
       setSession(null);
+      setUserState('unauthenticated');
     } catch (error) {
       console.error('Error in signOut:', error);
       // Clear local state even if signOut fails
       setUser(null);
       setSession(null);
+      setUserState('unauthenticated');
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signOut }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      session, 
+      loading, 
+      signOut, 
+      userState,
+      refreshUserState
+    }}>
       {children}
     </AuthContext.Provider>
   );
