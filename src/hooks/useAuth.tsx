@@ -27,8 +27,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     setUserState('authenticated');
 
-    // Check subscription status asynchronously
-    setTimeout(async () => {
+    // Check subscription status asynchronously with retry logic
+    const checkUserState = async (retries = 3) => {
       try {
         const { data: subscriptionData } = await supabase.functions.invoke('check-subscription', {
           headers: { Authorization: `Bearer ${currentSession?.access_token}` }
@@ -52,9 +52,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (error) {
         console.error('Error determining user state:', error);
-        setUserState('needs_payment');
+        if (retries > 0) {
+          // Retry after a short delay
+          setTimeout(() => checkUserState(retries - 1), 1000);
+        } else {
+          setUserState('needs_payment');
+        }
       }
-    }, 0);
+    };
+
+    setTimeout(() => checkUserState(), 0);
   };
 
   const refreshUserState = async () => {

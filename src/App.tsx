@@ -13,6 +13,8 @@ import MainNavbar from "./components/MainNavbar";
 import LogInPage from "./pages/LogInPage";
 import SignUpPage from "./pages/SignUpPage";
 import ChoosePlanPage from "./pages/ChoosePlanPage";
+import PaymentSuccessPage from "./pages/PaymentSuccessPage";
+import PaymentCancelPage from "./pages/PaymentCancelPage";
 import ManageKidsPage from "./pages/ManageKidsPage";
 import CongratulationsPage from "./pages/CongratulationsPage";
 import DashboardPage from "./pages/DashboardPage";
@@ -46,6 +48,8 @@ const App = () => (
                   <ChoosePlanPage />
                 </RouteGuard>
               } />
+              <Route path="/payment-success" element={<PaymentSuccessPage />} />
+              <Route path="/payment-cancel" element={<PaymentCancelPage />} />
               <Route path="/admin-kids" element={
                 <RouteGuard requireAuth requirePayment>
                   <ManageKidsPage />

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Crown } from "lucide-react";
+import { Check, Crown, Plus, Minus } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 const ChoosePlanPage = () => {
   const [loading, setLoading] = useState<string | null>(null);
+  const [numKids, setNumKids] = useState(0);
   const { user, session } = useAuth();
   const { subscribed, subscriptionTier } = useSubscription();
   const navigate = useNavigate();
@@ -61,7 +62,8 @@ const ChoosePlanPage = () => {
           priceId, 
           planName, 
           billingInterval,
-          numKids: 0 // Base subscription only
+          numKids,
+          childrenOnly: false
         },
         headers: {
           Authorization: `Bearer ${session.access_token}`,
@@ -79,7 +81,8 @@ const ChoosePlanPage = () => {
       }
 
       if (data?.url) {
-        window.open(data.url, '_blank');
+        // Redirect to Stripe in same window for better mobile experience
+        window.location.href = data.url;
       }
     } catch (error) {
       console.error('Error in handleSubscribe:', error);
@@ -126,6 +129,49 @@ const ChoosePlanPage = () => {
           </p>
         </div>
 
+        {/* Children Counter */}
+        <div className="max-w-md mx-auto mb-12">
+          <Card className="p-6">
+            <div className="text-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Hvor mange børneprofiler har du brug for?
+              </h3>
+              <p className="text-sm text-gray-600">
+                Du kan altid tilføje flere profiler senere
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setNumKids(Math.max(0, numKids - 1))}
+                disabled={numKids === 0}
+              >
+                <Minus size={16} />
+              </Button>
+              <div className="text-2xl font-bold text-gray-900 min-w-[3rem] text-center">
+                {numKids}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setNumKids(numKids + 1)}
+              >
+                <Plus size={16} />
+              </Button>
+            </div>
+            {numKids > 0 && (
+              <div className="mt-4 text-center">
+                <p className="text-sm text-gray-600">
+                  Ekstra omkostning: <span className="font-semibold">
+                    {numKids * 15} kr/måned eller {numKids * 135} kr/år
+                  </span>
+                </p>
+              </div>
+            )}
+          </Card>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {plans.map((plan) => (
             <Card 
@@ -152,13 +198,20 @@ const ChoosePlanPage = () => {
                   </div>
                 )}
                 <div className="mt-4">
-                  <span className="text-4xl font-bold">{plan.price} kr</span>
+                  <span className="text-4xl font-bold">
+                    {plan.price + (numKids * (plan.billingInterval === "monthly" ? 15 : 135))} kr
+                  </span>
                   <span className="text-gray-600">
                     {plan.billingInterval === "monthly" ? "/måned" : "/år"}
                   </span>
                   {plan.billingInterval === "yearly" && (
                     <div className="text-sm text-green-600 font-medium mt-1">
-                      ({Math.round(plan.price / 12)} kr/måned)
+                      ({Math.round((plan.price + (numKids * 135)) / 12)} kr/måned)
+                    </div>
+                  )}
+                  {numKids > 0 && (
+                    <div className="text-sm text-gray-500 mt-2">
+                      Base: {plan.price} kr + {numKids} børn: {numKids * (plan.billingInterval === "monthly" ? 15 : 135)} kr
                     </div>
                   )}
                 </div>

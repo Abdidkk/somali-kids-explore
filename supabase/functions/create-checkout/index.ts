@@ -102,8 +102,8 @@ serve(async (req) => {
       line_items: lineItems,
       mode: "subscription",
       payment_method_types: ["card"],
-      success_url: `${req.headers.get("origin")}/congratulations`,
-      cancel_url: `${req.headers.get("origin")}/choose-plan`,
+      success_url: `${req.headers.get("origin")}/payment-success`,
+      cancel_url: `${req.headers.get("origin")}/payment-cancel`,
       metadata: {
         plan_name: planName,
         user_id: user.id,
