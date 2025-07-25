@@ -81,17 +81,25 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     if (user && session) {
-      checkSubscription();
+      // Delay initial check to avoid immediate rate limiting
+      const timer = setTimeout(() => {
+        checkSubscription();
+      }, 1000);
+      return () => clearTimeout(timer);
     } else {
       setLoading(false);
     }
   }, [user, session]);
 
   // Listen for page focus to refresh subscription status (when returning from Stripe)
+  // But limit to avoid rate limits
   useEffect(() => {
+    let lastCheck = 0;
     const handleFocus = () => {
-      if (user && session && document.visibilityState === 'visible') {
+      const now = Date.now();
+      if (user && session && document.visibilityState === 'visible' && now - lastCheck > 5000) {
         console.log('Page focused - refreshing subscription status');
+        lastCheck = now;
         checkSubscription();
       }
     };
@@ -103,7 +111,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       window.removeEventListener('focus', handleFocus);
       document.removeEventListener('visibilitychange', handleFocus);
     };
-  }, [user, session, checkSubscription]);
+  }, [user, session]);
 
   return (
     <SubscriptionContext.Provider value={{ 

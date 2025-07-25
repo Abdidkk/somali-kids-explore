@@ -67,6 +67,10 @@ serve(async (req) => {
     logStep("User authenticated", { userId: user.id, email: user.email });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
+    
+    // Add a small delay to help with rate limiting
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     
     if (customers.data.length === 0) {
@@ -95,11 +99,14 @@ serve(async (req) => {
     const customerId = customers.data[0].id;
     logStep("Found Stripe customer", { customerId });
 
+    // Add another small delay before checking subscriptions
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
     // Check for all active subscription statuses including trialing
     const subscriptions = await stripe.subscriptions.list({
       customer: customerId,
       status: "all",
-      limit: 10,
+      limit: 5,
     });
     
     // Filter for active subscriptions (active, trialing, past_due)

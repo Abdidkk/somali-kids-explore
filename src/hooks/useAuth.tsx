@@ -27,18 +27,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     setUserState('authenticated');
 
-    // Check subscription status asynchronously with retry logic
-    const checkUserState = async (retries = 3) => {
+    // Check subscription status with proper session validation
+    const checkUserState = async (retries = 2) => {
       try {
-        // Ensure we have a fresh session token
-        const { data: { session: freshSession } } = await supabase.auth.getSession();
-        if (!freshSession?.access_token) {
-          throw new Error('No valid session token available');
+        // Use current session or get fresh one
+        let sessionToUse = currentSession;
+        if (!sessionToUse?.access_token) {
+          const { data: { session: freshSession } } = await supabase.auth.getSession();
+          sessionToUse = freshSession;
         }
 
-        const { data: subscriptionData } = await supabase.functions.invoke('check-subscription', {
-          headers: { Authorization: `Bearer ${freshSession.access_token}` }
+        if (!sessionToUse?.access_token) {
+          console.log('No valid session, defaulting to needs_payment');
+          setUserState('needs_payment');
+          return;
+        }
+
+        // Check subscription with exponential backoff for rate limits
+        const { data: subscriptionData, error } = await supabase.functions.invoke('check-subscription', {
+          headers: { Authorization: `Bearer ${sessionToUse.access_token}` }
         });
+
+        if (error) {
+          console.error('Subscription check error:', error);
+          if (retries > 0 && (error.message?.includes('rate limit') || error.message?.includes('Rate limit'))) {
+            // Wait longer for rate limit errors
+            setTimeout(() => checkUserState(retries - 1), 2000 * (3 - retries));
+            return;
+          }
+          setUserState('needs_payment');
+          return;
+        }
 
         if (subscriptionData?.subscribed) {
           // Check if user has children profiles
@@ -59,7 +78,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch (error) {
         console.error('Error determining user state:', error);
         if (retries > 0) {
-          // Retry after a short delay
           setTimeout(() => checkUserState(retries - 1), 1000);
         } else {
           setUserState('needs_payment');
@@ -67,7 +85,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
-    setTimeout(() => checkUserState(), 0);
+    // Delay to avoid immediate calls during auth state changes
+    setTimeout(() => checkUserState(), 500);
   };
 
   const refreshUserState = async () => {
