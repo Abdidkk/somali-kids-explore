@@ -8,6 +8,7 @@ const corsHeaders = {
 interface ChildAnalytics {
   childId: string
   childName: string
+  totalPoints: number
   totalLearningTime: number
   completedModules: number
   badgesEarned: number
@@ -114,6 +115,7 @@ async function getFamilyOverview(supabase: any, parentId: string) {
   // Calculate family totals
   const familyTotals = {
     totalChildren: children.length,
+    totalPoints: familyAnalytics.reduce((sum, child) => sum + child.totalPoints, 0),
     totalLearningTime: familyAnalytics.reduce((sum, child) => sum + child.totalLearningTime, 0),
     totalBadges: familyAnalytics.reduce((sum, child) => sum + child.badgesEarned, 0),
     totalCompletedModules: familyAnalytics.reduce((sum, child) => sum + child.completedModules, 0),
@@ -149,71 +151,72 @@ async function generateChildAnalytics(
   childId: string,
   childName: string
 ): Promise<ChildAnalytics> {
-  // Get learning progress
+  // Get progress data from the correct table using child_name
   const { data: progressData } = await supabase
-    .from('learning_progress')
+    .from('progress')
     .select('*')
-    .eq('child_id', childId)
+    .eq('child_name', childName)
 
-  // Calculate learning time (15 min per completed lesson)
-  const totalLearningTime = progressData.reduce(
-    (sum, progress) => sum + (progress.completed_lessons * 15), 
-    0
-  )
+  // Add null checks for data
+  const safeProgressData = progressData || []
+  
+  // Calculate total points from actual progress data
+  const totalPoints = safeProgressData.reduce((sum, progress) => sum + progress.total_points, 0)
+  
+  // Calculate learning time from time_spent (stored in minutes)
+  const totalLearningTime = safeProgressData.reduce((sum, progress) => sum + progress.time_spent, 0)
 
-  // Count completed modules
-  const completedModules = progressData.filter(
-    progress => progress.progress_percentage === 100
-  ).length
+  // Count completed activities
+  const completedModules = safeProgressData.reduce((sum, progress) => sum + progress.activities_completed, 0)
 
-  // Get badges
-  const { data: badgesData } = await supabase
-    .from('achievement_badges')
+  // Get quiz results for badges/achievements
+  const { data: quizData } = await supabase
+    .from('quiz_results')
     .select('*')
-    .eq('child_id', childId)
+    .eq('child_name', childName)
 
-  const badgesEarned = badgesData.length
+  const safeQuizData = quizData || []
+  const badgesEarned = safeQuizData.length
 
-  // Calculate progress by category
+  // Calculate progress by category using actual progress data
   const progressByCategory = {}
-  progressData.forEach(progress => {
-    const category = getCategoryFromModuleId(progress.module_id)
+  safeProgressData.forEach(progress => {
+    const category = progress.category
     if (!progressByCategory[category]) {
-      progressByCategory[category] = []
+      progressByCategory[category] = {
+        totalPoints: 0,
+        activitiesCompleted: 0,
+        timeSpent: 0
+      }
     }
-    progressByCategory[category].push(progress.progress_percentage)
+    progressByCategory[category].totalPoints += progress.total_points
+    progressByCategory[category].activitiesCompleted += progress.activities_completed
+    progressByCategory[category].timeSpent += progress.time_spent
   })
 
-  // Average progress per category
+  // Convert to percentage-like scores (points as main metric)
   Object.keys(progressByCategory).forEach(category => {
-    const progresses = progressByCategory[category]
-    progressByCategory[category] = progresses.reduce((sum, p) => sum + p, 0) / progresses.length
+    const categoryData = progressByCategory[category]
+    // Use total points as the main progress metric
+    progressByCategory[category] = categoryData.totalPoints
   })
 
-  // Get recent activity (last 5 badge achievements and progress updates)
+  // Get recent activity from quiz results
   const recentActivity = [
-    ...badgesData.slice(0, 3).map(badge => ({
-      type: 'badge',
-      title: `Fik badge: ${badge.badge_name}`,
-      date: badge.earned_date,
-      category: badge.category
-    })),
-    ...progressData
-      .filter(p => p.last_completed_lesson_date)
-      .sort((a, b) => new Date(b.last_completed_lesson_date) - new Date(a.last_completed_lesson_date))
-      .slice(0, 3)
-      .map(progress => ({
-        type: 'lesson',
-        title: `Gennemførte lektion i ${progress.module_id}`,
-        date: progress.last_completed_lesson_date,
-        category: getCategoryFromModuleId(progress.module_id)
+    ...safeQuizData
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 5)
+      .map(quiz => ({
+        type: 'quiz',
+        title: `Gennemførte ${quiz.activity_name}`,
+        date: quiz.created_at,
+        category: quiz.category,
+        score: `${quiz.score}/${quiz.max_score} points`
       }))
   ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5)
 
-  // Calculate overall progress
-  const overallProgress = progressData.length > 0 
-    ? progressData.reduce((sum, p) => sum + p.progress_percentage, 0) / progressData.length 
-    : 0
+  // Calculate overall progress based on total points
+  const overallProgress = totalPoints > 0 ? Math.min((totalPoints / 1000) * 100, 100) : 0
 
   // Generate recommendations
   const recommendedNextSteps = determineNextSteps(
@@ -225,6 +228,7 @@ async function generateChildAnalytics(
   return {
     childId,
     childName,
+    totalPoints,
     totalLearningTime,
     completedModules,
     badgesEarned,
