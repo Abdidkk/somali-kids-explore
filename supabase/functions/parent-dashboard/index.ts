@@ -330,8 +330,44 @@ function generateModuleRecommendations(progressByCategory: any, childProfile: an
     recommendations.push('Mad - Frugter og grøntsager')
   }
   
-  if (childProfile.interests?.includes('dyr')) {
+  if (!progressByCategory['Dyr'] || progressByCategory['Dyr'] < 50) {
     recommendations.push('Dyr - Somaliske dyrenavne')
+  }
+  
+  if (!progressByCategory['Kropsdel'] || progressByCategory['Kropsdel'] < 50) {
+    recommendations.push('Kropsdel - Lær kroppens dele på somalisk')
+  }
+  
+  if (!progressByCategory['Geografi'] || progressByCategory['Geografi'] < 50) {
+    recommendations.push('Geografi - Lande og regioner')
+  }
+  
+  if (!progressByCategory['Kalender'] || progressByCategory['Kalender'] < 50) {
+    recommendations.push('Kalender - Dage, måneder og årstider')
+  }
+  
+  if (!progressByCategory['Familie og venner'] || progressByCategory['Familie og venner'] < 50) {
+    recommendations.push('Familie og venner - Relationer og sociale dynamikker')
+  }
+  
+  if (!progressByCategory['Ord'] || progressByCategory['Ord'] < 50) {
+    recommendations.push('Ord - Udvid ordforrådet')
+  }
+  
+  if (!progressByCategory['Daglige aktiviteter'] || progressByCategory['Daglige aktiviteter'] < 50) {
+    recommendations.push('Daglige aktiviteter - Almindelige hverdagsopgaver')
+  }
+  
+  if (!progressByCategory['Sætninger'] || progressByCategory['Sætninger'] < 50) {
+    recommendations.push('Sætninger - Kommunikationsøvelser')
+  }
+  
+  if (!progressByCategory['Læse bøger'] || progressByCategory['Læse bøger'] < 50) {
+    recommendations.push('Læse bøger - Historier og læseforståelse')
+  }
+  
+  if (!progressByCategory['Quiz'] || progressByCategory['Quiz'] < 50) {
+    recommendations.push('Quiz - Test din viden')
   }
   
   recommendations.push('Kulturelt indhold - Somalisk kulturarv')
