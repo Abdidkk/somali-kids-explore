@@ -30,8 +30,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Check subscription status asynchronously with retry logic
     const checkUserState = async (retries = 3) => {
       try {
+        // Ensure we have a fresh session token
+        const { data: { session: freshSession } } = await supabase.auth.getSession();
+        if (!freshSession?.access_token) {
+          throw new Error('No valid session token available');
+        }
+
         const { data: subscriptionData } = await supabase.functions.invoke('check-subscription', {
-          headers: { Authorization: `Bearer ${currentSession?.access_token}` }
+          headers: { Authorization: `Bearer ${freshSession.access_token}` }
         });
 
         if (subscriptionData?.subscribed) {
@@ -65,7 +71,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const refreshUserState = async () => {
-    await determineUserState(user, session);
+    // Ensure we get a fresh session before checking user state
+    const { data: { session: freshSession } } = await supabase.auth.getSession();
+    setSession(freshSession);
+    setUser(freshSession?.user ?? null);
+    await determineUserState(freshSession?.user ?? null, freshSession);
   };
 
   useEffect(() => {

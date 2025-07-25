@@ -49,16 +49,26 @@ serve(async (req) => {
     logStep("Function started");
 
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("No authorization header provided");
+    if (!authHeader) {
+      logStep("Authentication failed", { error: "No authorization header provided" });
+      throw new Error("Authentication error: No authorization header provided");
+    }
     
     const token = authHeader.replace("Bearer ", "");
-    const { data, error: userError } = await supabaseClient.auth.getUser(token);
+    logStep("Authenticating user with token");
+    
+    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
     if (userError) {
       logStep("Authentication failed", { error: userError.message });
       throw new Error(`Authentication error: ${userError.message}`);
     }
-    const user = data.user;
-    if (!user?.email) throw new Error("User not authenticated or email not available");
+    
+    const user = userData.user;
+    if (!user?.email) {
+      logStep("No user or email found");
+      throw new Error("Authentication error: User not authenticated or email not available");
+    }
+    
     logStep("User authenticated", { userId: user.id, email: user.email });
 
     const { priceId, planName, billingInterval = "monthly", numKids = 0, childrenOnly = false } = await req.json();
@@ -175,15 +185,32 @@ serve(async (req) => {
       status: 200,
     });
   } catch (error) {
-    logStep("ERROR in create-checkout", { message: error.message });
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logStep("ERROR in create-checkout", { message: errorMessage });
     
-    // Handle specific Stripe errors with Danish messages
-    let userMessage = error.message;
-    if (error.message.includes("set an account or business name")) {
-      userMessage = "Du skal indstille et firmanavn i din Stripe-konto før du kan oprette betalinger. Gå til https://dashboard.stripe.com/account og udfyld 'Business Information'.";
+    // Check if this is an authentication error
+    if (errorMessage.includes('Authentication error') || errorMessage.includes('Session')) {
+      return new Response(JSON.stringify({ 
+        error: "Session udløbet. Prøv at logge ind igen.",
+        details: errorMessage 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401,
+      });
     }
     
-    return new Response(JSON.stringify({ error: userMessage }), {
+    // Handle specific Stripe errors with Danish messages
+    let userMessage = errorMessage;
+    if (errorMessage.includes("set an account or business name")) {
+      userMessage = "Du skal indstille et firmanavn i din Stripe-konto før du kan oprette betalinger. Gå til https://dashboard.stripe.com/account og udfyld 'Business Information'.";
+    } else if (errorMessage.includes('No such price') || errorMessage.includes('Invalid price')) {
+      userMessage = "Ugyldig pris konfiguration. Kontakt venligst support.";
+    }
+    
+    return new Response(JSON.stringify({ 
+      error: userMessage,
+      details: errorMessage 
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });

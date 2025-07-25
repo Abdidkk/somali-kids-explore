@@ -50,13 +50,25 @@ const ChoosePlanPage = () => {
   ];
 
   const handleSubscribe = async (priceId: string, planName: string, billingInterval: string) => {
-    if (!user || !session) {
+    if (!user) {
       navigate('/login');
       return;
     }
 
     setLoading(priceId);
     try {
+      // Ensure we have a fresh session token
+      const { data: { session: freshSession } } = await supabase.auth.getSession();
+      if (!freshSession?.access_token) {
+        toast({
+          title: "Session udløbet",
+          description: "Prøv at logge ind igen.",
+          variant: "destructive",
+        });
+        navigate('/login');
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: { 
           priceId, 
@@ -66,17 +78,28 @@ const ChoosePlanPage = () => {
           childrenOnly: false
         },
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${freshSession.access_token}`,
         },
       });
 
       if (error) {
         console.error('Error creating checkout:', error);
-        toast({
-          title: "Fejl",
-          description: "Kunne ikke oprette betalingssession. Prøv igen.",
-          variant: "destructive",
-        });
+        
+        // Handle authentication errors specifically
+        if (error.message?.includes('authentication') || error.message?.includes('Session')) {
+          toast({
+            title: "Session udløbet",
+            description: "Prøv at logge ind igen.",
+            variant: "destructive",
+          });
+          navigate('/login');
+        } else {
+          toast({
+            title: "Fejl",
+            description: "Kunne ikke oprette betalingssession. Prøv igen.",
+            variant: "destructive",
+          });
+        }
         return;
       }
 
