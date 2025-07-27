@@ -133,6 +133,15 @@ async function completeLesson(
   moduleId: string, 
   lessonId: string
 ) {
+  // Get child profile to get the name
+  const { data: childProfile, error: childError } = await supabase
+    .from('child_profiles')
+    .select('name, parent_user_id')
+    .eq('id', childId)
+    .single()
+
+  if (childError) throw childError
+
   const { data: progressData, error: progressError } = await supabase
     .from('learning_progress')
     .select('*')
@@ -167,6 +176,39 @@ async function completeLesson(
     .select()
 
   if (error) throw error
+
+  // Update the progress table with points (compatible with existing PointsManager system)
+  const category = getCategoryFromModule(moduleId)
+  const pointsEarned = 10 // Points per lesson completed
+  
+  await supabase
+    .from('progress')
+    .upsert({
+      user_id: childProfile.parent_user_id,
+      child_name: childProfile.name,
+      category: category,
+      total_points: pointsEarned,
+      activities_completed: 1,
+      time_spent: 5, // Assume 5 minutes per lesson
+      category_enabled: true
+    }, {
+      onConflict: 'user_id,child_name,category',
+      ignoreDuplicates: false
+    })
+
+  // Also add a quiz result entry for tracking
+  await supabase
+    .from('quiz_results')
+    .insert({
+      user_id: childProfile.parent_user_id,
+      child_name: childProfile.name,
+      category: category,
+      activity_name: `${moduleId} - ${lessonId}`,
+      score: pointsEarned,
+      max_score: pointsEarned,
+      completion_time: 300, // 5 minutes in seconds
+      answers: { lesson_completed: true, module_id: moduleId, lesson_id: lessonId }
+    })
 
   // Award badges for milestones
   const badges = []
