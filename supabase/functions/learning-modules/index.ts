@@ -9,7 +9,7 @@ interface LearningModule {
   id: string
   name: string
   category: string
-  difficulty: 'let' | 'middel' | 'svær'
+  difficulty: 'let' | 'mellem' | 'svær'
   lessons: Lesson[]
 }
 
