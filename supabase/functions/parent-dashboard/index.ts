@@ -112,10 +112,9 @@ async function getFamilyOverview(supabase: any, parentId: string) {
     familyAnalytics.push(analytics)
   }
 
-  // Calculate family totals
+  // Calculate family totals to match useMultiChildProgress expectations
   const familyTotals = {
     totalChildren: children.length,
-    totalPoints: familyAnalytics.reduce((sum, child) => sum + child.totalPoints, 0),
     totalLearningTime: familyAnalytics.reduce((sum, child) => sum + child.totalLearningTime, 0),
     totalBadges: familyAnalytics.reduce((sum, child) => sum + child.badgesEarned, 0),
     totalCompletedModules: familyAnalytics.reduce((sum, child) => sum + child.completedModules, 0),
