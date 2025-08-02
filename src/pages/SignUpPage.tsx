@@ -84,7 +84,7 @@ export default function SignUpPage() {
         toast.error(error.message);
       } else {
         toast.success("Bekræftelsesmail sendt! Tjek din indbakke.");
-        navigate('/choose-plan');
+        navigate(`/email-confirmation?email=${encodeURIComponent(email)}`);
       }
     } catch (error) {
       toast.error("Der opstod en fejl ved oprettelse af konto");
