@@ -9,6 +9,7 @@ import SocialLoginButton from "@/components/SocialLoginButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { validatePassword, validateEmail } from "@/utils/validation";
 
 const HERO_BLUE = "#4CA6FE";
 
@@ -17,6 +18,7 @@ export default function SignUpPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -27,8 +29,41 @@ export default function SignUpPage() {
     }
   }, [user, navigate]);
 
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    
+    if (newPassword) {
+      const validation = validatePassword(newPassword);
+      setPasswordErrors(validation.errors);
+    } else {
+      setPasswordErrors([]);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate email
+    if (!validateEmail(email)) {
+      toast.error("Indtast en gyldig email adresse");
+      return;
+    }
+
+    // Validate password
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      toast.error("Adgangskoden opfylder ikke kravene");
+      setPasswordErrors(passwordValidation.errors);
+      return;
+    }
+
+    // Validate name
+    if (name.trim().length < 2) {
+      toast.error("Indtast dit fulde navn");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -140,12 +175,21 @@ export default function SignUpPage() {
               type="password"
               placeholder="●●●●●●●●"
               required
-              minLength={6}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
               className="bg-blue-50 focus:bg-white"
               autoComplete="new-password"
             />
+            {passwordErrors.length > 0 && (
+              <div className="mt-2 text-xs text-red-600 space-y-1">
+                <p className="font-medium">Adgangskoden skal indeholde:</p>
+                <ul className="list-disc list-inside space-y-0.5">
+                  {passwordErrors.map((error, index) => (
+                    <li key={index}>{error}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
           <Button
             type="submit"
