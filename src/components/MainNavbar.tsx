@@ -6,8 +6,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-
-const HERO_BLUE = "#4CA6FE";
+import { ROUTES, APP_NAME } from "@/utils/constants";
+import { cn } from "@/lib/utils";
 
 const MainNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,7 +15,7 @@ const MainNavbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const isLearningPage = location.pathname === "/laer";
+  const isLearningPage = location.pathname === ROUTES.LEARN;
 
   // Don't render the navbar on the learning page
   if (isLearningPage) {
@@ -30,115 +30,111 @@ const MainNavbar = () => {
     try {
       await signOut();
       toast.success("Du er nu logget ud");
-      navigate("/");
+      navigate(ROUTES.HOME);
       setIsMenuOpen(false);
     } catch (error) {
       toast.error("Der opstod en fejl ved logout");
     }
   };
 
-  return (
-    <header className="bg-white border-b border-gray-100 sticky top-0 z-50 flex items-center justify-between px-2 sm:px-3 md:px-4 h-12 sm:h-14">
-      <div className="flex items-center">
-        <SomaliFlag className="w-6 h-6 sm:w-7 sm:h-7" />
-        <span
-          className="text-lg sm:text-xl md:text-2xl font-bold ml-1 sm:ml-2"
-          style={{
-            color: HERO_BLUE,
-            letterSpacing: 0.5,
-          }}
-        >
-          Dugsi
-        </span>
-      </div>
+  const closeMenu = () => setIsMenuOpen(false);
 
-      <div className="flex items-center">
-        {/* Desktop knapper */}
+  return (
+    <header className="bg-card border-b border-border sticky top-0 z-50 flex items-center justify-between safe-area-padding h-12 sm:h-14 shadow-sm">
+      <Link to={ROUTES.HOME} className="flex items-center hover:opacity-80 transition-opacity">
+        <SomaliFlag className="w-6 h-6 sm:w-7 sm:h-7" />
+        <span className="text-lg sm:text-xl md:text-2xl font-bold ml-1 sm:ml-2 text-hero-blue tracking-wide">
+          {APP_NAME}
+        </span>
+      </Link>
+
+      <nav className="flex items-center">
+        {/* Desktop Actions */}
         {!isMobile && (
-          <div className="flex gap-1 sm:gap-2">
+          <div className="flex gap-2">
             {user ? (
-              // Logout knap når brugeren er logget ind
               <Button
                 onClick={handleLogout}
                 variant="outline"
                 size="sm"
-                className="flex items-center gap-1 sm:gap-2 text-sm sm:text-base"
+                className="flex items-center gap-2"
               >
                 <LogOut className="h-4 w-4" />
                 Log ud
               </Button>
             ) : (
-              // Login/signup knapper når ikke authenticated (fjernet isHome betingelse)
               <>
-                <Link
-                  to="/login"
-                  className="px-2 sm:px-3 py-1 sm:py-2 rounded-md text-sm sm:text-base font-medium text-[#4CA6FE] hover:bg-[#4CA6FE]/10 transition"
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="sm"
+                  className="text-hero-blue hover:bg-hero-blue/10"
                 >
-                  Log ind
-                </Link>
-                <Link
-                  to="/signup"
-                  className="px-2 sm:px-3 py-1 sm:py-2 rounded-md text-sm sm:text-base font-medium text-white bg-[#4CA6FE] hover:bg-[#3b95e9] transition"
+                  <Link to={ROUTES.LOGIN}>Log ind</Link>
+                </Button>
+                <Button
+                  asChild
+                  size="sm"
+                  className="bg-hero-blue hover:bg-hero-blue/90"
                 >
-                  Opret bruger
-                </Link>
+                  <Link to={ROUTES.SIGNUP}>Opret bruger</Link>
+                </Button>
               </>
             )}
           </div>
         )}
-        {/* Mobil menu ikon */}
+        
+        {/* Mobile Menu Toggle */}
         {isMobile && (
-          <button
-            type="button"
-            className="inline-flex items-center justify-center p-1 sm:p-2 rounded-md text-[#4CA6FE] hover:text-white hover:bg-[#4CA6FE]/80 focus:outline-none"
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={toggleMenu}
             aria-expanded={isMenuOpen}
+            aria-label={isMenuOpen ? "Luk menu" : "Åbn menu"}
+            className="text-hero-blue hover:bg-hero-blue/10"
           >
-            <span className="sr-only">Åbn hovedmenu</span>
             {isMenuOpen ? (
-              <X className="h-5 w-5" aria-hidden="true" />
+              <X className="h-5 w-5" />
             ) : (
-              <Menu className="h-5 w-5" aria-hidden="true" />
+              <Menu className="h-5 w-5" />
             )}
-          </button>
+          </Button>
         )}
-      </div>
+      </nav>
 
-      {/* Mobilmenu */}
+      {/* Mobile Menu */}
       {isMobile && isMenuOpen && (
-        <div className="absolute top-full left-0 right-0 w-full bg-white shadow-lg">
-          <div className="px-3 py-3 space-y-1">
-            <div className="flex flex-col space-y-2">
-              {user ? (
-                // Logout knap på mobil når brugeren er logget ind
+        <div className="absolute top-full left-0 right-0 w-full bg-card border-b border-border shadow-lg">
+          <div className="p-4 space-y-3">
+            {user ? (
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className="w-full flex items-center justify-center gap-2"
+              >
+                <LogOut className="h-4 w-4" />
+                Log ud
+              </Button>
+            ) : (
+              <div className="space-y-2">
                 <Button
-                  onClick={handleLogout}
-                  variant="outline"
-                  className="flex items-center justify-center gap-2 text-sm font-medium"
+                  asChild
+                  variant="ghost"
+                  className="w-full text-hero-blue hover:bg-hero-blue/10"
+                  onClick={closeMenu}
                 >
-                  <LogOut className="h-4 w-4" />
-                  Log ud
+                  <Link to={ROUTES.LOGIN}>Log ind</Link>
                 </Button>
-              ) : (
-                // Login/signup knapper når ikke authenticated (fjernet isHome betingelse)
-                <>
-                  <Link
-                    to="/login"
-                    className="px-3 py-2 rounded-md font-medium text-[#4CA6FE] hover:bg-[#4CA6FE]/10 transition text-center"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Log ind
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className="px-3 py-2 rounded-md font-medium text-white bg-[#4CA6FE] hover:bg-[#3b95e9] transition text-center"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Opret bruger
-                  </Link>
-                </>
-              )}
-            </div>
+                <Button
+                  asChild
+                  className="w-full bg-hero-blue hover:bg-hero-blue/90"
+                  onClick={closeMenu}
+                >
+                  <Link to={ROUTES.SIGNUP}>Opret bruger</Link>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       )}
