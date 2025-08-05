@@ -1,4 +1,3 @@
-
 import { createContext, useContext } from "react";
 import { authService } from "@/services/auth/auth.service";
 import { useAuthState, UserState } from "@/hooks/auth/useAuthState";
