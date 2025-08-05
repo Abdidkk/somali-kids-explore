@@ -62,9 +62,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (subscriptionData?.subscribed) {
           // Check if user has children profiles
           const { data: childrenData } = await supabase
-            .from('children')
+            .from('child_profiles')
             .select('id')
-            .eq('user_id', currentUser.id)
+            .eq('parent_user_id', currentUser.id)
             .limit(1);
 
           if (childrenData && childrenData.length > 0) {

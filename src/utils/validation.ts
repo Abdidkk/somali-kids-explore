@@ -14,26 +14,14 @@ export function validatePassword(password: string): {
 } {
   const errors: string[] = [];
 
-  if (password.length < 8) {
-    errors.push("Adgangskoden skal være mindst 8 tegn");
+  // Use minimum 6 characters to match Supabase's minimum password length setting
+  if (password.length < 6) {
+    errors.push("Adgangskoden skal være mindst 6 tegn");
   }
 
-  if (!/[a-z]/.test(password)) {
-    errors.push("Adgangskoden skal indeholde mindst ét lille bogstav");
-  }
-
-  if (!/[A-Z]/.test(password)) {
-    errors.push("Adgangskoden skal indeholde mindst ét stort bogstav");
-  }
-
-  if (!/[0-9]/.test(password)) {
-    errors.push("Adgangskoden skal indeholde mindst ét tal");
-  }
-
-  if (!/[^a-zA-Z0-9]/.test(password)) {
-    errors.push("Adgangskoden skal indeholde mindst ét specialtegn");
-  }
-
+  // Remove overly strict requirements that conflict with leaked password protection
+  // Supabase's leaked password protection will handle security
+  
   return {
     isValid: errors.length === 0,
     errors

@@ -22,9 +22,9 @@ export function useChildren() {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('children')
+        .from('child_profiles')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('parent_user_id', user.id)
         .order('created_at', { ascending: true });
 
       if (error) throw error;
@@ -41,9 +41,9 @@ export function useChildren() {
 
     try {
       const { data, error } = await supabase
-        .from('children')
+        .from('child_profiles')
         .insert({
-          user_id: user.id,
+          parent_user_id: user.id,
           name,
           age,
           avatar_color: avatarColor
@@ -65,10 +65,10 @@ export function useChildren() {
 
     try {
       const { error } = await supabase
-        .from('children')
+        .from('child_profiles')
         .delete()
         .eq('id', childId)
-        .eq('user_id', user.id);
+        .eq('parent_user_id', user.id);
 
       if (error) throw error;
       setChildren(prev => prev.filter(child => child.id !== childId));
@@ -83,10 +83,10 @@ export function useChildren() {
 
     try {
       const { data, error } = await supabase
-        .from('children')
+        .from('child_profiles')
         .update(updates)
         .eq('id', childId)
-        .eq('user_id', user.id)
+        .eq('parent_user_id', user.id)
         .select()
         .single();
 
