@@ -6,9 +6,9 @@ import { Mail, Lock, LogIn, Facebook } from "lucide-react";
 import SomaliFlag from "@/components/landing/SomaliFlag";
 import { Link, useNavigate } from "react-router-dom";
 import SocialLoginButton from "@/components/SocialLoginButton";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { authService } from "@/services/auth.service";
 
 const HERO_BLUE = "#4CA6FE";
 const VIVID_PURPLE = "#8B5CF6";
@@ -32,55 +32,35 @@ export default function LogInPage() {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const result = await authService.signIn({
         email,
-        password,
+        password
       });
 
-      if (error) {
-        toast.error(error.message);
-      } else {
+      if (result.success) {
         toast.success("Velkommen tilbage!");
         navigate('/dashboard');
+      } else {
+        toast.error(result.error || "Der opstod en fejl ved login");
       }
     } catch (error) {
-      toast.error("Der opstod en fejl ved login");
+      toast.error("Der opstod en uventet fejl");
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogleLogin = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/dashboard`
-        }
-      });
-      
-      if (error) {
-        toast.error(error.message);
-      }
-    } catch (error) {
-      toast.error("Der opstod en fejl ved Google login");
+    const result = await authService.signInWithProvider('google', '/dashboard');
+    if (!result.success) {
+      toast.error(result.error || "Der opstod en fejl ved Google login");
     }
   };
 
   const handleFacebookLogin = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'facebook',
-        options: {
-          redirectTo: `${window.location.origin}/dashboard`
-        }
-      });
-      
-      if (error) {
-        toast.error(error.message);
-      }
-    } catch (error) {
-      toast.error("Der opstod en fejl ved Facebook login");
+    const result = await authService.signInWithProvider('facebook', '/dashboard');
+    if (!result.success) {
+      toast.error(result.error || "Der opstod en fejl ved Facebook login");
     }
   };
 

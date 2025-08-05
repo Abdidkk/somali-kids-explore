@@ -6,10 +6,10 @@ import { Mail, Lock, User, Facebook } from "lucide-react";
 import SomaliFlag from "@/components/landing/SomaliFlag";
 import { Link, useNavigate } from "react-router-dom";
 import SocialLoginButton from "@/components/SocialLoginButton";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { validatePassword, validateEmail } from "@/utils/validation";
+import { validatePassword } from "@/utils/validation";
+import { authService } from "@/services/auth.service";
 
 const HERO_BLUE = "#4CA6FE";
 
@@ -43,87 +43,48 @@ export default function SignUpPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validate email
-    if (!validateEmail(email)) {
-      toast.error("Indtast en gyldig email adresse");
-      return;
-    }
-
-    // Validate password
-    const passwordValidation = validatePassword(password);
-    if (!passwordValidation.isValid) {
-      toast.error("Adgangskoden opfylder ikke kravene");
-      setPasswordErrors(passwordValidation.errors);
-      return;
-    }
-
-    // Validate name
-    if (name.trim().length < 2) {
-      toast.error("Indtast dit fulde navn");
-      return;
-    }
-
     setLoading(true);
 
     try {
-      const redirectUrl = `${window.location.origin}/choose-plan`;
-      
-      const { error } = await supabase.auth.signUp({
+      const result = await authService.signUp({
         email,
         password,
-        options: {
-          emailRedirectTo: redirectUrl,
-          data: {
-            name: name
-          }
-        }
+        name
       });
 
-      if (error) {
-        toast.error(error.message);
+      if (result.success) {
+        if (result.requiresConfirmation) {
+          toast.success("Bekræftelsesmail sendt! Tjek din indbakke.");
+          navigate(`/email-confirmation?email=${encodeURIComponent(email)}`);
+        } else {
+          toast.success("Konto oprettet!");
+          navigate('/choose-plan');
+        }
       } else {
-        toast.success("Bekræftelsesmail sendt! Tjek din indbakke.");
-        navigate(`/email-confirmation?email=${encodeURIComponent(email)}`);
+        toast.error(result.error || "Der opstod en fejl ved oprettelse af konto");
+        if (result.error?.includes("kravene")) {
+          const validation = validatePassword(password);
+          setPasswordErrors(validation.errors);
+        }
       }
     } catch (error) {
-      toast.error("Der opstod en fejl ved oprettelse af konto");
+      toast.error("Der opstod en uventet fejl");
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogleSignup = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/choose-plan`
-        }
-      });
-      
-      if (error) {
-        toast.error(error.message);
-      }
-    } catch (error) {
-      toast.error("Der opstod en fejl ved Google signup");
+    const result = await authService.signInWithProvider('google', '/choose-plan');
+    if (!result.success) {
+      toast.error(result.error || "Der opstod en fejl ved Google signup");
     }
   };
 
   const handleFacebookSignup = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'facebook',
-        options: {
-          redirectTo: `${window.location.origin}/choose-plan`
-        }
-      });
-      
-      if (error) {
-        toast.error(error.message);
-      }
-    } catch (error) {
-      toast.error("Der opstod en fejl ved Facebook signup");
+    const result = await authService.signInWithProvider('facebook', '/choose-plan');
+    if (!result.success) {
+      toast.error(result.error || "Der opstod en fejl ved Facebook signup");
     }
   };
 

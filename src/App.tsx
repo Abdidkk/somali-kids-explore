@@ -10,8 +10,7 @@ import { RouteGuard } from "@/components/routing/RouteGuard";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import MainNavbar from "./components/MainNavbar";
-import LogInPage from "./pages/LogInPage";
-import SignUpPage from "./pages/SignUpPage";
+import AuthPage from "./pages/AuthPage";
 import ChoosePlanPage from "./pages/ChoosePlanPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import PaymentCancelPage from "./pages/PaymentCancelPage";
@@ -42,8 +41,9 @@ const App = () => (
             <MainNavbar />
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/login" element={<LogInPage />} />
-              <Route path="/signup" element={<SignUpPage />} />
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/login" element={<AuthPage />} />
+              <Route path="/signup" element={<AuthPage />} />
               <Route path="/email-confirmation" element={<EmailConfirmationPage />} />
               <Route path="/choose-plan" element={
                 <RouteGuard requireAuth>
