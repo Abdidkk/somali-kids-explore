@@ -1,27 +1,23 @@
+
 /**
  * Validation utility functions
+ * Simplified and optimized for Supabase integration
  */
 
-export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export { validateAuthCredentials as validateEmail, sanitizeInput } from "@/services/auth/auth.validation";
 
-export function validateEmail(email: string): boolean {
-  return EMAIL_REGEX.test(email.trim());
-}
-
+// Legacy password validation - simplified for Supabase compatibility
 export function validatePassword(password: string): {
   isValid: boolean;
   errors: string[];
 } {
   const errors: string[] = [];
 
-  // Use minimum 6 characters to match Supabase's minimum password length setting
+  // Minimal validation - let Supabase handle the rest including leaked passwords
   if (password.length < 6) {
     errors.push("Adgangskoden skal være mindst 6 tegn");
   }
 
-  // Remove overly strict requirements that conflict with leaked password protection
-  // Supabase's leaked password protection will handle security
-  
   return {
     isValid: errors.length === 0,
     errors
@@ -34,8 +30,4 @@ export function validateChildName(name: string): boolean {
 
 export function validateAge(age: number): boolean {
   return age >= 1 && age <= 18;
-}
-
-export function sanitizeInput(input: string): string {
-  return input.trim().replace(/[<>]/g, '');
 }
