@@ -21,7 +21,7 @@ class AuthService {
         return { success: false, error: validation.error };
       }
 
-      // Perform signup with minimal configuration to avoid conflicts
+      // Perform signup with minimal configuration to enable leaked password protection
       const { data, error } = await supabase.auth.signUp({
         email: email.trim().toLowerCase(),
         password,

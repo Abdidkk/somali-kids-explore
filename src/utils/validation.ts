@@ -13,9 +13,9 @@ export function validatePassword(password: string): {
 } {
   const errors: string[] = [];
 
-  // Minimal validation - let Supabase handle the rest including leaked passwords
-  if (password.length < 6) {
-    errors.push("Adgangskoden skal være mindst 6 tegn");
+  // Minimal validation - let Supabase handle all password security including leaked passwords
+  if (password.length === 0) {
+    errors.push("Adgangskode er påkrævet");
   }
 
   return {

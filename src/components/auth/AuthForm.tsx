@@ -131,7 +131,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           type="password"
           placeholder="●●●●●●●●"
           required
-          minLength={6}
+          minLength={1}
           value={password}
           onChange={handlePasswordChange}
           className="bg-blue-50 focus:bg-white"

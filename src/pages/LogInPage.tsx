@@ -97,7 +97,7 @@ export default function LogInPage() {
               type="password"
               placeholder="●●●●●●●●"
               required
-              minLength={6}
+              minLength={1}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="bg-blue-50 focus:bg-white"

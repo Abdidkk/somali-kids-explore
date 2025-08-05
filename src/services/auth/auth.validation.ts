@@ -17,10 +17,10 @@ export function validateAuthCredentials({ email, password, name }: AuthCredentia
     errors.push("Indtast en gyldig email adresse");
   }
 
-  // Password validation - minimal requirements to let Supabase handle security
-  const passwordValid = password && password.length >= 6;
+  // Password validation - let Supabase handle all password security including leaked passwords
+  const passwordValid = password && password.length > 0;
   if (!passwordValid) {
-    errors.push("Adgangskode skal være mindst 6 tegn");
+    errors.push("Adgangskode er påkrævet");
   }
 
   // Name validation (optional)
