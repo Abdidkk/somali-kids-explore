@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mail, Lock, User } from "lucide-react";
 import { useAuthOperations } from "@/hooks/auth/useAuthOperations";
-import { validateAuthCredentials } from "@/services/auth/auth.validation";
+import { validateAuthCredentials, validateInput } from "@/services/auth/auth.validation";
 
 interface AuthFormProps {
   mode: 'login' | 'signup';
@@ -23,6 +23,8 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+  const [attemptCount, setAttemptCount] = useState(0);
+  const [lastAttempt, setLastAttempt] = useState(0);
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPassword = e.target.value;
@@ -44,10 +46,43 @@ export function AuthForm({ mode }: AuthFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Rate limiting check
+    const now = Date.now();
+    if (attemptCount >= 5 && now - lastAttempt < 60000) {
+      alert('For mange forsøg. Prøv igen om et minut.');
+      return;
+    }
+    
+    // Input validation
+    const emailValidation = validateInput(email, 255);
+    if (!emailValidation.isValid) {
+      alert(emailValidation.error || 'Ugyldig email');
+      return;
+    }
+    
+    let nameValidation: { isValid: boolean; sanitized: string; error?: string } = { isValid: true, sanitized: '' };
+    if (mode === 'signup' && name) {
+      nameValidation = validateInput(name, 50);
+      if (!nameValidation.isValid) {
+        alert(nameValidation.error || 'Ugyldigt navn');
+        return;
+      }
+    }
+    
+    setAttemptCount(prev => prev + 1);
+    setLastAttempt(now);
+    
     if (mode === 'signup') {
-      await handleSignUp({ email, password, name });
+      await handleSignUp({ 
+        email: emailValidation.sanitized, 
+        password, 
+        name: nameValidation.sanitized 
+      });
     } else {
-      await handleSignIn({ email, password });
+      await handleSignIn({ 
+        email: emailValidation.sanitized, 
+        password 
+      });
     }
   };
 

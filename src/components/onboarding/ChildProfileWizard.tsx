@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Baby, ArrowRight, Check } from "lucide-react";
+import { validateInput } from "@/services/auth/auth.validation";
 
 const avatarColors = [
   'purple', 'blue', 'green', 'orange', 'pink', 'red', 'yellow', 'indigo'
@@ -25,10 +26,12 @@ export function ChildProfileWizard() {
   const navigate = useNavigate();
 
   const handleCreateChild = async () => {
-    if (!childName.trim()) {
+    // Enhanced input validation
+    const nameValidation = validateInput(childName, 50);
+    if (!nameValidation.isValid) {
       toast({
         title: "Fejl",
-        description: "Indtast venligst dit barns navn",
+        description: nameValidation.error || "Ugyldigt navn",
         variant: "destructive",
       });
       return;
@@ -37,7 +40,7 @@ export function ChildProfileWizard() {
     setLoading(true);
     try {
       await addChild(
-        childName.trim(), 
+        nameValidation.sanitized, 
         childAge ? parseInt(childAge) : undefined, 
         selectedColor
       );

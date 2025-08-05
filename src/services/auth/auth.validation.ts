@@ -42,5 +42,34 @@ export function validateAuthCredentials({ email, password, name }: AuthCredentia
 }
 
 export function sanitizeInput(input: string): string {
-  return input.trim().replace(/[<>]/g, '');
+  return input.trim()
+    .replace(/[<>&"']/g, (match) => {
+      const htmlEntities: { [key: string]: string } = {
+        '<': '&lt;',
+        '>': '&gt;',
+        '&': '&amp;',
+        '"': '&quot;',
+        "'": '&#39;'
+      };
+      return htmlEntities[match] || match;
+    })
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+=/gi, '');
+}
+
+export function validateInput(input: string, maxLength: number = 255): {
+  isValid: boolean;
+  sanitized: string;
+  error?: string;
+} {
+  if (!input || input.trim().length === 0) {
+    return { isValid: false, sanitized: '', error: 'Input er påkrævet' };
+  }
+  
+  if (input.length > maxLength) {
+    return { isValid: false, sanitized: '', error: `Input må ikke være længere end ${maxLength} tegn` };
+  }
+  
+  const sanitized = sanitizeInput(input);
+  return { isValid: true, sanitized };
 }
