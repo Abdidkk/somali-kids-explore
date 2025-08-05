@@ -94,36 +94,6 @@ export type Database = {
         }
         Relationships: []
       }
-      children: {
-        Row: {
-          age: number | null
-          avatar_color: string | null
-          created_at: string
-          id: string
-          name: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          age?: number | null
-          avatar_color?: string | null
-          created_at?: string
-          id?: string
-          name: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          age?: number | null
-          avatar_color?: string | null
-          created_at?: string
-          id?: string
-          name?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       event_logs: {
         Row: {
           child_name: string | null
@@ -216,6 +186,7 @@ export type Database = {
           category: string
           category_enabled: boolean
           child_name: string
+          child_profile_id: string | null
           created_at: string
           id: string
           time_spent: number
@@ -228,6 +199,7 @@ export type Database = {
           category: string
           category_enabled?: boolean
           child_name: string
+          child_profile_id?: string | null
           created_at?: string
           id?: string
           time_spent?: number
@@ -240,6 +212,7 @@ export type Database = {
           category?: string
           category_enabled?: boolean
           child_name?: string
+          child_profile_id?: string | null
           created_at?: string
           id?: string
           time_spent?: number
@@ -247,7 +220,15 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "progress_child_profile_id_fkey"
+            columns: ["child_profile_id"]
+            isOneToOne: false
+            referencedRelation: "child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       quiz_results: {
         Row: {
@@ -255,6 +236,7 @@ export type Database = {
           answers: Json
           category: string
           child_name: string
+          child_profile_id: string | null
           completion_time: number | null
           created_at: string
           id: string
@@ -267,6 +249,7 @@ export type Database = {
           answers: Json
           category: string
           child_name: string
+          child_profile_id?: string | null
           completion_time?: number | null
           created_at?: string
           id?: string
@@ -279,6 +262,7 @@ export type Database = {
           answers?: Json
           category?: string
           child_name?: string
+          child_profile_id?: string | null
           completion_time?: number | null
           created_at?: string
           id?: string
@@ -286,7 +270,15 @@ export type Database = {
           score?: number
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "quiz_results_child_profile_id_fkey"
+            columns: ["child_profile_id"]
+            isOneToOne: false
+            referencedRelation: "child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       security_audit_log: {
         Row: {
