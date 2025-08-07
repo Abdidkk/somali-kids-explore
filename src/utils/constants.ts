@@ -9,6 +9,8 @@ export const ROUTES = {
   SIGNUP: '/signup',
   DASHBOARD: '/dashboard',
   CHOOSE_PLAN: '/choose-plan',
+  ADD_CHILDREN: '/add-children',
+  CHILD_LEARNING: '/child-learning',
   LEARN: '/laer',
   ADMIN_KIDS: '/admin-kids',
   CONGRATULATIONS: '/congratulations',

@@ -166,16 +166,29 @@ export default function CongratulationsPage() {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             ) : (
-              <Link to="/dashboard">
-                <Button 
-                  size="lg" 
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 text-lg shadow-lg"
-                >
-                  <BookOpen className="mr-2 h-5 w-5" />
-                  Gå til Dashboard
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link to="/dashboard">
+                  <Button 
+                    size="lg" 
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 text-lg shadow-lg"
+                  >
+                    <BookOpen className="mr-2 h-5 w-5" />
+                    Gå til Dashboard
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                <Link to="/child-learning">
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold px-8 py-3 text-lg"
+                  >
+                    <Star className="mr-2 h-5 w-5" />
+                    Start læring nu
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+              </div>
             )}
           </div>
 

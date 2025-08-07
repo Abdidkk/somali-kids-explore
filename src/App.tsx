@@ -15,8 +15,10 @@ import ChoosePlanPage from "./pages/ChoosePlanPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import PaymentCancelPage from "./pages/PaymentCancelPage";
 import ManageKidsPage from "./pages/ManageKidsPage";
+import AddChildProfilesPage from "./pages/AddChildProfilesPage";
 import CongratulationsPage from "./pages/CongratulationsPage";
 import DashboardPage from "./pages/DashboardPage";
+import ChildLearningPage from "./pages/ChildLearningPage";
 import SystemTestPage from "./pages/SystemTestPage";
 import LearnCategoriesPage from "./pages/LearnCategoriesPage";
 import ContactPage from "./pages/ContactPage";
@@ -52,19 +54,29 @@ const App = () => (
               } />
               <Route path="/payment-success" element={<PaymentSuccessPage />} />
               <Route path="/payment-cancel" element={<PaymentCancelPage />} />
+              <Route path="/add-children" element={
+                <RouteGuard requireAuth requirePayment>
+                  <AddChildProfilesPage />
+                </RouteGuard>
+              } />
               <Route path="/admin-kids" element={
                 <RouteGuard requireAuth requirePayment>
                   <ManageKidsPage />
                 </RouteGuard>
               } />
               <Route path="/congratulations" element={
-                <RouteGuard requireAuth requirePayment>
+                <RouteGuard requireAuth requirePayment requireOnboarding>
                   <CongratulationsPage />
                 </RouteGuard>
               } />
               <Route path="/dashboard" element={
-                <RouteGuard requireAuth requirePayment>
+                <RouteGuard requireAuth requirePayment requireOnboarding>
                   <DashboardPage />
+                </RouteGuard>
+              } />
+              <Route path="/child-learning" element={
+                <RouteGuard requireAuth requirePayment requireOnboarding>
+                  <ChildLearningPage />
                 </RouteGuard>
               } />
               <Route path="/system-test" element={<SystemTestPage />} />

@@ -17,9 +17,9 @@ const PaymentSuccessPage = () => {
       await checkSubscription();
       await refreshUserState();
       
-      // Redirect to congratulations page after a brief delay
+      // Redirect to add children page after a brief delay
       setTimeout(() => {
-        navigate('/congratulations', { replace: true });
+        navigate('/add-children', { replace: true });
       }, 3000);
     };
 
@@ -42,10 +42,10 @@ const PaymentSuccessPage = () => {
             Din betaling er blevet behandlet med succes. Du bliver omdirigeret til næste trin om få sekunder.
           </p>
           <Button 
-            onClick={() => navigate('/congratulations')}
+            onClick={() => navigate('/add-children')}
             className="w-full bg-green-600 hover:bg-green-700"
           >
-            Fortsæt til næste trin
+            Fortsæt til børneprofiler
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </CardContent>

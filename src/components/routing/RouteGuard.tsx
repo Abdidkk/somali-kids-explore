@@ -24,6 +24,8 @@ export function RouteGuard({
   useEffect(() => {
     if (loading) return;
 
+    const currentPath = window.location.pathname;
+
     // Define navigation logic based on user state and requirements
     switch (userState) {
       case 'unauthenticated':
@@ -40,13 +42,15 @@ export function RouteGuard({
         break;
         
       case 'paid':
+        // User has paid but needs to add children
         if (requireOnboarding) {
-          navigate('/congratulations');
+          navigate('/add-children');
         }
         break;
         
       case 'onboarding':
-        if (!requireOnboarding && !window.location.pathname.includes('congratulations')) {
+        // User has children but needs to complete onboarding
+        if (!requireOnboarding && !currentPath.includes('congratulations') && !currentPath.includes('add-children')) {
           navigate('/congratulations');
         }
         break;
