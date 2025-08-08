@@ -99,10 +99,10 @@ serve(async (req) => {
       lineItems = [{ price: priceId, quantity: 1 }];
       if (numKids > 0) {
         const kidPriceId = billingInterval === "monthly" ? 
-          "price_test_kid_monthly" : "price_test_kid_yearly"; // Using test placeholders
+          "price_1RlZQVHugRjwpvWt7BKwjRTr" : "price_1RlZR3HugRjwpvWtv2fdRbkX";
         lineItems.push({ price: kidPriceId, quantity: numKids });
       }
-      logStep("Creating full subscription checkout", { basePrice: priceId, kidPrice: numKids > 0 ? (billingInterval === "monthly" ? "price_test_kid_monthly" : "price_test_kid_yearly") : null, numKids });
+      logStep("Creating full subscription checkout", { basePrice: priceId, kidPrice: numKids > 0 ? (billingInterval === "monthly" ? "price_1RlZQVHugRjwpvWt7BKwjRTr" : "price_1RlZR3HugRjwpvWtv2fdRbkX") : null, numKids });
     }
 
     // Resolve origin with robust fallback

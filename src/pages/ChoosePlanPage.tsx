@@ -20,7 +20,7 @@ const ChoosePlanPage = () => {
     {
       name: "Månedlig",
       price: 45,
-      priceId: "price_test_monthly", // Using test placeholder - update with actual Stripe test price ID
+      priceId: "price_1RlZK0HugRjwpvWtOzopzx3y",
       description: "Perfekt for familier der ønsker fleksibilitet",
       features: [
         "Fuld adgang til alle funktioner",
@@ -34,7 +34,7 @@ const ChoosePlanPage = () => {
     {
       name: "Årlig",
       price: 405,
-      priceId: "price_test_yearly", // Using test placeholder - update with actual Stripe test price ID
+      priceId: "price_1RlZKXHugRjwpvWtRzuNYmYq",
       description: "Spar 135 kr/år med årlig betaling",
       features: [
         "Fuld adgang til alle funktioner",
