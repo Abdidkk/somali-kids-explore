@@ -50,7 +50,8 @@ export function RouteGuard({
         
       case 'onboarding':
         // User has children but needs to complete onboarding
-        if (!requireOnboarding && !currentPath.includes('congratulations') && !currentPath.includes('add-children')) {
+        // Only redirect if the page explicitly doesn't allow onboarding users
+        if (!requireOnboarding) {
           navigate('/congratulations');
         }
         break;
