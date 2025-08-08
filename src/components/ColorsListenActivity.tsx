@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Volume2, ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { COLORS_DATA, hasColorAudio } from "@/constants/colorsData";
+import { speakWithAudioFallback } from "@/utils/speechUtils";
 
 interface ColorsListenActivityProps {
   onBack: () => void;
@@ -13,30 +14,9 @@ export default function ColorsListenActivity({ onBack }: ColorsListenActivityPro
   const currentColor = COLORS_DATA[currentColorIndex];
 
   const speakColor = (color: typeof currentColor) => {
-    // Try to use custom audio file first
-    if (hasColorAudio(color)) {
-      const audio = new Audio(color.audioPath);
-      audio.play().catch(error => {
-        console.error("Failed to play custom audio:", error);
-        // Fallback to speech synthesis if audio file fails
-        speakUsingSynthesis(color.somali);
-      });
-    } else {
-      // Use speech synthesis as fallback
-      speakUsingSynthesis(color.somali);
-    }
+    const audioPath = hasColorAudio(color) ? color.audioPath : undefined;
+    speakWithAudioFallback(color.somali, audioPath);
   };
-
-  const speakUsingSynthesis = (text: string) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "so-SO";
-    utterance.rate = 0.7;
-    const hasSomali = speechSynthesis.getVoices().some(v => v.lang === "so-SO");
-    if (!hasSomali) utterance.lang = "en-US";
-    speechSynthesis.cancel();
-    speechSynthesis.speak(utterance);
-  };
-
   const nextColor = () => {
     setCurrentColorIndex((prev) => (prev + 1) % COLORS_DATA.length);
   };
@@ -46,8 +26,8 @@ export default function ColorsListenActivity({ onBack }: ColorsListenActivityPro
   };
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-6">
-      <h3 className="text-2xl font-bold text-pink-700 mb-4">Lyt og lær farver</h3>
+    <main className="flex flex-col items-center space-y-6 p-6" role="main">
+      <h1 className="text-2xl font-bold text-pink-700 mb-4">Lyt og lær farver</h1>
       
       <div className="relative">
         <div 
@@ -86,6 +66,6 @@ export default function ColorsListenActivity({ onBack }: ColorsListenActivityPro
       <Button onClick={onBack} className="mt-6 bg-pink-600 hover:bg-pink-700">
         Tilbage til menu
       </Button>
-    </div>
+    </main>
   );
 }

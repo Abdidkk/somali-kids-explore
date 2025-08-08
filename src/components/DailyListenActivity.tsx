@@ -3,6 +3,7 @@ import { Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { getDailyByCategory } from "@/constants/dailyData";
+import { speakWithAudioFallback } from "@/utils/speechUtils";
 
 interface DailyListenActivityProps {
   onBack: () => void;
@@ -14,24 +15,17 @@ export default function DailyListenActivity({ onBack }: DailyListenActivityProps
   const activities = getDailyByCategory(activeTab); 
 
   const speakActivity = (audioPath?: string, fallbackText?: string) => {
-    if (audioPath) {
-      const audio = new Audio(audioPath);
-      audio.play().catch((err) => console.error("Lydfejl:", err));
-    } else if (fallbackText) {
-      const utterance = new SpeechSynthesisUtterance(fallbackText);
-      utterance.lang = "so-SO";
-      utterance.rate = 0.7;
-      speechSynthesis.speak(utterance);
-    }
-  }; 
+    if (!audioPath && !fallbackText) return;
+    speakWithAudioFallback(fallbackText || "", audioPath);
+  };
 
   const handleTabChange = (newTab: "morgen" | "eftermiddag" | "aften") => {
     setActiveTab(newTab);
   }; 
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-6">
-      <h3 className="text-2xl font-bold text-gray-700 mb-4">Lyt og lær daglige aktiviteter</h3>
+    <main className="flex flex-col items-center space-y-6 p-6" role="main">
+      <h1 className="text-2xl font-bold text-gray-700 mb-4">Lyt og lær daglige aktiviteter</h1>
       
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full max-w-2xl">
         <TabsList className="grid w-full grid-cols-3">
@@ -82,6 +76,6 @@ export default function DailyListenActivity({ onBack }: DailyListenActivityProps
       <Button onClick={onBack} className="mt-6 bg-gray-600 hover:bg-gray-700">
         Tilbage til menu
       </Button>
-    </div>
+    </main>
   );
 }

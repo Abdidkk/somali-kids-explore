@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { familyData, getFamilyByCategory, FamilyItem } from "@/constants/familyData";
-import { speakUsingSynthesis } from "@/utils/speechUtils";
+import { speakWithAudioFallback } from "@/utils/speechUtils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 
@@ -16,18 +16,7 @@ const FamilyListenActivity: React.FC<FamilyListenActivityProps> = ({ onBack }) =
   const isMobile = useIsMobile();
 
   const handleItemClick = (item: FamilyItem) => {
-    if (item.audio) {
-      // Spil din egen audio-fil
-      const audio = new Audio(item.audio);
-      audio.play().catch((error) => {
-        console.error("Audio kunne ikke afspilles:", error);
-        // Fallback til speech synthesis hvis audio fejler
-        speakUsingSynthesis(item.somali);
-      });
-    } else {
-      // Brug speech synthesis hvis ingen audio-fil
-      speakUsingSynthesis(item.somali);
-    }
+    speakWithAudioFallback(item.somali, item.audio);
   };
 
   const handleTabChange = (newTab: string) => {
