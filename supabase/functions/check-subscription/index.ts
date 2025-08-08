@@ -49,10 +49,7 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
-    logStep("Stripe key verified");
-
+    // We now rely on the database (updated by webhooks) instead of querying Stripe directly
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("No authorization header provided");
 
@@ -66,116 +63,76 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
-    
-    // Add a small delay to help with rate limiting
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    
-    if (customers.data.length === 0) {
-      logStep("No customer found, updating unsubscribed state");
-      await supabaseService.from("subscribers").upsert({
+    // Read subscriber row from DB; create if missing (subscribed=false by default)
+    const { data: existing, error: selectErr } = await supabaseService
+      .from('subscribers')
+      .select('*')
+      .or(`user_id.eq.${user.id},email.eq.${user.email}`)
+      .maybeSingle();
+
+    if (selectErr) {
+      console.warn('Failed to fetch subscriber row', selectErr);
+    }
+
+    if (!existing) {
+      logStep('No subscriber row found, creating default');
+      await supabaseService.from('subscribers').upsert({
         email: user.email,
         user_id: user.id,
-        stripe_customer_id: null,
         subscribed: false,
         subscription_tier: null,
         subscription_end: null,
+        billing_interval: 'monthly',
+        num_kids: 0,
         updated_at: new Date().toISOString(),
       }, { onConflict: 'email' });
-      
-      return new Response(JSON.stringify({ 
-        subscribed: false, 
+
+      return new Response(JSON.stringify({
+        subscribed: false,
         inTrial: true,
         subscription_tier: null,
-        subscription_end: null 
+        subscription_end: null,
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
     }
 
-    const customerId = customers.data[0].id;
-    logStep("Found Stripe customer", { customerId });
+    // Return the current DB state
+    logStep('Returning subscriber state from DB', { subscribed: existing.subscribed, tier: existing.subscription_tier });
 
-    // Add another small delay before checking subscriptions
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
-    // Check for all active subscription statuses including trialing
-    const subscriptions = await stripe.subscriptions.list({
-      customer: customerId,
-      status: "all",
-      limit: 5,
-    });
-    
-    // Filter for active subscriptions (active, trialing, past_due)
-    const activeSubscriptions = subscriptions.data.filter(sub => 
-      ['active', 'trialing', 'past_due'].includes(sub.status)
-    );
-    
-    logStep("Found subscriptions", { 
-      total: subscriptions.data.length, 
-      active: activeSubscriptions.length,
-      statuses: subscriptions.data.map(s => ({ id: s.id, status: s.status }))
-    });
-    
-    const hasActiveSub = activeSubscriptions.length > 0;
-    let subscriptionTier = null;
-    let subscriptionEnd = null;
-
-    if (hasActiveSub) {
-      const subscription = activeSubscriptions[0];
-      logStep("Processing subscription", { 
-        id: subscription.id, 
-        status: subscription.status,
-        trial_end: subscription.trial_end,
-        current_period_end: subscription.current_period_end
-      });
-      subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
-      logStep("Active subscription found", { subscriptionId: subscription.id, endDate: subscriptionEnd });
-      
-      // Determine subscription tier from billing interval
-      const billingInterval = subscription.items.data[0].price.recurring?.interval === "year" ? "yearly" : "monthly";
-      subscriptionTier = billingInterval === "monthly" ? "Månedlig" : "Årlig";
-      
-      // Count kids from line items (first is base, rest are kids)
-      const numKids = subscription.items.data.length > 1 ? subscription.items.data[1].quantity : 0;
-      
-      logStep("Determined subscription details", { subscriptionTier, billingInterval, numKids });
-    } else {
-      logStep("No active subscription found");
+    // Optional: sanity checks to avoid false positives
+    let subscribed = !!existing.subscribed;
+    // If we don't have a Stripe customer, user cannot be subscribed
+    if (!existing.stripe_customer_id) {
+      subscribed = false;
+    }
+    // Expired period -> not subscribed
+    if (existing.subscription_end && new Date(existing.subscription_end).getTime() < Date.now()) {
+      subscribed = false;
     }
 
-    await supabaseService.from("subscribers").upsert({
-      email: user.email,
-      user_id: user.id,
-      stripe_customer_id: customerId,
-      subscribed: hasActiveSub,
-      subscription_tier: subscriptionTier,
-      subscription_end: subscriptionEnd,
-      billing_interval: hasActiveSub ? 
-        (activeSubscriptions[0].items.data[0].price.recurring?.interval === "year" ? "yearly" : "monthly") : "monthly",
-      num_kids: hasActiveSub && activeSubscriptions[0].items.data.length > 1 ? 
-        activeSubscriptions[0].items.data[1].quantity : 0,
-      updated_at: new Date().toISOString(),
-    }, { onConflict: 'email' });
+    // Persist correction if value changed
+    if (subscribed !== existing.subscribed) {
+      await supabaseService.from('subscribers')
+        .update({ subscribed, updated_at: new Date().toISOString() })
+        .eq('id', existing.id);
+    }
 
-    logStep("Updated database with subscription info", { subscribed: hasActiveSub, subscriptionTier });
-    
     // Log subscription check event
     await logEvent('subscription_status_checked', user.id, {
-      subscribed: hasActiveSub,
-      subscription_tier: subscriptionTier,
-      subscription_end: subscriptionEnd,
-      customer_id: customerId
+      from: 'database',
+      subscribed,
+      subscription_tier: existing.subscription_tier,
+      subscription_end: existing.subscription_end,
+      customer_id: existing.stripe_customer_id
     });
-    
+
     return new Response(JSON.stringify({
-      subscribed: hasActiveSub,
-      inTrial: !hasActiveSub,
-      subscription_tier: subscriptionTier,
-      subscription_end: subscriptionEnd
+      subscribed,
+      inTrial: !subscribed,
+      subscription_tier: existing.subscription_tier,
+      subscription_end: existing.subscription_end,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
