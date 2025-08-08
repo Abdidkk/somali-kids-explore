@@ -92,6 +92,7 @@ serve(async (req) => {
         inTrial: true,
         subscription_tier: null,
         subscription_end: null,
+        billing_interval: 'monthly',
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -133,6 +134,7 @@ serve(async (req) => {
       inTrial: !subscribed,
       subscription_tier: existing.subscription_tier,
       subscription_end: existing.subscription_end,
+      billing_interval: existing.billing_interval,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,

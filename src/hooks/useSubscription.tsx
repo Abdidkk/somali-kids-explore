@@ -8,6 +8,7 @@ interface SubscriptionContextType {
   inTrial: boolean;
   subscriptionTier: string | null;
   subscriptionEnd: string | null;
+  billingInterval: string | null;
   loading: boolean;
   checkSubscription: () => Promise<void>;
 }
@@ -19,6 +20,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   const [inTrial, setInTrial] = useState(true);
   const [subscriptionTier, setSubscriptionTier] = useState<string | null>(null);
   const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
+  const [billingInterval, setBillingInterval] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { user, session } = useAuth();
 
@@ -28,6 +30,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       setInTrial(true);
       setSubscriptionTier(null);
       setSubscriptionEnd(null);
+      setBillingInterval(null);
       setLoading(false);
       return;
     }
@@ -43,6 +46,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
         setInTrial(true);
         setSubscriptionTier(null);
         setSubscriptionEnd(null);
+        setBillingInterval(null);
         return;
       }
 
@@ -59,6 +63,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
         setInTrial(true);
         setSubscriptionTier(null);
         setSubscriptionEnd(null);
+        setBillingInterval(null);
         return;
       }
 
@@ -67,6 +72,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       setInTrial(data.inTrial || false);
       setSubscriptionTier(data.subscription_tier || null);
       setSubscriptionEnd(data.subscription_end || null);
+      setBillingInterval(data.billing_interval || null);
     } catch (error) {
       console.error('Error in checkSubscription:', error);
       // Set default values on error to prevent UI issues
@@ -74,6 +80,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       setInTrial(true);
       setSubscriptionTier(null);
       setSubscriptionEnd(null);
+      setBillingInterval(null);
     } finally {
       setLoading(false);
     }
@@ -119,6 +126,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       inTrial,
       subscriptionTier, 
       subscriptionEnd, 
+      billingInterval,
       loading, 
       checkSubscription 
     }}>

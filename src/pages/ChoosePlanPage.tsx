@@ -13,7 +13,7 @@ const ChoosePlanPage = () => {
   const [loading, setLoading] = useState<string | null>(null);
   const [numKids, setNumKids] = useState(0);
   const { user, session } = useAuth();
-  const { subscribed, subscriptionTier } = useSubscription();
+  const { subscribed, billingInterval } = useSubscription();
   const navigate = useNavigate();
 
   const plans = [
@@ -250,25 +250,30 @@ const ChoosePlanPage = () => {
               </CardContent>
 
               <CardFooter>
-                <Button
-                  className={`w-full ${
-                    subscribed && subscriptionTier === plan.name
-                      ? 'bg-green-600 hover:bg-green-700'
-                      : plan.popular
-                      ? 'bg-[#4CA6FE] hover:bg-[#3b95e9]'
-                      : 'bg-gray-800 hover:bg-gray-700'
-                  } text-white font-semibold py-3`}
-                  disabled={loading === plan.priceId || (subscribed && subscriptionTier === plan.name)}
-                  onClick={() => handleSubscribe(plan.priceId, plan.name, plan.billingInterval)}
-                >
-                  {loading === plan.priceId ? (
-                    "Opretter..."
-                  ) : subscribed && subscriptionTier === plan.name ? (
-                    "Nuværende plan"
-                  ) : (
-                    "Vælg denne plan"
-                  )}
-                </Button>
+                {(() => {
+                  const isCurrentPlan = subscribed && billingInterval === plan.billingInterval;
+                  return (
+                    <Button
+                      className={`w-full ${
+                        isCurrentPlan
+                          ? 'bg-green-600 hover:bg-green-700'
+                          : plan.popular
+                          ? 'bg-[#4CA6FE] hover:bg-[#3b95e9]'
+                          : 'bg-gray-800 hover:bg-gray-700'
+                      } text-white font-semibold py-3`}
+                      disabled={loading === plan.priceId || isCurrentPlan}
+                      onClick={() => handleSubscribe(plan.priceId, plan.name, plan.billingInterval)}
+                    >
+                      {loading === plan.priceId ? (
+                        'Opretter...'
+                      ) : isCurrentPlan ? (
+                        'Nuværende plan'
+                      ) : (
+                        'Vælg denne plan'
+                      )}
+                    </Button>
+                  );
+                })()}
               </CardFooter>
             </Card>
           ))}
