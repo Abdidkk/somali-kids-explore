@@ -99,10 +99,10 @@ serve(async (req) => {
       lineItems = [{ price: priceId, quantity: 1 }];
       if (numKids > 0) {
         const kidPriceId = billingInterval === "monthly" ? 
-          "price_1RlZQVHugRjwpvWt7BKwjRTr" : "price_1RlZR3HugRjwpvWtv2fdRbkX";
+          "price_test_kid_monthly" : "price_test_kid_yearly"; // Using test placeholders
         lineItems.push({ price: kidPriceId, quantity: numKids });
       }
-      logStep("Creating full subscription checkout", { basePrice: priceId, kidPrice: numKids > 0 ? (billingInterval === "monthly" ? "price_1RlZQVHugRjwpvWt7BKwjRTr" : "price_1RlZR3HugRjwpvWtv2fdRbkX") : null, numKids });
+      logStep("Creating full subscription checkout", { basePrice: priceId, kidPrice: numKids > 0 ? (billingInterval === "monthly" ? "price_test_kid_monthly" : "price_test_kid_yearly") : null, numKids });
     }
 
     // Resolve origin with robust fallback
@@ -213,7 +213,9 @@ serve(async (req) => {
     if (errorMessage.includes("set an account or business name")) {
       userMessage = "Du skal indstille et firmanavn i din Stripe-konto før du kan oprette betalinger. Gå til https://dashboard.stripe.com/account og udfyld 'Business Information'.";
     } else if (errorMessage.includes('No such price') || errorMessage.includes('Invalid price')) {
-      userMessage = "Ugyldig pris konfiguration. Kontakt venligst support.";
+      userMessage = "FEJL: Ugyldig Stripe pris ID. Test price IDs skal opdateres til korrekte værdier fra Stripe dashboard.";
+    } else if (errorMessage.includes('price_test_')) {
+      userMessage = "TEST MODE FEJL: Placeholder price IDs skal erstattes med faktiske Stripe test price IDs.";
     }
     
     return new Response(JSON.stringify({ 

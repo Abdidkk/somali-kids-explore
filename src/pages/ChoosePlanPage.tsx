@@ -20,7 +20,7 @@ const ChoosePlanPage = () => {
     {
       name: "Månedlig",
       price: 45,
-      priceId: "price_1RlZK0HugRjwpvWtOzopzx3y",
+      priceId: "price_test_monthly", // Using test placeholder - update with actual Stripe test price ID
       description: "Perfekt for familier der ønsker fleksibilitet",
       features: [
         "Fuld adgang til alle funktioner",
@@ -34,7 +34,7 @@ const ChoosePlanPage = () => {
     {
       name: "Årlig",
       price: 405,
-      priceId: "price_1RlZKXHugRjwpvWtRzuNYmYq",
+      priceId: "price_test_yearly", // Using test placeholder - update with actual Stripe test price ID
       description: "Spar 135 kr/år med årlig betaling",
       features: [
         "Fuld adgang til alle funktioner",
@@ -251,7 +251,19 @@ const ChoosePlanPage = () => {
 
               <CardFooter>
                 {(() => {
-                  const isCurrentPlan = subscribed && billingInterval === plan.billingInterval;
+                  // Fix the current plan detection logic
+                  const isCurrentPlan = subscribed && 
+                    ((billingInterval === 'monthly' && plan.billingInterval === 'monthly') ||
+                     (billingInterval === 'yearly' && plan.billingInterval === 'yearly'));
+                  
+                  console.log('Plan check:', { 
+                    planName: plan.name,
+                    planInterval: plan.billingInterval,
+                    userInterval: billingInterval,
+                    subscribed,
+                    isCurrentPlan 
+                  });
+
                   return (
                     <Button
                       className={`w-full ${
