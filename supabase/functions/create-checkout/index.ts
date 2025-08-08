@@ -105,6 +105,15 @@ serve(async (req) => {
       logStep("Creating full subscription checkout", { basePrice: priceId, kidPrice: numKids > 0 ? (billingInterval === "monthly" ? "price_1RlZQVHugRjwpvWt7BKwjRTr" : "price_1RlZR3HugRjwpvWtv2fdRbkX") : null, numKids });
     }
 
+    // Resolve origin with robust fallback
+    const originUrl =
+      req.headers.get("origin") ||
+      (req.headers.get("x-forwarded-proto") && req.headers.get("x-forwarded-host")
+        ? `${req.headers.get("x-forwarded-proto")}://${req.headers.get("x-forwarded-host")}`
+        : null) ||
+      "https://preview--dugsi.lovable.app";
+    logStep("Resolved origin for checkout URLs", { origin: originUrl });
+
     // Build session configuration
     const sessionConfig: any = {
       customer: customerId,
@@ -112,8 +121,8 @@ serve(async (req) => {
       line_items: lineItems,
       mode: "subscription",
       payment_method_types: ["card"],
-      success_url: `${req.headers.get("origin")}/payment-success`,
-      cancel_url: `${req.headers.get("origin")}/payment-cancel`,
+      success_url: `${originUrl}/payment-success`,
+      cancel_url: `${originUrl}/payment-cancel`,
       metadata: {
         plan_name: planName,
         user_id: user.id,
