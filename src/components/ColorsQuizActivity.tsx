@@ -1,8 +1,9 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
 import { COLORS_DATA } from "@/constants/colorsData";
+import { recordQuizResultAuto } from "@/utils/quizRecorder";
 
 interface ColorsQuizActivityProps {
   onBack: () => void;
@@ -14,6 +15,7 @@ export default function ColorsQuizActivity({ onBack }: ColorsQuizActivityProps) 
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [questions, setQuestions] = useState<any[]>([]);
+  const savedRef = useRef(false);
 
   useEffect(() => {
     generateQuestions();
@@ -73,15 +75,27 @@ export default function ColorsQuizActivity({ onBack }: ColorsQuizActivityProps) 
     setScore(0);
     setSelectedAnswer(null);
     setShowResult(false);
+    savedRef.current = false;
     generateQuestions();
   };
-
   if (questions.length === 0) {
     return <div>Indlæser...</div>;
   }
 
   const isQuizComplete = currentQuestion >= questions.length - 1 && showResult;
   const question = questions[currentQuestion];
+
+  useEffect(() => {
+    if (isQuizComplete && !savedRef.current) {
+      savedRef.current = true;
+      recordQuizResultAuto({
+        category: "Farver",
+        activityName: "Farve Quiz",
+        correct: score,
+        total: questions.length,
+      });
+    }
+  }, [isQuizComplete]);
 
   return (
     <div className="flex flex-col items-center space-y-6 p-6">

@@ -188,6 +188,7 @@ export type Database = {
           child_name: string
           child_profile_id: string | null
           created_at: string
+          finished: boolean
           id: string
           time_spent: number
           total_points: number
@@ -201,6 +202,7 @@ export type Database = {
           child_name: string
           child_profile_id?: string | null
           created_at?: string
+          finished?: boolean
           id?: string
           time_spent?: number
           total_points?: number
@@ -214,6 +216,7 @@ export type Database = {
           child_name?: string
           child_profile_id?: string | null
           created_at?: string
+          finished?: boolean
           id?: string
           time_spent?: number
           total_points?: number
@@ -241,6 +244,7 @@ export type Database = {
           created_at: string
           id: string
           max_score: number
+          points_awarded: number
           score: number
           user_id: string
         }
@@ -254,6 +258,7 @@ export type Database = {
           created_at?: string
           id?: string
           max_score: number
+          points_awarded?: number
           score: number
           user_id: string
         }
@@ -267,6 +272,7 @@ export type Database = {
           created_at?: string
           id?: string
           max_score?: number
+          points_awarded?: number
           score?: number
           user_id?: string
         }

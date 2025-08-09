@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { WORDS } from "@/constants/wordsData";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Volume2 } from "lucide-react";
+import { recordQuizResultAuto } from "@/utils/quizRecorder";
 
 const QUIZ_LENGTH = 12;
 
@@ -20,6 +21,7 @@ export default function WordsQuizActivity({ onBack }: { onBack: () => void }) {
   const [result, setResult] = useState<null | boolean>(null);
   const [score, setScore] = useState(0);
   const [shuffledWords, setShuffledWords] = useState<any[]>([]);
+  const savedRef = useRef(false);
 
   // Bland ordene når komponenten loader og vælg kun 12
   useEffect(() => {
@@ -64,6 +66,7 @@ export default function WordsQuizActivity({ onBack }: { onBack: () => void }) {
     setResult(null);
     const randomWords = shuffleArray(WORDS).slice(0, QUIZ_LENGTH);
     setShuffledWords(randomWords);
+    savedRef.current = false;
   }
 
   // Loading state
@@ -74,6 +77,19 @@ export default function WordsQuizActivity({ onBack }: { onBack: () => void }) {
       </div>
     );
   }
+
+  // Auto-record when quiz completes
+  useEffect(() => {
+    if (step >= QUIZ_LENGTH && !savedRef.current) {
+      savedRef.current = true;
+      recordQuizResultAuto({
+        category: "Ord",
+        activityName: "Ord Quiz",
+        correct: score,
+        total: QUIZ_LENGTH,
+      });
+    }
+  }, [step]);
 
   // VIGTIG ÆNDRING: Brug QUIZ_LENGTH i stedet for shuffledWords.length
   if (step >= QUIZ_LENGTH) {

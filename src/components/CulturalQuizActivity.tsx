@@ -4,6 +4,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import ScoreDisplay from "@/components/alphabet/guess/ScoreDisplay";
 import { PointsManager } from "@/utils/pointsManager";
 import { useToast } from "@/hooks/use-toast";
+import { recordQuizResultAuto } from "@/utils/quizRecorder";
 
 interface Props {
   onBack: () => void;
@@ -85,23 +86,20 @@ export default function CulturalQuizActivity({ onBack }: Props) {
       } else {
         // Quiz completed
         const finalCorrect = correctAnswers + (answerIndex === culturalQuestions[currentQuestion].correct ? 1 : 0);
-        const earnedPoints = PointsManager.calculatePoints(finalCorrect, culturalQuestions.length, true);
-        
-        await PointsManager.addScore({
+        const { pointsAwarded } = await recordQuizResultAuto({
           category: "Kulturelt indhold",
-          activity: "Kultur Quiz",
-          score: earnedPoints,
-          maxScore: 100,
-          timestamp: new Date().toISOString()
+          activityName: "Kultur Quiz",
+          correct: finalCorrect,
+          total: culturalQuestions.length,
         });
 
-        setScore(prev => prev + earnedPoints);
+        setScore(prev => prev + pointsAwarded);
         setShowScoreAnimation(true);
         setQuizCompleted(true);
 
         toast({
           title: "Quiz afsluttet! 🎉",
-          description: `Du svarede korrekt på ${finalCorrect} ud af ${culturalQuestions.length} spørgsmål og fik ${earnedPoints} point!`,
+          description: `Du svarede korrekt på ${finalCorrect} ud af ${culturalQuestions.length} spørgsmål og fik ${pointsAwarded} point!`,
           duration: 4000,
         });
       }

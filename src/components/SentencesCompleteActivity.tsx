@@ -5,6 +5,7 @@ import { speakUsingSynthesis } from "@/utils/speechUtils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { recordQuizResultAuto } from "@/utils/quizRecorder";
 
 interface SentencesCompleteActivityProps {
   onBack: () => void;
@@ -59,16 +60,24 @@ const SentencesCompleteActivity: React.FC<SentencesCompleteActivityProps> = ({ o
     }
   };
 
-  const handleNextQuestion = () => {
+  const handleNextQuestion = async () => {
     if (currentQuestionIndex < currentQuestions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
       setSelectedAnswer(null);
       setShowResult(false);
     } else {
       // Quiz afsluttet
+      const finalCorrect = score + (selectedAnswer === currentQuestion.correct ? 1 : 0);
+      await recordQuizResultAuto({
+        category: "Sætninger",
+        activityName: `Sætninger (${difficulty})`,
+        correct: finalCorrect,
+        total: currentQuestions.length,
+      });
+
       toast({
         title: "Quiz afsluttet! 🏆",
-        description: `Du fik ${score + (selectedAnswer === currentQuestion.correct ? 1 : 0)} ud af ${currentQuestions.length} rigtige!`,
+        description: `Du fik ${finalCorrect} ud af ${currentQuestions.length} rigtige!`,
         duration: 5000,
       });
       
