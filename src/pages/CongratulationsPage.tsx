@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Sparkles, Trophy, ArrowRight, Baby, BookOpen, Star } from "lucide-react";
 import SomaliFlag from "@/components/landing/SomaliFlag";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { useChildren } from "@/hooks/useChildren";
@@ -29,6 +29,7 @@ export default function CongratulationsPage() {
   const { userState } = useAuth();
   const { children, loading: childrenLoading } = useChildren();
   const [showWizard, setShowWizard] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Try to play the sound when component mounts
@@ -42,6 +43,14 @@ export default function CongratulationsPage() {
     // Refresh subscription status when this page loads
     checkSubscription();
   }, [checkSubscription]);
+
+  // Auto-redirect to dashboard after a short celebration if a child profile exists
+  useEffect(() => {
+    if (children && children.length > 0) {
+      const t = setTimeout(() => navigate('/dashboard'), 2000);
+      return () => clearTimeout(t);
+    }
+  }, [children, navigate]);
 
   const hasChildren = children && children.length > 0;
   

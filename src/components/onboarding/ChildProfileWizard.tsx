@@ -52,7 +52,7 @@ export function ChildProfileWizard() {
         description: `${childName} er blevet tilføjet!`,
       });
       
-      navigate('/dashboard');
+      navigate('/congratulations');
     } catch (error) {
       console.error('Error creating child:', error);
       toast({

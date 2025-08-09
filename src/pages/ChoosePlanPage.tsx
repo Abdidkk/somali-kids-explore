@@ -104,8 +104,12 @@ const ChoosePlanPage = () => {
       }
 
       if (data?.url) {
-        // Redirect to Stripe in same window for better mobile experience
-        window.location.href = data.url;
+        // Open Stripe Checkout in a new tab (fixes redirect inside iframes like Lovable preview)
+        const newTab = window.open(data.url, '_blank', 'noopener,noreferrer');
+        if (!newTab) {
+          // Fallback: same-tab navigation
+          window.location.href = data.url;
+        }
       }
     } catch (error) {
       console.error('Error in handleSubscribe:', error);
