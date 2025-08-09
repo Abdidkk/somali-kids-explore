@@ -170,31 +170,20 @@ export function useAuthState() {
 
 async function ensureUserProfile(user: User) {
   try {
-    // Check if user exists in our users table
-    const { data: existingUser, error: fetchError } = await supabase
+    // Use UPSERT to avoid 409 conflicts when the user row already exists
+    const { error: upsertError } = await supabase
       .from('users')
-      .select('id')
-      .eq('id', user.id)
-      .maybeSingle();
-
-    if (fetchError) {
-      console.error('Error checking user profile:', fetchError);
-      return;
-    }
-
-    // If user doesn't exist, create profile
-    if (!existingUser) {
-      const { error: insertError } = await supabase
-        .from('users')
-        .insert({
+      .upsert(
+        {
           id: user.id,
           email: user.email || '',
           name: user.user_metadata?.name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'Bruger'
-        });
+        },
+        { onConflict: 'id', ignoreDuplicates: true }
+      );
 
-      if (insertError) {
-        console.error('Error creating user profile:', insertError);
-      }
+    if (upsertError) {
+      console.error('Error upserting user:', upsertError);
     }
   } catch (error) {
     console.error('Error in ensureUserProfile:', error);

@@ -43,10 +43,7 @@ export function RouteGuard({
         break;
         
       case 'paid':
-        // User has paid but needs to add children
-        if (requireOnboarding) {
-          navigate('/add-children');
-        }
+        // Fully onboarded and paid - allow access
         break;
         
       case 'onboarding':

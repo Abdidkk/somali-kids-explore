@@ -76,9 +76,11 @@ export default function AddChildProfilesPage() {
       
       toast.success(`${validForms.length} barn${validForms.length > 1 ? '' : ''} tilføjet!`);
       
-      // Refresh auth-derived state and go to congratulations
-      await refreshUserState();
-      navigate('/congratulations');
+      // Navigér først for at undgå guard-race; opdater brugerstatus bagefter
+      navigate('/congratulations', { replace: true });
+      setTimeout(() => {
+        refreshUserState().catch(() => {});
+      }, 0);
     } catch (error) {
       console.error('Error adding children:', error);
       toast.error("Der opstod en fejl ved tilføjelse af børneprofiler");

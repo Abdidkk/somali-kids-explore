@@ -260,13 +260,7 @@ const ChoosePlanPage = () => {
                     ((billingInterval === 'monthly' && plan.billingInterval === 'monthly') ||
                      (billingInterval === 'yearly' && plan.billingInterval === 'yearly'));
                   
-                  console.log('Plan check:', { 
-                    planName: plan.name,
-                    planInterval: plan.billingInterval,
-                    userInterval: billingInterval,
-                    subscribed,
-                    isCurrentPlan 
-                  });
+                  /* Debug log removed to prevent noisy console during renders */
 
                   return (
                     <Button

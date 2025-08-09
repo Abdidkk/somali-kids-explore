@@ -55,7 +55,7 @@ const App = () => (
               <Route path="/payment-success" element={<PaymentSuccessPage />} />
               <Route path="/payment-cancel" element={<PaymentCancelPage />} />
               <Route path="/add-children" element={
-                <RouteGuard requireAuth requirePayment>
+                <RouteGuard requireAuth requireOnboarding>
                   <AddChildProfilesPage />
                 </RouteGuard>
               } />
@@ -65,17 +65,17 @@ const App = () => (
                 </RouteGuard>
               } />
               <Route path="/congratulations" element={
-                <RouteGuard requireAuth requirePayment requireOnboarding>
+                <RouteGuard requireAuth requireOnboarding>
                   <CongratulationsPage />
                 </RouteGuard>
               } />
               <Route path="/dashboard" element={
-                <RouteGuard requireAuth requirePayment requireOnboarding>
+                <RouteGuard requireAuth requireOnboarding>
                   <DashboardPage />
                 </RouteGuard>
               } />
               <Route path="/child-learning" element={
-                <RouteGuard requireAuth requirePayment requireOnboarding>
+                <RouteGuard requireAuth requireOnboarding>
                   <ChildLearningPage />
                 </RouteGuard>
               } />

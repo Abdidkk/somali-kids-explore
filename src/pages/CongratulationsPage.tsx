@@ -26,7 +26,7 @@ const SOUND_SRC = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/succe
 export default function CongratulationsPage() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const { checkSubscription } = useSubscription();
-  const { userState } = useAuth();
+  const { userState, refreshUserState } = useAuth();
   const { children, loading: childrenLoading } = useChildren();
   const [showWizard, setShowWizard] = useState(false);
   const navigate = useNavigate();
@@ -40,9 +40,10 @@ export default function CongratulationsPage() {
       });
     }
     
-    // Refresh subscription status when this page loads
+    // Refresh subscription and user state when this page loads
     checkSubscription();
-  }, [checkSubscription]);
+    refreshUserState();
+  }, [checkSubscription, refreshUserState]);
 
   // Auto-redirect to dashboard after a short celebration if a child profile exists
   useEffect(() => {
