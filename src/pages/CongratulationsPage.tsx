@@ -187,7 +187,7 @@ export default function CongratulationsPage() {
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-                <Link to="/child-learning">
+                <Link to="/learning">
                   <Button 
                     size="lg" 
                     variant="outline"

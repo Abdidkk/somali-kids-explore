@@ -362,7 +362,7 @@ const DashboardPage = () => {
             </CardHeader>
             <CardContent>
               <Button 
-                onClick={() => navigate('/child-learning')}
+                onClick={() => navigate('/learning')}
                 variant="outline"
                 className="w-full"
                 disabled={!subscribed && !inTrial}

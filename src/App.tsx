@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { SubscriptionProvider } from "@/hooks/useSubscription";
 import { RouteGuard } from "@/components/routing/RouteGuard";
@@ -18,7 +18,7 @@ import ManageKidsPage from "./pages/ManageKidsPage";
 import AddChildProfilesPage from "./pages/AddChildProfilesPage";
 import CongratulationsPage from "./pages/CongratulationsPage";
 import DashboardPage from "./pages/DashboardPage";
-import ChildLearningPage from "./pages/ChildLearningPage";
+
 import SystemTestPage from "./pages/SystemTestPage";
 import LearnCategoriesPage from "./pages/LearnCategoriesPage";
 import ContactPage from "./pages/ContactPage";
@@ -74,13 +74,13 @@ const App = () => (
                   <DashboardPage />
                 </RouteGuard>
               } />
-              <Route path="/child-learning" element={
+              <Route path="/system-test" element={<SystemTestPage />} />
+              <Route path="/learning" element={
                 <RouteGuard requireAuth requireOnboarding>
-                  <ChildLearningPage />
+                  <LearnCategoriesPage />
                 </RouteGuard>
               } />
-              <Route path="/system-test" element={<SystemTestPage />} />
-              <Route path="/laer" element={<LearnCategoriesPage />} />
+              <Route path="/laer" element={<Navigate to="/learning" replace />} />
               <Route path="/kontakt" element={<ContactPage />} />
               <Route path="/om-os" element={<AboutPage />} />
               <Route path="/fag" element={<SubjectsPage />} />

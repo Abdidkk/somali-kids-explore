@@ -15,7 +15,7 @@ const MainNavbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const isLearningPage = location.pathname === ROUTES.LEARN || location.pathname === ROUTES.CHILD_LEARNING;
+  const isLearningPage = location.pathname === ROUTES.LEARN || location.pathname === ROUTES.LEARNING;
 
   // Don't render the navbar on the learning pages
   if (isLearningPage) {
