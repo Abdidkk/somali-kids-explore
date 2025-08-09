@@ -36,7 +36,8 @@ export function RouteGuard({
         
       case 'authenticated':
       case 'needs_payment':
-        if (requirePayment || requireOnboarding) {
+        // Allow onboarding pages even if payment is not completed yet
+        if (requirePayment) {
           navigate('/choose-plan');
         }
         break;

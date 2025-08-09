@@ -23,7 +23,7 @@ interface ChildForm {
 
 export default function AddChildProfilesPage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, refreshUserState } = useAuth();
   const { children, addChild, loading: childrenLoading } = useChildren();
   const [forms, setForms] = useState<ChildForm[]>([
     { name: "", age: "", favoriteColor: "purple" }
@@ -76,7 +76,8 @@ export default function AddChildProfilesPage() {
       
       toast.success(`${validForms.length} barn${validForms.length > 1 ? '' : ''} tilføjet!`);
       
-      // Navigate to congratulations page
+      // Refresh auth-derived state and go to congratulations
+      await refreshUserState();
       navigate('/congratulations');
     } catch (error) {
       console.error('Error adding children:', error);
