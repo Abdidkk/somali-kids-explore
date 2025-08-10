@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { resolveChildProfileIdByName } from "@/utils/childProfile";
 
 // Points Manager for Learning Activities - Now with Supabase backend
 export interface ActivityScore {
@@ -31,15 +32,43 @@ export interface QuizResult {
 export class PointsManager {
   private static STORAGE_KEY = 'learning_progress';
   private static currentChildName = 'default'; // Default child name
+  private static currentChildId: string | null = null; // New: track child profile id when available
 
   // Set current child name for multi-child support
   static setCurrentChild(childName: string): void {
     this.currentChildName = childName;
+    // Reset id when name is explicitly set without id
+    this.currentChildId = null;
+  }
+
+  // New: Set current child name + id together (preferred)
+  static setCurrentChildWithId(childName: string, childId: string): void {
+    this.currentChildName = childName;
+    this.currentChildId = childId;
   }
 
   // Get current child name
   static getCurrentChild(): string {
     return this.currentChildName;
+  }
+
+  // New: Get current child id (may be null)
+  static getCurrentChildId(): string | null {
+    return this.currentChildId;
+  }
+
+  // Internal helper: ensure we have a child id for the current child context
+  private static async ensureCurrentChildId(userId: string): Promise<string | null> {
+    if (this.currentChildId) return this.currentChildId;
+    if (!this.currentChildName) return null;
+    const resolved = await resolveChildProfileIdByName(userId, this.currentChildName);
+    if (resolved) {
+      this.currentChildId = resolved;
+      console.log("PointsManager: resolved child id for", this.currentChildName, "=>", resolved);
+    } else {
+      console.warn("PointsManager: could not resolve child id for", this.currentChildName);
+    }
+    return this.currentChildId;
   }
 
   // Get current progress from Supabase
@@ -52,11 +81,21 @@ export class PointsManager {
         return this.getLocalProgress();
       }
 
-      const { data: progressData, error } = await supabase
+      // Prefer filtering by child_profile_id if we have it
+      const childId = await this.ensureCurrentChildId(user.id);
+
+      let progressQuery = supabase
         .from('progress')
         .select('*')
-        .eq('user_id', user.id)
-        .eq('child_name', this.currentChildName);
+        .eq('user_id', user.id);
+
+      if (childId) {
+        progressQuery = progressQuery.eq('child_profile_id', childId);
+      } else {
+        progressQuery = progressQuery.eq('child_name', this.currentChildName);
+      }
+
+      const { data: progressData, error } = await progressQuery;
 
       if (error) {
         console.error('Error loading progress from Supabase:', error);
@@ -64,24 +103,31 @@ export class PointsManager {
       }
 
       // Convert database format to ProgressData format
-      const totalPoints = progressData.reduce((sum, p) => sum + p.total_points, 0);
-      const activitiesCompleted = progressData.reduce((sum, p) => sum + p.activities_completed, 0);
+      const totalPoints = (progressData || []).reduce((sum, p: any) => sum + (p.total_points ?? 0), 0);
+      const activitiesCompleted = (progressData || []).reduce((sum, p: any) => sum + (p.activities_completed ?? 0), 0);
       const categoryScores: Record<string, number> = {};
       
-      progressData.forEach(p => {
-        categoryScores[p.category] = p.total_points;
+      (progressData || []).forEach((p: any) => {
+        categoryScores[p.category] = p.total_points ?? 0;
       });
 
       // Get recent quiz results
-      const { data: quizResults } = await supabase
+      let quizQuery = supabase
         .from('quiz_results')
         .select('*')
         .eq('user_id', user.id)
-        .eq('child_name', this.currentChildName)
         .order('created_at', { ascending: false })
         .limit(50);
 
-      const recentScores: ActivityScore[] = (quizResults || []).map(qr => ({
+      if (childId) {
+        quizQuery = quizQuery.eq('child_profile_id', childId);
+      } else {
+        quizQuery = quizQuery.eq('child_name', this.currentChildName);
+      }
+
+      const { data: quizResults } = await quizQuery;
+
+      const recentScores: ActivityScore[] = (quizResults || []).map((qr: any) => ({
         category: qr.category,
         activity: qr.activity_name,
         score: qr.score,
@@ -128,6 +174,7 @@ export class PointsManager {
       activity: activityScore.activity,
       score: activityScore.score,
       currentChild: this.currentChildName,
+      currentChildId: this.currentChildId,
       timestamp: new Date().toISOString()
     });
     
@@ -140,25 +187,38 @@ export class PointsManager {
         return;
       }
 
-      console.log('Saving score to Supabase for user:', user.id, 'child:', this.currentChildName);
+      // Ensure we have child_profile_id if possible
+      const childId = await this.ensureCurrentChildId(user.id);
+
+      console.log('Saving score to Supabase for user:', user.id, 'child:', this.currentChildName, 'childId:', childId);
 
       // Update or create progress record
-      const { data: existingProgress } = await supabase
+      let progressSelect = supabase
         .from('progress')
         .select('*')
         .eq('user_id', user.id)
-        .eq('child_name', this.currentChildName)
-        .eq('category', activityScore.category)
-        .single();
+        .eq('category', activityScore.category);
+
+      if (childId) {
+        progressSelect = progressSelect.eq('child_profile_id', childId);
+      } else {
+        progressSelect = progressSelect.eq('child_name', this.currentChildName);
+      }
+
+      const { data: existingProgress } = await progressSelect.maybeSingle();
 
       if (existingProgress) {
         // Update existing progress
         await supabase
           .from('progress')
           .update({
-            total_points: existingProgress.total_points + activityScore.score,
-            activities_completed: existingProgress.activities_completed + 1,
-            time_spent: existingProgress.time_spent + (activityScore.timeSpent || 0)
+            total_points: (existingProgress.total_points || 0) + activityScore.score,
+            activities_completed: (existingProgress.activities_completed || 0) + 1,
+            time_spent: (existingProgress.time_spent || 0) + (activityScore.timeSpent || 0),
+            // keep track of name and id consistently
+            child_name: this.currentChildName,
+            child_profile_id: childId ?? existingProgress.child_profile_id ?? null,
+            updated_at: new Date().toISOString(),
           })
           .eq('id', existingProgress.id);
       } else {
@@ -168,10 +228,12 @@ export class PointsManager {
           .insert({
             user_id: user.id,
             child_name: this.currentChildName,
+            child_profile_id: childId,
             category: activityScore.category,
             total_points: activityScore.score,
             activities_completed: 1,
-            time_spent: activityScore.timeSpent || 0
+            time_spent: activityScore.timeSpent || 0,
+            updated_at: new Date().toISOString(),
           });
       }
 
@@ -181,6 +243,7 @@ export class PointsManager {
         .insert({
           user_id: user.id,
           child_name: this.currentChildName,
+          child_profile_id: childId,
           category: activityScore.category,
           activity_name: activityScore.activity,
           score: activityScore.score,
@@ -189,10 +252,10 @@ export class PointsManager {
           completion_time: activityScore.timeSpent
         });
 
-      console.log('Score saved successfully to Supabase for child:', this.currentChildName);
+      console.log('Score saved successfully to Supabase for child:', this.currentChildName, 'childId:', childId);
       
-      if (quizResult.error) {
-        console.error('Error inserting quiz result:', quizResult.error);
+      if ((quizResult as any).error) {
+        console.error('Error inserting quiz result:', (quizResult as any).error);
       } else {
         console.log('Quiz result inserted successfully');
       }
@@ -206,23 +269,16 @@ export class PointsManager {
   // Fallback to localStorage
   private static addLocalScore(activityScore: ActivityScore): void {
     const progress = this.getLocalProgress();
-    
-    // Add to recent scores (keep last 50)
     progress.recentScores.unshift(activityScore);
     if (progress.recentScores.length > 50) {
       progress.recentScores = progress.recentScores.slice(0, 50);
     }
-    
-    // Update totals
     progress.totalPoints += activityScore.score;
     progress.activitiesCompleted += 1;
-    
-    // Update category score
     if (!progress.categoryScores[activityScore.category]) {
       progress.categoryScores[activityScore.category] = 0;
     }
     progress.categoryScores[activityScore.category] += activityScore.score;
-    
     try {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(progress));
     } catch (error) {
@@ -246,18 +302,24 @@ export class PointsManager {
   static async isCategoryEnabled(category: string): Promise<boolean> {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        return true; // Default to enabled if not authenticated
-      }
+      if (!user) return true;
 
-      const { data: progressData } = await supabase
+      const childId = await this.ensureCurrentChildId(user.id);
+
+      let query = supabase
         .from('progress')
         .select('category_enabled')
         .eq('user_id', user.id)
-        .eq('child_name', this.currentChildName)
         .eq('category', category)
-        .single();
+        .limit(1);
+
+      if (childId) {
+        query = query.eq('child_profile_id', childId);
+      } else {
+        query = query.eq('child_name', this.currentChildName);
+      }
+
+      const { data: progressData } = await query.maybeSingle();
 
       return progressData?.category_enabled ?? true;
     } catch (error) {
@@ -270,27 +332,34 @@ export class PointsManager {
   static async toggleCategory(category: string, enabled: boolean): Promise<void> {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
       if (!user) {
         console.error('No user found when toggling category');
         return;
       }
 
-      console.log('PointsManager: Toggling category', category, 'to', enabled, 'for child', this.currentChildName);
+      console.log('PointsManager: Toggling category', category, 'to', enabled, 'for child', this.currentChildName, 'childId', this.currentChildId);
 
-      const { data: existingProgress } = await supabase
+      const childId = await this.ensureCurrentChildId(user.id);
+
+      let selectQuery = supabase
         .from('progress')
         .select('*')
         .eq('user_id', user.id)
-        .eq('child_name', this.currentChildName)
         .eq('category', category)
-        .single();
+        .limit(1);
+
+      if (childId) {
+        selectQuery = selectQuery.eq('child_profile_id', childId);
+      } else {
+        selectQuery = selectQuery.eq('child_name', this.currentChildName);
+      }
+
+      const { data: existingProgress } = await selectQuery.maybeSingle();
 
       if (existingProgress) {
-        // Update existing progress
         const { error } = await supabase
           .from('progress')
-          .update({ category_enabled: enabled })
+          .update({ category_enabled: enabled, updated_at: new Date().toISOString(), child_name: this.currentChildName, child_profile_id: childId ?? existingProgress.child_profile_id ?? null })
           .eq('id', existingProgress.id);
         
         if (error) {
@@ -299,14 +368,15 @@ export class PointsManager {
           console.log('Successfully updated category', category, 'to', enabled);
         }
       } else {
-        // Create new progress record with category disabled
         const { error } = await supabase
           .from('progress')
           .insert({
             user_id: user.id,
             child_name: this.currentChildName,
-            category: category,
-            category_enabled: enabled
+            child_profile_id: childId,
+            category,
+            category_enabled: enabled,
+            updated_at: new Date().toISOString(),
           });
         
         if (error) {
@@ -322,7 +392,7 @@ export class PointsManager {
 
   // Calculate points based on performance
   static calculatePoints(correctAnswers: number, totalQuestions: number, timeBonus: boolean = false): number {
-    const basePoints = Math.floor((correctAnswers / totalQuestions) * 100);
+    const basePoints = Math.floor((totalQuestions > 0 ? (correctAnswers / totalQuestions) : 0) * 100);
     const timeBonusPoints = timeBonus ? 10 : 0;
     return Math.max(0, basePoints + timeBonusPoints);
   }
@@ -333,17 +403,21 @@ export class PointsManager {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user) {
-        await supabase
-          .from('progress')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('child_name', this.currentChildName);
+        const childId = await this.ensureCurrentChildId(user.id);
 
-        await supabase
-          .from('quiz_results')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('child_name', this.currentChildName);
+        let progressDelete = supabase.from('progress').delete().eq('user_id', user.id);
+        let quizDelete = supabase.from('quiz_results').delete().eq('user_id', user.id);
+
+        if (childId) {
+          progressDelete = progressDelete.eq('child_profile_id', childId);
+          quizDelete = quizDelete.eq('child_profile_id', childId);
+        } else {
+          progressDelete = progressDelete.eq('child_name', this.currentChildName);
+          quizDelete = quizDelete.eq('child_name', this.currentChildName);
+        }
+
+        await progressDelete;
+        await quizDelete;
       }
     } catch (error) {
       console.error('Error resetting progress:', error);

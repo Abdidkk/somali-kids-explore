@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +17,7 @@ import { PointsManager } from "@/utils/pointsManager";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { learningCategories } from "@/data/learningCategories";
+import { resolveChildProfileIdByName } from "@/utils/childProfile";
 
 const DashboardPage = () => {
   const { user, loading: authLoading } = useAuth();
@@ -30,6 +30,7 @@ const DashboardPage = () => {
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedChild, setSelectedChild] = useState("default");
+  const [selectedChildId, setSelectedChildId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -45,35 +46,56 @@ const DashboardPage = () => {
       
       try {
         setLoading(true);
-        
-        // Set current child in PointsManager
-        PointsManager.setCurrentChild(selectedChild);
-        console.log('Dashboard: Set current child to', selectedChild);
+
+        // Resolve child id for selected name (latest created), store for reuse
+        const childId = await resolveChildProfileIdByName(user.id, selectedChild);
+        setSelectedChildId(childId);
+
+        // Set current child in PointsManager (with id if available)
+        if (childId) {
+          PointsManager.setCurrentChildWithId(selectedChild, childId);
+        } else {
+          PointsManager.setCurrentChild(selectedChild);
+        }
+        console.log('Dashboard: Set current child to', selectedChild, 'id:', childId);
         
         // Get progress data
         const progress = await PointsManager.getProgress();
         setProgressData(progress);
 
-        // Get recent quiz results
-        const { data: quizResults } = await supabase
+        // Get recent quiz results (prefer id)
+        let quizQuery = supabase
           .from('quiz_results')
           .select('*')
           .eq('user_id', user.id)
-          .eq('child_name', selectedChild)
           .order('created_at', { ascending: false })
           .limit(5);
 
+        if (childId) {
+          quizQuery = quizQuery.eq('child_profile_id', childId);
+        } else {
+          quizQuery = quizQuery.eq('child_name', selectedChild);
+        }
+
+        const { data: quizResults } = await quizQuery;
         setRecentActivity(quizResults || []);
 
-        // Get categories with their enabled status
-        const { data: progressRows } = await supabase
+        // Get categories with their enabled status (prefer id)
+        let progressRowsQuery = supabase
           .from('progress')
           .select('*')
-          .eq('user_id', user.id)
-          .eq('child_name', selectedChild);
+          .eq('user_id', user.id);
+
+        if (childId) {
+          progressRowsQuery = progressRowsQuery.eq('child_profile_id', childId);
+        } else {
+          progressRowsQuery = progressRowsQuery.eq('child_name', selectedChild);
+        }
+
+        const { data: progressRows } = await progressRowsQuery;
 
         const categoryMap = new Map();
-        progressRows?.forEach(row => {
+        progressRows?.forEach((row: any) => {
           categoryMap.set(row.category, {
             ...row,
             enabled: row.category_enabled

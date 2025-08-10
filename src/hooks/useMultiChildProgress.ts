@@ -1,9 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { PointsManager } from "@/utils/pointsManager";
 import { useAuth } from "@/hooks/useAuth";
 import { useChildren } from "@/hooks/useChildren";
+import { resolveChildProfileIdByName } from "@/utils/childProfile";
 
 export interface ChildProgressData {
   name: string;
@@ -47,25 +47,39 @@ export function useMultiChildProgress() {
       const allChildrenData: ChildProgressData[] = [];
 
       for (const childName of childrenToProcess) {
+        // Resolve id for this child (latest profile)
+        const childId = await resolveChildProfileIdByName(user.id, childName);
+
         // Set current child and get progress
-        PointsManager.setCurrentChild(childName);
+        if (childId) {
+          PointsManager.setCurrentChildWithId(childName, childId);
+        } else {
+          PointsManager.setCurrentChild(childName);
+        }
         const progress = await PointsManager.getProgress();
 
-        // Get recent activity
-        const { data: recentActivity } = await supabase
+        // Get recent activity (prefer id)
+        let recentQuery = supabase
           .from('quiz_results')
           .select('*')
           .eq('user_id', user.id)
-          .eq('child_name', childName)
           .order('created_at', { ascending: false })
           .limit(5);
 
-        // Calculate streak (simplified - can be enhanced)
-        const streak = Math.floor(Math.random() * 10); // Placeholder - implement proper streak calculation
+        if (childId) {
+          recentQuery = recentQuery.eq('child_profile_id', childId);
+        } else {
+          recentQuery = recentQuery.eq('child_name', childName);
+        }
+
+        const { data: recentActivity } = await recentQuery;
+
+        // Calculate streak (placeholder)
+        const streak = Math.floor(Math.random() * 10);
 
         // Get last activity date
         const lastActivity = recentActivity && recentActivity.length > 0 
-          ? new Date(recentActivity[0].created_at).toLocaleDateString('da-DK')
+          ? new Date(recentActivity[0].created_at as string).toLocaleDateString('da-DK')
           : null;
 
         allChildrenData.push({

@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -28,6 +29,19 @@ export function ChildrenManager({ onChildSelect, selectedChild }: ChildrenManage
   const [showAddForm, setShowAddForm] = useState(false);
   const [newChildName, setNewChildName] = useState("");
   const [newChildAge, setNewChildAge] = useState("");
+  const [maxChildrenPaid, setMaxChildrenPaid] = useState<number | null>(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("maxChildrenPaid");
+    if (stored) {
+      const parsed = parseInt(stored);
+      if (!Number.isNaN(parsed)) setMaxChildrenPaid(parsed);
+    }
+  }, []);
+
+  const limitReached = useMemo(() => {
+    return maxChildrenPaid !== null && children.length >= maxChildrenPaid;
+  }, [maxChildrenPaid, children.length]);
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
@@ -38,6 +52,11 @@ export function ChildrenManager({ onChildSelect, selectedChild }: ChildrenManage
   };
 
   const handleAddChild = async () => {
+    if (limitReached) {
+      toast.error("Du har nået din profilgrænse. Opgrader din plan for at tilføje flere.");
+      return;
+    }
+
     if (!newChildName.trim()) {
       toast.error("Venligst indtast et navn");
       return;
@@ -51,10 +70,10 @@ export function ChildrenManager({ onChildSelect, selectedChild }: ChildrenManage
         avatarColor
       );
       
+      toast.success(`${newChildName} er tilføjet!`);
       setNewChildName("");
       setNewChildAge("");
       setShowAddForm(false);
-      toast.success(`${newChildName} er tilføjet!`);
     } catch (error) {
       toast.error("Kunne ikke tilføje barnet");
       console.error('Error adding child:', error);
@@ -92,7 +111,7 @@ export function ChildrenManager({ onChildSelect, selectedChild }: ChildrenManage
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <User className="h-5 w-5" />
-          Børneprofiler ({children.length})
+          Børneprofiler ({children.length}{maxChildrenPaid !== null ? ` / ${maxChildrenPaid}` : ''})
         </CardTitle>
         <CardDescription>
           Administrer dine børns profiler og se deres fremgang
@@ -151,6 +170,12 @@ export function ChildrenManager({ onChildSelect, selectedChild }: ChildrenManage
           </div>
         )}
 
+        {limitReached && (
+          <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-3">
+            Du har nået din profilgrænse. Opgrader din plan for at tilføje flere.
+          </div>
+        )}
+
         {showAddForm ? (
           <div className="space-y-3 p-4 border rounded-lg bg-muted/50">
             <div className="space-y-2">
@@ -161,6 +186,7 @@ export function ChildrenManager({ onChildSelect, selectedChild }: ChildrenManage
                 onChange={(e) => setNewChildName(e.target.value)}
                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 onKeyDown={(e) => e.key === 'Enter' && handleAddChild()}
+                disabled={limitReached}
               />
               <input
                 type="number"
@@ -170,10 +196,11 @@ export function ChildrenManager({ onChildSelect, selectedChild }: ChildrenManage
                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 min="1"
                 max="18"
+                disabled={limitReached}
               />
             </div>
             <div className="flex gap-2">
-              <Button onClick={handleAddChild} className="flex-1">
+              <Button onClick={handleAddChild} className="flex-1" disabled={limitReached}>
                 Tilføj barn
               </Button>
               <Button variant="outline" onClick={() => setShowAddForm(false)}>
@@ -186,6 +213,7 @@ export function ChildrenManager({ onChildSelect, selectedChild }: ChildrenManage
             onClick={() => setShowAddForm(true)}
             className="w-full"
             variant="outline"
+            disabled={limitReached}
           >
             <Plus className="h-4 w-4 mr-2" />
             Tilføj nyt barn
