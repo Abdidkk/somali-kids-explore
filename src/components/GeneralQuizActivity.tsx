@@ -115,8 +115,10 @@ export default function GeneralQuizActivity({ onBack }: Props) {
         await PointsManager.addScore({
           category: "Quiz",
           activity: "Generel Quiz",
-          score: earnedPoints,
+          score: earnedPoints, // points awarded
           maxScore: 100,
+          rawCorrect: finalCorrect,
+          rawTotal: shuffledQuestions.length,
           timestamp: new Date().toISOString()
         });
 

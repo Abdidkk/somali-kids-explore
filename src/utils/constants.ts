@@ -12,8 +12,6 @@ export const ROUTES = {
   ADD_CHILDREN: '/add-children',
   LEARNING: '/learning',
   LEARN: '/learning',
-  ADMIN_KIDS: '/admin-kids',
-  CONGRATULATIONS: '/congratulations',
   CONTACT: '/kontakt',
   ABOUT: '/om-os',
   SUBJECTS: '/fag',

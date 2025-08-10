@@ -5,10 +5,13 @@ import { resolveChildProfileIdByName } from "@/utils/childProfile";
 export interface ActivityScore {
   category: string;
   activity: string;
-  score: number;
-  maxScore: number;
+  score: number; // points awarded
+  maxScore: number; // normalized max (often 100)
   timestamp: string;
   timeSpent?: number; // in seconds
+  // Raw quiz metrics (optional): correct answers and total questions
+  rawCorrect?: number;
+  rawTotal?: number;
 }
 
 export interface ProgressData {
@@ -246,8 +249,10 @@ export class PointsManager {
           child_profile_id: childId,
           category: activityScore.category,
           activity_name: activityScore.activity,
-          score: activityScore.score,
-          max_score: activityScore.maxScore,
+          // Store raw performance if provided; fallback to normalized values
+          score: activityScore.rawCorrect ?? activityScore.score,
+          max_score: activityScore.rawTotal ?? activityScore.maxScore,
+          points_awarded: activityScore.score,
           answers: [],
           completion_time: activityScore.timeSpent
         });

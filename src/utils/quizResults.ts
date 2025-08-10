@@ -29,8 +29,10 @@ export async function recordQuizResult({
   await PointsManager.addScore({
     category,
     activity,
-    score: earnedPoints,
-    maxScore: 100, // keep normalized to 100 like existing components
+    score: earnedPoints, // points awarded
+    maxScore: 100, // normalized
+    rawCorrect: score,
+    rawTotal: maxScore,
     timestamp: new Date().toISOString(),
   });
 

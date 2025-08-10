@@ -3,6 +3,7 @@ import { learningCategories } from "@/data/learningCategories";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { PointsManager } from "@/utils/pointsManager";
+import { resolveChildProfileIdByName } from "@/utils/childProfile";
 import AlphabetModal from "@/components/AlphabetModal";
 import ColorsModal from "@/components/ColorsModal";
 import NumbersModal from "@/components/NumbersModal";
@@ -48,14 +49,28 @@ export default function LearnCategoriesPage() {
       // Get progress data from PointsManager
       const progressData = await PointsManager.getProgress();
       
-      // Get recent activity from Supabase
-      const { data: recentQuizResults } = await supabase
+      // Resolve child id and set current child context
+      const childId = await resolveChildProfileIdByName(user.id, selectedChild);
+      if (childId) {
+        PointsManager.setCurrentChildWithId(selectedChild, childId);
+      } else {
+        PointsManager.setCurrentChild(selectedChild);
+      }
+      
+      // Get recent activity (prefer id)
+      let recentQuery = supabase
         .from('quiz_results')
         .select('*')
         .eq('user_id', user.id)
-        .eq('child_name', selectedChild)
         .order('created_at', { ascending: false })
         .limit(10);
+      
+      if (childId) {
+        recentQuery = recentQuery.eq('child_profile_id', childId);
+      } else {
+        recentQuery = recentQuery.eq('child_name', selectedChild);
+      }
+      const { data: recentQuizResults } = await recentQuery;
       
       if (recentQuizResults) {
         setRecentActivity(recentQuizResults);

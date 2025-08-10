@@ -50,8 +50,10 @@ export async function recordQuizResultAuto({
     await PointsManager.addScore({
       category,
       activity: activityName,
-      score: points,
-      maxScore: 100,
+      score: points, // points awarded
+      maxScore: 100, // keep normalized for progress totals
+      rawCorrect: correct,
+      rawTotal: total,
       timestamp: new Date().toISOString(),
     });
 

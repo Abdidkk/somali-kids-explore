@@ -119,8 +119,10 @@ export default function GeographyDragDropActivity({ onBack }: Props) {
       PointsManager.addScore({
         category: "Geografi",
         activity: `Drag & Drop - ${tab}`,
-        score: earnedPoints,
+        score: earnedPoints, // points awarded
         maxScore: 100,
+        rawCorrect: correctMatches.length,
+        rawTotal: items.length,
         timestamp: new Date().toISOString()
       });
       
