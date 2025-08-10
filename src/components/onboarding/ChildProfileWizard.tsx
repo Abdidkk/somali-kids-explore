@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -15,18 +15,35 @@ const avatarColors = [
 ];
 
 export function ChildProfileWizard() {
-  const [step, setStep] = useState(1);
   const [childName, setChildName] = useState("");
   const [childAge, setChildAge] = useState("");
   const [selectedColor, setSelectedColor] = useState("purple");
   const [loading, setLoading] = useState(false);
-  
-  const { addChild } = useChildren();
+  const [maxChildrenPaid, setMaxChildrenPaid] = useState<number | null>(null);
+
+  const { addChild, children } = useChildren();
   const { refreshUserState } = useAuth();
   const navigate = useNavigate();
 
+  // Hent det betalte antal børn fra localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem("maxChildrenPaid");
+    if (stored) {
+      setMaxChildrenPaid(parseInt(stored));
+    }
+  }, []);
+
   const handleCreateChild = async () => {
-    // Enhanced input validation
+    // Hvis vi har en grænse, og den er nået → stop
+    if (maxChildrenPaid !== null && children.length >= maxChildrenPaid) {
+      toast({
+        title: "Grænse nået",
+        description: `Du har allerede oprettet det maksimale antal børneprofiler, du har betalt for (${maxChildrenPaid}).`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     const nameValidation = validateInput(childName, 50);
     if (!nameValidation.isValid) {
       toast({
@@ -40,18 +57,18 @@ export function ChildProfileWizard() {
     setLoading(true);
     try {
       await addChild(
-        nameValidation.sanitized, 
-        childAge ? parseInt(childAge) : undefined, 
+        nameValidation.sanitized,
+        childAge ? parseInt(childAge) : undefined,
         selectedColor
       );
-      
+
       await refreshUserState();
-      
+
       toast({
         title: "Succes!",
         description: `${childName} er blevet tilføjet!`,
       });
-      
+
       navigate('/congratulations');
     } catch (error) {
       console.error('Error creating child:', error);
@@ -68,7 +85,7 @@ export function ChildProfileWizard() {
   const getColorClass = (color: string) => {
     const colorMap = {
       purple: 'bg-purple-500',
-      blue: 'bg-blue-500', 
+      blue: 'bg-blue-500',
       green: 'bg-green-500',
       orange: 'bg-orange-500',
       pink: 'bg-pink-500',
@@ -102,6 +119,13 @@ export function ChildProfileWizard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
+            {maxChildrenPaid !== null && (
+              <p className="text-sm text-gray-600">
+                Du har betalt for <strong>{maxChildrenPaid}</strong> børneprofiler. 
+                Du har allerede oprettet <strong>{children.length}</strong>.
+              </p>
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="childName">Barnets navn</Label>
               <Input

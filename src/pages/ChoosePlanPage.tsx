@@ -104,6 +104,9 @@ const ChoosePlanPage = () => {
       }
 
       if (data?.url) {
+        // Gem det antal børn der er betalt for
+        localStorage.setItem("maxChildrenPaid", numKids.toString());
+      
         // Open Stripe Checkout in a new tab (fixes redirect inside iframes like Lovable preview)
         const newTab = window.open(data.url, '_blank', 'noopener,noreferrer');
         if (!newTab) {
@@ -111,6 +114,7 @@ const ChoosePlanPage = () => {
           window.location.href = data.url;
         }
       }
+      
     } catch (error) {
       console.error('Error in handleSubscribe:', error);
       toast({
