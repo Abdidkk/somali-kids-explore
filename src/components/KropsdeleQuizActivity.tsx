@@ -16,12 +16,12 @@ export default function KropsdeleQuizActivity({ onBack }: KropsdeleQuizActivityP
       const options = [correct, ...wrong].sort(() => Math.random() - 0.5);
 
       return {
-        prompt: "Vælg det billede, der matcher ordet du hører",
+        prompt: "Hør kropsdelen og vælg det rigtige billede:",
         speak: { audio: correct.audio, tts: { text: correct.somali, lang: "so-SO", rate: 0.9 } },
         options: options.map((bp: BodyPartItem) => ({
           id: bp.id,
           content: (
-            <img src={bp.image ?? "/billeder/placeholder.png"} alt={bp.danish} className="w-24 h-24 object-contain" />
+            <img src={bp.image ?? "/billeder/placeholder.png"} alt={bp.danish} className="w-24 h-24 object-contain rounded" />
           ),
         })),
         correctId: correct.id,
@@ -31,7 +31,7 @@ export default function KropsdeleQuizActivity({ onBack }: KropsdeleQuizActivityP
 
   return (
     <MultipleChoiceQuiz
-      title="Kropsdel Quiz"
+      title="Test din viden"
       category="Kropsdele"
       activityName="Kropsdel Quiz"
       questions={questions}

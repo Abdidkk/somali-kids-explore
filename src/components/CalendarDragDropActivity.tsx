@@ -1,11 +1,11 @@
-
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
 import { WEEKDAYS, MONTHS, getCalendarItemColor } from "@/constants/calendarData";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
+import MultipleChoiceQuiz, { MCQuestion } from "@/components/quiz/MultipleChoiceQuiz";
 
 interface Props {
   onBack: () => void;
@@ -14,10 +14,35 @@ interface Props {
 export default function CalendarDragDropActivity({ onBack }: Props) {
   const isMobile = useIsMobile();
   const { toast } = useToast();
-  const [tab, setTab] = useState<"weekdays" | "months">("weekdays");
+  const [tab, setTab] = useState<"weekdays" | "months" | "quiz">("weekdays");
   const [weekdayOrder, setWeekdayOrder] = useState<string[]>([]);
   const [monthOrder, setMonthOrder] = useState<string[]>([]);
   const [showResult, setShowResult] = useState(false);
+  const [quizSeed, setQuizSeed] = useState(0);
+
+  // Quiz questions generation
+  const quizQuestions: MCQuestion[] = useMemo(() => {
+    const allItems = [...WEEKDAYS, ...MONTHS];
+    const shuffled = [...allItems].sort(() => Math.random() - 0.5).slice(0, 5);
+
+    return shuffled.map((correct) => {
+      const wrong = allItems.filter(item => item.danish !== correct.danish).sort(() => Math.random() - 0.5).slice(0, 3);
+      const options = [correct, ...wrong].sort(() => Math.random() - 0.5);
+
+      return {
+        prompt: "Hør ordet og vælg det rigtige svar:",
+        speak: { 
+          audio: correct.audio, 
+          tts: { text: correct.somali, lang: "so-SO", rate: 0.8 } 
+        },
+        options: options.map((item) => ({
+          id: item.danish,
+          label: item.danish,
+        })),
+        correctId: correct.danish,
+      } as MCQuestion;
+    });
+  }, [quizSeed]);
 
   const currentItems = tab === "weekdays" ? WEEKDAYS : MONTHS;
   const currentOrder = tab === "weekdays" ? weekdayOrder : monthOrder;
@@ -38,7 +63,7 @@ export default function CalendarDragDropActivity({ onBack }: Props) {
             console.error("Error playing audio:", error);
         });
     }
-}; 
+  }; 
 
   const playApplauseSound = () => {
     // Create applause sound effect using Web Audio API
@@ -118,12 +143,28 @@ export default function CalendarDragDropActivity({ onBack }: Props) {
     setShowResult(false);
   };
 
+  // If quiz tab is selected, render the quiz
+  if (tab === "quiz") {
+    return (
+      <MultipleChoiceQuiz
+        title="Test din viden"
+        category="Kalender"
+        activityName="Kalender Quiz"
+        questions={quizQuestions}
+        onBack={onBack}
+        onRetry={() => setQuizSeed((s) => s + 1)}
+        theme="cyan"
+      />
+    );
+  }
+
   return (
     <div className="flex flex-col items-center mt-3 md:mt-5 gap-4 md:gap-5">
-      <Tabs value={tab} onValueChange={v => setTab(v as "weekdays" | "months")} className="w-full flex flex-col items-center">
+      <Tabs value={tab} onValueChange={v => setTab(v as "weekdays" | "months" | "quiz")} className="w-full flex flex-col items-center">
         <TabsList className={`mb-3 md:mb-4 bg-violet-50 ${isMobile ? 'text-xs' : ''}`}>
           <TabsTrigger value="weekdays">Ugedage</TabsTrigger>
           <TabsTrigger value="months">Måneder</TabsTrigger>
+          <TabsTrigger value="quiz">Quiz</TabsTrigger>
         </TabsList>
         
         <TabsContent value={tab} className="w-full flex flex-col items-center gap-4">
@@ -226,3 +267,4 @@ export default function CalendarDragDropActivity({ onBack }: Props) {
     </div>
   );
 }
+
