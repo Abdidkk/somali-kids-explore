@@ -147,7 +147,7 @@ export default function MultipleChoiceQuiz({
     if (!isComplete || savedRef.current) return;
     savedRef.current = true;
     recordQuizResultAuto({ category, activityName, correct: score, total });
-  }, [isComplete, score, total, category, activityName]);
+  }, [isComplete]);
 
   if (!q) return <div className="text-center">Indlæser...</div>;
 
