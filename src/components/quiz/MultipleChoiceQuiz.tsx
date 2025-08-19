@@ -73,6 +73,7 @@ const themeMap = {
     halo: "bg-cyan-50",
     progress: "bg-cyan-600",
   },
+  
 };
 
 export default function MultipleChoiceQuiz({

@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { HelpCircle, RotateCcw } from "lucide-react";
 
+
 function getRandomInt(max: number) {
   return Math.floor(Math.random() * max);
 }
