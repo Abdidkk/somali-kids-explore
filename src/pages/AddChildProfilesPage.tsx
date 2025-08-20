@@ -38,18 +38,38 @@ export default function AddChildProfilesPage() {
     }
   }, [user, navigate]);
 
-  // Hent det betalte antal børn fra localStorage
+  // Hent det betalte antal børn fra localStorage og håndter eksisterende børn
   useEffect(() => {
     const stored = localStorage.getItem("maxChildrenPaid");
-    if (stored) {
-      setMaxChildrenPaid(parseInt(stored));
+    const storedValue = stored ? parseInt(stored) : 0;
+    
+    // Hvis brugeren ikke har betalt men har eksisterende børn, 
+    // tillad mindst det antal de allerede har (gratis tier minimum 1)
+    if (storedValue === 0 && children.length > 0) {
+      const minAllowed = Math.max(1, children.length);
+      setMaxChildrenPaid(minAllowed);
+      localStorage.setItem("maxChildrenPaid", minAllowed.toString());
+    } else if (storedValue === 0) {
+      // Gratis tier: tillad mindst 1 barn
+      setMaxChildrenPaid(1);
+      localStorage.setItem("maxChildrenPaid", "1");
+    } else {
+      setMaxChildrenPaid(storedValue);
     }
-  }, []);
+  }, [children]);
 
   const addForm = () => {
     // Tjek om vi har nået grænsen for betalte børneprofiler
     if (maxChildrenPaid !== null && (children.length + forms.length) >= maxChildrenPaid) {
-      toast.error(`Du har allerede oprettet det maksimale antal børneprofiler, du har betalt for (${maxChildrenPaid}).`);
+      toast.error(
+        `Du har nået grænsen på ${maxChildrenPaid} børneprofiler. Opgradér dit abonnement for at tilføje flere børn.`,
+        {
+          action: {
+            label: "Opgradér",
+            onClick: () => navigate('/choose-plan')
+          }
+        }
+      );
       return;
     }
     
@@ -79,7 +99,15 @@ export default function AddChildProfilesPage() {
 
     // Tjek om vi overskride grænsen for betalte børneprofiler
     if (maxChildrenPaid !== null && (children.length + validForms.length) > maxChildrenPaid) {
-      toast.error(`Du kan ikke tilføje ${validForms.length} børn. Du har betalt for ${maxChildrenPaid} børneprofiler og har allerede ${children.length}.`);
+      toast.error(
+        `Du kan ikke tilføje ${validForms.length} børn. Du har nået grænsen på ${maxChildrenPaid} børneprofiler.`,
+        {
+          action: {
+            label: "Opgradér plan",
+            onClick: () => navigate('/choose-plan')
+          }
+        }
+      );
       return;
     }
 
