@@ -111,11 +111,7 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
       questionsArray.push({
         promptNode,
         options: mcOptions,
-        correctOptionId: answer,
-        audioTts: {
-          text: `Hvilket bogstav kommer efter ${sequence.join(", ")}?`,
-          lang: "da-DK"
-        }
+        correctId: answer
       });
     }
     

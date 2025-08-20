@@ -46,44 +46,55 @@ export function useAuthState() {
           return;
         }
 
-        // Check subscription with proper error handling
-        const { data: subscriptionData, error } = await supabase.functions.invoke('check-subscription', {
-          headers: { 
-            Authorization: `Bearer ${validSession.access_token}`,
-            'Content-Type': 'application/json'
-          }
-        });
+        // Check subscription with proper error handling and timeout
+        try {
+          const { data: subscriptionData, error } = await supabase.functions.invoke('check-subscription', {
+            headers: { 
+              Authorization: `Bearer ${validSession.access_token}`,
+              'Content-Type': 'application/json'
+            }
+          });
 
-        if (error) {
-          console.error('Subscription check error:', error);
-          
-          // Handle rate limiting with exponential backoff
-          if (retries > 0 && (error.message?.includes('rate limit') || error.message?.includes('Rate limit'))) {
-            const delay = 2000 * (3 - retries);
-            setTimeout(() => checkSubscriptionStatus(retries - 1), delay);
+          if (error) {
+            console.error('Subscription check error:', error);
+            // Handle rate limiting with exponential backoff
+            if (retries > 0 && (error.message?.includes('rate limit') || error.message?.includes('Rate limit'))) {
+              const delay = 2000 * (3 - retries);
+              setTimeout(() => checkSubscriptionStatus(retries - 1), delay);
+              return;
+            }
+            
+            // Fallback to needs_payment state on error
+            setUserState('needs_payment');
             return;
           }
-          
-          setUserState('needs_payment');
-          return;
-        }
 
-        if (subscriptionData?.subscribed) {
-          // Check if user has completed onboarding (has children profiles)
-          const { data: childrenData } = await supabase
-            .from('child_profiles')
-            .select('id')
-            .eq('parent_user_id', currentUser.id)
-            .limit(1);
+          if (subscriptionData?.subscribed) {
+            // Check if user has completed onboarding (has children profiles)
+            const { data: childrenData } = await supabase
+              .from('child_profiles')
+              .select('id')
+              .eq('parent_user_id', currentUser.id)
+              .limit(1);
 
-          if (childrenData && childrenData.length > 0) {
-            setUserState('paid');
+            if (childrenData && childrenData.length > 0) {
+              setUserState('paid');
+            } else {
+              setUserState('onboarding');
+            }
           } else {
-            setUserState('onboarding');
+            setUserState('needs_payment');
           }
-        } else {
-          setUserState('needs_payment');
+        } catch (subscriptionError) {
+          console.error('Subscription check failed:', subscriptionError);
+          
+          if (retries > 0) {
+            setTimeout(() => checkSubscriptionStatus(retries - 1), 1000);
+          } else {
+            setUserState('needs_payment');
+          }
         }
+
       } catch (error) {
         console.error('Error determining user state:', error);
         

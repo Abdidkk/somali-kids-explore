@@ -50,29 +50,39 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('check-subscription', {
-        headers: {
-          Authorization: `Bearer ${freshSession.access_token}`,
-        },
-      });
+      try {
+        const { data, error } = await supabase.functions.invoke('check-subscription', {
+          headers: {
+            Authorization: `Bearer ${freshSession.access_token}`,
+          },
+        });
 
-      if (error) {
-        console.error('Error checking subscription:', error);
+        if (error) {
+          console.error('Error checking subscription:', error);
+          // Set default values on error to prevent UI issues
+          setSubscribed(false);
+          setInTrial(true);
+          setSubscriptionTier(null);
+          setSubscriptionEnd(null);
+          setBillingInterval(null);
+          return;
+        }
+
+        console.log('Subscription data:', data);
+        setSubscribed(data.subscribed || false);
+        setInTrial(data.inTrial || false);
+        setSubscriptionTier(data.subscription_tier || null);
+        setSubscriptionEnd(data.subscription_end || null);
+        setBillingInterval(data.billing_interval || null);
+      } catch (subscriptionError) {
+        console.error('Subscription check failed:', subscriptionError);
         // Set default values on error to prevent UI issues
         setSubscribed(false);
         setInTrial(true);
         setSubscriptionTier(null);
         setSubscriptionEnd(null);
         setBillingInterval(null);
-        return;
       }
-
-      console.log('Subscription data:', data);
-      setSubscribed(data.subscribed || false);
-      setInTrial(data.inTrial || false);
-      setSubscriptionTier(data.subscription_tier || null);
-      setSubscriptionEnd(data.subscription_end || null);
-      setBillingInterval(data.billing_interval || null);
     } catch (error) {
       console.error('Error in checkSubscription:', error);
       // Set default values on error to prevent UI issues
