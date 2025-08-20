@@ -125,8 +125,8 @@ export default function AddChildProfilesPage() {
       
       toast.success(`${validForms.length} barn${validForms.length > 1 ? '' : ''} tilføjet!`);
       
-      // Navigér først for at undgå guard-race; opdater brugerstatus bagefter
-      navigate('/congratulations', { replace: true });
+      // Navigér direkte til dashboard efter børneoprettelse
+      navigate('/dashboard', { replace: true });
       setTimeout(() => {
         refreshUserState().catch(() => {});
       }, 0);
