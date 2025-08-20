@@ -38,12 +38,12 @@ export interface BookData {
     },
     {
       id: "book3",
-      title: "Lær tallene på somalisk",
-      somali: "Baro tirooyinka Soomaaliga",
-      danish: "Lær tallene på somalisk", 
-      description: "Interaktiv bog til at lære tal og optælling",
-      coverImage: "/books/book3-cover.png",
-      fliphtml5Url: "https://online.fliphtml5.com/your-flipbook-3/",
+      title: "Aaway yaanyuurtaydii?",
+      somali: "Aaway yaanyuurtaydii?",
+      danish: "Hvor er min kat?", 
+      description: "Bogen Hvor er min kat? er en sød og enkel børnebog,",
+      coverImage: "/bog/Hvorerminkat.png",
+      fliphtml5Url: "https://heyzine.com/flip-book/a281db3fde.html",
       ageGroup: "4-7 år", 
       difficulty: "let",
       category: "læring"
