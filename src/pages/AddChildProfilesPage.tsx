@@ -29,6 +29,7 @@ export default function AddChildProfilesPage() {
     { name: "", age: "", favoriteColor: "purple" }
   ]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [maxChildrenPaid, setMaxChildrenPaid] = useState<number | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -37,7 +38,21 @@ export default function AddChildProfilesPage() {
     }
   }, [user, navigate]);
 
+  // Hent det betalte antal børn fra localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem("maxChildrenPaid");
+    if (stored) {
+      setMaxChildrenPaid(parseInt(stored));
+    }
+  }, []);
+
   const addForm = () => {
+    // Tjek om vi har nået grænsen for betalte børneprofiler
+    if (maxChildrenPaid !== null && (children.length + forms.length) >= maxChildrenPaid) {
+      toast.error(`Du har allerede oprettet det maksimale antal børneprofiler, du har betalt for (${maxChildrenPaid}).`);
+      return;
+    }
+    
     setForms([...forms, { name: "", age: "", favoriteColor: "purple" }]);
   };
 
@@ -59,6 +74,12 @@ export default function AddChildProfilesPage() {
     
     if (validForms.length === 0) {
       toast.error("Tilføj mindst ét barn med navn og alder");
+      return;
+    }
+
+    // Tjek om vi overskride grænsen for betalte børneprofiler
+    if (maxChildrenPaid !== null && (children.length + validForms.length) > maxChildrenPaid) {
+      toast.error(`Du kan ikke tilføje ${validForms.length} børn. Du har betalt for ${maxChildrenPaid} børneprofiler og har allerede ${children.length}.`);
       return;
     }
 
@@ -113,6 +134,12 @@ export default function AddChildProfilesPage() {
           <p className="text-muted-foreground max-w-md mx-auto">
             Opret personlige profiler for dine børn så de kan lære på deres eget niveau
           </p>
+          {maxChildrenPaid !== null && (
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
+              Du har betalt for <strong>{maxChildrenPaid}</strong> børneprofiler. 
+              Du har allerede oprettet <strong>{children.length}</strong>.
+            </div>
+          )}
         </div>
 
         <div className="bg-card rounded-xl shadow-lg p-6 border">
@@ -193,6 +220,7 @@ export default function AddChildProfilesPage() {
               type="button"
               variant="outline"
               onClick={addForm}
+              disabled={maxChildrenPaid !== null && (children.length + forms.length) >= maxChildrenPaid}
               className="w-full flex items-center justify-center gap-2"
             >
               <Plus className="w-4 h-4" />

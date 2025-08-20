@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { useChildren } from "@/hooks/useChildren";
-import { ChildProfileWizard } from "@/components/onboarding/ChildProfileWizard";
+
 
 // Define color scheme
 const COLORS = [
@@ -28,7 +28,7 @@ export default function CongratulationsPage() {
   const { checkSubscription } = useSubscription();
   const { userState, refreshUserState } = useAuth();
   const { children, loading: childrenLoading } = useChildren();
-  const [showWizard, setShowWizard] = useState(false);
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -61,7 +61,7 @@ export default function CongratulationsPage() {
       title: "Opret barnets profil", 
       description: "Start med at oprette en profil for dit barn",
       completed: hasChildren,
-      action: () => setShowWizard(true)
+      action: () => navigate('/add-children')
     },
     {
       icon: BookOpen,
@@ -79,9 +79,6 @@ export default function CongratulationsPage() {
     }
   ];
 
-  if (showWizard) {
-    return <ChildProfileWizard />;
-  }
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 via-[#e5f0ff] to-[#f8fbff] animate-fade-in px-2 py-10">
@@ -167,7 +164,7 @@ export default function CongratulationsPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
             {!hasChildren ? (
               <Button 
-                onClick={() => setShowWizard(true)}
+                onClick={() => navigate('/add-children')}
                 size="lg" 
                 className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 text-lg shadow-lg"
               >
