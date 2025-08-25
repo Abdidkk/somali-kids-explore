@@ -11,7 +11,7 @@ import FamilyProgressOverview from "@/components/dashboard/FamilyProgressOvervie
 import ChildProgressChart from "@/components/dashboard/ChildProgressChart";
 import ChildSelector from "@/components/dashboard/ChildSelector";
 import { useMultiChildProgress } from "@/hooks/useMultiChildProgress";
-import { ChildrenManager } from "@/components/kids/ChildrenManager";
+import { ChildrenDisplay } from "@/components/kids/ChildrenDisplay";
 import { BookOpen, Users, Settings, Activity, Award, Clock } from "lucide-react";
 import { PointsManager } from "@/utils/pointsManager";
 import { supabase } from "@/integrations/supabase/client";
@@ -370,7 +370,7 @@ const DashboardPage = () => {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          <ChildrenManager 
+          <ChildrenDisplay 
             onChildSelect={handleChildSelect}
             selectedChild={selectedChild}
           />
