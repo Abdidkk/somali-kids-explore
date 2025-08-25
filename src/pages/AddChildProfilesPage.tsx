@@ -43,16 +43,10 @@ export default function AddChildProfilesPage() {
     const stored = localStorage.getItem("maxChildrenPaid");
     const storedValue = stored ? parseInt(stored) : 0;
     
-    // Hvis brugeren ikke har betalt men har eksisterende børn, 
-    // tillad mindst det antal de allerede har (gratis tier minimum 1)
-    if (storedValue === 0 && children.length > 0) {
-      const minAllowed = Math.max(1, children.length);
-      setMaxChildrenPaid(minAllowed);
-      localStorage.setItem("maxChildrenPaid", minAllowed.toString());
-    } else if (storedValue === 0) {
-      // Gratis tier: tillad mindst 1 barn
-      setMaxChildrenPaid(1);
-      localStorage.setItem("maxChildrenPaid", "1");
+    // Hvis brugeren ikke har betalt (0), tillad kun 0 børn gratis
+    // Basic plan (45 kr) inkluderer allerede 1 barn + ekstra børn
+    if (storedValue === 0) {
+      setMaxChildrenPaid(0);
     } else {
       setMaxChildrenPaid(storedValue);
     }
@@ -61,15 +55,16 @@ export default function AddChildProfilesPage() {
   const addForm = () => {
     // Tjek om vi har nået grænsen for betalte børneprofiler
     if (maxChildrenPaid !== null && (children.length + forms.length) >= maxChildrenPaid) {
-      toast.error(
-        `Du har nået grænsen på ${maxChildrenPaid} børneprofiler. Opgradér dit abonnement for at tilføje flere børn.`,
-        {
-          action: {
-            label: "Opgradér",
-            onClick: () => navigate('/choose-plan')
-          }
+      const message = maxChildrenPaid === 0 
+        ? "Du skal købe en plan for at oprette børneprofiler. Basic planen (45 kr/måned) inkluderer 1 barn."
+        : `Du har nået grænsen på ${maxChildrenPaid} børneprofiler. Opgradér dit abonnement for at tilføje flere børn.`;
+      
+      toast.error(message, {
+        action: {
+          label: maxChildrenPaid === 0 ? "Køb plan" : "Opgradér",
+          onClick: () => navigate('/choose-plan')
         }
-      );
+      });
       return;
     }
     
@@ -99,15 +94,16 @@ export default function AddChildProfilesPage() {
 
     // Tjek om vi overskride grænsen for betalte børneprofiler
     if (maxChildrenPaid !== null && (children.length + validForms.length) > maxChildrenPaid) {
-      toast.error(
-        `Du kan ikke tilføje ${validForms.length} børn. Du har nået grænsen på ${maxChildrenPaid} børneprofiler.`,
-        {
-          action: {
-            label: "Opgradér plan",
-            onClick: () => navigate('/choose-plan')
-          }
+      const message = maxChildrenPaid === 0
+        ? "Du skal købe en plan for at oprette børneprofiler. Basic planen (45 kr/måned) inkluderer 1 barn."
+        : `Du kan ikke tilføje ${validForms.length} børn. Du har nået grænsen på ${maxChildrenPaid} børneprofiler.`;
+      
+      toast.error(message, {
+        action: {
+          label: maxChildrenPaid === 0 ? "Køb plan" : "Opgradér plan",
+          onClick: () => navigate('/choose-plan')
         }
-      );
+      });
       return;
     }
 
@@ -164,8 +160,11 @@ export default function AddChildProfilesPage() {
           </p>
           {maxChildrenPaid !== null && (
             <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
-              Du har betalt for <strong>{maxChildrenPaid}</strong> børneprofiler. 
-              Du har allerede oprettet <strong>{children.length}</strong>.
+              {maxChildrenPaid === 0 ? (
+                <span>Du skal købe en plan for at oprette børneprofiler. <strong>Basic planen inkluderer 1 barn.</strong></span>
+              ) : (
+                <span>Du har betalt for <strong>{maxChildrenPaid}</strong> børneprofiler. Du har allerede oprettet <strong>{children.length}</strong>.</span>
+              )}
             </div>
           )}
         </div>
