@@ -45,7 +45,10 @@ const DashboardPage = () => {
   useEffect(() => {
     if (!childProfilesLoading && childProfiles.length > 0 && !selectedChild) {
       const firstChild = childProfiles[0].name;
-      setSelectedChild(firstChild);
+      // Validate child name before setting
+      if (firstChild && firstChild.trim() !== '' && firstChild !== 'default') {
+        setSelectedChild(firstChild);
+      }
     }
   }, [childProfiles, childProfilesLoading, selectedChild]);
 

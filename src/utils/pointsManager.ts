@@ -39,7 +39,12 @@ export class PointsManager {
 
   // Set current child name for multi-child support
   static setCurrentChild(childName: string): void {
-    this.currentChildName = childName;
+    // Validate child name before setting
+    if (!childName || childName.trim() === '' || childName === 'default') {
+      console.warn('PointsManager: Invalid child name provided:', childName);
+      return;
+    }
+    this.currentChildName = childName.trim();
     // Reset id when name is explicitly set without id
     this.currentChildId = null;
   }
@@ -63,15 +68,26 @@ export class PointsManager {
   // Internal helper: ensure we have a child id for the current child context
   private static async ensureCurrentChildId(userId: string): Promise<string | null> {
     if (this.currentChildId) return this.currentChildId;
-    if (!this.currentChildName) return null;
-    const resolved = await resolveChildProfileIdByName(userId, this.currentChildName);
-    if (resolved) {
-      this.currentChildId = resolved;
-      console.log("PointsManager: resolved child id for", this.currentChildName, "=>", resolved);
-    } else {
-      console.warn("PointsManager: could not resolve child id for", this.currentChildName);
+    
+    // Validate we have a proper child name
+    if (!this.currentChildName || this.currentChildName === 'default' || this.currentChildName.trim() === '') {
+      console.warn("PointsManager: Invalid or missing child name, cannot resolve child ID:", this.currentChildName);
+      return null;
     }
-    return this.currentChildId;
+    
+    try {
+      const resolved = await resolveChildProfileIdByName(userId, this.currentChildName);
+      if (resolved) {
+        this.currentChildId = resolved;
+        console.log("PointsManager: resolved child id for", this.currentChildName, "=>", resolved);
+      } else {
+        console.warn("PointsManager: Child profile not found for name:", this.currentChildName, ". This may happen if the child profile hasn't been created yet or the name doesn't match any existing profiles.");
+      }
+      return this.currentChildId;
+    } catch (error) {
+      console.error("PointsManager: Error resolving child ID:", error);
+      return null;
+    }
   }
 
   // Get current progress from Supabase
