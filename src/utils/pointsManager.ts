@@ -34,7 +34,7 @@ export interface QuizResult {
 
 export class PointsManager {
   private static STORAGE_KEY = 'learning_progress';
-  private static currentChildName = 'default'; // Default child name
+  private static currentChildName: string | null = null; // No default child name
   private static currentChildId: string | null = null; // New: track child profile id when available
 
   // Set current child name for multi-child support
@@ -51,7 +51,7 @@ export class PointsManager {
   }
 
   // Get current child name
-  static getCurrentChild(): string {
+  static getCurrentChild(): string | null {
     return this.currentChildName;
   }
 
