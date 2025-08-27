@@ -80,7 +80,7 @@ serve(async (req) => {
       success_url: `${originUrl}/add-child-profiles?payment=success`,
       cancel_url: `${originUrl}/add-child-profiles?payment=cancelled`,
       subscription_data: {
-        trial_period_days: 0, // Ingen trial for ekstra børn
+        trial_period_days: 1, // Minimum 1 dag trial krævet af Stripe
       },
       metadata: {
         user_id: user.id,
