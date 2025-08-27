@@ -1,5 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useChildProfiles } from "@/hooks/useChildProfiles";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,6 +23,7 @@ import { resolveChildProfileIdByName } from "@/utils/childProfile";
 const DashboardPage = () => {
   const { user, loading: authLoading } = useAuth();
   const { subscribed, inTrial, subscriptionTier } = useSubscription();
+  const { childProfiles, loading: childProfilesLoading } = useChildProfiles();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { childrenData, loading: childrenLoading, refreshData } = useMultiChildProgress();
@@ -29,7 +31,7 @@ const DashboardPage = () => {
   const [progressData, setProgressData] = useState<any>(null);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
-  const [selectedChild, setSelectedChild] = useState("default");
+  const [selectedChild, setSelectedChild] = useState<string>("");
   const [selectedChildId, setSelectedChildId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -38,6 +40,14 @@ const DashboardPage = () => {
       navigate('/login');
     }
   }, [user, authLoading, navigate]);
+
+  // Set selected child to first child when profiles are loaded
+  useEffect(() => {
+    if (!childProfilesLoading && childProfiles.length > 0 && !selectedChild) {
+      const firstChild = childProfiles[0].name;
+      setSelectedChild(firstChild);
+    }
+  }, [childProfiles, childProfilesLoading, selectedChild]);
 
   // Load progress data for selected child
   useEffect(() => {
@@ -196,10 +206,14 @@ const DashboardPage = () => {
     setSelectedChild(childName);
   };
 
-  if (authLoading || loading || childrenLoading) {
+  if (authLoading || loading || childrenLoading || childProfilesLoading || !selectedChild) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Indlæser...</div>
+        <div className="text-lg">
+          {childProfilesLoading ? "Indlæser børneprofiler..." : 
+           !selectedChild ? "Ingen børn fundet..." : 
+           "Indlæser..."}
+        </div>
       </div>
     );
   }
@@ -293,7 +307,7 @@ const DashboardPage = () => {
             <Card>
               <CardHeader>
                 <CardTitle>
-                  Seneste Aktivitet - {selectedChild === 'default' ? 'Standard' : selectedChild}
+                  Seneste Aktivitet - {selectedChild}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -340,7 +354,7 @@ const DashboardPage = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Settings className="h-5 w-5" />
-                  Kategori Kontrol - {selectedChild === 'default' ? 'Standard' : selectedChild}
+                  Kategori Kontrol - {selectedChild}
                 </CardTitle>
                 <CardDescription>
                   Aktivér eller deaktivér kategorier for dette barn

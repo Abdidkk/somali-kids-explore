@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { learningCategories } from "@/data/learningCategories";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useChildProfiles } from "@/hooks/useChildProfiles";
 import { PointsManager } from "@/utils/pointsManager";
 import { resolveChildProfileIdByName } from "@/utils/childProfile";
 import AlphabetModal from "@/components/AlphabetModal";
@@ -24,13 +25,14 @@ import QuizModal from "@/components/QuizModal";
 
 export default function LearnCategoriesPage() {
   const { user } = useAuth();
+  const { childProfiles, loading: childProfilesLoading } = useChildProfiles();
   const [categorySettings, setCategorySettings] = useState(new Map());
   const [loading, setLoading] = useState(true);
-  const [selectedChild, setSelectedChild] = useState("default"); // Use same default as dashboard
+  const [selectedChild, setSelectedChild] = useState<string>("");
   
   // Real child data state
   const [childData, setChildData] = useState({
-    name: "default",
+    name: "",
     progress: 0,
     streak: 0,
     badges: [],
@@ -122,9 +124,17 @@ export default function LearnCategoriesPage() {
   const [showCultural, setShowCultural] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
 
+  // Set selected child to first child when profiles are loaded
+  useEffect(() => {
+    if (!childProfilesLoading && childProfiles.length > 0 && !selectedChild) {
+      const firstChild = childProfiles[0].name;
+      setSelectedChild(firstChild);
+    }
+  }, [childProfiles, childProfilesLoading, selectedChild]);
+
   useEffect(() => {
     const fetchCategorySettings = async () => {
-      if (!user) return;
+      if (!user || !selectedChild) return;
 
       try {
         setLoading(true);
@@ -165,8 +175,10 @@ export default function LearnCategoriesPage() {
       }
     };
 
-    fetchCategorySettings();
-    fetchChildData();
+    if (selectedChild) {
+      fetchCategorySettings();
+      fetchChildData();
+    }
   }, [user, selectedChild]);
 
   // Set up real-time listener for category changes
@@ -265,12 +277,16 @@ export default function LearnCategoriesPage() {
     }
   };
 
-  if (loading) {
+  if (loading || childProfilesLoading || !selectedChild) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white flex flex-col items-center justify-center py-10">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Indlæser kategorier...</p>
+          <p className="mt-4 text-gray-600">
+            {childProfilesLoading ? "Indlæser børneprofiler..." : 
+             !selectedChild ? "Ingen børn fundet..." : 
+             "Indlæser kategorier..."}
+          </p>
         </div>
       </div>
     );
