@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Baby, Plus, ArrowRight } from "lucide-react";
+import { Baby, Plus, ArrowRight, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useChildren } from "@/hooks/useChildren";
+import { useSubscription } from "@/hooks/useSubscription";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const avatarColors = [
@@ -25,10 +27,12 @@ export default function AddChildProfilesPage() {
   const navigate = useNavigate();
   const { user, refreshUserState } = useAuth();
   const { children, addChild, loading: childrenLoading } = useChildren();
+  const { billingInterval } = useSubscription();
   const [forms, setForms] = useState<ChildForm[]>([
     { name: "", age: "", favoriteColor: "purple" }
   ]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [maxChildrenPaid, setMaxChildrenPaid] = useState<number | null>(null);
 
   useEffect(() => {
@@ -131,6 +135,36 @@ export default function AddChildProfilesPage() {
       toast.error("Der opstod en fejl ved tilføjelse af børneprofiler");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleAddChildPayment = async () => {
+    if (!user) return;
+    
+    setIsPaymentLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('add-child-payment', {
+        body: { billingInterval: billingInterval || 'month' },
+        headers: {
+          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+        },
+      });
+
+      if (error) {
+        console.error('Payment error:', error);
+        toast.error('Der opstod en fejl ved oprettelse af betalingslink');
+        return;
+      }
+
+      if (data?.url) {
+        // Åbn Stripe Checkout i nyt faneblad
+        window.open(data.url, '_blank', 'noopener,noreferrer');
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      toast.error('Der opstod en fejl ved oprettelse af betalingslink');
+    } finally {
+      setIsPaymentLoading(false);
     }
   };
 
@@ -256,13 +290,34 @@ export default function AddChildProfilesPage() {
           </div>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-4">
-            <Button
-              variant="outline"
-              onClick={() => navigate('/choose-plan')}
-              className="flex-1"
-            >
-              Tilbage til planer
-            </Button>
+            {maxChildrenPaid === 0 ? (
+              <Button
+                variant="outline"
+                onClick={() => navigate('/choose-plan')}
+                className="flex-1"
+              >
+                Køb Basic plan
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                onClick={handleAddChildPayment}
+                disabled={isPaymentLoading}
+                className="flex-1"
+              >
+                {isPaymentLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current" />
+                    Indlæser...
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="w-4 h-4" />
+                    Tilføj 1 barn ({billingInterval === 'year' ? '135 kr/år' : '15 kr/måned'})
+                  </div>
+                )}
+              </Button>
+            )}
             <Button
               onClick={handleSubmit}
               disabled={isSubmitting}
