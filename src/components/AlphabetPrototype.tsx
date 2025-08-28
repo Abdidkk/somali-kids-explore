@@ -4,7 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AUDIO_FILES } from "@/constants/alphabetData";
 import { useIsMobile } from "@/hooks/use-mobile";
 import AlphabetAchievements from "./AlphabetAchievements";
-import LetterDisplay from "./alphabet/LetterDisplay";
+
 import DrawingCanvas from "./alphabet/DrawingCanvas";
 import LetterPronunciation from "./alphabet/LetterPronunciation";
 import { speakSomaliLetter } from "@/utils/speechUtils";
@@ -67,7 +67,7 @@ export default function AlphabetPrototype({ letter }: Props) {
         speakLetter={handleSpeakLetter}
       />
       
-      <LetterDisplay selectedLetter={letter} />
+      
       
       <DrawingCanvas 
         letter={letter} 
