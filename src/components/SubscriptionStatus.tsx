@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,8 @@ const SubscriptionStatus = () => {
   const [loading, setLoading] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
   const [portalError, setPortalError] = useState<string | null>(null);
+  const [trialTimeLeft, setTrialTimeLeft] = useState<string>("");
+  const [trialEndDate, setTrialEndDate] = useState<Date | null>(null);
   const { subscribed, inTrial, subscriptionTier, subscriptionEnd, checkSubscription } = useSubscription();
   const { session } = useAuth();
   const navigate = useNavigate();
@@ -88,12 +90,74 @@ const SubscriptionStatus = () => {
     }
   };
 
+  // Fetch trial end date from subscribers table
+  useEffect(() => {
+    const fetchTrialEndDate = async () => {
+      if (!session?.user?.id || !inTrial) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('subscribers')
+          .select('trial_end')
+          .eq('user_id', session.user.id)
+          .single();
+        
+        if (data?.trial_end && !error) {
+          setTrialEndDate(new Date(data.trial_end));
+        }
+      } catch (error) {
+        console.error('Error fetching trial end date:', error);
+      }
+    };
+
+    fetchTrialEndDate();
+  }, [session?.user?.id, inTrial]);
+
+  // Update countdown timer every minute
+  useEffect(() => {
+    if (!trialEndDate || !inTrial) return;
+
+    const updateTimer = () => {
+      const now = new Date();
+      const timeDiff = trialEndDate.getTime() - now.getTime();
+      
+      if (timeDiff <= 0) {
+        setTrialTimeLeft("Prøveperioden er udløbet");
+        return;
+      }
+
+      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+
+      if (days > 0) {
+        setTrialTimeLeft(`${days} dage, ${hours} timer tilbage`);
+      } else if (hours > 0) {
+        setTrialTimeLeft(`${hours} timer, ${minutes} minutter tilbage`);
+      } else {
+        setTrialTimeLeft(`${minutes} minutter tilbage`);
+      }
+    };
+
+    updateTimer();
+    const interval = setInterval(updateTimer, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, [trialEndDate, inTrial]);
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('da-DK', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const isUrgent = () => {
+    if (!trialEndDate) return false;
+    const now = new Date();
+    const timeDiff = trialEndDate.getTime() - now.getTime();
+    return timeDiff <= (24 * 60 * 60 * 1000); // Less than 24 hours
   };
 
   return (
@@ -149,11 +213,25 @@ const SubscriptionStatus = () => {
           </div>
         )}
 
-        {inTrial && !subscribed && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-blue-800 text-sm">
-              🎉 Du er i din gratis prøveperiode! Vælg en plan for at fortsætte efter prøveperioden.
-            </p>
+        {inTrial && !subscribed && trialTimeLeft && (
+          <div className={`border rounded-lg p-4 ${isUrgent() ? 'bg-red-50 border-red-200' : 'bg-blue-50 border-blue-200'}`}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className={`font-semibold ${isUrgent() ? 'text-red-800' : 'text-blue-800'}`}>
+                  {isUrgent() ? '⚠️ Prøveperioden udløber snart!' : '🎉 Du er i din gratis prøveperiode'}
+                </p>
+                <p className={`text-sm mt-1 ${isUrgent() ? 'text-red-700' : 'text-blue-700'}`}>
+                  {trialTimeLeft}
+                </p>
+              </div>
+              <Button 
+                onClick={() => navigate('/choose-plan')}
+                size="sm"
+                className={isUrgent() ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'}
+              >
+                Vælg plan nu
+              </Button>
+            </div>
           </div>
         )}
 

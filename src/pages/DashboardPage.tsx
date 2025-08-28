@@ -413,29 +413,6 @@ const DashboardPage = () => {
           </Card>
         </div>
 
-        {/* Trial/Subscription Notice */}
-        {inTrial && !subscribed && (
-          <Card className="mt-8 border-blue-200 bg-blue-50">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-semibold text-blue-900">
-                    Du er i din gratis prøveperiode
-                  </h3>
-                  <p className="text-blue-700 text-sm mt-1">
-                    Vælg en plan for at fortsætte efter prøveperioden udløber.
-                  </p>
-                </div>
-                <Button 
-                  onClick={() => navigate('/choose-plan')}
-                  className="bg-blue-600 hover:bg-blue-700"
-                >
-                  Vælg plan
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
     </div>
   );
