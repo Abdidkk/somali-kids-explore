@@ -277,7 +277,7 @@ const SubscriptionStatus = () => {
 
         {inTrial && !subscribed && trialTimeLeft && (
           <div className={`border rounded-lg p-4 ${isUrgent() ? 'bg-red-50 border-red-200' : 'bg-blue-50 border-blue-200'}`}>
-            <div className="flex items-center justify-between">
+            <div className="space-y-3">
               <div>
                 <p className={`font-semibold ${isUrgent() ? 'text-red-800' : 'text-blue-800'}`}>
                   {isUrgent() ? '⚠️ Prøveperioden udløber snart!' : '🎉 Du er i din gratis prøveperiode'}
@@ -285,21 +285,12 @@ const SubscriptionStatus = () => {
                 <p className={`text-sm mt-1 ${isUrgent() ? 'text-red-700' : 'text-blue-700'}`}>
                   {trialTimeLeft}
                 </p>
-                {hasExistingPlan && (
-                  <p className={`text-xs mt-1 ${isUrgent() ? 'text-red-600' : 'text-blue-600'}`}>
-                    Betalingen vil automatisk blive trukket når prøveperioden udløber
-                  </p>
-                )}
               </div>
-              {!hasExistingPlan && (
-                <Button 
-                  onClick={() => navigate('/choose-plan')}
-                  size="sm"
-                  className={isUrgent() ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'}
-                >
-                  Vælg plan nu
-                </Button>
-              )}
+              <div className={`p-3 rounded-lg border ${isUrgent() ? 'bg-red-100 border-red-300' : 'bg-blue-100 border-blue-300'}`}>
+                <p className={`text-sm font-medium flex items-center gap-2 ${isUrgent() ? 'text-red-800' : 'text-blue-800'}`}>
+                  💳 Automatisk betaling sker når prøveperioden udløber
+                </p>
+              </div>
             </div>
           </div>
         )}
@@ -313,31 +304,22 @@ const SubscriptionStatus = () => {
         )}
 
         <div className="flex gap-3 pt-4">
-          {!subscribed && !hasExistingPlan ? (
-            <Button 
-              onClick={() => navigate('/choose-plan')}
-              className="bg-[#4CA6FE] hover:bg-[#3b95e9] flex-1"
-            >
-              Vælg plan
-            </Button>
-          ) : (
-            <Button
-              variant="outline"
-              onClick={handleManageSubscription}
-              disabled={portalLoading}
-              className="flex-1"
-            >
-              {portalLoading ? (
-                <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <>
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Administrer abonnement</span>
-                  <ExternalLink className="ml-2 h-4 w-4" />
-                </>
-              )}
-            </Button>
-          )}
+          <Button
+            variant="outline"
+            onClick={handleManageSubscription}
+            disabled={portalLoading}
+            className="flex-1"
+          >
+            {portalLoading ? (
+              <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <>
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Administrer abonnement</span>
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </>
+            )}
+          </Button>
           
           <AlertDialog>
             <AlertDialogTrigger asChild>
