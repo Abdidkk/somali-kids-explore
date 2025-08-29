@@ -3,20 +3,33 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Crown, RefreshCw, Settings, ExternalLink } from "lucide-react";
+import { Crown, RefreshCw, Settings, ExternalLink, Trash2 } from "lucide-react";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const SubscriptionStatus = () => {
   const [loading, setLoading] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
   const [portalError, setPortalError] = useState<string | null>(null);
+  const [resetLoading, setResetLoading] = useState(false);
   const [trialTimeLeft, setTrialTimeLeft] = useState<string>("");
   const [trialEndDate, setTrialEndDate] = useState<Date | null>(null);
+  const [hasExistingPlan, setHasExistingPlan] = useState(false);
   const { subscribed, inTrial, subscriptionTier, subscriptionEnd, checkSubscription } = useSubscription();
   const { session } = useAuth();
   const navigate = useNavigate();
@@ -90,28 +103,77 @@ const SubscriptionStatus = () => {
     }
   };
 
-  // Fetch trial end date from subscribers table
+  const handleResetData = async () => {
+    if (!session) {
+      toast({
+        title: "Fejl",
+        description: "Du skal være logget ind for at nulstille data",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setResetLoading(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('reset-user-data', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) {
+        console.error('Error resetting user data:', error);
+        toast({
+          title: "Fejl",
+          description: "Kunne ikke nulstille data. Prøv igen senere.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Data nulstillet",
+        description: "Quiz resultater og fremskridt er blevet nulstillet",
+      });
+    } catch (error) {
+      console.error('Error in handleResetData:', error);
+      toast({
+        title: "Fejl",
+        description: "Der opstod en fejl ved nulstilling af data",
+        variant: "destructive",
+      });
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  // Fetch trial end date and check if user has existing plan
   useEffect(() => {
-    const fetchTrialEndDate = async () => {
-      if (!session?.user?.id || !inTrial) return;
+    const fetchUserData = async () => {
+      if (!session?.user?.id) return;
       
       try {
         const { data, error } = await supabase
           .from('subscribers')
-          .select('trial_end')
+          .select('trial_end, stripe_customer_id, subscription_tier')
           .eq('user_id', session.user.id)
           .single();
         
-        if (data?.trial_end && !error) {
-          setTrialEndDate(new Date(data.trial_end));
+        if (data && !error) {
+          if (data.trial_end && inTrial) {
+            setTrialEndDate(new Date(data.trial_end));
+          }
+          // User has existing plan if they have a customer ID or subscription tier
+          setHasExistingPlan(!!(data.stripe_customer_id || data.subscription_tier));
         }
       } catch (error) {
-        console.error('Error fetching trial end date:', error);
+        console.error('Error fetching user data:', error);
       }
     };
 
-    fetchTrialEndDate();
-  }, [session?.user?.id, inTrial]);
+    fetchUserData();
+  }, [session?.user?.id, inTrial, subscriptionTier]);
 
   // Update countdown timer every minute
   useEffect(() => {
@@ -223,14 +285,21 @@ const SubscriptionStatus = () => {
                 <p className={`text-sm mt-1 ${isUrgent() ? 'text-red-700' : 'text-blue-700'}`}>
                   {trialTimeLeft}
                 </p>
+                {hasExistingPlan && (
+                  <p className={`text-xs mt-1 ${isUrgent() ? 'text-red-600' : 'text-blue-600'}`}>
+                    Betalingen vil automatisk blive trukket når prøveperioden udløber
+                  </p>
+                )}
               </div>
-              <Button 
-                onClick={() => navigate('/choose-plan')}
-                size="sm"
-                className={isUrgent() ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'}
-              >
-                Vælg plan nu
-              </Button>
+              {!hasExistingPlan && (
+                <Button 
+                  onClick={() => navigate('/choose-plan')}
+                  size="sm"
+                  className={isUrgent() ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'}
+                >
+                  Vælg plan nu
+                </Button>
+              )}
             </div>
           </div>
         )}
@@ -244,7 +313,7 @@ const SubscriptionStatus = () => {
         )}
 
         <div className="flex gap-3 pt-4">
-          {!subscribed ? (
+          {!subscribed && !hasExistingPlan ? (
             <Button 
               onClick={() => navigate('/choose-plan')}
               className="bg-[#4CA6FE] hover:bg-[#3b95e9] flex-1"
@@ -269,9 +338,40 @@ const SubscriptionStatus = () => {
               )}
             </Button>
           )}
+          
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" size="sm">
+                <Trash2 className="h-4 w-4 mr-2" />
+                Nulstil data
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Nulstil alle data?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Dette vil permanent slette alle quiz resultater og fremskridt for din konto. 
+                  Denne handling kan ikke fortrydes.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Annuller</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleResetData}
+                  disabled={resetLoading}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  {resetLoading ? (
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
+                  Nulstil data
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
         
-        {subscribed && (
+        {(subscribed || hasExistingPlan) && (
           <p className="text-xs text-gray-500 text-center mt-2">
             Kundeportalen åbnes i en ny fane, hvor du kan ændre betalingsmetode, 
             skifte abonnement eller opsige dit abonnement.

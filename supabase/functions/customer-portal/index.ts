@@ -61,11 +61,21 @@ serve(async (req) => {
       // Otherwise look it up in Stripe
       const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
       const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+      
       if (customers.data.length === 0) {
-        throw new Error("No Stripe customer found for this user");
+        // Create a new customer for trial users who want to access portal
+        const newCustomer = await stripe.customers.create({
+          email: user.email,
+          metadata: {
+            user_id: user.id
+          }
+        });
+        customerId = newCustomer.id;
+        logStep("Created new Stripe customer for trial user", { customerId });
+      } else {
+        customerId = customers.data[0].id;
+        logStep("Found Stripe customer via API", { customerId });
       }
-      customerId = customers.data[0].id;
-      logStep("Found Stripe customer via API", { customerId });
       
       // Update our database with the customer ID for future reference
       if (customerId) {
@@ -74,8 +84,9 @@ serve(async (req) => {
           .upsert({ 
             user_id: user.id, 
             email: user.email, 
-            stripe_customer_id: customerId 
-          });
+            stripe_customer_id: customerId,
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'email' });
           
         if (updateError) {
           logStep("Error updating subscriber record", { error: updateError });
