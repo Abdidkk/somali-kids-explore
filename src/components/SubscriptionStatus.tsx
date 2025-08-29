@@ -3,7 +3,9 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Crown, RefreshCw, Settings, ExternalLink, Trash2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Crown, RefreshCw, Settings, ExternalLink, Trash2, UserX, AlertTriangle } from "lucide-react";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,11 +29,13 @@ const SubscriptionStatus = () => {
   const [portalLoading, setPortalLoading] = useState(false);
   const [portalError, setPortalError] = useState<string | null>(null);
   const [resetLoading, setResetLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [confirmationEmail, setConfirmationEmail] = useState("");
   const [trialTimeLeft, setTrialTimeLeft] = useState<string>("");
   const [trialEndDate, setTrialEndDate] = useState<Date | null>(null);
   const [hasExistingPlan, setHasExistingPlan] = useState(false);
   const { subscribed, inTrial, subscriptionTier, subscriptionEnd, checkSubscription } = useSubscription();
-  const { session } = useAuth();
+  const { session, user } = useAuth();
   const navigate = useNavigate();
 
   const handleRefresh = async () => {
@@ -145,6 +149,63 @@ const SubscriptionStatus = () => {
       });
     } finally {
       setResetLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (confirmationEmail !== user?.email) {
+      toast({
+        title: "Fejl",
+        description: "Email bekræftelse matcher ikke din konto",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setDeleteLoading(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('delete-user-account', {
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: { confirmationEmail }
+      });
+
+      if (error) {
+        console.error('Error deleting account:', error);
+        toast({
+          title: "Fejl",
+          description: "Kunne ikke slette kontoen. Prøv igen senere.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (data?.success) {
+        toast({
+          title: "Konto slettet",
+          description: "Din konto er nu permanent slettet",
+        });
+        // Sign out and redirect to homepage
+        await supabase.auth.signOut();
+        navigate("/");
+      } else {
+        toast({
+          title: "Fejl",
+          description: data?.error || "Der opstod en uventet fejl",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Error in handleDeleteAccount:', error);
+      toast({
+        title: "Fejl",
+        description: "Der opstod en fejl ved sletning af kontoen",
+        variant: "destructive",
+      });
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -347,6 +408,79 @@ const SubscriptionStatus = () => {
                     <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
                   ) : null}
                   Nulstil data
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="destructive"
+                size="sm"
+                className="bg-red-600 hover:bg-red-700"
+              >
+                <UserX className="mr-2 h-4 w-4" />
+                Slet konto
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="max-w-md">
+              <AlertDialogHeader>
+                <AlertDialogTitle className="flex items-center gap-2 text-red-600">
+                  <AlertTriangle className="h-5 w-5" />
+                  Slet konto permanent
+                </AlertDialogTitle>
+                <AlertDialogDescription className="space-y-3">
+                  <p className="text-sm text-gray-600">
+                    <strong>⚠️ ADVARSEL:</strong> Denne handling kan ikke fortrydes!
+                  </p>
+                  <div className="text-sm text-gray-600 space-y-1">
+                    <p>Ved at slette din konto vil følgende blive permanent fjernet:</p>
+                    <ul className="list-disc list-inside ml-2 space-y-1">
+                      <li>Alle børneprofiler og deres fremskridt</li>
+                      <li>Quiz resultater og point</li>
+                      <li>Abonnements- og betalingshistorik</li>
+                      <li>Alle personlige data</li>
+                    </ul>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmEmail" className="text-sm font-medium">
+                      Indtast din email for at bekræfte:
+                    </Label>
+                    <Input
+                      id="confirmEmail"
+                      type="email"
+                      placeholder={user?.email || "din@email.com"}
+                      value={confirmationEmail}
+                      onChange={(e) => setConfirmationEmail(e.target.value)}
+                      className="text-sm"
+                    />
+                  </div>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel 
+                  onClick={() => setConfirmationEmail("")}
+                  disabled={deleteLoading}
+                >
+                  Annuller
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDeleteAccount}
+                  disabled={deleteLoading || confirmationEmail !== user?.email}
+                  className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+                >
+                  {deleteLoading ? (
+                    <>
+                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                      Sletter...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Slet konto permanent
+                    </>
+                  )}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
