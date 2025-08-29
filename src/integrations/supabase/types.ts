@@ -14,41 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      achievement_badges: {
-        Row: {
-          badge_description: string | null
-          badge_name: string
-          category: string | null
-          child_id: string
-          earned_date: string | null
-          id: string
-        }
-        Insert: {
-          badge_description?: string | null
-          badge_name: string
-          category?: string | null
-          child_id: string
-          earned_date?: string | null
-          id?: string
-        }
-        Update: {
-          badge_description?: string | null
-          badge_name?: string
-          category?: string | null
-          child_id?: string
-          earned_date?: string | null
-          id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "achievement_badges_child_id_fkey"
-            columns: ["child_id"]
-            isOneToOne: false
-            referencedRelation: "child_profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       child_profiles: {
         Row: {
           age: number | null
@@ -129,56 +94,6 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
-      }
-      learning_progress: {
-        Row: {
-          child_id: string
-          completed_lessons: number | null
-          created_at: string | null
-          difficulty_level: string | null
-          id: string
-          last_completed_lesson_date: string | null
-          mastery_level: string | null
-          module_id: string
-          progress_percentage: number | null
-          total_lessons: number
-          updated_at: string | null
-        }
-        Insert: {
-          child_id: string
-          completed_lessons?: number | null
-          created_at?: string | null
-          difficulty_level?: string | null
-          id?: string
-          last_completed_lesson_date?: string | null
-          mastery_level?: string | null
-          module_id: string
-          progress_percentage?: number | null
-          total_lessons?: number
-          updated_at?: string | null
-        }
-        Update: {
-          child_id?: string
-          completed_lessons?: number | null
-          created_at?: string | null
-          difficulty_level?: string | null
-          id?: string
-          last_completed_lesson_date?: string | null
-          mastery_level?: string | null
-          module_id?: string
-          progress_percentage?: number | null
-          total_lessons?: number
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "learning_progress_child_id_fkey"
-            columns: ["child_id"]
-            isOneToOne: false
-            referencedRelation: "child_profiles"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       progress: {
         Row: {
