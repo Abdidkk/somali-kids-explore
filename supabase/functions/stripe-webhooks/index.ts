@@ -17,6 +17,20 @@ serve(async (req) => {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
   );
 
+  // Enhanced logging for debugging
+  const logEvent = async (eventType: string, metadata: any = {}, severity = 'INFO') => {
+    try {
+      await supabase.rpc('log_event', {
+        p_event_type: eventType,
+        p_user_id: null,
+        p_metadata: metadata,
+        p_severity: severity
+      });
+    } catch (error) {
+      console.error('Failed to log event:', error);
+    }
+  };
+
   // Konfigurer Stripe
   const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, {
     apiVersion: '2023-10-16'
@@ -25,8 +39,12 @@ serve(async (req) => {
   try {
     const payload = await req.text();
     const signature = req.headers.get('stripe-signature');
+    const origin = req.headers.get('origin') || 'unknown';
+
+    console.log(`Webhook received from ${origin}, signature: ${signature ? 'present' : 'missing'}`);
 
     if (!signature) {
+      await logEvent('stripe_webhook_no_signature', { origin }, 'WARNING');
       throw new Error('Missing stripe-signature header');
     }
 
@@ -35,11 +53,24 @@ serve(async (req) => {
     const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET');
     
     if (webhookSecret) {
-      event = stripe.webhooks.constructEvent(payload, signature, webhookSecret);
+      try {
+        event = stripe.webhooks.constructEvent(payload, signature, webhookSecret);
+        console.log(`Webhook signature verified successfully`);
+      } catch (verificationError) {
+        await logEvent('stripe_webhook_verification_failed', { 
+          error: verificationError.message,
+          origin 
+        }, 'ERROR');
+        throw verificationError;
+      }
     } else {
       // Fallback: parse payload direkte (kun til test)
       event = JSON.parse(payload);
       console.warn('STRIPE_WEBHOOK_SECRET not set - webhook verification skipped');
+      await logEvent('stripe_webhook_unverified', { 
+        event_type: event.type,
+        origin 
+      }, 'WARNING');
     }
 
     console.log(`Processing webhook event: ${event.type}`);
