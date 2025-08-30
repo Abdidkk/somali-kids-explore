@@ -171,16 +171,77 @@ async function handleCheckoutCompleted(supabase: any, session: Stripe.Checkout.S
 async function handlePaymentSucceeded(supabase: any, invoice: Stripe.Invoice) {
   const customerId = invoice.customer as string;
   
-  await supabase.rpc('log_event', {
-    p_event_type: 'stripe_payment_succeeded',
-    p_user_id: null,
-    p_metadata: {
-      invoice_id: invoice.id,
-      customer_id: customerId,
-      amount: (invoice.amount_paid || 0) / 100
-    },
-    p_severity: 'INFO'
-  });
+  // Enhanced payment succeeded handler with trial-to-active logic
+  try {
+    // Check if this is a successful subscription payment
+    if (invoice.subscription && invoice.billing_reason === 'subscription_cycle') {
+      // Get subscriber info to check current status
+      const { data: subscriberData } = await supabase
+        .from('subscribers')
+        .select('status, trial_end, email, user_id')
+        .eq('stripe_customer_id', customerId)
+        .single();
+
+      if (subscriberData) {
+        // Determine if this is a trial-to-active transition
+        const wasInTrial = subscriberData.status === 'trial' || 
+                          (subscriberData.trial_end && new Date(subscriberData.trial_end) > new Date());
+
+        // Update subscriber to active status
+        await supabase
+          .from('subscribers')
+          .update({
+            subscribed: true,
+            status: 'active',
+            updated_at: new Date().toISOString(),
+          })
+          .eq('stripe_customer_id', customerId);
+
+        // Log trial-to-active transition
+        if (wasInTrial) {
+          await supabase.rpc('log_event', {
+            p_event_type: 'stripe_trial_to_active',
+            p_user_id: subscriberData.user_id || null,
+            p_metadata: {
+              invoice_id: invoice.id,
+              customer_id: customerId,
+              amount: (invoice.amount_paid || 0) / 100,
+              email: subscriberData.email,
+              transition: 'trial_to_active'
+            },
+            p_severity: 'INFO'
+          });
+
+          console.log(`Trial-to-active transition completed for customer ${customerId}`);
+        }
+      }
+    }
+
+    await supabase.rpc('log_event', {
+      p_event_type: 'stripe_payment_succeeded',
+      p_user_id: null,
+      p_metadata: {
+        invoice_id: invoice.id,
+        customer_id: customerId,
+        amount: (invoice.amount_paid || 0) / 100,
+        billing_reason: invoice.billing_reason
+      },
+      p_severity: 'INFO'
+    });
+  } catch (error) {
+    console.error('Error handling payment succeeded:', error);
+    
+    await supabase.rpc('log_event', {
+      p_event_type: 'stripe_payment_succeeded_error',
+      p_user_id: null,
+      p_metadata: {
+        error: (error as any).message,
+        invoice_id: invoice.id,
+        customer_id: customerId
+      },
+      p_severity: 'ERROR'
+    });
+  }
 }
 
 async function handlePaymentFailed(supabase: any, invoice: Stripe.Invoice) {

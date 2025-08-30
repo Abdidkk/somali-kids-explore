@@ -9,6 +9,7 @@ interface SubscriptionContextType {
   subscriptionTier: string | null;
   subscriptionEnd: string | null;
   billingInterval: string | null;
+  status: string | null;
   loading: boolean;
   checkSubscription: () => Promise<void>;
 }
@@ -21,6 +22,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   const [subscriptionTier, setSubscriptionTier] = useState<string | null>(null);
   const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
   const [billingInterval, setBillingInterval] = useState<string | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { user, session } = useAuth();
 
@@ -74,6 +76,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
         setSubscriptionTier(data.subscription_tier || null);
         setSubscriptionEnd(data.subscription_end || null);
         setBillingInterval(data.billing_interval || null);
+        setStatus(data.status || null);
       } catch (subscriptionError) {
         console.error('Subscription check failed:', subscriptionError);
         // Set default values on error to prevent UI issues
@@ -108,8 +111,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     }
   }, [user, session]);
 
-  // Listen for page focus to refresh subscription status (when returning from Stripe)
-  // But limit to avoid rate limits
+  // Listen for page focus and real-time database changes
   useEffect(() => {
     let lastCheck = 0;
     const handleFocus = () => {
@@ -130,6 +132,44 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     };
   }, [user, session]);
 
+  // Real-time subscription updates
+  useEffect(() => {
+    if (!user?.email) return;
+
+    console.log('Setting up real-time subscription listener for:', user.email);
+    
+    const channel = supabase
+      .channel('subscription-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'subscribers',
+          filter: `email=eq.${user.email}`
+        },
+        (payload) => {
+          console.log('Real-time subscription update received:', payload);
+          
+          if (payload.new) {
+            const data = payload.new as any;
+            setSubscribed(data.subscribed || false);
+            setInTrial(!data.subscribed && data.trial_end && new Date(data.trial_end) > new Date());
+            setSubscriptionTier(data.subscription_tier || null);
+            setSubscriptionEnd(data.subscription_end || null);
+            setBillingInterval(data.billing_interval || null);
+            setStatus(data.status || null);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      console.log('Cleaning up subscription listener');
+      supabase.removeChannel(channel);
+    };
+  }, [user?.email]);
+
   return (
     <SubscriptionContext.Provider value={{ 
       subscribed, 
@@ -137,6 +177,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       subscriptionTier, 
       subscriptionEnd, 
       billingInterval,
+      status,
       loading, 
       checkSubscription 
     }}>

@@ -113,10 +113,24 @@ serve(async (req) => {
       subscribed = false;
     }
 
+    // Determine status
+    let status = existing.status || 'trial';
+    if (subscribed) {
+      status = 'active';
+    } else if (existing.trial_end && new Date(existing.trial_end) > new Date()) {
+      status = 'trial';
+    } else {
+      status = 'expired';
+    }
+
     // Persist correction if value changed
-    if (subscribed !== existing.subscribed) {
+    if (subscribed !== existing.subscribed || status !== existing.status) {
       await supabaseService.from('subscribers')
-        .update({ subscribed, updated_at: new Date().toISOString() })
+        .update({ 
+          subscribed, 
+          status,
+          updated_at: new Date().toISOString() 
+        })
         .eq('id', existing.id);
     }
 
@@ -124,6 +138,7 @@ serve(async (req) => {
     await logEvent('subscription_status_checked', user.id, {
       from: 'database',
       subscribed,
+      status,
       subscription_tier: existing.subscription_tier,
       subscription_end: existing.subscription_end,
       customer_id: existing.stripe_customer_id
@@ -131,10 +146,11 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({
       subscribed,
-      inTrial: !subscribed,
+      inTrial: !subscribed && status === 'trial',
       subscription_tier: existing.subscription_tier,
       subscription_end: existing.subscription_end,
       billing_interval: existing.billing_interval,
+      status: status
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,

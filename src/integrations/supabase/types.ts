@@ -238,6 +238,7 @@ export type Database = {
           email: string
           id: string
           num_kids: number | null
+          status: string | null
           stripe_customer_id: string | null
           subscribed: boolean
           subscription_end: string | null
@@ -252,6 +253,7 @@ export type Database = {
           email: string
           id?: string
           num_kids?: number | null
+          status?: string | null
           stripe_customer_id?: string | null
           subscribed?: boolean
           subscription_end?: string | null
@@ -266,6 +268,7 @@ export type Database = {
           email?: string
           id?: string
           num_kids?: number | null
+          status?: string | null
           stripe_customer_id?: string | null
           subscribed?: boolean
           subscription_end?: string | null

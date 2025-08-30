@@ -34,7 +34,7 @@ const SubscriptionStatus = () => {
   const [trialTimeLeft, setTrialTimeLeft] = useState<string>("");
   const [trialEndDate, setTrialEndDate] = useState<Date | null>(null);
   const [hasExistingPlan, setHasExistingPlan] = useState(false);
-  const { subscribed, inTrial, subscriptionTier, subscriptionEnd, checkSubscription } = useSubscription();
+  const { subscribed, inTrial, subscriptionTier, subscriptionEnd, status, checkSubscription } = useSubscription();
   const { session, user } = useAuth();
   const navigate = useNavigate();
 
@@ -311,10 +311,10 @@ const SubscriptionStatus = () => {
         <div className="flex items-center justify-between">
           <span className="font-medium">Status:</span>
           <Badge 
-            variant={subscribed ? "default" : inTrial ? "secondary" : "destructive"}
-            className={subscribed ? "bg-green-600" : inTrial ? "bg-blue-600" : ""}
+            variant={subscribed ? "default" : status === 'trial' ? "secondary" : "destructive"}
+            className={subscribed ? "bg-green-600" : status === 'trial' ? "bg-blue-600" : ""}
           >
-            {subscribed ? "Aktiv" : inTrial ? "Prøveperiode" : "Inaktiv"}
+            {subscribed ? "Aktiv" : status === 'trial' ? "Prøveperiode" : "Inaktiv"}
           </Badge>
         </div>
 
@@ -336,7 +336,8 @@ const SubscriptionStatus = () => {
           </div>
         )}
 
-        {inTrial && !subscribed && trialTimeLeft && (
+        {/* Only show trial countdown if status is trial and user isn't subscribed */}
+        {status === 'trial' && !subscribed && trialTimeLeft && (
           <div className={`border rounded-lg p-4 ${isUrgent() ? 'bg-red-50 border-red-200' : 'bg-blue-50 border-blue-200'}`}>
             <div className="space-y-3">
               <div>
@@ -352,6 +353,20 @@ const SubscriptionStatus = () => {
                   💳 Automatisk betaling sker når prøveperioden udløber
                 </p>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Show success message when transition from trial to active happens */}
+        {status === 'active' && subscribed && (
+          <div className="border rounded-lg p-4 bg-green-50 border-green-200">
+            <div className="space-y-2">
+              <p className="font-semibold text-green-800 flex items-center gap-2">
+                ✅ Dit abonnement er nu aktivt!
+              </p>
+              <p className="text-sm text-green-700">
+                Du har nu fuld adgang til alle funktioner.
+              </p>
             </div>
           </div>
         )}
