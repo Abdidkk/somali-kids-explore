@@ -41,9 +41,18 @@ serve(async (req) => {
     const signature = req.headers.get('stripe-signature');
     const origin = req.headers.get('origin') || 'unknown';
 
-    console.log(`Webhook received from ${origin}, signature: ${signature ? 'present' : 'missing'}`);
+    console.log(`[WEBHOOK-DEBUG] Webhook received from ${origin}`);
+    console.log(`[WEBHOOK-DEBUG] Signature: ${signature ? 'present' : 'missing'}`);
+    console.log(`[WEBHOOK-DEBUG] Payload length: ${payload.length}`);
+
+    await logEvent('stripe_webhook_received', { 
+      origin, 
+      has_signature: !!signature,
+      payload_length: payload.length 
+    }, 'INFO');
 
     if (!signature) {
+      console.log(`[WEBHOOK-DEBUG] ERROR: Missing stripe-signature header`);
       await logEvent('stripe_webhook_no_signature', { origin }, 'WARNING');
       throw new Error('Missing stripe-signature header');
     }
@@ -55,8 +64,9 @@ serve(async (req) => {
     if (webhookSecret) {
       try {
         event = stripe.webhooks.constructEvent(payload, signature, webhookSecret);
-        console.log(`Webhook signature verified successfully`);
+        console.log(`[WEBHOOK-DEBUG] Signature verified successfully`);
       } catch (verificationError) {
+        console.log(`[WEBHOOK-DEBUG] ERROR: Signature verification failed: ${verificationError.message}`);
         await logEvent('stripe_webhook_verification_failed', { 
           error: verificationError.message,
           origin 
@@ -66,14 +76,21 @@ serve(async (req) => {
     } else {
       // Fallback: parse payload direkte (kun til test)
       event = JSON.parse(payload);
-      console.warn('STRIPE_WEBHOOK_SECRET not set - webhook verification skipped');
+      console.warn(`[WEBHOOK-DEBUG] WARNING: STRIPE_WEBHOOK_SECRET not set - webhook verification skipped`);
       await logEvent('stripe_webhook_unverified', { 
         event_type: event.type,
         origin 
       }, 'WARNING');
     }
 
-    console.log(`Processing webhook event: ${event.type}`);
+    console.log(`[WEBHOOK-DEBUG] Processing webhook event: ${event.type}`);
+    console.log(`[WEBHOOK-DEBUG] Event ID: ${event.id}`);
+    
+    await logEvent('stripe_webhook_processing', { 
+      event_type: event.type,
+      event_id: event.id,
+      origin 
+    }, 'INFO');
 
     switch (event.type) {
       case 'checkout.session.completed':
@@ -202,24 +219,51 @@ async function handleCheckoutCompleted(supabase: any, session: Stripe.Checkout.S
 async function handlePaymentSucceeded(supabase: any, invoice: Stripe.Invoice) {
   const customerId = invoice.customer as string;
   
+  console.log(`[PAYMENT-DEBUG] Processing payment succeeded for customer: ${customerId}`);
+  console.log(`[PAYMENT-DEBUG] Invoice ID: ${invoice.id}`);
+  console.log(`[PAYMENT-DEBUG] Billing reason: ${invoice.billing_reason}`);
+  console.log(`[PAYMENT-DEBUG] Subscription ID: ${invoice.subscription}`);
+  console.log(`[PAYMENT-DEBUG] Amount paid: ${(invoice.amount_paid || 0) / 100}`);
+  
   // Enhanced payment succeeded handler with trial-to-active logic
   try {
-    // Check if this is a successful subscription payment
-    if (invoice.subscription && invoice.billing_reason === 'subscription_cycle') {
+    // Check if this is a successful subscription payment - expand conditions for trial transitions
+    const isSubscriptionPayment = invoice.subscription && (
+      invoice.billing_reason === 'subscription_cycle' ||
+      invoice.billing_reason === 'subscription_create' ||
+      invoice.billing_reason === 'subscription_update'
+    );
+    
+    console.log(`[PAYMENT-DEBUG] Is subscription payment: ${isSubscriptionPayment}`);
+    
+    if (isSubscriptionPayment) {
       // Get subscriber info to check current status
-      const { data: subscriberData } = await supabase
+      console.log(`[PAYMENT-DEBUG] Looking up subscriber with customer ID: ${customerId}`);
+      
+      const { data: subscriberData, error: subscriberError } = await supabase
         .from('subscribers')
-        .select('status, trial_end, email, user_id')
+        .select('status, trial_end, email, user_id, subscribed')
         .eq('stripe_customer_id', customerId)
         .single();
+
+      console.log(`[PAYMENT-DEBUG] Subscriber lookup result:`, subscriberData);
+      if (subscriberError) {
+        console.log(`[PAYMENT-DEBUG] Subscriber lookup error:`, subscriberError);
+      }
 
       if (subscriberData) {
         // Determine if this is a trial-to-active transition
         const wasInTrial = subscriberData.status === 'trial' || 
+                          subscriberData.status === 'expired' ||
+                          !subscriberData.subscribed ||
                           (subscriberData.trial_end && new Date(subscriberData.trial_end) > new Date());
 
+        console.log(`[PAYMENT-DEBUG] Was in trial: ${wasInTrial}`);
+        console.log(`[PAYMENT-DEBUG] Current status: ${subscriberData.status}`);
+        console.log(`[PAYMENT-DEBUG] Currently subscribed: ${subscriberData.subscribed}`);
+
         // Update subscriber to active status
-        await supabase
+        const updateResult = await supabase
           .from('subscribers')
           .update({
             subscribed: true,
@@ -228,8 +272,18 @@ async function handlePaymentSucceeded(supabase: any, invoice: Stripe.Invoice) {
           })
           .eq('stripe_customer_id', customerId);
 
+        console.log(`[PAYMENT-DEBUG] Subscriber update result:`, updateResult);
+        
+        if (updateResult.error) {
+          console.log(`[PAYMENT-DEBUG] ERROR updating subscriber:`, updateResult.error);
+        } else {
+          console.log(`[PAYMENT-DEBUG] Successfully updated subscriber to active status`);
+        }
+
         // Log trial-to-active transition
         if (wasInTrial) {
+          console.log(`[PAYMENT-DEBUG] Logging trial-to-active transition`);
+          
           await supabase.rpc('log_event', {
             p_event_type: 'stripe_trial_to_active',
             p_user_id: subscriberData.user_id || null,
@@ -238,16 +292,25 @@ async function handlePaymentSucceeded(supabase: any, invoice: Stripe.Invoice) {
               customer_id: customerId,
               amount: (invoice.amount_paid || 0) / 100,
               email: subscriberData.email,
+              billing_reason: invoice.billing_reason,
+              previous_status: subscriberData.status,
               transition: 'trial_to_active'
             },
             p_severity: 'INFO'
           });
 
-          console.log(`Trial-to-active transition completed for customer ${customerId}`);
+          console.log(`[PAYMENT-DEBUG] Trial-to-active transition completed for customer ${customerId}`);
         }
+      } else {
+        console.log(`[PAYMENT-DEBUG] WARNING: No subscriber found for customer ${customerId}`);
       }
+    } else {
+      console.log(`[PAYMENT-DEBUG] Not a subscription payment - skipping subscriber update`);
+    }
     }
 
+    console.log(`[PAYMENT-DEBUG] Logging payment succeeded event`);
+    
     await supabase.rpc('log_event', {
       p_event_type: 'stripe_payment_succeeded',
       p_user_id: null,
@@ -255,12 +318,15 @@ async function handlePaymentSucceeded(supabase: any, invoice: Stripe.Invoice) {
         invoice_id: invoice.id,
         customer_id: customerId,
         amount: (invoice.amount_paid || 0) / 100,
-        billing_reason: invoice.billing_reason
+        billing_reason: invoice.billing_reason,
+        subscription_id: invoice.subscription
       },
       p_severity: 'INFO'
     });
+    
+    console.log(`[PAYMENT-DEBUG] Payment succeeded handler completed successfully`);
   } catch (error) {
-    console.error('Error handling payment succeeded:', error);
+    console.error(`[PAYMENT-DEBUG] ERROR in payment succeeded handler:`, error);
     
     await supabase.rpc('log_event', {
       p_event_type: 'stripe_payment_succeeded_error',
@@ -268,7 +334,8 @@ async function handlePaymentSucceeded(supabase: any, invoice: Stripe.Invoice) {
       p_metadata: {
         error: (error as any).message,
         invoice_id: invoice.id,
-        customer_id: customerId
+        customer_id: customerId,
+        billing_reason: invoice.billing_reason
       },
       p_severity: 'ERROR'
     });

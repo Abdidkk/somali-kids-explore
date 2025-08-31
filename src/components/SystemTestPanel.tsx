@@ -85,6 +85,34 @@ export default function SystemTestPanel() {
     }
   };
 
+  const manualSyncSubscription = async () => {
+    try {
+      console.log('[MANUAL-SYNC] Starting manual subscription sync...');
+      toast.info('Syncing with Stripe...');
+      
+      const { data, error } = await supabase.functions.invoke('check-subscription', {
+        headers: {
+          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+        },
+      });
+
+      if (error) {
+        console.error('[MANUAL-SYNC] Edge function error:', error);
+        throw new Error(`Edge function error: ${error.message}`);
+      }
+
+      console.log('[MANUAL-SYNC] Edge function response:', data);
+      
+      // Also refresh the local subscription hook
+      await checkSubscription();
+      
+      toast.success('Subscription synced successfully');
+    } catch (error) {
+      console.error('[MANUAL-SYNC] Manual sync failed:', error);
+      toast.error(`Sync failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'success':
@@ -300,15 +328,27 @@ export default function SystemTestPanel() {
 
                 <div className="space-y-2">
                   <p className="text-sm font-medium">Manual Controls</p>
-                  <Button 
-                    onClick={triggerSubscriptionRefresh}
-                    disabled={loading}
-                    variant="outline"
-                    size="sm"
-                    className="w-full"
-                  >
-                    {loading ? 'Refreshing...' : 'Refresh Status'}
-                  </Button>
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={triggerSubscriptionRefresh}
+                      disabled={loading}
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                    >
+                      {loading ? 'Refreshing...' : 'Refresh Status'}
+                    </Button>
+                    <Button 
+                      onClick={manualSyncSubscription}
+                      disabled={loading}
+                      variant="secondary"
+                      size="sm"
+                      className="w-full"
+                    >
+                      <Zap className="h-4 w-4 mr-1" />
+                      {loading ? 'Syncing...' : 'Force Sync with Stripe'}
+                    </Button>
+                  </div>
                 </div>
               </div>
 
