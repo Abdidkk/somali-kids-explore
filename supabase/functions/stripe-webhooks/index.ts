@@ -307,7 +307,6 @@ async function handlePaymentSucceeded(supabase: any, invoice: Stripe.Invoice) {
     } else {
       console.log(`[PAYMENT-DEBUG] Not a subscription payment - skipping subscriber update`);
     }
-    }
 
     console.log(`[PAYMENT-DEBUG] Logging payment succeeded event`);
     
