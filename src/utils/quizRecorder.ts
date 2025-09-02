@@ -14,6 +14,7 @@ export type RecordPayload = {
   activityName?: string;
   correct: number;
   total: number;
+  selectedChild?: string; // Add selectedChild to payload
 };
 
 export async function recordQuizResultAuto({
@@ -21,13 +22,24 @@ export async function recordQuizResultAuto({
   activityName = "Quiz",
   correct,
   total,
+  selectedChild,
 }: RecordPayload): Promise<{ pointsAwarded: number; percent: number }> {
   const percent = total > 0 ? Math.round((correct / total) * 100) : 0;
 
   try {
     const { data: auth } = await supabase.auth.getUser();
     const user = auth?.user;
-    const child = PointsManager.getCurrentChild();
+    
+    // CRITICAL: Use selectedChild from payload if provided, otherwise fallback to PointsManager
+    let child = selectedChild || PointsManager.getCurrentChild();
+    
+    // If we have selectedChild, ensure PointsManager is updated
+    if (selectedChild && selectedChild.trim() !== '' && selectedChild !== 'default') {
+      PointsManager.setCurrentChild(selectedChild);
+      child = selectedChild;
+      console.log('📊 Updated PointsManager to use selectedChild from payload:', selectedChild);
+    }
+    
     const childIdFromContext = PointsManager.getCurrentChildId();
 
     console.log('recordQuizResultAuto DEBUG:', {

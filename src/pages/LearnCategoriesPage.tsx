@@ -124,13 +124,23 @@ export default function LearnCategoriesPage() {
   const [showCultural, setShowCultural] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
 
-  // Set selected child to first child when profiles are loaded
+  // Get selected child from PointsManager instead of auto-selecting first child
   useEffect(() => {
     if (!childProfilesLoading && childProfiles.length > 0 && !selectedChild) {
-      const firstChild = childProfiles[0].name;
-      // Validate child name before setting
-      if (firstChild && firstChild.trim() !== '' && firstChild !== 'default') {
-        setSelectedChild(firstChild);
+      const currentChild = PointsManager.getCurrentChild();
+      
+      if (currentChild && childProfiles.some(p => p.name === currentChild)) {
+        // Use the child that's already set in PointsManager
+        setSelectedChild(currentChild);
+        console.log('LearnCategoriesPage: Using PointsManager current child:', currentChild);
+      } else if (childProfiles.length > 0) {
+        // Fallback to first child only if no valid child is set in PointsManager
+        const firstChild = childProfiles[0].name;
+        if (firstChild && firstChild.trim() !== '' && firstChild !== 'default') {
+          setSelectedChild(firstChild);
+          PointsManager.setCurrentChild(firstChild);
+          console.log('LearnCategoriesPage: Fallback to first child:', firstChild);
+        }
       }
     }
   }, [childProfiles, childProfilesLoading, selectedChild]);

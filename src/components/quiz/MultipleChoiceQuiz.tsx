@@ -167,13 +167,15 @@ export default function MultipleChoiceQuiz({
     if (!isComplete || savedRef.current) return;
     savedRef.current = true;
     
-    // Ensure the correct child is set before recording result
-    if (selectedChild) {
-      PointsManager.setCurrentChild(selectedChild);
-      console.log('Recording quiz result for child:', selectedChild);
-    }
+    console.log('Recording quiz result for child:', selectedChild);
     
-    recordQuizResultAuto({ category, activityName, correct: score, total });
+    recordQuizResultAuto({ 
+      category, 
+      activityName, 
+      correct: score, 
+      total,
+      selectedChild: selectedChild // Pass selectedChild in payload
+    });
   }, [isComplete, selectedChild]);
 
   if (!q) return <div className="text-center">Indlæser...</div>;
