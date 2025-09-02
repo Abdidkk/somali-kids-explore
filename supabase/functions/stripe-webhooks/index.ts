@@ -2,6 +2,123 @@ import Stripe from 'https://esm.sh/stripe@14.21.0';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 import { serve } from 'https://deno.land/std@0.190.0/http/server.ts';
 
+// Helper function to get customer email from Stripe
+async function getCustomerEmail(stripe: Stripe, customerId: string): Promise<string | null> {
+  try {
+    console.log(`[EMAIL-DEBUG] 🔍 Fetching customer email for ID: ${customerId}`);
+    const customer = await stripe.customers.retrieve(customerId);
+    const email = (customer as Stripe.Customer).email;
+    console.log(`[EMAIL-DEBUG] ✅ Found customer email: ${email || 'null'}`);
+    return email;
+  } catch (error) {
+    console.log(`[EMAIL-DEBUG] ❌ Failed to fetch customer email:`, error.message);
+    return null;
+  }
+}
+
+// Enhanced subscriber matching function
+async function findAndUpdateSubscriber(
+  supabase: any, 
+  stripe: Stripe,
+  customerId: string | null, 
+  email: string | null, 
+  userId: string | null,
+  updateData: any
+): Promise<boolean> {
+  console.log(`[SUBSCRIBER-DEBUG] 🔍 Finding subscriber with:`, { customerId, email, userId });
+
+  // Strategy 1: Match by stripe_customer_id (most reliable)
+  if (customerId) {
+    const { data: subscriber, error } = await supabase
+      .from('subscribers')
+      .select('id, email, user_id, subscribed, status')
+      .eq('stripe_customer_id', customerId)
+      .maybeSingle();
+    
+    if (!error && subscriber) {
+      console.log(`[SUBSCRIBER-DEBUG] ✅ Found subscriber by customer_id:`, subscriber);
+      const { error: updateError } = await supabase
+        .from('subscribers')
+        .update(updateData)
+        .eq('stripe_customer_id', customerId);
+      
+      if (updateError) {
+        console.log(`[SUBSCRIBER-DEBUG] ❌ Update failed:`, updateError);
+        return false;
+      }
+      console.log(`[SUBSCRIBER-DEBUG] ✅ Successfully updated subscriber`);
+      return true;
+    }
+  }
+
+  // Strategy 2: If no customer ID match, try to get email from Stripe and match by email
+  let resolvedEmail = email;
+  if (!resolvedEmail && customerId) {
+    resolvedEmail = await getCustomerEmail(stripe, customerId);
+  }
+
+  if (resolvedEmail) {
+    console.log(`[SUBSCRIBER-DEBUG] 🔍 Trying to match by email: ${resolvedEmail}`);
+    const { data: subscriber, error } = await supabase
+      .from('subscribers')
+      .select('id, email, user_id, subscribed, status')
+      .eq('email', resolvedEmail)
+      .maybeSingle();
+    
+    if (!error && subscriber) {
+      console.log(`[SUBSCRIBER-DEBUG] ✅ Found subscriber by email:`, subscriber);
+      // Update with both the data and the stripe_customer_id if we have it
+      const finalUpdateData = { ...updateData };
+      if (customerId) finalUpdateData.stripe_customer_id = customerId;
+      
+      const { error: updateError } = await supabase
+        .from('subscribers')
+        .update(finalUpdateData)
+        .eq('email', resolvedEmail);
+      
+      if (updateError) {
+        console.log(`[SUBSCRIBER-DEBUG] ❌ Update failed:`, updateError);
+        return false;
+      }
+      console.log(`[SUBSCRIBER-DEBUG] ✅ Successfully updated subscriber by email`);
+      return true;
+    }
+  }
+
+  // Strategy 3: Match by user_id if available
+  if (userId) {
+    console.log(`[SUBSCRIBER-DEBUG] 🔍 Trying to match by user_id: ${userId}`);
+    const { data: subscriber, error } = await supabase
+      .from('subscribers')
+      .select('id, email, user_id, subscribed, status')
+      .eq('user_id', userId)
+      .maybeSingle();
+    
+    if (!error && subscriber) {
+      console.log(`[SUBSCRIBER-DEBUG] ✅ Found subscriber by user_id:`, subscriber);
+      // Update with all available data
+      const finalUpdateData = { ...updateData };
+      if (customerId) finalUpdateData.stripe_customer_id = customerId;
+      if (resolvedEmail) finalUpdateData.email = resolvedEmail;
+      
+      const { error: updateError } = await supabase
+        .from('subscribers')
+        .update(finalUpdateData)
+        .eq('user_id', userId);
+      
+      if (updateError) {
+        console.log(`[SUBSCRIBER-DEBUG] ❌ Update failed:`, updateError);
+        return false;
+      }
+      console.log(`[SUBSCRIBER-DEBUG] ✅ Successfully updated subscriber by user_id`);
+      return true;
+    }
+  }
+
+  console.log(`[SUBSCRIBER-DEBUG] ❌ No subscriber found with any strategy`);
+  return false;
+}
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, stripe-signature',
@@ -94,11 +211,11 @@ serve(async (req) => {
 
     switch (event.type) {
       case 'checkout.session.completed':
-        await handleCheckoutCompleted(supabase, event.data.object as Stripe.Checkout.Session);
+        await handleCheckoutCompleted(supabase, stripe, event.data.object as Stripe.Checkout.Session);
         break;
 
       case 'invoice.payment_succeeded':
-        await handlePaymentSucceeded(supabase, event.data.object as Stripe.Invoice);
+        await handlePaymentSucceeded(supabase, stripe, event.data.object as Stripe.Invoice);
         break;
 
       case 'invoice.payment_failed':
@@ -142,16 +259,32 @@ serve(async (req) => {
   }
 });
 
-async function handleCheckoutCompleted(supabase: any, session: Stripe.Checkout.Session) {
+async function handleCheckoutCompleted(supabase: any, stripe: Stripe, session: Stripe.Checkout.Session) {
   const { user_id, tier, interval, plan_name, billing_interval, num_kids } = (session.metadata || {}) as any;
 
-  if (!user_id && !session.customer_email && !session.customer_details?.email) {
-    console.error('Missing identifiers in session metadata');
+  console.log(`[CHECKOUT-DEBUG] 🛒 Processing checkout session: ${session.id}`);
+  console.log(`[CHECKOUT-DEBUG] Customer ID: ${session.customer}`);
+  console.log(`[CHECKOUT-DEBUG] Customer email in session: ${session.customer_email}`);
+  console.log(`[CHECKOUT-DEBUG] Customer details email: ${session.customer_details?.email}`);
+  console.log(`[CHECKOUT-DEBUG] User ID from metadata: ${user_id}`);
+
+  const customerId = (session.customer as string) || null;
+  let email = session.customer_email || session.customer_details?.email || null;
+
+  // If no email in session, fetch from Stripe customer
+  if (!email && customerId) {
+    console.log(`[CHECKOUT-DEBUG] ⚠️ No email in session, fetching from Stripe customer`);
+    email = await getCustomerEmail(stripe, customerId);
+  }
+
+  if (!user_id && !email && !customerId) {
+    console.error('[CHECKOUT-DEBUG] ❌ Missing all identifiers in session - cannot process');
     return;
   }
 
   try {
     // Insert transaction record
+    console.log(`[CHECKOUT-DEBUG] 📝 Creating transaction record`);
     const { error: transactionError } = await supabase
       .from('transactions')
       .insert({
@@ -160,31 +293,54 @@ async function handleCheckoutCompleted(supabase: any, session: Stripe.Checkout.S
         stripe_transaction_id: session.payment_intent,
         amount: (session.amount_total || 0) / 100,
         currency: (session.currency || 'dkk').toUpperCase(),
-        status: 'succeeded',
+        status: 'completed',
         subscription_tier: tier || plan_name || null,
         billing_interval: interval || billing_interval || null,
         num_kids: parseInt((num_kids as string) || '0', 10),
         metadata: session
       });
 
-    if (transactionError) throw transactionError;
+    if (transactionError) {
+      console.log(`[CHECKOUT-DEBUG] ❌ Transaction creation failed:`, transactionError);
+      throw transactionError;
+    }
+    console.log(`[CHECKOUT-DEBUG] ✅ Transaction created successfully`);
 
-    // Ensure a subscriber row exists and store Stripe customer id/email
-    const customerId = (session.customer as string) || null;
-    const email = session.customer_email || session.customer_details?.email || null;
+    // Update subscriber status to active - THIS IS THE KEY FIX
+    console.log(`[CHECKOUT-DEBUG] 🔄 Updating subscriber to active status`);
+    const subscriberUpdateData = {
+      subscribed: true,
+      status: 'active',
+      subscription_tier: tier || plan_name || 'Premium',
+      billing_interval: interval || billing_interval || 'monthly',
+      num_kids: parseInt((num_kids as string) || '0', 10),
+      updated_at: new Date().toISOString(),
+    };
 
-    if (email) {
-      await supabase.from('subscribers').upsert({
-        email,
-        user_id: user_id || null,
-        stripe_customer_id: customerId,
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'email' });
-    } else if (customerId) {
-      // Update by customer id if email is unknown
-      await supabase.from('subscribers')
-        .update({ stripe_customer_id: customerId, updated_at: new Date().toISOString() })
-        .eq('user_id', user_id);
+    const updateSuccess = await findAndUpdateSubscriber(
+      supabase, 
+      stripe,
+      customerId, 
+      email, 
+      user_id,
+      subscriberUpdateData
+    );
+
+    if (updateSuccess) {
+      console.log(`[CHECKOUT-DEBUG] ✅ Subscriber activated successfully`);
+    } else {
+      console.log(`[CHECKOUT-DEBUG] ⚠️ Subscriber update failed or no subscriber found`);
+      
+      // As fallback, create a new subscriber if we have email
+      if (email) {
+        console.log(`[CHECKOUT-DEBUG] 🆕 Creating new subscriber as fallback`);
+        await supabase.from('subscribers').upsert({
+          email,
+          user_id: user_id || null,
+          stripe_customer_id: customerId,
+          ...subscriberUpdateData
+        }, { onConflict: 'email' });
+      }
     }
 
     // Log event
@@ -216,14 +372,22 @@ async function handleCheckoutCompleted(supabase: any, session: Stripe.Checkout.S
   }
 }
 
-async function handlePaymentSucceeded(supabase: any, invoice: Stripe.Invoice) {
+async function handlePaymentSucceeded(supabase: any, stripe: Stripe, invoice: Stripe.Invoice) {
   const customerId = invoice.customer as string;
+  let email = invoice.customer_email || null;
   
-  console.log(`[PAYMENT-DEBUG] Processing payment succeeded for customer: ${customerId}`);
-  console.log(`[PAYMENT-DEBUG] Invoice ID: ${invoice.id}`);
+  console.log(`[PAYMENT-DEBUG] 💳 Processing payment succeeded: ${invoice.id}`);
+  console.log(`[PAYMENT-DEBUG] Customer ID: ${customerId}`);
+  console.log(`[PAYMENT-DEBUG] Customer email in invoice: ${email}`);
   console.log(`[PAYMENT-DEBUG] Billing reason: ${invoice.billing_reason}`);
   console.log(`[PAYMENT-DEBUG] Subscription ID: ${invoice.subscription}`);
   console.log(`[PAYMENT-DEBUG] Amount paid: ${(invoice.amount_paid || 0) / 100}`);
+
+  // Get customer email if not in invoice
+  if (!email && customerId) {
+    console.log(`[PAYMENT-DEBUG] ⚠️ No customer email found in invoice, fetching from Stripe`);
+    email = await getCustomerEmail(stripe, customerId);
+  }
   
   // Enhanced payment succeeded handler with trial-to-active logic
   try {
@@ -237,72 +401,43 @@ async function handlePaymentSucceeded(supabase: any, invoice: Stripe.Invoice) {
     console.log(`[PAYMENT-DEBUG] Is subscription payment: ${isSubscriptionPayment}`);
     
     if (isSubscriptionPayment) {
-      // Get subscriber info to check current status
-      console.log(`[PAYMENT-DEBUG] Looking up subscriber with customer ID: ${customerId}`);
+      console.log(`[PAYMENT-DEBUG] 🔄 Activating subscription for customer: ${customerId}`);
       
-      const { data: subscriberData, error: subscriberError } = await supabase
-        .from('subscribers')
-        .select('status, trial_end, email, user_id, subscribed')
-        .eq('stripe_customer_id', customerId)
-        .single();
+      // Use enhanced subscriber matching to activate subscription
+      const subscriberUpdateData = {
+        subscribed: true,
+        status: 'active',
+        updated_at: new Date().toISOString(),
+      };
 
-      console.log(`[PAYMENT-DEBUG] Subscriber lookup result:`, subscriberData);
-      if (subscriberError) {
-        console.log(`[PAYMENT-DEBUG] Subscriber lookup error:`, subscriberError);
-      }
+      const updateSuccess = await findAndUpdateSubscriber(
+        supabase, 
+        stripe,
+        customerId, 
+        email, 
+        null, // We don't have user_id in invoice context
+        subscriberUpdateData
+      );
 
-      if (subscriberData) {
-        // Determine if this is a trial-to-active transition
-        const wasInTrial = subscriberData.status === 'trial' || 
-                          subscriberData.status === 'expired' ||
-                          !subscriberData.subscribed ||
-                          (subscriberData.trial_end && new Date(subscriberData.trial_end) > new Date());
-
-        console.log(`[PAYMENT-DEBUG] Was in trial: ${wasInTrial}`);
-        console.log(`[PAYMENT-DEBUG] Current status: ${subscriberData.status}`);
-        console.log(`[PAYMENT-DEBUG] Currently subscribed: ${subscriberData.subscribed}`);
-
-        // Update subscriber to active status
-        const updateResult = await supabase
-          .from('subscribers')
-          .update({
-            subscribed: true,
-            status: 'active',
-            updated_at: new Date().toISOString(),
-          })
-          .eq('stripe_customer_id', customerId);
-
-        console.log(`[PAYMENT-DEBUG] Subscriber update result:`, updateResult);
+      if (updateSuccess) {
+        console.log(`[PAYMENT-DEBUG] ✅ Subscriber activated via payment succeeded`);
         
-        if (updateResult.error) {
-          console.log(`[PAYMENT-DEBUG] ERROR updating subscriber:`, updateResult.error);
-        } else {
-          console.log(`[PAYMENT-DEBUG] Successfully updated subscriber to active status`);
-        }
-
-        // Log trial-to-active transition
-        if (wasInTrial) {
-          console.log(`[PAYMENT-DEBUG] Logging trial-to-active transition`);
-          
-          await supabase.rpc('log_event', {
-            p_event_type: 'stripe_trial_to_active',
-            p_user_id: subscriberData.user_id || null,
-            p_metadata: {
-              invoice_id: invoice.id,
-              customer_id: customerId,
-              amount: (invoice.amount_paid || 0) / 100,
-              email: subscriberData.email,
-              billing_reason: invoice.billing_reason,
-              previous_status: subscriberData.status,
-              transition: 'trial_to_active'
-            },
-            p_severity: 'INFO'
-          });
-
-          console.log(`[PAYMENT-DEBUG] Trial-to-active transition completed for customer ${customerId}`);
-        }
+        // Log the activation
+        await supabase.rpc('log_event', {
+          p_event_type: 'stripe_subscription_activated',
+          p_user_id: null,
+          p_metadata: {
+            invoice_id: invoice.id,
+            customer_id: customerId,
+            amount: (invoice.amount_paid || 0) / 100,
+            email: email,
+            billing_reason: invoice.billing_reason,
+            activation_method: 'payment_succeeded'
+          },
+          p_severity: 'INFO'
+        });
       } else {
-        console.log(`[PAYMENT-DEBUG] WARNING: No subscriber found for customer ${customerId}`);
+        console.log(`[PAYMENT-DEBUG] ⚠️ Failed to find/update subscriber for customer ${customerId}`);
       }
     } else {
       console.log(`[PAYMENT-DEBUG] Not a subscription payment - skipping subscriber update`);
