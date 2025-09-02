@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Baby, Plus, ArrowRight, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -25,6 +25,7 @@ interface ChildForm {
 
 export default function AddChildProfilesPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user, refreshUserState } = useAuth();
   const { children, addChild, loading: childrenLoading } = useChildren();
   const { billingInterval } = useSubscription();
@@ -34,6 +35,7 @@ export default function AddChildProfilesPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [maxChildrenPaid, setMaxChildrenPaid] = useState<number | null>(null);
+  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -41,6 +43,35 @@ export default function AddChildProfilesPage() {
       return;
     }
   }, [user, navigate]);
+
+  // Handle payment success from URL parameter
+  useEffect(() => {
+    const paymentStatus = searchParams.get('payment');
+    if (paymentStatus === 'success') {
+      setShowPaymentSuccess(true);
+      toast.success('Betaling gennemført! Du kan nu oprette flere børneprofiler.');
+      
+      // Update max children from localStorage or refresh subscription
+      const currentMax = localStorage.getItem("maxChildrenPaid");
+      if (currentMax) {
+        const newMax = parseInt(currentMax) + 1;
+        localStorage.setItem("maxChildrenPaid", newMax.toString());
+        setMaxChildrenPaid(newMax);
+      }
+      
+      // Remove payment parameter from URL
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('payment');
+      navigate({ search: newParams.toString() }, { replace: true });
+    } else if (paymentStatus === 'cancelled') {
+      toast.error('Betaling blev annulleret');
+      
+      // Remove payment parameter from URL
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('payment');
+      navigate({ search: newParams.toString() }, { replace: true });
+    }
+  }, [searchParams, navigate]);
 
   // Hent det betalte antal børn fra localStorage og håndter eksisterende børn
   useEffect(() => {

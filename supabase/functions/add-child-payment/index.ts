@@ -77,8 +77,8 @@ serve(async (req) => {
         },
       ],
       mode: "subscription",
-      success_url: `${originUrl}/add-child-profiles?payment=success`,
-      cancel_url: `${originUrl}/add-child-profiles?payment=cancelled`,
+      success_url: `${originUrl}/add-children?payment=success`,
+      cancel_url: `${originUrl}/add-children?payment=cancelled`,
       subscription_data: {
         trial_period_days: 1, // Minimum 1 dag trial krævet af Stripe
       },
