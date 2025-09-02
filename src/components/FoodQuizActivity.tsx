@@ -2,9 +2,12 @@ import React, { useMemo, useState } from "react";
 import MultipleChoiceQuiz, { MCQuestion } from "@/components/quiz/MultipleChoiceQuiz";
 import { getAllFood, FoodItem } from "@/constants/foodData";
 
-interface FoodQuizActivityProps { onBack: () => void }
+interface FoodQuizActivityProps { 
+  onBack: () => void;
+  selectedChild?: string;
+}
 
-export default function FoodQuizActivity({ onBack }: FoodQuizActivityProps) {
+export default function FoodQuizActivity({ onBack, selectedChild }: FoodQuizActivityProps) {
   const [seed, setSeed] = useState(0);
 
   const questions: MCQuestion[] = useMemo(() => {
@@ -38,6 +41,7 @@ export default function FoodQuizActivity({ onBack }: FoodQuizActivityProps) {
       onBack={onBack}
       onRetry={() => setSeed((s) => s + 1)}
       theme="purple"
+      selectedChild={selectedChild}
     />
   );
 }

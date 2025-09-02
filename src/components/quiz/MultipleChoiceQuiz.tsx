@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
 import { recordQuizResultAuto } from "@/utils/quizRecorder";
+import { PointsManager } from "@/utils/pointsManager";
 
 export interface MCOption {
   id: string;
@@ -25,6 +26,7 @@ interface MultipleChoiceQuizProps {
   onBack: () => void;
   onRetry: () => void; // parent regenerates questions
   theme?: "indigo" | "pink" | "green" | "purple" | "cyan";
+  selectedChild?: string; // Add selectedChild prop
 }
 
 const themeMap = {
@@ -84,12 +86,29 @@ export default function MultipleChoiceQuiz({
   onBack,
   onRetry,
   theme = "indigo",
+  selectedChild
 }: MultipleChoiceQuizProps) {
   const t = themeMap[theme];
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
+
+  // Debug logging and set current child at component mount
+  useEffect(() => {
+    console.log('MultipleChoiceQuiz mounted:', {
+      category,
+      activityName,
+      selectedChild,
+      currentChildInManager: PointsManager.getCurrentChild()
+    });
+    
+    if (selectedChild) {
+      console.log('Setting current child in PointsManager to:', selectedChild);
+      PointsManager.setCurrentChild(selectedChild);
+      console.log('Current child after setting:', PointsManager.getCurrentChild());
+    }
+  }, [category, activityName, selectedChild]);
   const timeoutRef = useRef<number | null>(null);
   const savedRef = useRef(false);
 
@@ -147,8 +166,15 @@ export default function MultipleChoiceQuiz({
   useEffect(() => {
     if (!isComplete || savedRef.current) return;
     savedRef.current = true;
+    
+    // Ensure the correct child is set before recording result
+    if (selectedChild) {
+      PointsManager.setCurrentChild(selectedChild);
+      console.log('Recording quiz result for child:', selectedChild);
+    }
+    
     recordQuizResultAuto({ category, activityName, correct: score, total });
-  }, [isComplete]);
+  }, [isComplete, selectedChild]);
 
   if (!q) return <div className="text-center">Indlæser...</div>;
 

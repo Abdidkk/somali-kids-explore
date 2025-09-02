@@ -2,9 +2,12 @@ import React, { useMemo, useState } from "react";
 import MultipleChoiceQuiz, { MCQuestion } from "@/components/quiz/MultipleChoiceQuiz";
 import { getAllAnimals, AnimalItem } from "@/constants/animalsData";
 
-interface AnimalsQuizActivityProps { onBack: () => void }
+interface AnimalsQuizActivityProps { 
+  onBack: () => void;
+  selectedChild?: string;
+}
 
-export default function AnimalsQuizActivity({ onBack }: AnimalsQuizActivityProps) {
+export default function AnimalsQuizActivity({ onBack, selectedChild }: AnimalsQuizActivityProps) {
   const [seed, setSeed] = useState(0);
 
   const questions: MCQuestion[] = useMemo(() => {
@@ -38,6 +41,7 @@ export default function AnimalsQuizActivity({ onBack }: AnimalsQuizActivityProps
       onBack={onBack}
       onRetry={() => setSeed((s) => s + 1)}
       theme="green"
+      selectedChild={selectedChild}
     />
   );
 }

@@ -2,9 +2,12 @@ import React, { useMemo, useState } from "react";
 import MultipleChoiceQuiz, { MCQuestion } from "@/components/quiz/MultipleChoiceQuiz";
 import { getAllBodyParts, BodyPartItem } from "@/constants/bodyPartsData";
 
-interface KropsdeleQuizActivityProps { onBack: () => void }
+interface KropsdeleQuizActivityProps { 
+  onBack: () => void;
+  selectedChild?: string;
+}
 
-export default function KropsdeleQuizActivity({ onBack }: KropsdeleQuizActivityProps) {
+export default function KropsdeleQuizActivity({ onBack, selectedChild }: KropsdeleQuizActivityProps) {
   const [seed, setSeed] = useState(0);
 
   const questions: MCQuestion[] = useMemo(() => {
@@ -38,6 +41,7 @@ export default function KropsdeleQuizActivity({ onBack }: KropsdeleQuizActivityP
       onBack={onBack}
       onRetry={() => setSeed((s) => s + 1)}
       theme="cyan"
+      selectedChild={selectedChild}
     />
   );
 }

@@ -9,13 +9,15 @@ import { useIsMobile } from "@/hooks/use-mobile";
 interface FoodModalProps {
   open: boolean;
   onClose: () => void;
+  selectedChild?: string;
 }
 
 type ActivityType = "listen" | "quiz" | null;
 
 const FoodModal: React.FC<FoodModalProps> = ({
   open,
-  onClose
+  onClose,
+  selectedChild
 }) => {
   const [activity, setActivity] = useState<ActivityType>(null);
   const isMobile = useIsMobile();
@@ -84,7 +86,7 @@ const FoodModal: React.FC<FoodModalProps> = ({
         ) : activity === "listen" ? (
           <FoodListenActivity onBack={handleBackToMenu} />
         ) : (
-          <FoodQuizActivity onBack={handleBackToMenu} />
+          <FoodQuizActivity onBack={handleBackToMenu} selectedChild={selectedChild} />
         )}
       </div>
     </div>

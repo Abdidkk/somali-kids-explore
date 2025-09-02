@@ -10,13 +10,15 @@ import { useIsMobile } from "@/hooks/use-mobile";
 interface KropsdeleModalProps {
   open: boolean;
   onClose: () => void;
+  selectedChild?: string;
 }
 
 type ActivityType = "listen" | "guess" | "quiz" | null;
 
 const KropsdeleModal: React.FC<KropsdeleModalProps> = ({
   open,
-  onClose
+  onClose,
+  selectedChild
 }) => {
   const [activity, setActivity] = useState<ActivityType>(null);
   const isMobile = useIsMobile();
@@ -101,7 +103,7 @@ const KropsdeleModal: React.FC<KropsdeleModalProps> = ({
         ) : activity === "guess" ? (
           <KropsdeleGuessActivity onBack={handleBackToMenu} />
         ) : (
-          <KropsdeleQuizActivity onBack={handleBackToMenu} />
+          <KropsdeleQuizActivity onBack={handleBackToMenu} selectedChild={selectedChild} />
         )}
       </div>
     </div>

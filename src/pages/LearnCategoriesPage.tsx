@@ -331,16 +331,19 @@ export default function LearnCategoriesPage() {
       <FoodModal 
         open={showFood} 
         onClose={() => setShowFood(false)} 
+        selectedChild={selectedChild}
       />
       
       <AnimalsModal 
         open={showAnimals} 
         onClose={() => setShowAnimals(false)} 
+        selectedChild={selectedChild}
       />
       
       <KropsdeleModal 
         open={showKropsdele} 
         onClose={() => setShowKropsdele(false)} 
+        selectedChild={selectedChild}
       />
       
       <CalendarModal 

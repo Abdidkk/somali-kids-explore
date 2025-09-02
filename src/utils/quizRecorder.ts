@@ -30,7 +30,19 @@ export async function recordQuizResultAuto({
     const child = PointsManager.getCurrentChild();
     const childIdFromContext = PointsManager.getCurrentChildId();
 
+    console.log('recordQuizResultAuto DEBUG:', {
+      category,
+      activityName,
+      correct,
+      total,
+      percent,
+      user: user?.id,
+      currentChild: child,
+      currentChildId: childIdFromContext
+    });
+
     if (!user || !child) {
+      console.error('recordQuizResultAuto: Missing user or child!', { user: !!user, child });
       toast.error("Mangler bruger eller valgt barn.");
       return { pointsAwarded: 0, percent };
     }

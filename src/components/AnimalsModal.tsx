@@ -10,13 +10,15 @@ import { useIsMobile } from "@/hooks/use-mobile";
 interface AnimalsModalProps {
   open: boolean;
   onClose: () => void;
+  selectedChild?: string;
 }
 
 type ActivityType = "listen" | "guess" | "quiz" | null;
 
 const AnimalsModal: React.FC<AnimalsModalProps> = ({
   open,
-  onClose
+  onClose,
+  selectedChild
 }) => {
   const [activity, setActivity] = useState<ActivityType>(null);
   const isMobile = useIsMobile();
@@ -101,7 +103,7 @@ const AnimalsModal: React.FC<AnimalsModalProps> = ({
         ) : activity === "guess" ? (
           <AnimalsGuessActivity onBack={handleBackToMenu} />
         ) : (
-          <AnimalsQuizActivity onBack={handleBackToMenu} />
+          <AnimalsQuizActivity onBack={handleBackToMenu} selectedChild={selectedChild} />
         )}
       </div>
     </div>
