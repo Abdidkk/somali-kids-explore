@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Settings, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useChildren } from "@/hooks/useChildren";
+import { useSubscription } from "@/hooks/useSubscription";
 
 interface ChildrenDisplayProps {
   onChildSelect?: (childName: string) => void;
@@ -24,6 +25,7 @@ const AVATAR_COLORS = [
 
 export function ChildrenDisplay({ onChildSelect, selectedChild }: ChildrenDisplayProps) {
   const { children, loading } = useChildren();
+  const { subscribed, billingInterval } = useSubscription();
   const navigate = useNavigate();
 
   const getInitials = (name: string) => {
@@ -110,6 +112,11 @@ export function ChildrenDisplay({ onChildSelect, selectedChild }: ChildrenDispla
         >
           <Settings className="h-4 w-4 mr-2" />
           Administrer børneprofiler
+          {subscribed && billingInterval && (
+            <span className="text-xs text-muted-foreground ml-1">
+              (Tilføj 1 barn - {billingInterval === 'year' ? '135 kr/år' : '15 kr/måned'})
+            </span>
+          )}
         </Button>
       </CardContent>
     </Card>
