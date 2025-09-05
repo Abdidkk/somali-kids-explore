@@ -70,7 +70,7 @@ const App = () => (
               } />
               <Route path="/system-test" element={<SystemTestPage />} />
               <Route path="/learning" element={
-                <RouteGuard requireAuth requireOnboarding>
+                <RouteGuard requireAuth requirePayment requireOnboarding>
                   <LearnCategoriesPage />
                 </RouteGuard>
               } />
