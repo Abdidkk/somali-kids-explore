@@ -5,7 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Crown, RefreshCw, Settings, ExternalLink, Trash2, UserX, AlertTriangle } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Crown, RefreshCw, Settings, ExternalLink, Trash2, UserX, AlertTriangle, ChevronDown } from "lucide-react";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,6 +35,7 @@ const SubscriptionStatus = () => {
   const [trialTimeLeft, setTrialTimeLeft] = useState<string>("");
   const [trialEndDate, setTrialEndDate] = useState<Date | null>(null);
   const [hasExistingPlan, setHasExistingPlan] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const { subscribed, inTrial, subscriptionTier, subscriptionEnd, status, checkSubscription } = useSubscription();
   const { session, user } = useAuth();
   const navigate = useNavigate();
@@ -307,200 +309,235 @@ const SubscriptionStatus = () => {
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-6">
-        <div className="flex items-center justify-between">
-          <span className="font-medium">Status:</span>
-          <Badge 
-            variant={subscribed ? "default" : status === 'trial' ? "secondary" : "destructive"}
-            className={subscribed ? "bg-green-600" : status === 'trial' ? "bg-blue-600" : ""}
-          >
-            {subscribed ? "Aktiv" : status === 'trial' ? "Prøveperiode" : "Inaktiv"}
-          </Badge>
-        </div>
-
-        {subscriptionTier && (
+      <CardContent className="space-y-4">
+        {/* Compact overview - always visible */}
+        <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <span className="font-medium">Plan:</span>
-            <Badge variant="outline" className="font-semibold">
-              {subscriptionTier}
+            <span className="font-medium">Status:</span>
+            <Badge 
+              variant={subscribed ? "default" : status === 'trial' ? "secondary" : "destructive"}
+              className={subscribed ? "bg-green-600" : status === 'trial' ? "bg-blue-600" : ""}
+            >
+              {subscribed ? "Aktiv" : status === 'trial' ? "Prøveperiode" : "Inaktiv"}
             </Badge>
           </div>
-        )}
 
-        {subscriptionEnd && (
-          <div className="flex items-center justify-between">
-            <span className="font-medium">Næste fakturering:</span>
-            <span className="text-sm text-gray-600">
-              {formatDate(subscriptionEnd)}
-            </span>
-          </div>
-        )}
-
-        {/* Only show trial countdown if status is trial and user isn't subscribed */}
-        {status === 'trial' && !subscribed && trialTimeLeft && (
-          <div className={`border rounded-lg p-4 ${isUrgent() ? 'bg-red-50 border-red-200' : 'bg-blue-50 border-blue-200'}`}>
-            <div className="space-y-3">
-              <div>
-                <p className={`font-semibold ${isUrgent() ? 'text-red-800' : 'text-blue-800'}`}>
-                  {isUrgent() ? '⚠️ Prøveperioden udløber snart!' : '🎉 Du er i din gratis prøveperiode'}
-                </p>
-                <p className={`text-sm mt-1 ${isUrgent() ? 'text-red-700' : 'text-blue-700'}`}>
-                  {trialTimeLeft}
-                </p>
-              </div>
-              <div className={`p-3 rounded-lg border ${isUrgent() ? 'bg-red-100 border-red-300' : 'bg-blue-100 border-blue-300'}`}>
-                <p className={`text-sm font-medium flex items-center gap-2 ${isUrgent() ? 'text-red-800' : 'text-blue-800'}`}>
-                  💳 Automatisk betaling sker når prøveperioden udløber
-                </p>
-              </div>
+          {subscriptionTier && (
+            <div className="flex items-center justify-between">
+              <span className="font-medium">Plan:</span>
+              <Badge variant="outline" className="font-semibold">
+                {subscriptionTier}
+              </Badge>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Show success message when transition from trial to active happens */}
-        {status === 'active' && subscribed && (
-          <div className="border rounded-lg p-4 bg-green-50 border-green-200">
-            <div className="space-y-2">
-              <p className="font-semibold text-green-800 flex items-center gap-2">
-                ✅ Dit abonnement er nu aktivt!
+          {/* Show urgent trial countdown in compact view */}
+          {status === 'trial' && !subscribed && trialTimeLeft && isUrgent() && (
+            <div className="border rounded-lg p-3 bg-red-50 border-red-200">
+              <p className="font-semibold text-red-800 text-sm">
+                ⚠️ Prøveperioden udløber snart!
               </p>
-              <p className="text-sm text-green-700">
-                Du har nu fuld adgang til alle funktioner.
+              <p className="text-sm text-red-700 mt-1">
+                {trialTimeLeft}
               </p>
             </div>
-          </div>
-        )}
-
-        {portalError && (
-          <Alert variant="destructive">
-            <AlertDescription>
-              {portalError}
-            </AlertDescription>
-          </Alert>
-        )}
-
-        <div className="flex gap-3 pt-4">
-          <Button
-            variant="outline"
-            onClick={handleManageSubscription}
-            disabled={portalLoading}
-            className="flex-1"
-          >
-            {portalLoading ? (
-              <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <>
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Administrer abonnement</span>
-                <ExternalLink className="ml-2 h-4 w-4" />
-              </>
-            )}
-          </Button>
-          
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive" size="sm">
-                <Trash2 className="h-4 w-4 mr-2" />
-                Nulstil data
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Nulstil alle data?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Dette vil permanent slette alle quiz resultater og fremskridt for din konto. 
-                  Denne handling kan ikke fortrydes.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Annuller</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleResetData}
-                  disabled={resetLoading}
-                  className="bg-red-600 hover:bg-red-700"
-                >
-                  {resetLoading ? (
-                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                  ) : null}
-                  Nulstil data
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button
-                variant="destructive"
-                size="sm"
-                className="bg-red-600 hover:bg-red-700"
-              >
-                <UserX className="mr-2 h-4 w-4" />
-                Slet konto
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent className="max-w-md">
-              <AlertDialogHeader>
-                <AlertDialogTitle className="flex items-center gap-2 text-red-600">
-                  <AlertTriangle className="h-5 w-5" />
-                  Slet konto permanent
-                </AlertDialogTitle>
-                <AlertDialogDescription className="space-y-3">
-                  <p className="text-sm text-gray-600">
-                    <strong>⚠️ ADVARSEL:</strong> Denne handling kan ikke fortrydes!
-                  </p>
-                  <div className="text-sm text-gray-600 space-y-1">
-                    <p>Ved at slette din konto vil følgende blive permanent fjernet:</p>
-                    <ul className="list-disc list-inside ml-2 space-y-1">
-                      <li>Alle børneprofiler og deres fremskridt</li>
-                      <li>Quiz resultater og point</li>
-                      <li>Abonnements- og betalingshistorik</li>
-                      <li>Alle personlige data</li>
-                    </ul>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmEmail" className="text-sm font-medium">
-                      Indtast din email for at bekræfte:
-                    </Label>
-                    <Input
-                      id="confirmEmail"
-                      type="email"
-                      placeholder={user?.email || "din@email.com"}
-                      value={confirmationEmail}
-                      onChange={(e) => setConfirmationEmail(e.target.value)}
-                      className="text-sm"
-                    />
-                  </div>
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel 
-                  onClick={() => setConfirmationEmail("")}
-                  disabled={deleteLoading}
-                >
-                  Annuller
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleDeleteAccount}
-                  disabled={deleteLoading || confirmationEmail !== user?.email}
-                  className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
-                >
-                  {deleteLoading ? (
-                    <>
-                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                      Sletter...
-                    </>
-                  ) : (
-                    <>
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      Slet konto permanent
-                    </>
-                  )}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          )}
         </div>
+
+        {/* Collapsible section for detailed information */}
+        <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
+          <CollapsibleTrigger asChild>
+            <Button variant="ghost" className="w-full justify-between p-0 h-auto hover:bg-transparent">
+              <span className="text-sm text-muted-foreground">
+                {isExpanded ? "Skjul detaljer" : "Se flere detaljer"}
+              </span>
+              <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+            </Button>
+          </CollapsibleTrigger>
+          
+          <CollapsibleContent className="space-y-4 pt-3">
+            {subscriptionEnd && (
+              <div className="flex items-center justify-between">
+                <span className="font-medium">Næste fakturering:</span>
+                <span className="text-sm text-gray-600">
+                  {formatDate(subscriptionEnd)}
+                </span>
+              </div>
+            )}
+
+            {/* Non-urgent trial countdown in expanded view */}
+            {status === 'trial' && !subscribed && trialTimeLeft && !isUrgent() && (
+              <div className="border rounded-lg p-4 bg-blue-50 border-blue-200">
+                <div className="space-y-3">
+                  <div>
+                    <p className="font-semibold text-blue-800">
+                      🎉 Du er i din gratis prøveperiode
+                    </p>
+                    <p className="text-sm mt-1 text-blue-700">
+                      {trialTimeLeft}
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-lg border bg-blue-100 border-blue-300">
+                    <p className="text-sm font-medium flex items-center gap-2 text-blue-800">
+                      💳 Automatisk betaling sker når prøveperioden udløber
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Show success message when transition from trial to active happens */}
+            {status === 'active' && subscribed && (
+              <div className="border rounded-lg p-4 bg-green-50 border-green-200">
+                <div className="space-y-2">
+                  <p className="font-semibold text-green-800 flex items-center gap-2">
+                    ✅ Dit abonnement er nu aktivt!
+                  </p>
+                  <p className="text-sm text-green-700">
+                    Du har nu fuld adgang til alle funktioner.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {portalError && (
+              <Alert variant="destructive">
+                <AlertDescription>
+                  {portalError}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            <div className="space-y-3 pt-2">
+              <Button
+                variant="outline"
+                onClick={handleManageSubscription}
+                disabled={portalLoading}
+                className="w-full"
+              >
+                {portalLoading ? (
+                  <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Administrer abonnement</span>
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </>
+                )}
+              </Button>
+              
+              <p className="text-xs text-muted-foreground text-center">
+                Åbner Stripe kundeportal i en ny fane
+              </p>
+              
+              <div className="flex gap-3">
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" size="sm" className="flex-1">
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Nulstil data
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Nulstil alle data?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Dette vil permanent slette alle quiz resultater og fremskridt for din konto. 
+                        Denne handling kan ikke fortrydes.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Annuller</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleResetData}
+                        disabled={resetLoading}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        {resetLoading ? (
+                          <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                        ) : null}
+                        Nulstil data
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="bg-red-600 hover:bg-red-700 flex-1"
+                    >
+                      <UserX className="mr-2 h-4 w-4" />
+                      Slet konto
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="max-w-md">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="flex items-center gap-2 text-red-600">
+                        <AlertTriangle className="h-5 w-5" />
+                        Slet konto permanent
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="space-y-3">
+                        <p className="text-sm text-gray-600">
+                          <strong>⚠️ ADVARSEL:</strong> Denne handling kan ikke fortrydes!
+                        </p>
+                        <div className="text-sm text-gray-600 space-y-1">
+                          <p>Ved at slette din konto vil følgende blive permanent fjernet:</p>
+                          <ul className="list-disc list-inside ml-2 space-y-1">
+                            <li>Alle børneprofiler og deres fremskridt</li>
+                            <li>Quiz resultater og point</li>
+                            <li>Abonnements- og betalingshistorik</li>
+                            <li>Alle personlige data</li>
+                          </ul>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="confirmEmail" className="text-sm font-medium">
+                            Indtast din email for at bekræfte:
+                          </Label>
+                          <Input
+                            id="confirmEmail"
+                            type="email"
+                            placeholder={user?.email || "din@email.com"}
+                            value={confirmationEmail}
+                            onChange={(e) => setConfirmationEmail(e.target.value)}
+                            className="text-sm"
+                          />
+                        </div>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel 
+                        onClick={() => setConfirmationEmail("")}
+                        disabled={deleteLoading}
+                      >
+                        Annuller
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleDeleteAccount}
+                        disabled={deleteLoading || confirmationEmail !== user?.email}
+                        className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+                      >
+                        {deleteLoading ? (
+                          <>
+                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                            Sletter...
+                          </>
+                        ) : (
+                          <>
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Slet konto permanent
+                          </>
+                        )}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
         
         {(subscribed || hasExistingPlan) && (
           <p className="text-xs text-gray-500 text-center mt-2">
