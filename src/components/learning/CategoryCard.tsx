@@ -3,17 +3,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { BadgeCheck, Lock } from "lucide-react";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { LearningCategory } from "@/data/learningCategories";
+import { useToast } from "@/hooks/use-toast";
 
 interface CategoryCardProps {
   category: LearningCategory;
   isFinished: boolean;
   isLastCat: boolean;
   isEnabled: boolean;
+  requiresSubscription?: boolean;
   onSelect: () => void;
   index: number;
 }
 
-const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLastCat, isEnabled, onSelect, index }) => {
+const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLastCat, isEnabled, requiresSubscription = true, onSelect, index }) => {
+  const { toast } = useToast();
   const Icon = category.icon;
   const isAlphabet = category.name === "Alfabet";
   const isColors = category.name === "Farver";
@@ -54,6 +57,20 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLas
     if (isQuiz) return "/kategorier/quiz.png";
     return "/lovable-uploads/04d6bd8a-13b1-43ae-9c27-983dac50c5be.png";
   };
+
+  const handleClick = () => {
+    if (!requiresSubscription) {
+      toast({
+        title: "Abonnement påkrævet",
+        description: "Du skal have et aktivt abonnement for at få adgang til læringsmodulerne.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (isEnabled) {
+      onSelect();
+    }
+  };
   
   const categoryCard = (
     <Card 
@@ -69,7 +86,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLas
       }} 
       tabIndex={isEnabled ? 0 : -1} 
       aria-label={isEnabled ? `Lær om ${category.name}` : `${category.name} er låst`} 
-      onClick={isEnabled ? onSelect : undefined}
+      onClick={handleClick}
     >
       <CardContent className="p-0 relative">
         {hasCustomImage ? (
@@ -97,7 +114,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLas
                 {!isEnabled && <Lock className="inline w-4 h-4 ml-1" />}
               </div>
               <div className={`text-center text-sm ${isEnabled ? 'text-gray-700' : 'text-gray-400'}`}>
-                {isEnabled ? category.description : 'Kategori låst af forældre'}
+                {!requiresSubscription ? 'Kræver abonnement' : 
+                 !isEnabled ? 'Kategori låst af forældre' : 
+                 category.description}
               </div>
               {isLastCat && isEnabled && (
                 <div className="mt-2 text-xs text-blue-700 font-semibold animate-pulse bg-blue-100 rounded py-1 px-2">
@@ -132,7 +151,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLas
               {!isEnabled && <Lock className="inline w-4 h-4 ml-1" />}
             </div>
             <div className={`text-center text-sm ${isEnabled ? 'text-gray-700' : 'text-gray-400'}`}>
-              {isEnabled ? category.description : 'Kategori låst af forældre'}
+              {!requiresSubscription ? 'Kræver abonnement' : 
+               !isEnabled ? 'Kategori låst af forældre' : 
+               category.description}
             </div>
             {isLastCat && isEnabled && (
               <div className="mt-2 text-xs text-blue-700 font-semibold animate-pulse bg-blue-100 rounded py-1 px-2">

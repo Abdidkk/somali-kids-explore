@@ -3,6 +3,7 @@ import { learningCategories } from "@/data/learningCategories";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useChildProfiles } from "@/hooks/useChildProfiles";
+import { useSubscription } from "@/hooks/useSubscription";
 import { PointsManager } from "@/utils/pointsManager";
 import { resolveChildProfileIdByName } from "@/utils/childProfile";
 import AlphabetModal from "@/components/AlphabetModal";
@@ -26,6 +27,7 @@ import QuizModal from "@/components/QuizModal";
 export default function LearnCategoriesPage() {
   const { user } = useAuth();
   const { childProfiles, loading: childProfilesLoading } = useChildProfiles();
+  const { subscribed } = useSubscription();
   const [categorySettings, setCategorySettings] = useState(new Map());
   const [loading, setLoading] = useState(true);
   const [selectedChild, setSelectedChild] = useState<string>("");
@@ -321,6 +323,7 @@ export default function LearnCategoriesPage() {
         finishedCategories={childData.finishedCategories}
         lastCategory={childData.lastCategory}
         onCategorySelect={handleCategorySelect}
+        requiresSubscription={subscribed}
       />
       
       <AlphabetModal 
