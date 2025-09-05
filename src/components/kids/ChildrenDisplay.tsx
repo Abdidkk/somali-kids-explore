@@ -114,7 +114,7 @@ export function ChildrenDisplay({ onChildSelect, selectedChild }: ChildrenDispla
           Administrer børneprofiler
           {subscribed && billingInterval && (
             <span className="text-xs text-muted-foreground ml-1">
-              (Tilføj 1 barn - {billingInterval === 'year' ? '135 kr/år' : '15 kr/måned'})
+              (Tilføj 1 barn - {billingInterval === 'year' ? '135 kr./årligt' : '15 kr/måned'})
             </span>
           )}
         </Button>
