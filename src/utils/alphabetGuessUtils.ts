@@ -8,10 +8,22 @@ export const generateSequence = (activeTab: string): { sequence: string[], answe
   switch(activeTab) {
     case "korte-vokaler":
       letters = [...SHORT_VOWELS];
-      break;
+      // For vowels, create shorter sequences with varied starting points
+      const shortVowelStart = Math.floor(Math.random() * (SHORT_VOWELS.length - 2));
+      const shortVowelLength = Math.min(2 + Math.floor(Math.random() * 2), SHORT_VOWELS.length - shortVowelStart);
+      return {
+        sequence: SHORT_VOWELS.slice(shortVowelStart, shortVowelStart + shortVowelLength - 1),
+        answer: SHORT_VOWELS[shortVowelStart + shortVowelLength - 1]
+      };
     case "lange-vokaler":
       letters = [...LONG_VOWELS];
-      break;
+      // For vowels, create shorter sequences with varied starting points
+      const longVowelStart = Math.floor(Math.random() * (LONG_VOWELS.length - 2));
+      const longVowelLength = Math.min(2 + Math.floor(Math.random() * 2), LONG_VOWELS.length - longVowelStart);
+      return {
+        sequence: LONG_VOWELS.slice(longVowelStart, longVowelStart + longVowelLength - 1),
+        answer: LONG_VOWELS[longVowelStart + longVowelLength - 1]
+      };
     case "alfabetet":
     default:
       // Select a continuous subset of consonants (3-5 letters)
@@ -20,7 +32,7 @@ export const generateSequence = (activeTab: string): { sequence: string[], answe
       break;
   }
   
-  // For the sequence, use all but the last letter
+  // For consonants, use the original logic
   const sequenceLength = Math.min(letters.length - 1, 3);
   const sequence = letters.slice(0, sequenceLength);
   
