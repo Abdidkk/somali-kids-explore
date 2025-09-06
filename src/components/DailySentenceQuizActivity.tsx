@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { DAILY_SENTENCES, DailySentence } from "@/constants/dailyData";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { HelpCircle, RotateCcw } from "lucide-react";
+import { recordQuizResultAuto } from "@/utils/quizRecorder";
 
 
 function getRandomInt(max: number) {
   return Math.floor(Math.random() * max);
 }
 
-export default function DailySentenceQuizActivity({ onBack }: { onBack: () => void }) {
+export default function DailySentenceQuizActivity({ onBack, selectedChild }: { onBack: () => void; selectedChild?: string }) {
   const [step, setStep] = useState(0);
   const [userOrder, setUserOrder] = useState<string[]>([]);
   const [availableWords, setAvailableWords] = useState<string[]>([]);
@@ -19,6 +20,7 @@ export default function DailySentenceQuizActivity({ onBack }: { onBack: () => vo
   const [showHint, setShowHint] = useState(false);
   const [helpUsed, setHelpUsed] = useState(0);
   const [nextWordHint, setNextWordHint] = useState<string | null>(null);
+  const savedRef = useRef(false);
 
   const currentSentence = DAILY_SENTENCES[step % DAILY_SENTENCES.length];
 
@@ -32,6 +34,20 @@ export default function DailySentenceQuizActivity({ onBack }: { onBack: () => vo
     setHelpUsed(0);
     setNextWordHint(null);
   }, [step]);
+
+  // Record quiz result when completed
+  useEffect(() => {
+    if (step >= DAILY_SENTENCES.length && !savedRef.current) {
+      savedRef.current = true;
+      recordQuizResultAuto({
+        category: "Daglige Sætninger",
+        activityName: "Sætningssammensætning",
+        correct: score,
+        total: DAILY_SENTENCES.length,
+        selectedChild,
+      });
+    }
+  }, [step, score, selectedChild]);
 
   const addWordToSentence = (word: string) => {
     if (result !== null) return;
@@ -131,6 +147,7 @@ export default function DailySentenceQuizActivity({ onBack }: { onBack: () => vo
               setStep(0);
               setScore(0);
               setResult(null);
+              savedRef.current = false;
             }} 
             className="bg-blue-600 hover:bg-blue-700"
           >
