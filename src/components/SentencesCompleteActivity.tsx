@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { sentenceData, SentenceItem } from "@/constants/sentencesData";
 import { speakUsingSynthesis } from "@/utils/speechUtils";
@@ -9,17 +9,19 @@ import { recordQuizResultAuto } from "@/utils/quizRecorder";
 
 interface SentencesCompleteActivityProps {
   onBack: () => void;
+  selectedChild?: string;
 }
 
 type DifficultyType = 'let' | 'mellem' | 'svær';
 
-const SentencesCompleteActivity: React.FC<SentencesCompleteActivityProps> = ({ onBack }) => {
+const SentencesCompleteActivity: React.FC<SentencesCompleteActivityProps> = ({ onBack, selectedChild }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
   const [difficulty, setDifficulty] = useState<DifficultyType>('let');
   const isMobile = useIsMobile();
+  const savedRef = useRef(false);
 
   const currentQuestions = sentenceData.filter(item => item.difficulty === difficulty);
   const currentQuestion = currentQuestions[currentQuestionIndex];
@@ -60,7 +62,7 @@ const SentencesCompleteActivity: React.FC<SentencesCompleteActivityProps> = ({ o
     }
   };
 
-  const handleNextQuestion = async () => {
+  const handleNextQuestion = () => {
     if (currentQuestionIndex < currentQuestions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
       setSelectedAnswer(null);
@@ -68,12 +70,6 @@ const SentencesCompleteActivity: React.FC<SentencesCompleteActivityProps> = ({ o
     } else {
       // Quiz afsluttet
       const finalCorrect = score + (selectedAnswer === currentQuestion.correct ? 1 : 0);
-      await recordQuizResultAuto({
-        category: "Sætninger",
-        activityName: `Sætninger (${difficulty})`,
-        correct: finalCorrect,
-        total: currentQuestions.length,
-      });
 
       toast({
         title: "Quiz afsluttet! 🏆",
@@ -86,8 +82,24 @@ const SentencesCompleteActivity: React.FC<SentencesCompleteActivityProps> = ({ o
       setSelectedAnswer(null);
       setShowResult(false);
       setScore(0);
+      savedRef.current = false;
     }
   };
+
+  // Record quiz result when completed
+  useEffect(() => {
+    if (currentQuestionIndex >= currentQuestions.length - 1 && showResult && !savedRef.current) {
+      savedRef.current = true;
+      const finalCorrect = score + (selectedAnswer === currentQuestion.correct ? 1 : 0);
+      recordQuizResultAuto({
+        category: "Sætninger",
+        activityName: `Sætninger (${difficulty})`,
+        correct: finalCorrect,
+        total: currentQuestions.length,
+        selectedChild,
+      });
+    }
+  }, [currentQuestionIndex, currentQuestions.length, showResult, score, selectedAnswer, currentQuestion, difficulty, selectedChild]);
 
   const handleDifficultyChange = (newDifficulty: string) => {
     setDifficulty(newDifficulty as DifficultyType);
@@ -95,6 +107,7 @@ const SentencesCompleteActivity: React.FC<SentencesCompleteActivityProps> = ({ o
     setSelectedAnswer(null);
     setShowResult(false);
     setScore(0);
+    savedRef.current = false;
   };
 
   const progressPercentage = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;

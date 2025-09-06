@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { unjumbleData, UnjumbleItem } from "@/constants/sentencesData";
 import { speakUsingSynthesis } from "@/utils/speechUtils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { recordQuizResultAuto } from "@/utils/quizRecorder";
 
 interface SentencesUnjumbleActivityProps {
   onBack: () => void;
+  selectedChild?: string;
 }
 
 type DifficultyType = 'let' | 'mellem' | 'svær';
 
-const SentencesUnjumbleActivity: React.FC<SentencesUnjumbleActivityProps> = ({ onBack }) => {
+const SentencesUnjumbleActivity: React.FC<SentencesUnjumbleActivityProps> = ({ onBack, selectedChild }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
   const [availableWords, setAvailableWords] = useState<string[]>([]);
@@ -20,6 +22,7 @@ const SentencesUnjumbleActivity: React.FC<SentencesUnjumbleActivityProps> = ({ o
   const [score, setScore] = useState(0);
   const [difficulty, setDifficulty] = useState<DifficultyType>('let');
   const isMobile = useIsMobile();
+  const savedRef = useRef(false);
 
   const currentQuestions = unjumbleData.filter(item => item.difficulty === difficulty);
   const currentQuestion = currentQuestions[currentQuestionIndex];
@@ -104,13 +107,29 @@ const SentencesUnjumbleActivity: React.FC<SentencesUnjumbleActivityProps> = ({ o
       // Reset quiz
       setCurrentQuestionIndex(0);
       setScore(0);
+      savedRef.current = false;
     }
   };
+
+  // Record quiz result when completed
+  useEffect(() => {
+    if (currentQuestionIndex >= currentQuestions.length - 1 && showResult && !savedRef.current) {
+      savedRef.current = true;
+      recordQuizResultAuto({
+        category: "Sætninger",
+        activityName: `Sætningsarrangering (${difficulty})`,
+        correct: score,
+        total: currentQuestions.length,
+        selectedChild,
+      });
+    }
+  }, [currentQuestionIndex, currentQuestions.length, showResult, score, difficulty, selectedChild]);
 
   const handleDifficultyChange = (newDifficulty: string) => {
     setDifficulty(newDifficulty as DifficultyType);
     setCurrentQuestionIndex(0);
     setScore(0);
+    savedRef.current = false;
   };
 
   const handleReset = () => {
