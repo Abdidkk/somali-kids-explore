@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
@@ -7,13 +7,14 @@ import { CONTINENTS, COUNTRIES, NATURE_LANDSCAPES, getGeographyItemColor } from 
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
 import ScoreDisplay from "@/components/alphabet/guess/ScoreDisplay";
-import { PointsManager } from "@/utils/pointsManager";
+import { recordQuizResultAuto } from "@/utils/quizRecorder";
 
 interface Props {
   onBack: () => void;
+  selectedChild?: string;
 }
 
-export default function GeographyDragDropActivity({ onBack }: Props) {
+export default function GeographyDragDropActivity({ onBack, selectedChild }: Props) {
   const isMobile = useIsMobile();
   const { toast } = useToast();
   const [tab, setTab] = useState<"continents" | "countries" | "nature">("continents");
@@ -22,15 +23,30 @@ export default function GeographyDragDropActivity({ onBack }: Props) {
   const [natureOrder, setNatureOrder] = useState<string[]>([]);
   const [score, setScore] = useState(0);
   const [showScoreAnimation, setShowScoreAnimation] = useState(false);
+  const savedRef = useRef(false);
 
-  // Load initial score
+  // Record quiz result when all items are correctly matched
   useEffect(() => {
-    const loadScore = async () => {
-      const initialScore = await PointsManager.getCategoryScore("Geografi");
-      setScore(initialScore);
-    };
-    loadScore();
-  }, []);
+    const items = getCurrentData().items;
+    const order = getCurrentData().order;
+    const correctMatches = items.filter((item, idx) => order[idx] === item.somali);
+    
+    if (correctMatches.length === items.length && order.filter(Boolean).length === items.length && !savedRef.current) {
+      savedRef.current = true;
+      recordQuizResultAuto({
+        category: "Geografi",
+        activityName: `Drag & Drop (${tab})`,
+        correct: correctMatches.length,
+        total: items.length,
+        selectedChild,
+      });
+    }
+  }, [continentOrder, countryOrder, natureOrder, tab, selectedChild]);
+
+  // Reset savedRef when tab changes or game resets
+  useEffect(() => {
+    savedRef.current = false;
+  }, [tab]);
 
   const getCurrentData = () => {
     switch (tab) {
@@ -110,29 +126,12 @@ export default function GeographyDragDropActivity({ onBack }: Props) {
   const checkAnswer = () => {
     const correctMatches = items.filter((item, idx) => order[idx] === item.somali);
     const isCorrect = correctMatches.length === items.length;
-    const earnedPoints = PointsManager.calculatePoints(correctMatches.length, items.length, isCorrect);
     
     if (isCorrect) {
       playApplauseSound();
-      
-      // Add points and update score
-      PointsManager.addScore({
-        category: "Geografi",
-        activity: `Drag & Drop - ${tab}`,
-        score: earnedPoints, // points awarded
-        maxScore: 100,
-        rawCorrect: correctMatches.length,
-        rawTotal: items.length,
-        timestamp: new Date().toISOString()
-      });
-      
-      setScore(prev => prev + earnedPoints);
-      setShowScoreAnimation(true);
-      setTimeout(() => setShowScoreAnimation(false), 2000);
-      
       toast({
         title: "Fantastisk! 🎉",
-        description: `Du har matchet alle korrekt og fået ${earnedPoints} point!`,
+        description: `Du har matchet alle korrekt!`,
         duration: 3000,
       });
     } else {
@@ -147,6 +146,7 @@ export default function GeographyDragDropActivity({ onBack }: Props) {
 
   const resetGame = () => {
     setOrder([]);
+    savedRef.current = false;
   };
 
   return (
