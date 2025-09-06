@@ -78,7 +78,7 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
       const mcOptions = options.map(option => ({
         id: option,
         label: activeTab !== "alfabetet" ? option : undefined,
-        customContent: (
+        content: (
           <div className="flex items-center gap-3 w-full">
             {ALPHABET_IMAGES[option] ? (
               <img 
