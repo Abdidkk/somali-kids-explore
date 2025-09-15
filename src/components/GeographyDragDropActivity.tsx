@@ -25,6 +25,16 @@ export default function GeographyDragDropActivity({ onBack, selectedChild }: Pro
   const [showScoreAnimation, setShowScoreAnimation] = useState(false);
   const savedRef = useRef(false);
 
+  // Translation mapping for Danish activity names
+  const getTabTranslation = (tabValue: string) => {
+    const translations = {
+      continents: "kontinenter",
+      countries: "lande", 
+      nature: "natur"
+    };
+    return translations[tabValue as keyof typeof translations] || tabValue;
+  };
+
   // Record quiz result when all items are correctly matched
   useEffect(() => {
     const items = getCurrentData().items;
@@ -35,7 +45,7 @@ export default function GeographyDragDropActivity({ onBack, selectedChild }: Pro
       savedRef.current = true;
       recordQuizResultAuto({
         category: "Geografi",
-        activityName: `Drag & Drop (${tab})`,
+        activityName: `Drag & Drop (${getTabTranslation(tab)})`,
         correct: correctMatches.length,
         total: items.length,
         selectedChild,
