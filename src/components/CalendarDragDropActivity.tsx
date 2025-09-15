@@ -1,48 +1,51 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
 import { WEEKDAYS, MONTHS, getCalendarItemColor } from "@/constants/calendarData";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
-import MultipleChoiceQuiz, { MCQuestion } from "@/components/quiz/MultipleChoiceQuiz";
+import ScoreDisplay from "@/components/alphabet/guess/ScoreDisplay";
+import { recordQuizResultAuto } from "@/utils/quizRecorder";
 
 interface Props {
   onBack: () => void;
+  selectedChild?: string;
 }
 
-export default function CalendarDragDropActivity({ onBack }: Props) {
+export default function CalendarDragDropActivity({ onBack, selectedChild }: Props) {
   const isMobile = useIsMobile();
   const { toast } = useToast();
-  const [tab, setTab] = useState<"weekdays" | "months" | "quiz">("weekdays");
+  const [tab, setTab] = useState<"weekdays" | "months">("weekdays");
   const [weekdayOrder, setWeekdayOrder] = useState<string[]>([]);
   const [monthOrder, setMonthOrder] = useState<string[]>([]);
-  const [showResult, setShowResult] = useState(false);
-  const [quizSeed, setQuizSeed] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showScoreAnimation, setShowScoreAnimation] = useState(false);
+  const savedRef = useRef(false);
 
-  // Quiz questions generation
-  const quizQuestions: MCQuestion[] = useMemo(() => {
-    const allItems = [...WEEKDAYS, ...MONTHS];
-    const shuffled = [...allItems].sort(() => Math.random() - 0.5).slice(0, 5);
+  // Record quiz result when all items are correctly placed
+  useEffect(() => {
+    const currentItems = tab === "weekdays" ? WEEKDAYS : MONTHS;
+    const currentOrder = tab === "weekdays" ? weekdayOrder : monthOrder;
+    const correctOrder = currentItems.map(item => item.somali);
+    const isCorrect = currentOrder.every((item, idx) => item === correctOrder[idx]);
+    
+    if (isCorrect && currentOrder.filter(Boolean).length === currentItems.length && !savedRef.current) {
+      savedRef.current = true;
+      recordQuizResultAuto({
+        category: "Kalender",
+        activityName: `Drag & Drop (${tab === "weekdays" ? "ugedage" : "måneder"})`,
+        correct: currentItems.length,
+        total: currentItems.length,
+        selectedChild,
+      });
+    }
+  }, [weekdayOrder, monthOrder, tab, selectedChild]);
 
-    return shuffled.map((correct) => {
-      const wrong = allItems.filter(item => item.danish !== correct.danish).sort(() => Math.random() - 0.5).slice(0, 3);
-      const options = [correct, ...wrong].sort(() => Math.random() - 0.5);
-
-      return {
-        prompt: "Hør ordet og vælg det rigtige svar:",
-        speak: { 
-          audio: correct.audio, 
-          tts: { text: correct.somali, lang: "so-SO", rate: 0.8 } 
-        },
-        options: options.map((item) => ({
-          id: item.danish,
-          label: item.danish,
-        })),
-        correctId: correct.danish,
-      } as MCQuestion;
-    });
-  }, [quizSeed]);
+  // Reset savedRef when tab changes
+  useEffect(() => {
+    savedRef.current = false;
+  }, [tab]);
 
   const currentItems = tab === "weekdays" ? WEEKDAYS : MONTHS;
   const currentOrder = tab === "weekdays" ? weekdayOrder : monthOrder;
@@ -119,7 +122,6 @@ export default function CalendarDragDropActivity({ onBack }: Props) {
   const checkAnswer = () => {
     const correctOrder = currentItems.map(item => item.somali);
     const isCorrect = currentOrder.every((item, idx) => item === correctOrder[idx]);
-    setShowResult(true);
     
     if (isCorrect) {
       playApplauseSound();
@@ -140,31 +142,16 @@ export default function CalendarDragDropActivity({ onBack }: Props) {
 
   const resetGame = () => {
     setCurrentOrder([]);
-    setShowResult(false);
+    savedRef.current = false;
   };
 
-  // If quiz tab is selected, render the quiz
-  if (tab === "quiz") {
-    return (
-      <MultipleChoiceQuiz
-        title="Test din viden"
-        category="Kalender"
-        activityName="Kalender Quiz"
-        questions={quizQuestions}
-        onBack={onBack}
-        onRetry={() => setQuizSeed((s) => s + 1)}
-        theme="cyan"
-      />
-    );
-  }
-
   return (
-    <div className="flex flex-col items-center mt-3 md:mt-5 gap-4 md:gap-5">
-      <Tabs value={tab} onValueChange={v => setTab(v as "weekdays" | "months" | "quiz")} className="w-full flex flex-col items-center">
+    <div className="flex flex-col items-center mt-3 md:mt-5 gap-4 md:gap-5 relative">
+      <ScoreDisplay score={score} animate={showScoreAnimation} />
+      <Tabs value={tab} onValueChange={v => setTab(v as "weekdays" | "months")} className="w-full flex flex-col items-center">
         <TabsList className={`mb-3 md:mb-4 bg-violet-50 ${isMobile ? 'text-xs' : ''}`}>
           <TabsTrigger value="weekdays">Ugedage</TabsTrigger>
           <TabsTrigger value="months">Måneder</TabsTrigger>
-          <TabsTrigger value="quiz">Quiz</TabsTrigger>
         </TabsList>
         
         <TabsContent value={tab} className="w-full flex flex-col items-center gap-4">
