@@ -199,15 +199,15 @@ const CategoryHoverContent: React.FC<{ category: LearningCategory }> = ({ catego
             <li>Lære de grundlæggende farver</li>
             <li>Øve farvenavne på somalisk</li>
             <li>Lave sjove farveøvelser</li>
-            <li>Lære at genkende farver i hverdagen</li>
+            <li>Teste din viden ved at genkende farver</li>
           </>
         )}
         {category.name === "Tal" && (
           <>
             <li>Lære at tælle på somalisk</li>
-            <li>Øve tal og mængder</li>
-            <li>Træne grundlæggende matematik</li>
-            <li>Lære tallenes navne og symboler</li>
+            <li>Øve tal </li>
+            <li>Hør og vælge den rigtigt tal</li>
+            <li>Teste din viden ved at genkende tal</li>
           </>
         )}
         {category.name === "Mad" && (
@@ -215,39 +215,38 @@ const CategoryHoverContent: React.FC<{ category: LearningCategory }> = ({ catego
             <li>Lære de grundlæggende madtyper</li>
             <li>Øve udtale af hver madtype</li>
             <li>Træne genkendelse af madtyper</li>
-            <li>Lære at genkende madtyper i hverdagen</li>
+            <li>Teste din viden ved at genkende dyr</li>
           </>
         )}
         {category.name === "Dyr" && (
           <>
             <li>Lære navnene på forskellige dyr</li>
             <li>Øve udtale af dyrenavne</li>
-            <li>Lære om dyrelyde</li>
-            <li>Forstå forskellige dyrearter</li>
+            <li>Teste din viden ved at genkende dyr</li>
           </>
         )}
         {category.name === "Kropsdel" && (
           <>
             <li>Lære navnene på forskellige kropsdel</li>
             <li>Øve udtale af kropsdelnavne</li>
-            <li>Lære om kropsdellyde</li>
-            <li>Forstå forskellige kropsdelarter</li>
+            <li>Teste din viden ved at genkende kropdsdel</li>
           </>
         )}
         {category.name === "Geografi" && (
           <>
-            <li>Lære om lande og kontinenter</li>
-            <li>Forstå geografi på somalisk</li>
-            <li>Udforske kort og globus</li>
-            <li>Lære om forskellige kulturer og steder</li>
+            <li>Lære om lande kontinenter</li>
+            <li>Lære om kontinenter</li>
+            <li>Lære om lande natur</li>
+            <li>Teste din viden ved at genkende geografi</li>
           </>
         )}
         {category.name === "Kalender" && (
           <>
-            <li>Lære navnene på ugedage, måneder og årstider på somalisk</li>
-            <li>Øve udtale af tidsrelaterede ord og begreber</li>
+            <li>Lære navnene på ugedage på somalisk</li>
+            <li>Lære navnene på måneder på somalisk</li>
+            <li>Lære navnene på årstider på somalisk</li>
             <li>Træne at sætte dage og måneder i korrekt rækkefølge</li>
-            <li>Forstå kalendersystemet gennem interaktive øvelser</li>
+            
           </>
         )}
         {category.name === "Familie og venner" && (
@@ -255,14 +254,12 @@ const CategoryHoverContent: React.FC<{ category: LearningCategory }> = ({ catego
             <li>Lære navn på familiemedlemmer</li>
             <li>Forstå familierelationer på somalisk</li>
             <li>Øve ordforråd relateret til familie og venner</li>
-            <li>Lære om social interaktion og samtalefærdigheder</li>
           </>
         )}
         {category.name === "Ord" && (
           <>
             <li>Lære navne på hverdagsgenstande</li>
             <li>Øve ordforråd om møbler og hjemmet</li>
-            <li>Opbygge sætninger med de nye ord</li>
             <li>Forbedre forståelse af somaliske betegnelser for ting i dit miljø</li>
           </>
         )}
@@ -270,7 +267,6 @@ const CategoryHoverContent: React.FC<{ category: LearningCategory }> = ({ catego
           <>
             <li>Lære ord for daglige rutiner som at børste tænder og spise</li>
             <li>Øve udtryk for hverdagsaktiviteter på somalisk</li>
-            <li>Forstå tidsudtryk og rækkefølge af aktiviteter</li>
             <li>Udvikle ordforråd relateret til almindelige gøremål</li>
           </>
         )}

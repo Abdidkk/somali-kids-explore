@@ -37,7 +37,7 @@ const featureData = [
   {
     icon: <Calculator className="h-10 w-10 text-blue-400" />,
     title: "Tal",
-    description: "Optælling og grundlæggende matematik.",
+    description: "Optælling af tal på somaliske.",
   },
   {
     icon: <Carrot className="h-10 w-10 text-orange-400" />,
@@ -47,7 +47,7 @@ const featureData = [
   {
     icon: <PawPrint className="h-10 w-10 text-yellow-400" />,
     title: "Dyr",
-    description: "Somaliske navne og deres egenskaber.",
+    description: "Lær dyrearter på somaliske.",
   },
   {
     icon: <Hand className="h-10 w-10 text-blue-400" />,
@@ -57,12 +57,12 @@ const featureData = [
   {
     icon: <Earth className="h-10 w-10 text-green-500" />,
     title: "Geografi",
-    description: "Lære om lande og regioner, inklusive somalisk-specifik geografi.",
+    description: "Lære om lande, Kontinenter og nartur geografi.",
   },
   {
     icon: <Calendar className="h-10 w-10 text-blue-500" />,
     title: "Kalender",
-    description: "Forstå somalisk terminologi for dage, måneder og årstider.",
+    description: "Lær ordnavne dage, måneder og årstider på somaliske.",
   },
   {
     icon: <Users className="h-10 w-10 text-purple-400" />,
