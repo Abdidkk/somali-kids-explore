@@ -134,10 +134,36 @@ serve(async (req) => {
 
     // Only add trial period for full subscriptions, not for children-only purchases
     if (!childrenOnly) {
+      // Calculate precise 24-hour trial end in Danish timezone
+      const danishNow = new Date().toLocaleString("en-US", {timeZone: "Europe/Copenhagen"});
+      const trialEndDanish = new Date(danishNow);
+      trialEndDanish.setHours(trialEndDanish.getHours() + 24);
+      const trialEndUtc = new Date(trialEndDanish.toLocaleString("en-US", {timeZone: "UTC"}));
+      
       sessionConfig.subscription_data = {
         trial_period_days: 1,
       };
-      logStep("Added trial period for full subscription");
+      
+      // Store precise trial end time in subscriber record
+      try {
+        await supabaseService.from('subscribers').upsert({
+          email: user.email,
+          user_id: user.id,
+          subscribed: false,
+          trial_end: trialEndUtc.toISOString(),
+          trial_end_local: trialEndDanish.toISOString(),
+          status: 'trial',
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'email' });
+        logStep("Updated subscriber trial end to 24 hours from Danish time", { 
+          trialEndDanish: trialEndDanish.toISOString(), 
+          trialEndUtc: trialEndUtc.toISOString() 
+        });
+      } catch (error) {
+        console.error('Failed to update trial end time:', error);
+      }
+      
+      logStep("Added 24-hour trial period for full subscription");
     } else {
       logStep("Skipping trial period for children-only purchase");
     }

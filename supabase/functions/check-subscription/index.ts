@@ -113,12 +113,22 @@ serve(async (req) => {
       subscribed = false;
     }
 
-    // Determine status
+    // Determine status using Danish timezone for trial expiry
     let status = existing.status || 'trial';
     if (subscribed) {
       status = 'active';
-    } else if (existing.trial_end && new Date(existing.trial_end) > new Date()) {
-      status = 'trial';
+    } else if (existing.trial_end) {
+      // Check trial expiry in Danish timezone
+      const danishNow = new Date().toLocaleString("en-US", {timeZone: "Europe/Copenhagen"});
+      const trialEndDanish = existing.trial_end_local ? 
+        new Date(existing.trial_end_local) : 
+        new Date(new Date(existing.trial_end).toLocaleString("en-US", {timeZone: "Europe/Copenhagen"}));
+      
+      if (new Date(danishNow) < trialEndDanish) {
+        status = 'trial';
+      } else {
+        status = 'expired';
+      }
     } else {
       status = 'expired';
     }

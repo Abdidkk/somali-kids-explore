@@ -27,3 +27,6 @@ verify_jwt = false
 
 [functions.parent-dashboard]
 verify_jwt = false
+
+[functions.auto-payment-trigger]
+verify_jwt = false

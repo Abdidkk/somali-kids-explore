@@ -238,16 +238,25 @@ const SubscriptionStatus = () => {
     fetchUserData();
   }, [session?.user?.id, inTrial, subscriptionTier]);
 
-  // Update countdown timer every minute
+  // Update countdown timer every minute using Danish timezone
   useEffect(() => {
     if (!trialEndDate || !inTrial) return;
 
     const updateTimer = () => {
-      const now = new Date();
-      const timeDiff = trialEndDate.getTime() - now.getTime();
+      // Get current time in Danish timezone
+      const danishNow = new Date().toLocaleString("en-US", {timeZone: "Europe/Copenhagen"});
+      const now = new Date(danishNow);
+      
+      // Convert trial end to Danish timezone for accurate comparison
+      const trialEndDanish = new Date(trialEndDate.toLocaleString("en-US", {timeZone: "Europe/Copenhagen"}));
+      const timeDiff = trialEndDanish.getTime() - now.getTime();
       
       if (timeDiff <= 0) {
-        setTrialTimeLeft("Prøveperioden er udløbet");
+        setTrialTimeLeft("Prøveperioden er udløbet - automatisk betaling starter nu");
+        // Trigger subscription refresh when trial expires
+        setTimeout(() => {
+          checkSubscription();
+        }, 2000);
         return;
       }
 
@@ -268,7 +277,7 @@ const SubscriptionStatus = () => {
     const interval = setInterval(updateTimer, 60000); // Update every minute
 
     return () => clearInterval(interval);
-  }, [trialEndDate, inTrial]);
+  }, [trialEndDate, inTrial, checkSubscription]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('da-DK', {

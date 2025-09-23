@@ -154,7 +154,22 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
           if (payload.new) {
             const data = payload.new as any;
             setSubscribed(data.subscribed || false);
-            setInTrial(!data.subscribed && data.trial_end && new Date(data.trial_end) > new Date());
+            
+            // Check trial status using Danish timezone
+            if (!data.subscribed && data.trial_end_local) {
+              const danishNow = new Date().toLocaleString("en-US", {timeZone: "Europe/Copenhagen"});
+              const trialEndDanish = new Date(data.trial_end_local);
+              setInTrial(new Date(danishNow) < trialEndDanish);
+              
+              // If trial expired, redirect to payment
+              if (new Date(danishNow) >= trialEndDanish && data.status === 'expired') {
+                console.log('Trial expired - user should be redirected to payment');
+                // The RouteGuard will handle the redirect based on userState
+              }
+            } else {
+              setInTrial(!data.subscribed && data.trial_end && new Date(data.trial_end) > new Date());
+            }
+            
             setSubscriptionTier(data.subscription_tier || null);
             setSubscriptionEnd(data.subscription_end || null);
             setBillingInterval(data.billing_interval || null);
