@@ -244,6 +244,7 @@ export type Database = {
           subscription_end: string | null
           subscription_tier: string | null
           trial_end: string
+          trial_end_local: string | null
           updated_at: string
           user_id: string | null
         }
@@ -259,6 +260,7 @@ export type Database = {
           subscription_end?: string | null
           subscription_tier?: string | null
           trial_end?: string
+          trial_end_local?: string | null
           updated_at?: string
           user_id?: string | null
         }
@@ -274,6 +276,7 @@ export type Database = {
           subscription_end?: string | null
           subscription_tier?: string | null
           trial_end?: string
+          trial_end_local?: string | null
           updated_at?: string
           user_id?: string | null
         }
@@ -402,6 +405,14 @@ export type Database = {
     Functions: {
       check_user_permission: {
         Args: { p_required_permission: string }
+        Returns: boolean
+      }
+      danish_now: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      is_trial_expired_danish: {
+        Args: { trial_end_time: string }
         Returns: boolean
       }
       log_event: {
