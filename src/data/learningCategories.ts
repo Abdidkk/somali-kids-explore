@@ -25,7 +25,7 @@ export const learningCategories: LearningCategory[] = [
     name: "Tal",
     icon: Calculator,
     bgColor: "#DBF3FA",
-    description: "Optælling og grundlæggende matematik.",
+    description: "Optælling af tal på somaliske.",
   },
   {
     name: "Mad",
@@ -37,7 +37,7 @@ export const learningCategories: LearningCategory[] = [
     name: "Dyr",
     icon: PawPrint,
     bgColor: "#FFFBE0",
-    description: "Somaliske navne og deres egenskaber.",
+    description: "Lær dyrearter på somaliske.",
   },
   {
     name: "Kropsdel",
@@ -49,13 +49,13 @@ export const learningCategories: LearningCategory[] = [
     name: "Geografi",
     icon: Earth,
     bgColor: "#E5FAF1",
-    description: "Lære om lande og regioner, inklusive somalisk-specifik geografi.",
+    description: "Lær om lande, Kontinenter og nartur geografi.",
   },
   {
     name: "Kalender",
     icon: Calendar,
     bgColor: "#E7F0FB",
-    description: "Forstå somalisk terminologi for dage, måneder og årstider.",
+    description: "Lær ordnavne dage, måneder og årstider på somaliske.",
   },
   {
     name: "Familie og venner",
