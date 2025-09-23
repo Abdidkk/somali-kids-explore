@@ -15,7 +15,6 @@ import ChoosePlanPage from "./pages/ChoosePlanPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import PaymentCancelPage from "./pages/PaymentCancelPage";
 import AddChildProfilesPage from "./pages/AddChildProfilesPage";
-import CongratulationsPage from "./pages/CongratulationsPage";
 import DashboardPage from "./pages/DashboardPage";
 
 import SystemTestPage from "./pages/SystemTestPage";
@@ -58,11 +57,6 @@ const App = () => (
               <Route path="/add-children" element={
                 <RouteGuard requireAuth requireOnboarding>
                   <AddChildProfilesPage />
-                </RouteGuard>
-              } />
-              <Route path="/congratulations" element={
-                <RouteGuard requireAuth requireOnboarding>
-                  <CongratulationsPage />
                 </RouteGuard>
               } />
               <Route path="/dashboard" element={

@@ -47,11 +47,7 @@ export function RouteGuard({
         break;
         
       case 'onboarding':
-        // User has children but needs to complete onboarding
-        // Only redirect if the page explicitly doesn't allow onboarding users
-        if (!requireOnboarding) {
-          navigate('/congratulations');
-        }
+        // User is completing onboarding - allow access to learning page
         break;
     }
 
