@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mail, Lock, User } from "lucide-react";
 import { useAuthOperations } from "@/hooks/auth/useAuthOperations";
+import { Link } from "react-router-dom";
 import { validateAuthCredentials, validateInput } from "@/services/auth/auth.validation";
 
 interface AuthFormProps {
@@ -148,6 +149,17 @@ export function AuthForm({ mode }: AuthFormProps) {
           </div>
         )}
       </div>
+
+      {mode === 'login' && (
+        <div className="text-right">
+          <Link 
+            to="/reset-password" 
+            className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+          >
+            Glemt kodeord?
+          </Link>
+        </div>
+      )}
       
       <Button
         type="submit"

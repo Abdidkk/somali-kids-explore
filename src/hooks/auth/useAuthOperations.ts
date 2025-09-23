@@ -81,10 +81,55 @@ export function useAuthOperations() {
     }
   };
 
+  const handleResetPassword = async (email: string) => {
+    setLoading(true);
+    try {
+      const result = await authService.resetPassword(email);
+
+      if (result.success) {
+        toast.success("Nulstillingslink sendt! Tjek din e-mail.");
+      } else {
+        toast.error(result.error || "Der opstod en fejl ved nulstilling af adgangskode");
+      }
+
+      return result;
+    } catch (error) {
+      console.error('Reset password operation error:', error);
+      toast.error("Der opstod en uventet fejl");
+      return { success: false, error: "Der opstod en uventet fejl" };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdatePassword = async (newPassword: string) => {
+    setLoading(true);
+    try {
+      const result = await authService.updatePassword(newPassword);
+
+      if (result.success) {
+        toast.success("Adgangskode opdateret!");
+        navigate('/dashboard');
+      } else {
+        toast.error(result.error || "Der opstod en fejl ved opdatering af adgangskode");
+      }
+
+      return result;
+    } catch (error) {
+      console.error('Update password operation error:', error);
+      toast.error("Der opstod en uventet fejl");
+      return { success: false, error: "Der opstod en uventet fejl" };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     handleSignUp,
     handleSignIn,
-    handleSocialAuth
+    handleSocialAuth,
+    handleResetPassword,
+    handleUpdatePassword
   };
 }

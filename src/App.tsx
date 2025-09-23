@@ -28,6 +28,7 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsOfServicePage from "./pages/TermsOfServicePage";
 import MereOmPriserPage from "./pages/MereOmPriserPage";
 import EmailConfirmationPage from "./pages/EmailConfirmationPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => (
               <Route path="/login" element={<AuthPage />} />
               <Route path="/signup" element={<AuthPage />} />
               <Route path="/email-confirmation" element={<EmailConfirmationPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/choose-plan" element={
                 <RouteGuard requireAuth>
                   <ChoosePlanPage />
