@@ -215,7 +215,7 @@ const CategoryHoverContent: React.FC<{ category: LearningCategory }> = ({ catego
             <li>Lære de grundlæggende madtyper</li>
             <li>Øve udtale af hver madtype</li>
             <li>Træne genkendelse af madtyper</li>
-            <li>Teste din viden ved at genkende dyr</li>
+            <li>Teste din viden ved at genkende mad</li>
           </>
         )}
         {category.name === "Dyr" && (
@@ -234,7 +234,7 @@ const CategoryHoverContent: React.FC<{ category: LearningCategory }> = ({ catego
         )}
         {category.name === "Geografi" && (
           <>
-            <li>Lære om lande kontinenter</li>
+            <li>Lære om lande </li>
             <li>Lære om kontinenter</li>
             <li>Lære om lande natur</li>
             <li>Teste din viden ved at genkende geografi</li>
