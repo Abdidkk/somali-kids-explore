@@ -156,9 +156,9 @@ export default function AddChildProfilesPage() {
       
       toast.success(`${validForms.length} barn${validForms.length > 1 ? '' : ''} tilføjet!`);
       
-      // Refresh user state first, then navigate to learning
+      // Refresh user state first, then navigate to dashboard
       await refreshUserState();
-      navigate('/learning', { replace: true });
+      navigate('/dashboard', { replace: true });
     } catch (error) {
       console.error('Error adding children:', error);
       toast.error("Der opstod en fejl ved tilføjelse af børneprofiler");
