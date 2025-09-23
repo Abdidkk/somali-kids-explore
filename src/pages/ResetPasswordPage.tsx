@@ -11,6 +11,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Mail, Lock, ArrowLeft } from "lucide-react";
 import { useAuthOperations } from "@/hooks/auth/useAuthOperations";
 import { validateInput } from "@/services/auth/auth.validation";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import SomaliFlag from "@/components/landing/SomaliFlag";
 
 export default function ResetPasswordPage() {
@@ -26,6 +29,8 @@ export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [emailSent, setEmailSent] = useState(false);
+  const [sessionLoading, setSessionLoading] = useState(false);
+  const [sessionReady, setSessionReady] = useState(false);
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,16 +47,59 @@ export default function ResetPasswordPage() {
     }
   };
 
+  // Handle session establishment from URL parameters
+  useEffect(() => {
+    const establishSession = async () => {
+      if (!isPasswordUpdate) return;
+      
+      setSessionLoading(true);
+      
+      try {
+        const refreshToken = searchParams.get('refresh_token');
+        
+        if (accessToken && refreshToken) {
+          const { error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken
+          });
+          
+          if (error) {
+            console.error('Session establishment error:', error);
+            toast.error('Linket er udløbet eller ugyldigt. Anmod om et nyt link.');
+            return;
+          }
+          
+          setSessionReady(true);
+          toast.success('Klar til at opdatere adgangskode');
+        } else {
+          toast.error('Manglende tokens i URL. Anmod om et nyt link.');
+        }
+      } catch (error) {
+        console.error('Session error:', error);
+        toast.error('Der opstod en fejl. Prøv igen.');
+      } finally {
+        setSessionLoading(false);
+      }
+    };
+
+    establishSession();
+  }, [isPasswordUpdate, accessToken, searchParams]);
+
   const handleNewPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!sessionReady) {
+      toast.error('Vent venligst mens sessionen etableres...');
+      return;
+    }
+    
     if (password !== confirmPassword) {
-      alert('Adgangskoderne stemmer ikke overens');
+      toast.error('Adgangskoderne stemmer ikke overens');
       return;
     }
     
     if (password.length < 6) {
-      alert('Adgangskoden skal være mindst 6 tegn');
+      toast.error('Adgangskoden skal være mindst 6 tegn');
       return;
     }
 
@@ -119,54 +167,68 @@ export default function ResetPasswordPage() {
             <CardHeader className="text-center">
               <CardTitle className="text-2xl">Ny adgangskode</CardTitle>
               <CardDescription>
-                Indtast din nye adgangskode nedenfor
+                {sessionLoading ? "Forbereder session..." : "Indtast din nye adgangskode nedenfor"}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleNewPassword} className="space-y-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <Lock size={20} className="text-gray-400" />
-                    <span className="text-base font-medium">Ny adgangskode</span>
-                  </div>
-                  <Input
-                    type="password"
-                    placeholder="●●●●●●●●"
-                    required
-                    minLength={6}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="bg-blue-50 focus:bg-white"
-                    autoComplete="new-password"
-                  />
+              {sessionLoading ? (
+                <div className="flex justify-center py-8">
+                  <LoadingSpinner size="lg" />
                 </div>
-                
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <Lock size={20} className="text-gray-400" />
-                    <span className="text-base font-medium">Bekræft adgangskode</span>
+              ) : (
+                <form onSubmit={handleNewPassword} className="space-y-4">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Lock size={20} className="text-gray-400" />
+                      <span className="text-base font-medium">Ny adgangskode</span>
+                    </div>
+                    <Input
+                      type="password"
+                      placeholder="●●●●●●●●"
+                      required
+                      minLength={6}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="bg-blue-50 focus:bg-white"
+                      autoComplete="new-password"
+                      disabled={!sessionReady}
+                    />
                   </div>
-                  <Input
-                    type="password"
-                    placeholder="●●●●●●●●"
-                    required
-                    minLength={6}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="bg-blue-50 focus:bg-white"
-                    autoComplete="new-password"
-                  />
-                </div>
-                
-                <Button
-                  type="submit"
-                  size="lg"
-                  disabled={loading}
-                  className="w-full bg-blue-500 hover:bg-blue-600 transition"
-                >
-                  {loading ? "Opdaterer..." : "Opdater adgangskode"}
-                </Button>
-              </form>
+                  
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Lock size={20} className="text-gray-400" />
+                      <span className="text-base font-medium">Bekræft adgangskode</span>
+                    </div>
+                    <Input
+                      type="password"
+                      placeholder="●●●●●●●●"
+                      required
+                      minLength={6}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="bg-blue-50 focus:bg-white"
+                      autoComplete="new-password"
+                      disabled={!sessionReady}
+                    />
+                  </div>
+                  
+                  <Button
+                    type="submit"
+                    size="lg"
+                    disabled={loading || !sessionReady}
+                    className="w-full bg-blue-500 hover:bg-blue-600 transition"
+                  >
+                    {loading ? "Opdaterer..." : sessionReady ? "Opdater adgangskode" : "Venter på session..."}
+                  </Button>
+                  
+                  {!sessionReady && !sessionLoading && (
+                    <p className="text-sm text-red-600 text-center">
+                      Linket er muligvis udløbet. <Link to="/reset-password" className="underline">Anmod om nyt link</Link>
+                    </p>
+                  )}
+                </form>
+              )}
             </CardContent>
           </Card>
         </div>

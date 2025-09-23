@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { authService } from "@/services/auth/auth.service";
 import { AuthCredentials } from "@/services/auth/auth.types";
+import { supabase } from "@/integrations/supabase/client";
 
 export function useAuthOperations() {
   const [loading, setLoading] = useState(false);
@@ -105,6 +106,14 @@ export function useAuthOperations() {
   const handleUpdatePassword = async (newPassword: string) => {
     setLoading(true);
     try {
+      // Check if user has a valid session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error('Sessionen er udløbet. Anmod om et nyt link til nulstilling.');
+        navigate('/reset-password');
+        return { success: false, error: 'Ingen session' };
+      }
+
       const result = await authService.updatePassword(newPassword);
 
       if (result.success) {
