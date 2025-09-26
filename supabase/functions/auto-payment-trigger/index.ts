@@ -108,12 +108,12 @@ serve(async (req) => {
       } catch (processError) {
         logStep("Error processing subscriber", { 
           subscriberId: subscriber.id, 
-          error: processError.message 
+          error: (processError as any).message 
         });
         results.push({
           email: subscriber.email,
           status: 'error',
-          error: processError.message
+          error: (processError as any).message
         });
       }
     }

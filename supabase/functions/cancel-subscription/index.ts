@@ -119,7 +119,7 @@ serve(async (req) => {
           }
         }
       } catch (stripeError) {
-        logStep('Stripe cancellation error', { error: stripeError.message });
+        logStep('Stripe cancellation error', { error: (stripeError as any).message });
         // Continue with database update even if Stripe fails
       }
     }
@@ -173,7 +173,7 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    logStep('Unexpected error', { error: error.message });
+    logStep('Unexpected error', { error: (error as any).message });
     
     return new Response(
       JSON.stringify({ error: 'Internal server error' }),

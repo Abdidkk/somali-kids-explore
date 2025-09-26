@@ -160,13 +160,13 @@ async function generateChildAnalytics(
   const safeProgressData = progressData || []
   
   // Calculate total points from actual progress data
-  const totalPoints = safeProgressData.reduce((sum, progress) => sum + progress.total_points, 0)
+  const totalPoints = safeProgressData.reduce((sum: number, progress: any) => sum + progress.total_points, 0)
   
   // Calculate learning time from time_spent (stored in minutes)
-  const totalLearningTime = safeProgressData.reduce((sum, progress) => sum + progress.time_spent, 0)
+  const totalLearningTime = safeProgressData.reduce((sum: number, progress: any) => sum + progress.time_spent, 0)
 
   // Count completed activities
-  const completedModules = safeProgressData.reduce((sum, progress) => sum + progress.activities_completed, 0)
+  const completedModules = safeProgressData.reduce((sum: number, progress: any) => sum + progress.activities_completed, 0)
 
   // Get quiz results for badges/achievements
   const { data: quizData } = await supabase
@@ -178,8 +178,8 @@ async function generateChildAnalytics(
   const badgesEarned = safeQuizData.length
 
   // Calculate progress by category using actual progress data
-  const progressByCategory = {}
-  safeProgressData.forEach(progress => {
+  const progressByCategory: any = {}
+  safeProgressData.forEach((progress: any) => {
     const category = progress.category
     if (!progressByCategory[category]) {
       progressByCategory[category] = {
@@ -194,7 +194,7 @@ async function generateChildAnalytics(
   })
 
   // Convert to percentage-like scores (points as main metric)
-  Object.keys(progressByCategory).forEach(category => {
+  Object.keys(progressByCategory).forEach((category: string) => {
     const categoryData = progressByCategory[category]
     // Use total points as the main progress metric
     progressByCategory[category] = categoryData.totalPoints
@@ -203,16 +203,16 @@ async function generateChildAnalytics(
   // Get recent activity from quiz results
   const recentActivity = [
     ...safeQuizData
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
       .slice(0, 5)
-      .map(quiz => ({
+      .map((quiz: any) => ({
         type: 'quiz',
         title: `Gennemførte ${quiz.activity_name}`,
         date: quiz.created_at,
         category: quiz.category,
         score: `${quiz.score}/${quiz.max_score} points`
       }))
-  ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5)
+  ].sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5)
 
   // Calculate overall progress based on total points
   const overallProgress = totalPoints > 0 ? Math.min((totalPoints / 1000) * 100, 100) : 0
