@@ -230,6 +230,14 @@ serve(async (req) => {
         await handleSubscriptionDeleted(supabase, event.data.object as Stripe.Subscription);
         break;
 
+      case 'customer.subscription.trial_will_end':
+        await handleTrialWillEnd(supabase, event.data.object as Stripe.Subscription);
+        break;
+
+      case 'invoice.upcoming':
+        await handleInvoiceUpcoming(supabase, event.data.object as Stripe.Invoice);
+        break;
+
       default:
         console.log(`Unhandled webhook event type: ${event.type}`);
     }
@@ -528,24 +536,122 @@ async function handleSubscriptionUpdated(supabase: any, subscription: Stripe.Sub
 
 async function handleSubscriptionDeleted(supabase: any, subscription: Stripe.Subscription) {
   const customerId = subscription.customer as string;
+  
+  console.log(`[SUBSCRIPTION-DELETE] Processing subscription deletion: ${subscription.id}`);
+  console.log(`[SUBSCRIPTION-DELETE] Customer ID: ${customerId}`);
+  console.log(`[SUBSCRIPTION-DELETE] Status: ${subscription.status}`);
+  
+  try {
+    // Update subscriber status to unsubscribed
+    const { data: subscriber, error: findError } = await supabase
+      .from('subscribers')
+      .select('id, email, user_id, subscribed')
+      .eq('stripe_customer_id', customerId)
+      .single();
 
-  // Mark subscriber as unsubscribed
-  await supabase.from('subscribers')
-    .update({
-      subscribed: false,
-      subscription_tier: null,
-      subscription_end: null,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('stripe_customer_id', customerId);
+    if (findError || !subscriber) {
+      console.log(`[SUBSCRIPTION-DELETE] Subscriber not found for customer: ${customerId}`);
+      return;
+    }
 
+    console.log(`[SUBSCRIPTION-DELETE] Found subscriber:`, subscriber);
+
+    // Update subscription status
+    const { error: updateError } = await supabase
+      .from('subscribers')
+      .update({
+        subscribed: false,
+        status: 'cancelled',
+        updated_at: new Date().toISOString(),
+      })
+      .eq('stripe_customer_id', customerId);
+
+    if (updateError) {
+      console.error(`[SUBSCRIPTION-DELETE] Failed to update subscriber:`, updateError);
+    } else {
+      console.log(`[SUBSCRIPTION-DELETE] Subscriber status updated to cancelled`);
+    }
+
+    await supabase.rpc('log_event', {
+      p_event_type: 'stripe_subscription_deleted',
+      p_user_id: subscriber.user_id,
+      p_metadata: {
+        subscription_id: subscription.id,
+        customer_id: subscription.customer,
+        canceled_at: subscription.canceled_at
+      },
+      p_severity: 'INFO'
+    });
+  } catch (error) {
+    console.error(`[SUBSCRIPTION-DELETE] Error processing subscription deletion:`, error);
+    
+    await supabase.rpc('log_event', {
+      p_event_type: 'stripe_subscription_deleted_error',
+      p_user_id: null,
+      p_metadata: {
+        error: (error as any).message,
+        subscription_id: subscription.id,
+        customer_id: subscription.customer
+      },
+      p_severity: 'ERROR'
+    });
+  }
+}
+
+async function handleTrialWillEnd(supabase: any, subscription: Stripe.Subscription) {
+  const customerId = subscription.customer as string;
+  
+  console.log(`[TRIAL-WILL-END] Trial ending soon for subscription: ${subscription.id}`);
+  
   await supabase.rpc('log_event', {
-    p_event_type: 'stripe_subscription_deleted',
+    p_event_type: 'stripe_trial_will_end',
     p_user_id: null,
     p_metadata: {
       subscription_id: subscription.id,
-      customer_id: subscription.customer,
-      canceled_at: subscription.canceled_at
+      customer_id: customerId,
+      trial_end: subscription.trial_end ? new Date(subscription.trial_end * 1000).toISOString() : null
+    },
+    p_severity: 'INFO'
+  });
+}
+
+async function handleInvoiceUpcoming(supabase: any, invoice: Stripe.Invoice) {
+  const customerId = invoice.customer as string;
+  
+  console.log(`[INVOICE-UPCOMING] Upcoming invoice for customer: ${customerId}`);
+  console.log(`[INVOICE-UPCOMING] Billing reason: ${invoice.billing_reason}`);
+  
+  // Check if this customer has cancelled their subscription during trial
+  const { data: subscriber } = await supabase
+    .from('subscribers')
+    .select('status, trial_end_local')
+    .eq('stripe_customer_id', customerId)
+    .single();
+
+  if (subscriber && subscriber.status === 'trial_cancelled') {
+    console.log(`[INVOICE-UPCOMING] Customer has cancelled during trial - subscription should not be charged`);
+    
+    await supabase.rpc('log_event', {
+      p_event_type: 'invoice_upcoming_cancelled_trial',
+      p_user_id: null,
+      p_metadata: {
+        invoice_id: invoice.id,
+        customer_id: customerId,
+        status: subscriber.status,
+        billing_reason: invoice.billing_reason
+      },
+      p_severity: 'WARNING'
+    });
+  }
+
+  await supabase.rpc('log_event', {
+    p_event_type: 'stripe_invoice_upcoming',
+    p_user_id: null,
+    p_metadata: {
+      invoice_id: invoice.id,
+      customer_id: customerId,
+      amount: (invoice.amount_due || 0) / 100,
+      billing_reason: invoice.billing_reason
     },
     p_severity: 'INFO'
   });
