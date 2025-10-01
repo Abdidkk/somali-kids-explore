@@ -83,7 +83,7 @@ serve(async (req) => {
         stripeCustomerId = subscriber?.stripe_customer_id;
         logStep("Stripe customer ID retrieved", { customerId: stripeCustomerId });
       } catch (error) {
-        logStep("No subscriber record found or error retrieving it", { error: error.message });
+        logStep("No subscriber record found or error retrieving it", { error: (error as any).message });
       }
     }
 
@@ -94,7 +94,7 @@ serve(async (req) => {
         logStep("Stripe customer deleted successfully", { customerId: stripeCustomerId });
       } catch (stripeError) {
         logStep("Warning: Failed to delete Stripe customer (may already be deleted)", { 
-          error: stripeError.message,
+          error: (stripeError as any).message,
           customerId: stripeCustomerId 
         });
         // Don't fail the whole operation if Stripe deletion fails
@@ -142,7 +142,7 @@ serve(async (req) => {
       deletionResults.quiz_results = count || 0;
       logStep("Quiz results deleted", { count });
     } catch (error) {
-      logStep("Error deleting quiz results", { error: error.message });
+      logStep("Error deleting quiz results", { error: (error as any).message });
     }
 
     // Delete progress records
@@ -156,7 +156,7 @@ serve(async (req) => {
       deletionResults.progress = count || 0;
       logStep("Progress records deleted", { count });
     } catch (error) {
-      logStep("Error deleting progress", { error: error.message });
+      logStep("Error deleting progress", { error: (error as any).message });
     }
 
     // Delete child profiles
@@ -170,7 +170,7 @@ serve(async (req) => {
       deletionResults.child_profiles = count || 0;
       logStep("Child profiles deleted", { count });
     } catch (error) {
-      logStep("Error deleting child profiles", { error: error.message });
+      logStep("Error deleting child profiles", { error: (error as any).message });
     }
 
     // Delete transactions
@@ -184,7 +184,7 @@ serve(async (req) => {
       deletionResults.transactions = count || 0;
       logStep("Transactions deleted", { count });
     } catch (error) {
-      logStep("Error deleting transactions", { error: error.message });
+      logStep("Error deleting transactions", { error: (error as any).message });
     }
 
     // Delete subscriber record
@@ -198,7 +198,7 @@ serve(async (req) => {
       deletionResults.subscribers = count || 0;
       logStep("Subscriber record deleted", { count });
     } catch (error) {
-      logStep("Error deleting subscriber", { error: error.message });
+      logStep("Error deleting subscriber", { error: (error as any).message });
     }
 
     // Delete user roles
@@ -212,7 +212,7 @@ serve(async (req) => {
       deletionResults.user_roles = count || 0;
       logStep("User roles deleted", { count });
     } catch (error) {
-      logStep("Error deleting user roles", { error: error.message });
+      logStep("Error deleting user roles", { error: (error as any).message });
     }
 
     // Delete from users table
@@ -226,7 +226,7 @@ serve(async (req) => {
       deletionResults.users = count || 0;
       logStep("User record deleted", { count });
     } catch (error) {
-      logStep("Error deleting user record", { error: error.message });
+      logStep("Error deleting user record", { error: (error as any).message });
     }
 
     // Finally, delete the user from Supabase Auth
@@ -235,8 +235,8 @@ serve(async (req) => {
       if (authDeleteError) throw authDeleteError;
       logStep("User deleted from Supabase Auth successfully");
     } catch (authError) {
-      logStep("Error deleting user from Auth", { error: authError.message });
-      throw new Error(`Failed to delete user from authentication: ${authError.message}`);
+      logStep("Error deleting user from Auth", { error: (authError as any).message });
+      throw new Error(`Failed to delete user from authentication: ${(authError as any).message}`);
     }
 
     // Log final completion

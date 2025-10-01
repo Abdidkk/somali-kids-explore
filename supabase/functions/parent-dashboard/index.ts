@@ -82,7 +82,7 @@ Deno.serve(async (req) => {
       p_event_type: 'parent_dashboard_error',
       p_user_id: null,
       p_metadata: JSON.stringify({
-        error: error.message
+        error: (error as any).message
       }),
       p_severity: 'ERROR'
     })
@@ -379,7 +379,7 @@ function generateModuleRecommendations(progressByCategory: any, childProfile: an
 }
 
 function generateLearningTips(learningStyle: string): string[] {
-  const tips = {
+  const tips: { [key: string]: string[] } = {
     'visuel': [
       'Brug farverige illustrationer og diagrammer',
       'Lav visuelle læringsmaps sammen',
@@ -402,7 +402,7 @@ function generateLearningTips(learningStyle: string): string[] {
     ]
   }
   
-  return tips[learningStyle] || tips['visuel']
+  return tips[learningStyle as keyof typeof tips] || tips['visuel']
 }
 
 function generateWeeklyGoals(overallProgress: number): string[] {

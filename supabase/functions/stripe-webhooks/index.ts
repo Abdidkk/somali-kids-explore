@@ -11,7 +11,7 @@ async function getCustomerEmail(stripe: Stripe, customerId: string): Promise<str
     console.log(`[EMAIL-DEBUG] ✅ Found customer email: ${email || 'null'}`);
     return email;
   } catch (error) {
-    console.log(`[EMAIL-DEBUG] ❌ Failed to fetch customer email:`, error.message);
+    console.log(`[EMAIL-DEBUG] ❌ Failed to fetch customer email:`, (error as any).message);
     return null;
   }
 }
@@ -183,9 +183,9 @@ serve(async (req) => {
         event = stripe.webhooks.constructEvent(payload, signature, webhookSecret);
         console.log(`[WEBHOOK-DEBUG] Signature verified successfully`);
       } catch (verificationError) {
-        console.log(`[WEBHOOK-DEBUG] ERROR: Signature verification failed: ${verificationError.message}`);
+        console.log(`[WEBHOOK-DEBUG] ERROR: Signature verification failed: ${(verificationError as any).message}`);
         await logEvent('stripe_webhook_verification_failed', { 
-          error: verificationError.message,
+          error: (verificationError as any).message,
           origin 
         }, 'ERROR');
         throw verificationError;
@@ -254,13 +254,13 @@ serve(async (req) => {
       p_event_type: 'stripe_webhook_error',
       p_user_id: null,
       p_metadata: { 
-        error: error.message,
+        error: (error as any).message,
         headers: Object.fromEntries(req.headers.entries())
       },
       p_severity: 'ERROR'
     });
 
-    return new Response(`Webhook Error: ${error.message}`, { 
+    return new Response(`Webhook Error: ${(error as any).message}`, { 
       status: 400,
       headers: corsHeaders 
     });

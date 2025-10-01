@@ -87,7 +87,7 @@ Deno.serve(async (req) => {
       p_event_type: 'learning_module_error',
       p_user_id: null,
       p_metadata: JSON.stringify({
-        error: error.message
+        error: (error as any).message
       }),
       p_severity: 'ERROR'
     })

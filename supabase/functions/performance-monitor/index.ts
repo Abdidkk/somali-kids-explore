@@ -96,7 +96,7 @@ serve(async (req) => {
       p_event_type: 'performance_monitor_error',
       p_user_id: null,
       p_metadata: {
-        error: error.message,
+        error: (error as any).message,
         route: new URL(req.url).pathname
       },
       p_severity: 'ERROR',

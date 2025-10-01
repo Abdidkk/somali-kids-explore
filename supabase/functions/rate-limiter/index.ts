@@ -110,7 +110,7 @@ serve(async (req) => {
     await supabase.rpc('log_event', {
       p_event_type: 'rate_limiter_error',
       p_user_id: null,
-      p_metadata: { error: error.message },
+      p_metadata: { error: (error as any).message },
       p_severity: 'ERROR',
       p_ip_address: ip,
       p_user_agent: userAgent

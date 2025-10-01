@@ -71,8 +71,19 @@ serve(async (req) => {
     
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    const { priceId, planName, billingInterval = "monthly", numKids = 0, childrenOnly = false } = await req.json();
-    logStep("Request data received", { priceId, planName, billingInterval, numKids, childrenOnly });
+    const requestBody = await req.json();
+    const { priceId, planName, numKids = 0, childrenOnly = false } = requestBody;
+    
+    // FORCE MONTHLY BILLING - ignore any yearly selections from UI
+    const billingInterval = "monthly";
+    logStep("Request data received - FORCING MONTHLY BILLING", { 
+      priceId, 
+      planName, 
+      requestedInterval: requestBody.billingInterval,
+      forcedInterval: billingInterval,
+      numKids, 
+      childrenOnly 
+    });
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { 
       apiVersion: "2023-10-16" 
@@ -134,36 +145,42 @@ serve(async (req) => {
 
     // Only add trial period for full subscriptions, not for children-only purchases
     if (!childrenOnly) {
-      // Calculate precise 24-hour trial end in Danish timezone
-      const danishNow = new Date().toLocaleString("en-US", {timeZone: "Europe/Copenhagen"});
-      const trialEndDanish = new Date(danishNow);
-      trialEndDanish.setHours(trialEndDanish.getHours() + 24);
-      const trialEndUtc = new Date(trialEndDanish.toLocaleString("en-US", {timeZone: "UTC"}));
+      // AUTOMATIC 24-HOUR TRIAL - Calculate precise end time in Danish timezone
+      const now = new Date();
+      const danishOffset = 1 * 60 * 60 * 1000; // CET/CEST offset in milliseconds
+      const trialEndLocal = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Add 24 hours
       
       sessionConfig.subscription_data = {
         trial_period_days: 1,
       };
       
-      // Store precise trial end time in subscriber record
+      // Store precise trial end time in subscriber record - ENSURE it's always set
       try {
         await supabaseService.from('subscribers').upsert({
           email: user.email,
           user_id: user.id,
           subscribed: false,
-          trial_end: trialEndUtc.toISOString(),
-          trial_end_local: trialEndDanish.toISOString(),
+          trial_end: trialEndLocal.toISOString(), // Store as UTC
+          trial_end_local: trialEndLocal.toISOString(), // Store same time for Danish local reference
           status: 'trial',
+          billing_interval: 'monthly', // FORCE MONTHLY
+          subscription_tier: planName,
+          num_kids: numKids,
           updated_at: new Date().toISOString(),
         }, { onConflict: 'email' });
-        logStep("Updated subscriber trial end to 24 hours from Danish time", { 
-          trialEndDanish: trialEndDanish.toISOString(), 
-          trialEndUtc: trialEndUtc.toISOString() 
+        
+        logStep("AUTOMATIC 24-HOUR TRIAL SET", { 
+          trialStart: now.toISOString(),
+          trialEnd: trialEndLocal.toISOString(),
+          durationHours: 24,
+          billingInterval: 'monthly'
         });
       } catch (error) {
         console.error('Failed to update trial end time:', error);
+        logStep("ERROR setting trial time", { error: (error as any).message });
       }
       
-      logStep("Added 24-hour trial period for full subscription");
+      logStep("Added 24-hour trial period for MONTHLY subscription");
     } else {
       logStep("Skipping trial period for children-only purchase");
     }
