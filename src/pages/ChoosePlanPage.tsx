@@ -198,7 +198,7 @@ const ChoosePlanPage = () => {
               <div className="mt-4 text-center">
                 <p className="text-sm text-gray-600">
                   Ekstra omkostning: <span className="font-semibold">
-                    {numKids * 15} kr/måned eller {numKids * 135} kr/år
+                    {numKids * 15} kr/måned
                   </span>
                 </p>
               </div>
@@ -206,7 +206,7 @@ const ChoosePlanPage = () => {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="flex justify-center max-w-2xl mx-auto">
           {plans.map((plan) => (
             <Card 
               key={plan.name} 
