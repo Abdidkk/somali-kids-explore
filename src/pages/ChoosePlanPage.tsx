@@ -16,7 +16,7 @@ const ChoosePlanPage = () => {
   const { subscribed, billingInterval } = useSubscription();
   const navigate = useNavigate();
 
-  const plans = [
+  const allPlans = [
     {
       name: "Månedlig",
       price: 45,
@@ -48,6 +48,9 @@ const ChoosePlanPage = () => {
       savings: 135,
     },
   ];
+
+  // Only show monthly plan
+  const plans = allPlans.filter(plan => plan.billingInterval === "monthly");
 
   const handleSubscribe = async (priceId: string, planName: string, billingInterval: string) => {
     if (!user) {
