@@ -398,12 +398,12 @@ const SubscriptionStatus = () => {
 
           {/* Show urgent trial countdown in compact view */}
           {status === 'trial' && !subscribed && trialTimeLeft && isUrgent() && (
-            <div className="border rounded-lg p-3 bg-red-50 border-red-200">
-              <p className="font-semibold text-red-800 text-sm">
-                ⚠️ Prøveperioden udløber snart!
+            <div className="border rounded-lg p-3 bg-blue-50 border-blue-200">
+              <p className="font-semibold text-blue-800 text-sm">
+                🎉 Du er i din gratis prøveperiode – betaling sker automatisk efter udløb
               </p>
-              <p className="text-sm text-red-700 mt-1">
-                {trialTimeLeft}
+              <p className="text-sm text-blue-700 mt-1 font-medium">
+                Tid tilbage: {trialTimeLeft}
               </p>
             </div>
           )}
@@ -433,20 +433,13 @@ const SubscriptionStatus = () => {
             {/* Non-urgent trial countdown in expanded view */}
             {status === 'trial' && !subscribed && trialTimeLeft && !isUrgent() && (
               <div className="border rounded-lg p-4 bg-blue-50 border-blue-200">
-                <div className="space-y-3">
-                  <div>
-                    <p className="font-semibold text-blue-800">
-                      🎉 Du er i din gratis prøveperiode
-                    </p>
-                    <p className="text-sm mt-1 text-blue-700">
-                      {trialTimeLeft}
-                    </p>
-                  </div>
-                  <div className="p-3 rounded-lg border bg-blue-100 border-blue-300">
-                    <p className="text-sm font-medium flex items-center gap-2 text-blue-800">
-                      💳 Automatisk betaling sker når prøveperioden udløber
-                    </p>
-                  </div>
+                <div className="space-y-2">
+                  <p className="font-semibold text-blue-800">
+                    🎉 Du er i din gratis prøveperiode – betaling sker automatisk efter udløb
+                  </p>
+                  <p className="text-sm font-medium text-blue-700">
+                    Tid tilbage: {trialTimeLeft}
+                  </p>
                 </div>
               </div>
             )}
