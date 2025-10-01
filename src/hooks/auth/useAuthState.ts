@@ -196,6 +196,32 @@ async function ensureUserProfile(user: User) {
     if (upsertError) {
       console.error('Error upserting user:', upsertError);
     }
+
+    // Create subscriber record with 24-hour trial for new users
+    const trialEnd = new Date();
+    trialEnd.setHours(trialEnd.getHours() + 24);
+
+    const { error: subscriberError } = await supabase
+      .from('subscribers')
+      .upsert(
+        {
+          user_id: user.id,
+          email: user.email || '',
+          subscribed: false,
+          status: 'trial',
+          trial_end: trialEnd.toISOString(),
+          trial_end_local: trialEnd.toISOString(),
+          subscription_tier: null,
+          subscription_end: null,
+          billing_interval: 'monthly',
+          num_kids: 0
+        },
+        { onConflict: 'email', ignoreDuplicates: true }
+      );
+
+    if (subscriberError) {
+      console.error('Error creating subscriber trial:', subscriberError);
+    }
   } catch (error) {
     console.error('Error in ensureUserProfile:', error);
   }

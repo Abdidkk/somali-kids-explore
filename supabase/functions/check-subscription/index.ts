@@ -75,11 +75,19 @@ serve(async (req) => {
     }
 
     if (!existing) {
-      logStep('No subscriber row found, creating default');
+      logStep('No subscriber row found, creating 24-hour trial');
+      
+      // Create 24-hour trial for new users
+      const trialEnd = new Date();
+      trialEnd.setHours(trialEnd.getHours() + 24);
+      
       await supabaseService.from('subscribers').upsert({
         email: user.email,
         user_id: user.id,
         subscribed: false,
+        status: 'trial',
+        trial_end: trialEnd.toISOString(),
+        trial_end_local: trialEnd.toISOString(),
         subscription_tier: null,
         subscription_end: null,
         billing_interval: 'monthly',
@@ -90,6 +98,7 @@ serve(async (req) => {
       return new Response(JSON.stringify({
         subscribed: false,
         inTrial: true,
+        status: 'trial',
         subscription_tier: null,
         subscription_end: null,
         billing_interval: 'monthly',
