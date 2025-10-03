@@ -31,7 +31,7 @@ export default function AlphabetPrototype({ letter }: Props) {
         newBadges.push("Første bogstav");
         toast({
           title: "Tillykke!",
-          description: "Du har sporet dit første bogstav og modtaget din første badge 🎉",
+          description: "Du har sporet dit første bogstav",
           duration: 3500,
           className: "bg-green-50",
         });
@@ -40,7 +40,15 @@ export default function AlphabetPrototype({ letter }: Props) {
         newBadges.push("5 bogstaver");
         toast({
           title: "Sejt!",
-          description: "Du har sporet 5 bogstaver og får en stjerne ⭐️",
+          description: "Du har sporet 5 bogstaver",
+          duration: 3500,
+        });
+      }
+      if (newCount === 9 && !badges.includes("9 bogstaver")) {
+        newBadges.push("9 bogstaver");
+        toast({
+          title: "Sejt!",
+          description: "Sejt, blive ved med øve sporing af bogstaverne",
           duration: 3500,
         });
       }

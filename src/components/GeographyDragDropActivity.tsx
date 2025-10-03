@@ -77,40 +77,41 @@ export default function GeographyDragDropActivity({ onBack, selectedChild }: Pro
         const audio = new Audio(item.audio);
         audio.play()
         .then(() => {
-            console.log("Audio played successfully");
+            console.log("/feedback/sifiicanyuusamaysay.mp3");
         })
         .catch((error) => {
-            console.error("Error playing audio:", error);
+            console.error("/feedback/sifiicanyuusamaysay.mp3", error);
         });
     }
 }; 
 
-  const playSuccessSound = () => {
-    const audio = new Audio('/feedback/sifiicanyuusamaysay.mp3');
-    audio.play().catch(() => {
-      console.error('Error playing success audio, using fallback');
-      // Fallback til syntetisk applaus hvis filen ikke findes
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-      const audioContext = new AudioContextClass();
-      
-      const duration = 2;
-      const sampleRate = audioContext.sampleRate;
-      const frameCount = sampleRate * duration;
-      const arrayBuffer = audioContext.createBuffer(1, frameCount, sampleRate);
-      const channelData = arrayBuffer.getChannelData(0);
-      
-      for (let i = 0; i < frameCount; i++) {
-        const time = i / sampleRate;
-        const envelope = Math.exp(-time * 2) * (0.5 + 0.5 * Math.sin(time * 20));
-        channelData[i] = (Math.random() * 2 - 1) * envelope * 0.3;
-      }
-      
-      const source = audioContext.createBufferSource();
-      source.buffer = arrayBuffer;
-      source.connect(audioContext.destination);
-      source.start();
-    });
-  };
+const playSuccessSound = () => {
+  const audio = new Audio('/feedback/sifiicanyuusamaysay.mp3');
+  audio.play().catch(() => {
+    console.error('Error playing success audio, using fallback');
+    // Fallback til syntetisk applaus hvis filen ikke findes
+    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    const audioContext = new AudioContextClass();
+    
+    const duration = 2;
+    const sampleRate = audioContext.sampleRate;
+    const frameCount = sampleRate * duration;
+    const arrayBuffer = audioContext.createBuffer(1, frameCount, sampleRate);
+    const channelData = arrayBuffer.getChannelData(0);
+    
+    for (let i = 0; i < frameCount; i++) {
+      const time = i / sampleRate;
+      const envelope = Math.exp(-time * 2) * (0.5 + 0.5 * Math.sin(time * 20));
+      channelData[i] = (Math.random() * 2 - 1) * envelope * 0.3;
+    }
+    
+    const source = audioContext.createBufferSource();
+    source.buffer = arrayBuffer;
+    source.connect(audioContext.destination);
+    source.start();
+  });
+};
+
 
   const handleDragStart = (e: React.DragEvent, item: any) => {
     e.dataTransfer.setData("text/plain", item.somali);
@@ -143,6 +144,7 @@ export default function GeographyDragDropActivity({ onBack, selectedChild }: Pro
     const isCorrect = correctMatches.length === items.length;
     
     if (isCorrect) {
+      playSuccessSound();
       playSuccessSound();
       toast({
         title: "Fantastisk! 🎉",

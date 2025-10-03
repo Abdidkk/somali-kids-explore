@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Volume2, Star } from "lucide-react";
@@ -69,6 +68,17 @@ const KropsdeleGuessActivity: React.FC<KropsdeleGuessActivityProps> = ({ onBack 
     });
   };
 
+  const playErrorSound = () => {
+    const audio = new Audio('/feedback/waa-qalad.mp3');
+    audio.play().catch(() => {
+      // Fallback til speech synthesis hvis filen ikke findes
+      const utterance = new SpeechSynthesisUtterance('Waa qalad!');
+      utterance.lang = 'so-SO';
+      utterance.rate = 0.8;
+      speechSynthesis.speak(utterance);
+    });
+  };
+
   // Drag and Drop handlers
   const handleDragStart = (e: React.DragEvent, itemId: string) => {
     setDraggedItem(itemId);
@@ -128,6 +138,7 @@ const KropsdeleGuessActivity: React.FC<KropsdeleGuessActivityProps> = ({ onBack 
         generateQuestion();
       }, 2000);
     } else {
+      playErrorSound(); // <-- Ny linje tilføjet her!
       // Show result for wrong answer, then allow retry
       setTimeout(() => {
         setShowResult(false);
@@ -337,3 +348,4 @@ const getDropZonePosition = (bodyPartId: string): string => {
 };
 
 export default KropsdeleGuessActivity;
+
