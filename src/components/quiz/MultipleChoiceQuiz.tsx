@@ -146,12 +146,39 @@ export default function MultipleChoiceQuiz({
     } catch {}
   };
 
+  const playSuccessSound = () => {
+    const audio = new Audio('/feedback/waa-sax.mp3');
+    audio.play().catch(() => {
+      const utterance = new SpeechSynthesisUtterance('Waa sax!');
+      utterance.lang = 'so-SO';
+      utterance.rate = 0.8;
+      window.speechSynthesis.speak(utterance);
+    });
+  };
+  
+  const playErrorSound = () => {
+    const audio = new Audio('/feedback/waa-qalad.mp3');
+    audio.play().catch(() => {
+      const utterance = new SpeechSynthesisUtterance('Waa qalad!');
+      utterance.lang = 'so-SO';
+      utterance.rate = 0.8;
+      window.speechSynthesis.speak(utterance);
+    });
+  };
+  
+
   const handleSelect = (id: string) => {
     if (showResult) return;
     setSelected(id);
     setShowResult(true);
-    if (id === q.correctId) setScore((s) => s + 1);
-
+    
+    if (id === q.correctId) {
+      setScore((s) => s + 1);
+      playSuccessSound(); // <-- Tilføj her
+    } else {
+      playErrorSound(); // <-- Tilføj her
+    }
+  
     if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
     timeoutRef.current = window.setTimeout(() => {
       if (!isLast) {
@@ -161,6 +188,7 @@ export default function MultipleChoiceQuiz({
       }
     }, 1500);
   };
+  
 
   // Save once when complete
   useEffect(() => {

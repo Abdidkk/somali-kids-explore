@@ -77,10 +77,10 @@ export default function GeographyDragDropActivity({ onBack, selectedChild }: Pro
         const audio = new Audio(item.audio);
         audio.play()
         .then(() => {
-            console.log("/feedback/sifiicanyuusamaysay.mp3");
+            console.log("");
         })
         .catch((error) => {
-            console.error("/feedback/sifiicanyuusamaysay.mp3", error);
+            console.error("", error);
         });
     }
 }; 

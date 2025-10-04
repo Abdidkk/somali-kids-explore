@@ -77,6 +77,27 @@ export default function ColorsQuizActivity({ onBack }: ColorsQuizActivityProps) 
     }
   };
 
+  const playSuccessSound = () => {
+    const audio = new Audio('/feedback/waa-sax.mp3');
+    audio.play().catch(() => {
+      const utterance = new SpeechSynthesisUtterance('Waa sax!');
+      utterance.lang = 'so-SO';
+      utterance.rate = 0.8;
+      speechSynthesis.speak(utterance);
+    });
+  };
+  
+  const playErrorSound = () => {
+    const audio = new Audio('/feedback/waa-qalad.mp3');
+    audio.play().catch(() => {
+      const utterance = new SpeechSynthesisUtterance('Waa qalad!');
+      utterance.lang = 'so-SO';
+      utterance.rate = 0.8;
+      speechSynthesis.speak(utterance);
+    });
+  };
+  
+
   const handleAnswerSelect = (answer: string) => {
     const q = questions[currentQuestion];
     setSelectedAnswer(answer);
@@ -85,6 +106,13 @@ export default function ColorsQuizActivity({ onBack }: ColorsQuizActivityProps) 
     if (answer === q.correctAnswer) {
       setScore((prev) => prev + 1); // funktionel update
     }
+
+    if (answer === q.correctAnswer) {
+      setScore((prev) => prev + 1);
+      playSuccessSound(); // <-- Tilføj her
+    } else {
+      playErrorSound(); // <-- Tilføj her
+    }    
 
     // Gå videre efter 1.5s
     if (timeoutRef.current) window.clearTimeout(timeoutRef.current);

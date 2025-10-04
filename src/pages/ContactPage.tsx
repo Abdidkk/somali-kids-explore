@@ -1,36 +1,16 @@
-
-import React, { useState } from "react";
+import React from "react";
+import { useForm, ValidationError } from "@formspree/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/hooks/use-toast";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const primary = "#4CA6FE";
 
 export default function ContactPage() {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [sending, setSending] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSending(true);
-
-    setTimeout(() => {
-      setSending(false);
-      setForm({ name: "", email: "", message: "" });
-      toast({
-        title: "Besked sendt!",
-        description: "Tak for din henvendelse. Vi vender tilbage hurtigst muligt.",
-      });
-    }, 1200);
-  };
+  const [state, handleSubmit] = useForm("mvgwqplg");
 
   return (
     <div className="bg-gradient-to-b from-blue-50 via-white to-white min-h-screen py-12 px-4 flex flex-col items-center">
@@ -64,61 +44,77 @@ export default function ContactPage() {
         {/* Kontaktformular */}
         <Card className="border-0 shadow-lg">
           <CardContent className="py-8 px-8">
-            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-              <div>
-                <label htmlFor="name" className="block text-gray-800 font-medium mb-1">
-                  Navn
-                </label>
-                <Input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  placeholder="Dit navn"
-                  value={form.name}
-                  onChange={handleChange}
-                  className="bg-blue-50 focus:bg-white"
-                />
+            {state.succeeded ? (
+              <div className="text-center py-8">
+                <h3 className="text-2xl font-bold text-green-600 mb-2">Tak for din besked! 🎉</h3>
+                <p className="text-gray-700">Vi vender tilbage hurtigst muligt.</p>
               </div>
-              <div>
-                <label htmlFor="email" className="block text-gray-800 font-medium mb-1">
-                  E-mail
-                </label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  placeholder="din@email.dk"
-                  value={form.email}
-                  onChange={handleChange}
-                  className="bg-blue-50 focus:bg-white"
-                />
-              </div>
-              <div>
-                <label htmlFor="message" className="block text-gray-800 font-medium mb-1">
-                  Besked
-                </label>
-                <Textarea
-                  id="message"
-                  name="message"
-                  required
-                  minLength={10}
-                  placeholder="Hvordan kan vi hjælpe dig?"
-                  value={form.message}
-                  onChange={handleChange}
-                  className="min-h-[90px] bg-blue-50 focus:bg-white"
-                />
-              </div>
-              <Button
-                type="submit"
-                variant="default"
-                className="mt-1 font-bold bg-blue-500 hover:bg-blue-600"
-                disabled={sending}
-              >
-                {sending ? "Sender..." : "Send besked"}
-              </Button>
-            </form>
+            ) : (
+              <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+                <div>
+                  <label htmlFor="https://formspree.io/f/mvgwqplg" className="block text-gray-800 font-medium mb-1">
+                    Navn
+                  </label>
+                  <Input
+                    id="name"
+                    name="name"
+                    type="text"
+                    required
+                    placeholder="Dit navn"
+                    className="bg-blue-50 focus:bg-white"
+                  />
+                  <ValidationError 
+                    prefix="Navn" 
+                    field="name"
+                    errors={state.errors}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="block text-gray-800 font-medium mb-1">
+                    E-mail
+                  </label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    placeholder="din@email.dk"
+                    className="bg-blue-50 focus:bg-white"
+                  />
+                  <ValidationError 
+                    prefix="E-mail" 
+                    field="email"
+                    errors={state.errors}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="message" className="block text-gray-800 font-medium mb-1">
+                    Besked
+                  </label>
+                  <Textarea
+                    id="message"
+                    name="message"
+                    required
+                    minLength={10}
+                    placeholder="Hvordan kan vi hjælpe dig?"
+                    className="min-h-[90px] bg-blue-50 focus:bg-white"
+                  />
+                  <ValidationError 
+                    prefix="Besked" 
+                    field="message"
+                    errors={state.errors}
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  variant="default"
+                  className="mt-1 font-bold bg-blue-500 hover:bg-blue-600"
+                  disabled={state.submitting}
+                >
+                  {state.submitting ? "Sender..." : "Send besked"}
+                </Button>
+              </form>
+            )}
           </CardContent>
         </Card>
       </div>
