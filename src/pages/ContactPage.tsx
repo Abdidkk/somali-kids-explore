@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 const primary = "#4CA6FE";
 
 export default function ContactPage() {
-  const [state, handleSubmit] = useForm("mvgwqplg");
+  const [state, handleSubmit] = useForm("xvgwqojy");
 
   return (
     <div className="bg-gradient-to-b from-blue-50 via-white to-white min-h-screen py-12 px-4 flex flex-col items-center">
@@ -52,7 +52,7 @@ export default function ContactPage() {
             ) : (
               <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                 <div>
-                  <label htmlFor="https://formspree.io/f/mvgwqplg" className="block text-gray-800 font-medium mb-1">
+                  <label htmlFor="name" className="block text-gray-800 font-medium mb-1">
                     Navn
                   </label>
                   <Input
