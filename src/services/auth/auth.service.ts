@@ -129,7 +129,7 @@ class AuthService {
       const { error } = await supabase.auth.resetPasswordForEmail(
         email.trim().toLowerCase(),
         {
-          redirectTo: 'https://jednyqvexkcrwxubxici.supabase.co/auth/v1/verify'
+          redirectTo: this.getRedirectUrl('/reset-password')
         }
       );
 

@@ -20,9 +20,21 @@ export default function ResetPasswordPage() {
   const [searchParams] = useSearchParams();
   const { loading, handleResetPassword, handleUpdatePassword } = useAuthOperations();
   
+  // Helper function to get tokens from both query params and URL hash
+  const getTokenFromUrl = (param: string): string | null => {
+    // Check query params first (for custom redirects)
+    const queryValue = searchParams.get(param);
+    if (queryValue) return queryValue;
+    
+    // Check URL hash (for Supabase hosted flow)
+    const hash = window.location.hash.substring(1); // Remove '#'
+    const hashParams = new URLSearchParams(hash);
+    return hashParams.get(param);
+  };
+  
   // Check if this is a password update flow (has access_token and type=recovery)
-  const accessToken = searchParams.get('access_token');
-  const type = searchParams.get('type');
+  const accessToken = getTokenFromUrl('access_token');
+  const type = getTokenFromUrl('type');
   const isPasswordUpdate = accessToken && type === 'recovery';
   
   const [email, setEmail] = useState("");
@@ -55,7 +67,7 @@ export default function ResetPasswordPage() {
       setSessionLoading(true);
       
       try {
-        const refreshToken = searchParams.get('refresh_token');
+        const refreshToken = getTokenFromUrl('refresh_token');
         
         if (accessToken && refreshToken) {
           const { error } = await supabase.auth.setSession({
