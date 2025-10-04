@@ -19,24 +19,24 @@ import SomaliFlag from "@/components/landing/SomaliFlag";
 export default function ResetPasswordPage() {
   const [searchParams] = useSearchParams();
   const { loading, handleResetPassword, handleUpdatePassword } = useAuthOperations();
-  
-  // Helper function to get tokens from both query params and URL hash
+
+  // Helper: read from query (?param=) OR hash (#param=)
   const getTokenFromUrl = (param: string): string | null => {
-    // Check query params first (for custom redirects)
     const queryValue = searchParams.get(param);
     if (queryValue) return queryValue;
-    
-    // Check URL hash (for Supabase hosted flow)
-    const hash = window.location.hash.substring(1); // Remove '#'
+
+    const hash = window.location.hash.startsWith('#')
+      ? window.location.hash.substring(1)
+      : window.location.hash;
     const hashParams = new URLSearchParams(hash);
     return hashParams.get(param);
   };
-  
+
   // Check if this is a password update flow (has access_token and type=recovery)
   const accessToken = getTokenFromUrl('access_token');
   const type = getTokenFromUrl('type');
-  const isPasswordUpdate = accessToken && type === 'recovery';
-  
+  const isPasswordUpdate = !!accessToken && type === 'recovery';
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -46,7 +46,7 @@ export default function ResetPasswordPage() {
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const emailValidation = validateInput(email, 255);
     if (!emailValidation.isValid) {
       alert(emailValidation.error || 'Ugyldig email');
@@ -63,24 +63,24 @@ export default function ResetPasswordPage() {
   useEffect(() => {
     const establishSession = async () => {
       if (!isPasswordUpdate) return;
-      
+
       setSessionLoading(true);
-      
+
       try {
         const refreshToken = getTokenFromUrl('refresh_token');
-        
+
         if (accessToken && refreshToken) {
           const { error } = await supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken
           });
-          
+
           if (error) {
             console.error('Session establishment error:', error);
             toast.error('Linket er udløbet eller ugyldigt. Anmod om et nyt link.');
             return;
           }
-          
+
           setSessionReady(true);
           toast.success('Klar til at opdatere adgangskode');
         } else {
@@ -95,21 +95,22 @@ export default function ResetPasswordPage() {
     };
 
     establishSession();
-  }, [isPasswordUpdate, accessToken, searchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPasswordUpdate, accessToken]); // searchParams er implicit via getTokenFromUrl()
 
   const handleNewPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!sessionReady) {
       toast.error('Vent venligst mens sessionen etableres...');
       return;
     }
-    
+
     if (password !== confirmPassword) {
       toast.error('Adgangskoderne stemmer ikke overens');
       return;
     }
-    
+
     if (password.length < 6) {
       toast.error('Adgangskoden skal være mindst 6 tegn');
       return;
@@ -122,8 +123,8 @@ export default function ResetPasswordPage() {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="p-4">
-          <Link 
-            to="/auth?tab=login" 
+          <Link
+            to="/auth?tab=login"
             className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
           >
             <ArrowLeft size={20} />
@@ -131,7 +132,7 @@ export default function ResetPasswordPage() {
             Tilbage til login
           </Link>
         </div>
-        
+
         <div className="flex-1 flex items-center justify-center p-4">
           <Card className="w-full max-w-md">
             <CardHeader className="text-center">
@@ -140,13 +141,13 @@ export default function ResetPasswordPage() {
               </div>
               <CardTitle className="text-2xl">E-mail sendt!</CardTitle>
               <CardDescription>
-                Vi har sendt et link til nulstilling af din adgangskode til {email}. 
+                Vi har sendt et link til nulstilling af din adgangskode til {email}.
                 Tjek din e-mail og følg instruktionerne.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-center">
-                <Link 
+                <Link
                   to="/auth?tab=login"
                   className="text-blue-600 hover:text-blue-800 hover:underline"
                 >
@@ -164,8 +165,8 @@ export default function ResetPasswordPage() {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="p-4">
-          <Link 
-            to="/auth?tab=login" 
+          <Link
+            to="/auth?tab=login"
             className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
           >
             <ArrowLeft size={20} />
@@ -173,7 +174,7 @@ export default function ResetPasswordPage() {
             Tilbage til login
           </Link>
         </div>
-        
+
         <div className="flex-1 flex items-center justify-center p-4">
           <Card className="w-full max-w-md">
             <CardHeader className="text-center">
@@ -206,7 +207,7 @@ export default function ResetPasswordPage() {
                       disabled={!sessionReady}
                     />
                   </div>
-                  
+
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <Lock size={20} className="text-gray-400" />
@@ -224,7 +225,7 @@ export default function ResetPasswordPage() {
                       disabled={!sessionReady}
                     />
                   </div>
-                  
+
                   <Button
                     type="submit"
                     size="lg"
@@ -233,7 +234,7 @@ export default function ResetPasswordPage() {
                   >
                     {loading ? "Opdaterer..." : sessionReady ? "Opdater adgangskode" : "Venter på session..."}
                   </Button>
-                  
+
                   {!sessionReady && !sessionLoading && (
                     <p className="text-sm text-red-600 text-center">
                       Linket er muligvis udløbet. <Link to="/reset-password" className="underline">Anmod om nyt link</Link>
@@ -251,8 +252,8 @@ export default function ResetPasswordPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="p-4">
-        <Link 
-          to="/auth?tab=login" 
+        <Link
+          to="/auth?tab=login"
           className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
         >
           <ArrowLeft size={20} />
@@ -260,7 +261,7 @@ export default function ResetPasswordPage() {
           Tilbage til login
         </Link>
       </div>
-      
+
       <div className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
@@ -286,7 +287,7 @@ export default function ResetPasswordPage() {
                   autoComplete="email"
                 />
               </div>
-              
+
               <Button
                 type="submit"
                 size="lg"
