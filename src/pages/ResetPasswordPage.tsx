@@ -43,6 +43,7 @@ export default function ResetPasswordPage() {
   const [emailSent, setEmailSent] = useState(false);
   const [sessionLoading, setSessionLoading] = useState(false);
   const [sessionReady, setSessionReady] = useState(false);
+  const [urlError, setUrlError] = useState<string | null>(null);
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,6 +59,22 @@ export default function ResetPasswordPage() {
       setEmailSent(true);
     }
   };
+
+  // Parse error from URL hash
+  useEffect(() => {
+    const errorCode = getTokenFromUrl('error_code');
+    const errorDescription = getTokenFromUrl('error_description');
+    
+    if (errorCode) {
+      const errorMessages: Record<string, string> = {
+        'otp_expired': 'Linket er udløbet eller er allerede brugt',
+        'access_denied': 'Adgang nægtet',
+      };
+      
+      const message = errorMessages[errorCode] || errorDescription || 'Der opstod en fejl';
+      setUrlError(message);
+    }
+  }, []);
 
   // Handle session establishment from URL parameters
   useEffect(() => {
@@ -83,6 +100,9 @@ export default function ResetPasswordPage() {
 
           setSessionReady(true);
           toast.success('Klar til at opdatere adgangskode');
+          
+          // Clear URL hash after successful session establishment
+          window.history.replaceState(null, "", window.location.pathname + window.location.search);
         } else {
           toast.error('Manglende tokens i URL. Anmod om et nyt link.');
         }
@@ -161,7 +181,10 @@ export default function ResetPasswordPage() {
     );
   }
 
-  if (isPasswordUpdate) {
+  // Show password update form if we have tokens OR session is ready
+  const shouldShowUpdateForm = isPasswordUpdate || sessionReady;
+
+  if (shouldShowUpdateForm) {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="p-4">
@@ -271,6 +294,13 @@ export default function ResetPasswordPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {urlError && (
+              <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-800 font-medium mb-2">{urlError}</p>
+                <p className="text-sm text-red-700">Anmod venligst om et nyt link nedenfor.</p>
+              </div>
+            )}
+            
             <form onSubmit={handleForgotPassword} className="space-y-4">
               <div>
                 <div className="flex items-center gap-2 mb-1">
