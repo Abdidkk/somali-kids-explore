@@ -87,7 +87,7 @@ export default function GeographyDragDropActivity({ onBack, selectedChild }: Pro
 }; 
 
 const playSuccessSound = () => {
-  const audio = new Audio('/feedback/sifiicanyuusamaysay.mp3');
+  const audio = new Audio('/feedback/sifiicanayuusamaysay.mp3');
   audio.play().catch(() => {
     console.error('Error playing success audio, using fallback');
     // Fallback til syntetisk applaus hvis filen ikke findes

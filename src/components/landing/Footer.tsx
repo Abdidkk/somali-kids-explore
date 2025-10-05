@@ -22,7 +22,6 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Support</h3>
             <ul className="space-y-2">
               <li><Link to="/kontakt" className="text-gray-100 hover:text-white hover:underline">FAQ</Link></li>
-              <li><Link to="/kontakt" className="text-gray-100 hover:text-white hover:underline">Kontakt Os</Link></li>
               <li><Link to="/privatlivspolitik" className="text-gray-100 hover:text-white hover:underline">Privatlivspolitik</Link></li>
               <li><Link to="/servicevilkaar" className="text-gray-100 hover:text-white hover:underline">Servicevilkår</Link></li>
             </ul>
