@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { DollarSign, CalendarCheck, BadgePercent } from "lucide-react";
+import { CalendarCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function PricingPage() {
@@ -19,9 +19,9 @@ export default function PricingPage() {
       </p>
     </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-7 w-full max-w-3xl">
+    <div className="flex justify-center w-full max-w-3xl">
       {/* Månedlig plan */}
-      <Card className="bg-blue-50 border-0 shadow-lg flex flex-col justify-between hover:shadow-xl transition-all">
+      <Card className="bg-blue-50 border-0 shadow-lg flex flex-col justify-between hover:shadow-xl transition-all max-w-md w-full">
         <CardHeader>
           <div className="flex items-center gap-2 text-blue-600">
             <CalendarCheck className="w-6 h-6" />
@@ -49,39 +49,6 @@ export default function PricingPage() {
           </Link>
         </CardFooter>
       </Card>
-
-      {/* Årlig plan */}
-      <Card className="bg-blue-100 border-2 border-blue-500 shadow-xl flex flex-col justify-between hover:shadow-2xl transition-all">
-        <CardHeader>
-          <div className="flex items-center gap-2 text-orange-500 font-semibold uppercase tracking-wide">
-            <BadgePercent className="w-5 h-5" />
-            Spar 25%
-          </div>
-          <div className="flex items-center gap-2 mt-2">
-            <CardTitle className="text-xl font-semibold text-blue-600">Årlig betaling</CardTitle>
-          </div>
-          <div className="mt-3">
-            <span className="text-3xl font-bold">405 kr</span>
-            <span className="text-lg text-gray-600 ml-1">/år</span>
-          </div>
-          <CardDescription className="mt-2">Tilsvarende 33,75 kr/md. Samme fulde adgang som månedlig.</CardDescription>
-        </CardHeader>
-        <CardContent className="flex-1">
-          <ul className="text-sm text-gray-700 space-y-1">
-            <li>✔️ 24 timers gratis prøveperiode</li>
-            <li>✔️ Alle fordele fra månedlig plan</li>
-            <li>✔️ Bedste værdi – spar 25%</li>
-            <li>✔️ Inkluderer 1 børneprofil</li>
-            <li>➕ Ekstra børneprofil: <b>135 kr/år</b></li>
-            <li>✔️ Opsig når som helst</li>
-          </ul>
-        </CardContent>
-        <CardFooter>
-          <Link className="text-blue-600 underline text-sm hover:font-semibold" to="/priser/mere-info">
-            Læs mere
-          </Link>
-        </CardFooter>
-      </Card>
     </div>
 
     <div className="mt-10 w-full max-w-2xl">
@@ -91,7 +58,7 @@ export default function PricingPage() {
             <b>Bemærk:</b> Alle abonnementer starter med 24 timers gratis prøveperiode uden kreditkort.
           </div>
           <div>
-            Hver ekstra børneprofil koster <b>15 kr/md.</b> (eller <b>135 kr/år</b> ved årlig betaling).
+            Hver ekstra børneprofil koster <b>15 kr/md.</b>
           </div>
           <div className="text-xs text-gray-500 mt-2">
             Kontakt os på kontakt@dugsi.dk hvis du har brug for at tilføje mange børn eller har særlige behov.
@@ -101,3 +68,4 @@ export default function PricingPage() {
     </div>
   </div>;
 }
+
