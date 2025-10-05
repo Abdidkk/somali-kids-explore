@@ -39,6 +39,7 @@ export default function CalendarDragDropActivity({ onBack, selectedChild }: Prop
         total: currentItems.length,
         selectedChild,
       });
+      playSuccessSound();
     }
   }, [weekdayOrder, monthOrder, tab, selectedChild]);
 
@@ -68,30 +69,31 @@ export default function CalendarDragDropActivity({ onBack, selectedChild }: Prop
     }
   }; 
 
-  const playApplauseSound = () => {
-    // Create applause sound effect using Web Audio API
-    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-    const audioContext = new AudioContextClass();
-    
-    // Create a simple applause-like sound effect
-    const duration = 2; // 2 seconds
-    const sampleRate = audioContext.sampleRate;
-    const frameCount = sampleRate * duration;
-    const arrayBuffer = audioContext.createBuffer(1, frameCount, sampleRate);
-    const channelData = arrayBuffer.getChannelData(0);
-    
-    // Generate applause-like noise
-    for (let i = 0; i < frameCount; i++) {
-      // Create bursts of noise to simulate clapping
-      const time = i / sampleRate;
-      const envelope = Math.exp(-time * 2) * (0.5 + 0.5 * Math.sin(time * 20));
-      channelData[i] = (Math.random() * 2 - 1) * envelope * 0.3;
-    }
-    
-    const source = audioContext.createBufferSource();
-    source.buffer = arrayBuffer;
-    source.connect(audioContext.destination);
-    source.start();
+  const playSuccessSound = () => {
+    const audio = new Audio('/feedback/sifiicanyuusamaysay.mp3');
+    audio.play().catch(() => {
+      console.error('Error playing success audio, using fallback');
+      // Fallback til syntetisk applaus hvis filen ikke findes
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      const audioContext = new AudioContextClass();
+      
+      const duration = 2;
+      const sampleRate = audioContext.sampleRate;
+      const frameCount = sampleRate * duration;
+      const arrayBuffer = audioContext.createBuffer(1, frameCount, sampleRate);
+      const channelData = arrayBuffer.getChannelData(0);
+      
+      for (let i = 0; i < frameCount; i++) {
+        const time = i / sampleRate;
+        const envelope = Math.exp(-time * 2) * (0.5 + 0.5 * Math.sin(time * 20));
+        channelData[i] = (Math.random() * 2 - 1) * envelope * 0.3;
+      }
+      
+      const source = audioContext.createBufferSource();
+      source.buffer = arrayBuffer;
+      source.connect(audioContext.destination);
+      source.start();
+    });
   };
 
   const handleDragStart = (e: React.DragEvent, item: { danish: string; somali: string }) => {
@@ -124,7 +126,7 @@ export default function CalendarDragDropActivity({ onBack, selectedChild }: Prop
     const isCorrect = currentOrder.every((item, idx) => item === correctOrder[idx]);
     
     if (isCorrect) {
-      playApplauseSound();
+      playSuccessSound();
       toast({
         title: "Fantastisk! 🎉",
         description: "Du har sat dem i korrekt rækkefølge!",

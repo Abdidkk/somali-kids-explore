@@ -50,6 +50,7 @@ export default function GeographyDragDropActivity({ onBack, selectedChild }: Pro
         total: items.length,
         selectedChild,
       });
+      playSuccessSound();
     }
   }, [continentOrder, countryOrder, natureOrder, tab, selectedChild]);
 
@@ -144,7 +145,6 @@ const playSuccessSound = () => {
     const isCorrect = correctMatches.length === items.length;
     
     if (isCorrect) {
-      playSuccessSound();
       playSuccessSound();
       toast({
         title: "Fantastisk! 🎉",
