@@ -268,9 +268,10 @@ serve(async (req) => {
 });
 
 async function handleCheckoutCompleted(supabase: any, stripe: Stripe, session: Stripe.Checkout.Session) {
-  const { user_id, tier, interval, plan_name, billing_interval, num_kids } = (session.metadata || {}) as any;
+  const { user_id, tier, interval, plan_name, billing_interval, num_kids, children_only, price_id, kid_price_id } = (session.metadata || {}) as any;
 
   console.log(`[CHECKOUT-DEBUG] 🛒 Processing checkout session: ${session.id}`);
+  console.log(`[CHECKOUT-DEBUG] Mode: ${session.mode}`);
   console.log(`[CHECKOUT-DEBUG] Customer ID: ${session.customer}`);
   console.log(`[CHECKOUT-DEBUG] Customer email in session: ${session.customer_email}`);
   console.log(`[CHECKOUT-DEBUG] Customer details email: ${session.customer_details?.email}`);
@@ -288,6 +289,120 @@ async function handleCheckoutCompleted(supabase: any, stripe: Stripe, session: S
   if (!user_id && !email && !customerId) {
     console.error('[CHECKOUT-DEBUG] ❌ Missing all identifiers in session - cannot process');
     return;
+  }
+
+  // Handle SETUP mode - create subscription with 24-hour trial
+  if (session.mode === 'setup' && !children_only) {
+    console.log(`[CHECKOUT-DEBUG] 🔧 SETUP MODE detected - creating scheduled subscription with 24-hour trial`);
+    
+    try {
+      // Get setup intent to retrieve payment method
+      const setupIntent = await stripe.setupIntents.retrieve(session.setup_intent as string);
+      const paymentMethodId = setupIntent.payment_method as string;
+      
+      console.log(`[CHECKOUT-DEBUG] Payment method: ${paymentMethodId}`);
+      
+      // Calculate 24-hour trial end in Danish time (UTC+1)
+      const now = new Date();
+      const danishNow = new Date(now.getTime() + 60 * 60 * 1000); // Add 1 hour for CET
+      const trialEnd24h = new Date(danishNow.getTime() + 24 * 60 * 60 * 1000); // Add 24 hours
+      const billingCycleAnchor = Math.floor(trialEnd24h.getTime() / 1000); // Unix timestamp
+      
+      console.log(`[CHECKOUT-DEBUG] 📅 Trial period:`);
+      console.log(`[CHECKOUT-DEBUG] - Start (Danish): ${danishNow.toISOString()}`);
+      console.log(`[CHECKOUT-DEBUG] - End (Danish): ${trialEnd24h.toISOString()}`);
+      console.log(`[CHECKOUT-DEBUG] - Billing cycle anchor: ${billingCycleAnchor}`);
+      
+      // Build subscription items
+      const subscriptionItems: any[] = [{ price: price_id, quantity: 1 }];
+      if (num_kids > 0 && kid_price_id) {
+        subscriptionItems.push({ price: kid_price_id, quantity: parseInt(num_kids, 10) });
+      }
+      
+      // Create scheduled subscription
+      const subscription = await stripe.subscriptions.create({
+        customer: customerId!,
+        items: subscriptionItems,
+        billing_cycle_anchor: billingCycleAnchor,
+        proration_behavior: 'none',
+        default_payment_method: paymentMethodId,
+        metadata: {
+          user_id,
+          plan_name,
+          billing_interval: billing_interval || 'monthly',
+          trial_start_danish: danishNow.toISOString(),
+          trial_end_danish: trialEnd24h.toISOString()
+        }
+      });
+      
+      console.log(`[CHECKOUT-DEBUG] ✅ Subscription created: ${subscription.id}`);
+      console.log(`[CHECKOUT-DEBUG] Status: ${subscription.status}`);
+      
+      // Update subscriber with trial info
+      const subscriberUpdateData = {
+        subscribed: false, // Will be true after first payment
+        status: 'trial',
+        trial_end: trialEnd24h.toISOString(),
+        trial_end_local: trialEnd24h.toISOString(),
+        subscription_tier: plan_name || 'Premium',
+        billing_interval: billing_interval || 'monthly',
+        num_kids: parseInt(num_kids || '0', 10),
+        stripe_subscription_id: subscription.id,
+        updated_at: new Date().toISOString(),
+      };
+
+      const updateSuccess = await findAndUpdateSubscriber(
+        supabase, 
+        stripe,
+        customerId, 
+        email, 
+        user_id,
+        subscriberUpdateData
+      );
+
+      if (!updateSuccess && email) {
+        console.log(`[CHECKOUT-DEBUG] 🆕 Creating new subscriber for trial`);
+        await supabase.from('subscribers').upsert({
+          email,
+          user_id: user_id || null,
+          stripe_customer_id: customerId,
+          ...subscriberUpdateData
+        }, { onConflict: 'email' });
+      }
+      
+      console.log(`[CHECKOUT-DEBUG] ✅ 24-hour trial activated successfully`);
+      
+      // Log event
+      await supabase.rpc('log_event', {
+        p_event_type: 'stripe_24h_trial_started',
+        p_user_id: user_id || null,
+        p_metadata: {
+          session_id: session.id,
+          subscription_id: subscription.id,
+          trial_start: danishNow.toISOString(),
+          trial_end: trialEnd24h.toISOString(),
+          plan_name,
+          num_kids
+        },
+        p_severity: 'INFO'
+      });
+      
+      return; // Exit early - setup mode handled
+    } catch (error) {
+      console.error('[CHECKOUT-DEBUG] ❌ Error creating scheduled subscription:', error);
+      
+      await supabase.rpc('log_event', {
+        p_event_type: 'stripe_setup_subscription_error',
+        p_user_id: user_id || null,
+        p_metadata: { 
+          error: (error as any).message,
+          session_id: session.id 
+        },
+        p_severity: 'ERROR'
+      });
+      
+      throw error;
+    }
   }
 
   try {

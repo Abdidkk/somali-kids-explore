@@ -124,12 +124,11 @@ serve(async (req) => {
       "https://preview--dugsi.lovable.app";
     logStep("Resolved origin for checkout URLs", { origin: originUrl });
 
-    // Build session configuration
+    // Build session configuration for SETUP MODE (not subscription mode)
     const sessionConfig: any = {
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
-      line_items: lineItems,
-      mode: "subscription",
+      mode: "setup",
       payment_method_types: ["card"],
       success_url: `${originUrl}/payment-success`,
       cancel_url: `${originUrl}/payment-cancel`,
@@ -139,48 +138,15 @@ serve(async (req) => {
         billing_interval: billingInterval,
         num_kids: numKids.toString(),
         children_only: childrenOnly.toString(),
+        price_id: priceId, // Store for webhook to create subscription later
+        kid_price_id: numKids > 0 ? "price_1SF8paHugRjwpvWt4l9nKvv8" : "",
       },
     };
 
-    // Only add trial period for full subscriptions, not for children-only purchases
+    // Setup mode doesn't create subscription immediately - webhook will handle it
+    // For now, just store metadata to indicate trial setup
     if (!childrenOnly) {
-      // AUTOMATIC 48-HOUR TRIAL
-      const now = new Date();
-      const trialEndLocal = new Date(now.getTime() + 48 * 60 * 60 * 1000); // Add 48 hours
-      
-      // Use trial_period_days to satisfy Stripe 48h minimum
-      sessionConfig.subscription_data = {
-        trial_period_days: 2,
-      };
-      logStep("Subscription data configured", { subscription_data: sessionConfig.subscription_data });
-
-      // Store precise trial end time in subscriber record - ENSURE it's always set
-      try {
-        await supabaseService.from('subscribers').upsert({
-          email: user.email,
-          user_id: user.id,
-          subscribed: false,
-          trial_end: trialEndLocal.toISOString(), // Store as UTC
-          trial_end_local: trialEndLocal.toISOString(), // Store same time for Danish local reference
-          status: 'trial',
-          billing_interval: 'monthly', // FORCE MONTHLY
-          subscription_tier: planName,
-          num_kids: numKids,
-          updated_at: new Date().toISOString(),
-        }, { onConflict: 'email' });
-        
-        logStep("AUTOMATIC 48-HOUR TRIAL SET", { 
-          trialStart: now.toISOString(),
-          trialEnd: trialEndLocal.toISOString(),
-          durationHours: 48,
-          billingInterval: 'monthly'
-        });
-      } catch (error) {
-        console.error('Failed to update trial end time:', error);
-        logStep("ERROR setting trial time", { error: (error as any).message });
-      }
-      
-      logStep("Added 48-hour trial period for MONTHLY subscription");
+      logStep("SETUP MODE - Subscription will be created by webhook with 24-hour trial");
     } else {
       logStep("Skipping trial period for children-only purchase");
     }
