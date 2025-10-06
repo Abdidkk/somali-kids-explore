@@ -150,8 +150,12 @@ serve(async (req) => {
       const danishOffset = 1 * 60 * 60 * 1000; // CET/CEST offset in milliseconds
       const trialEndLocal = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Add 24 hours
       
+      // Set trial_end using Unix timestamp (required by Stripe)
+      const trialEndTimestamp = Math.floor(Date.now() / 1000) + 86400; // 24 hours from now
+      
       sessionConfig.subscription_data = {
         trial_period_days: 1,
+        trial_end: trialEndTimestamp,
       };
       
       // Store precise trial end time in subscriber record - ENSURE it's always set

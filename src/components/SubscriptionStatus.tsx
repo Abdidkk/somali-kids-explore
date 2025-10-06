@@ -36,7 +36,6 @@ const SubscriptionStatus = () => {
   const [trialEndDate, setTrialEndDate] = useState<Date | null>(null);
   const [hasExistingPlan, setHasExistingPlan] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [cancelLoading, setCancelLoading] = useState(false);
   const { subscribed, inTrial, subscriptionTier, subscriptionEnd, status, checkSubscription } = useSubscription();
   const { session, user } = useAuth();
   const navigate = useNavigate();
@@ -212,60 +211,6 @@ const SubscriptionStatus = () => {
     }
   };
 
-  const handleCancelSubscription = async () => {
-    if (!session) {
-      toast({
-        title: "Fejl",
-        description: "Du skal være logget ind for at opsige dit abonnement",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setCancelLoading(true);
-    
-    try {
-      const { data, error } = await supabase.functions.invoke('cancel-subscription', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-
-      if (error) {
-        console.error('Error cancelling subscription:', error);
-        toast({
-          title: "Fejl",
-          description: "Kunne ikke opsige abonnement. Prøv igen senere.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      if (data?.success) {
-        toast({
-          title: "Abonnement opsagt",
-          description: data.message,
-        });
-        // Refresh subscription status
-        await checkSubscription();
-      } else {
-        toast({
-          title: "Fejl",
-          description: data?.error || "Der opstod en fejl ved opsigelse",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error('Error in handleCancelSubscription:', error);
-      toast({
-        title: "Fejl",
-        description: "Der opstod en fejl ved opsigelse af abonnement",
-        variant: "destructive",
-      });
-    } finally {
-      setCancelLoading(false);
-    }
-  };
 
   // Fetch trial end date and check if user has existing plan
   useEffect(() => {
@@ -467,69 +412,6 @@ const SubscriptionStatus = () => {
             )}
 
             <div className="space-y-3 pt-2">
-              {/* Cancel Subscription Button - show if subscribed or in trial */}
-              {(subscribed || inTrial) && (
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      variant="destructive"
-                      className="w-full bg-red-600 hover:bg-red-700"
-                      disabled={cancelLoading}
-                    >
-                      {cancelLoading ? (
-                        <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                      ) : (
-                        <>
-                          <UserX className="mr-2 h-4 w-4" />
-                          <span>Opsig abonnement</span>
-                        </>
-                      )}
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle className="flex items-center gap-2 text-red-600">
-                        <AlertTriangle className="h-5 w-5" />
-                        Opsig abonnement
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        {inTrial ? (
-                          <div className="space-y-2">
-                            <p>Du er i din gratis prøveperiode.</p>
-                            <p className="font-semibold text-orange-600">
-                              Hvis du opsiger nu, vil du ikke blive opkrævet, og adgang til læringsmodulet vil blive fjernet med det samme.
-                            </p>
-                          </div>
-                        ) : (
-                          <div className="space-y-2">
-                            <p>Dit abonnement vil blive opsagt.</p>
-                            <p className="font-semibold text-blue-600">
-                              Du vil have adgang indtil din næste faktureringsperiode, hvorefter adgang til læringsmodulet fjernes.
-                            </p>
-                          </div>
-                        )}
-                        <p className="mt-3 text-sm text-gray-600">
-                          Du kan altid genaktivere dit abonnement senere.
-                        </p>
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Annuller</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={handleCancelSubscription}
-                        disabled={cancelLoading}
-                        className="bg-red-600 hover:bg-red-700"
-                      >
-                        {cancelLoading ? (
-                          <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                        ) : null}
-                        Opsig abonnement
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              )}
-
               <Button
                 variant="outline"
                 onClick={handleManageSubscription}

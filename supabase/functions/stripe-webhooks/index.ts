@@ -540,6 +540,7 @@ async function handleSubscriptionDeleted(supabase: any, subscription: Stripe.Sub
   console.log(`[SUBSCRIPTION-DELETE] Processing subscription deletion: ${subscription.id}`);
   console.log(`[SUBSCRIPTION-DELETE] Customer ID: ${customerId}`);
   console.log(`[SUBSCRIPTION-DELETE] Status: ${subscription.status}`);
+  console.log(`[SUBSCRIPTION-DELETE] Cancelled reason: ${subscription.cancellation_details?.reason || 'unknown'}`);
   
   try {
     // Update subscriber status to unsubscribed
@@ -578,7 +579,9 @@ async function handleSubscriptionDeleted(supabase: any, subscription: Stripe.Sub
       p_metadata: {
         subscription_id: subscription.id,
         customer_id: subscription.customer,
-        canceled_at: subscription.canceled_at
+        canceled_at: subscription.canceled_at,
+        cancellation_reason: subscription.cancellation_details?.reason || 'unknown',
+        cancellation_comment: subscription.cancellation_details?.comment || null
       },
       p_severity: 'INFO'
     });

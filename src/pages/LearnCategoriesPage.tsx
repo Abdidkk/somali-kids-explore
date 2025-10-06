@@ -4,6 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useChildProfiles } from "@/hooks/useChildProfiles";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useNavigate } from "react-router-dom";
+import { Card, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle } from "lucide-react";
 import { PointsManager } from "@/utils/pointsManager";
 import { resolveChildProfileIdByName } from "@/utils/childProfile";
 import AlphabetModal from "@/components/AlphabetModal";
@@ -27,7 +31,8 @@ import QuizModal from "@/components/QuizModal";
 export default function LearnCategoriesPage() {
   const { user } = useAuth();
   const { childProfiles, loading: childProfilesLoading } = useChildProfiles();
-  const { subscribed } = useSubscription();
+  const { subscribed, status } = useSubscription();
+  const navigate = useNavigate();
   const [categorySettings, setCategorySettings] = useState(new Map());
   const [loading, setLoading] = useState(true);
   const [selectedChild, setSelectedChild] = useState<string>("");
@@ -323,7 +328,7 @@ export default function LearnCategoriesPage() {
         finishedCategories={childData.finishedCategories}
         lastCategory={childData.lastCategory}
         onCategorySelect={handleCategorySelect}
-        requiresSubscription={subscribed}
+        requiresSubscription={subscribed && status !== 'cancelled'}
       />
       
       <AlphabetModal 
