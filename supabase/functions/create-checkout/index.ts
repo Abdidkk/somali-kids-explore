@@ -109,8 +109,7 @@ serve(async (req) => {
       // Original logic for full subscriptions
       lineItems = [{ price: priceId, quantity: 1 }];
       if (numKids > 0) {
-        const kidPriceId = billingInterval === "monthly" ? 
-          "price_1RlZQVHugRjwpvWt7BKwjRTr" : "price_1RlZR3HugRjwpvWtv2fdRbkX";
+        const kidPriceId = "price_1SF8paHugRjwpvWt4l9nKvv8"; // 15 kr/month extra child
         lineItems.push({ price: kidPriceId, quantity: numKids });
       }
       logStep("Creating full subscription checkout", { basePrice: priceId, kidPrice: numKids > 0 ? (billingInterval === "monthly" ? "price_1RlZQVHugRjwpvWt7BKwjRTr" : "price_1RlZR3HugRjwpvWtv2fdRbkX") : null, numKids });
@@ -155,7 +154,6 @@ serve(async (req) => {
       
       sessionConfig.subscription_data = {
         trial_end: trialEndTimestamp,
-        trial_from_plan: false,
       };
       logStep("Subscription data configured", { subscription_data: sessionConfig.subscription_data });
 
