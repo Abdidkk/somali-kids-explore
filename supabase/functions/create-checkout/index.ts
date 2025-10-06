@@ -154,7 +154,6 @@ serve(async (req) => {
       const trialEndTimestamp = Math.floor(Date.now() / 1000) + 86400; // 24 hours from now
       
       sessionConfig.subscription_data = {
-        trial_period_days: 1,
         trial_end: trialEndTimestamp,
       };
       
