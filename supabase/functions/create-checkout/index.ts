@@ -112,7 +112,7 @@ serve(async (req) => {
         const kidPriceId = "price_1SF8paHugRjwpvWt4l9nKvv8"; // 15 kr/month extra child
         lineItems.push({ price: kidPriceId, quantity: numKids });
       }
-      logStep("Creating full subscription checkout", { basePrice: priceId, kidPrice: numKids > 0 ? (billingInterval === "monthly" ? "price_1RlZQVHugRjwpvWt7BKwjRTr" : "price_1RlZR3HugRjwpvWtv2fdRbkX") : null, numKids });
+      logStep("Creating full subscription checkout", { basePrice: priceId, kidPrice: numKids > 0 ? "price_1SF8paHugRjwpvWt4l9nKvv8" : null, numKids });
     }
 
     // Resolve origin with robust fallback
@@ -144,16 +144,13 @@ serve(async (req) => {
 
     // Only add trial period for full subscriptions, not for children-only purchases
     if (!childrenOnly) {
-      // AUTOMATIC 24-HOUR TRIAL - Calculate precise end time in Danish timezone
+      // AUTOMATIC 48-HOUR TRIAL
       const now = new Date();
-      const danishOffset = 1 * 60 * 60 * 1000; // CET/CEST offset in milliseconds
-      const trialEndLocal = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Add 24 hours
+      const trialEndLocal = new Date(now.getTime() + 48 * 60 * 60 * 1000); // Add 48 hours
       
-      // Set trial_end using Unix timestamp (required by Stripe)
-      const trialEndTimestamp = Math.floor(Date.now() / 1000) + 86400; // 24 hours from now
-      
+      // Use trial_period_days to satisfy Stripe 48h minimum
       sessionConfig.subscription_data = {
-        trial_end: trialEndTimestamp,
+        trial_period_days: 2,
       };
       logStep("Subscription data configured", { subscription_data: sessionConfig.subscription_data });
 
@@ -172,10 +169,10 @@ serve(async (req) => {
           updated_at: new Date().toISOString(),
         }, { onConflict: 'email' });
         
-        logStep("AUTOMATIC 24-HOUR TRIAL SET", { 
+        logStep("AUTOMATIC 48-HOUR TRIAL SET", { 
           trialStart: now.toISOString(),
           trialEnd: trialEndLocal.toISOString(),
-          durationHours: 24,
+          durationHours: 48,
           billingInterval: 'monthly'
         });
       } catch (error) {
@@ -183,7 +180,7 @@ serve(async (req) => {
         logStep("ERROR setting trial time", { error: (error as any).message });
       }
       
-      logStep("Added 24-hour trial period for MONTHLY subscription");
+      logStep("Added 48-hour trial period for MONTHLY subscription");
     } else {
       logStep("Skipping trial period for children-only purchase");
     }
