@@ -20,7 +20,7 @@ const ChoosePlanPage = () => {
     {
       name: "Månedlig",
       price: 45,
-      priceId: "price_1RlZK0HugRjwpvWtOzopzx3y",
+      priceId: "price_1SF8neHugRjwpvWtZIsZXtIC",
       description: "Perfekt for familier der ønsker fleksibilitet",
       features: [
         "Fuld adgang til alle funktioner",

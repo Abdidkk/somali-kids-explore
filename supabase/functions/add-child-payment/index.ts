@@ -52,27 +52,17 @@ serve(async (req) => {
 
     const originUrl = req.headers.get("origin") || "http://localhost:5173";
     
-    // Pricing baseret på billing interval
-    const unitAmount = interval === 'year' ? 13500 : 1500; // 135 kr/år eller 15 kr/måned
-    const productName = interval === 'year' ? 'Ekstra barn (årligt)' : 'Ekstra barn (månedligt)';
+    // Use fixed Price ID for extra child monthly subscription
+    const priceId = 'price_1SF8paHugRjwpvWt4l9nKvv8'; // 15 kr/måned
     
-    logStep("Creating checkout session", { unitAmount, productName, interval });
+    logStep("Creating checkout session", { priceId, interval });
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: [
         {
-          price_data: {
-            currency: "dkk",
-            product_data: {
-              name: productName,
-            },
-            unit_amount: unitAmount,
-            recurring: {
-              interval: interval === 'year' ? 'year' : 'month',
-            },
-          },
+          price: priceId,
           quantity: 1,
         },
       ],
