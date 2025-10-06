@@ -155,8 +155,10 @@ serve(async (req) => {
       
       sessionConfig.subscription_data = {
         trial_end: trialEndTimestamp,
+        trial_from_plan: false,
       };
-      
+      logStep("Subscription data configured", { subscription_data: sessionConfig.subscription_data });
+
       // Store precise trial end time in subscriber record - ENSURE it's always set
       try {
         await supabaseService.from('subscribers').upsert({
