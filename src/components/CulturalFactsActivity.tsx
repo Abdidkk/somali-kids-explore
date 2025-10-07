@@ -6,17 +6,14 @@ import { getAllCulturalFacts, CulturalFact } from "@/constants/culturalFactsData
 import { speakWithAudioFallback } from "@/utils/speechUtils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-interface CulturalContentModalProps {
-  open: boolean;
-  onClose: () => void;
+interface CulturalFactsActivityProps {
+  onBack: () => void;
 }
 
-const CulturalContentModal: React.FC<CulturalContentModalProps> = ({ open, onClose }) => {
+const CulturalFactsActivity: React.FC<CulturalFactsActivityProps> = ({ onBack }) => {
   const [selectedLanguage, setSelectedLanguage] = useState<"somali" | "danish">("somali");
   const facts = getAllCulturalFacts();
   const isMobile = useIsMobile();
-
-  if (!open) return null;
 
   const playFactAudio = (fact: CulturalFact) => {
     const audioPath = selectedLanguage === "somali" ? fact.audioSomali : fact.audioDanish;
@@ -25,25 +22,10 @@ const CulturalContentModal: React.FC<CulturalContentModalProps> = ({ open, onClo
   };
 
   return (
-    <div className="fixed z-50 inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm overflow-y-auto py-6 md:py-10">
-      <div className={`bg-white rounded-xl shadow-xl ${isMobile ? 'px-4 py-5' : 'px-7 py-6'} w-full max-w-6xl relative animate-in fade-in-50 my-auto mx-2 md:mx-4`}>
-        {/* Back button */}
-        <div className="absolute left-2 md:left-4 top-2 md:top-3 z-20">
-          <Button 
-            onClick={onClose} 
-            variant="outline" 
-            size="sm" 
-            className={`flex items-center gap-1 ${isMobile ? 'text-xs' : ''}`} 
-            aria-label="Tilbage"
-          >
-            <ArrowLeft className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'}`} />
-            Tilbage
-          </Button>
-        </div>
-        
-        <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-semibold text-purple-700 mb-3 md:mb-5 text-center pt-3`}>
-          Kulturelt indhold - Vidste du...
-        </h2>
+    <div className="w-full">
+      <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold text-purple-700 mb-3 md:mb-5 text-center`}>
+        Vidste du...
+      </h3>
 
         {/* Language Toggle */}
         <div className="flex justify-center mb-6">
@@ -118,9 +100,8 @@ const CulturalContentModal: React.FC<CulturalContentModalProps> = ({ open, onClo
             </Card>
           ))}
         </div>
-      </div>
     </div>
   );
 };
 
-export default CulturalContentModal;
+export default CulturalFactsActivity;
