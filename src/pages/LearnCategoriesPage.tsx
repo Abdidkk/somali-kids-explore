@@ -25,7 +25,7 @@ import WordsModal from "@/components/WordsModal";
 import DailyActivitiesModal from "@/components/DailyActivitiesModal";
 import SentencesModal from "@/components/SentencesModal";
 import ReadBooksModal from "@/components/ReadBooksModal";
-import CulturalModal from "@/components/CulturalModal";
+import CulturalContentModal from "@/components/CulturalContentModal";
 import QuizModal from "@/components/QuizModal";
 
 export default function LearnCategoriesPage() {
@@ -396,7 +396,7 @@ export default function LearnCategoriesPage() {
         onClose={() => setShowReadBooks(false)} 
       />
       
-      <CulturalModal 
+      <CulturalContentModal 
         open={showCultural} 
         onClose={() => setShowCultural(false)} 
       />

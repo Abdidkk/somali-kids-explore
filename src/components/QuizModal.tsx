@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import GeneralQuizActivity from "./GeneralQuizActivity";
+import CulturalQuizActivity from "./CulturalQuizActivity";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface QuizModalProps {
@@ -9,7 +10,7 @@ interface QuizModalProps {
   onClose: () => void;
 }
 
-type ActivityType = "general" | null;
+type ActivityType = "general" | "cultural" | null;
 
 const QuizModal: React.FC<QuizModalProps> = ({
   open,
@@ -68,9 +69,25 @@ const QuizModal: React.FC<QuizModalProps> = ({
                 <p className={`${isMobile ? 'text-lg' : 'text-xl'} text-gray-600`}>Blandet quiz om alle emner du har lært</p>
               </div>
             </button>
+
+            {/* Cultural Quiz Activity */}
+            <button 
+              onClick={() => setActivity("cultural")} 
+              className="bg-purple-50 hover:bg-purple-100 border-2 border-purple-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
+            >
+              <div className="bg-purple-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
+                <span className="text-6xl">🎭</span>
+              </div>
+              <div>
+                <h4 className={`font-bold text-purple-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Kultur Quiz</h4>
+                <p className={`${isMobile ? 'text-lg' : 'text-xl'} text-gray-600`}>Test din viden om somalisk kultur, traditioner og historie</p>
+              </div>
+            </button>
           </div>
-        ) : (
+        ) : activity === "general" ? (
           <GeneralQuizActivity onBack={handleBackToMenu} />
+        ) : (
+          <CulturalQuizActivity onBack={handleBackToMenu} />
         )}
       </div>
     </div>
