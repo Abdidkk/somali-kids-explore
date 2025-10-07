@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CulturalQuizActivity from "./CulturalQuizActivity";
+import CulturalFactsActivity from "./CulturalFactsActivity";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface CulturalModalProps {
@@ -9,7 +10,7 @@ interface CulturalModalProps {
   onClose: () => void;
 }
 
-type ActivityType = "quiz" | null;
+type ActivityType = "quiz" | "facts" | null;
 
 const CulturalModal: React.FC<CulturalModalProps> = ({
   open,
@@ -43,7 +44,7 @@ const CulturalModal: React.FC<CulturalModalProps> = ({
                 Kulturelt indhold
               </h2>
               <p className={`${isMobile ? 'text-sm' : 'text-base'} opacity-90`}>
-                Udforsk somalisk kultur gennem quizzer
+                Udforsk somalisk kultur gennem quizzer og fakta
               </p>
             </div>
           </div>
@@ -63,9 +64,22 @@ const CulturalModal: React.FC<CulturalModalProps> = ({
                   <p className={`${isMobile ? 'text-lg' : 'text-xl'} text-gray-600`}>Test din viden om somalisk kultur, traditioner og historie</p>
                 </div>
               </button>
+
+              <button
+                onClick={() => setActivity("facts")}
+                className="w-full max-w-md p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl border-2 border-purple-200 hover:border-purple-300 transition-all hover:scale-105"
+              >
+                <div className="text-4xl mb-4">💡</div>
+                <div>
+                  <h4 className={`font-bold text-purple-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Vidste du...</h4>
+                  <p className={`${isMobile ? 'text-lg' : 'text-xl'} text-gray-600`}>Lær spændende fakta om somalisk kultur med lyd på somalisk og dansk</p>
+                </div>
+              </button>
             </div>
-          ) : (
+          ) : activity === "quiz" ? (
             <CulturalQuizActivity onBack={handleBackToMenu} />
+          ) : (
+            <CulturalFactsActivity onBack={handleBackToMenu} />
           )}
         </div>
       </div>

@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import ElevenLabsTTS from "./ElevenLabsTTS";
 import { GROUPS, hasAudio, AUDIO_FILES } from "@/constants/alphabetData";
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
@@ -15,36 +14,22 @@ interface Props {
 
 export default function AlphabetListenActivity({ onBack }: Props) {
   const isMobile = useIsMobile();
-  const [apiKey, setApiKey] = useState(""); 
-  const [playingIdx, setPlayingIdx] = useState<number | null>(null);
   // Tabs
   const [tab, setTab] = useState<"alphabet" | "short" | "long">("alphabet");
   const [selectedIdx, setSelectedIdx] = useState(0);
   const groupLetters = GROUPS[tab].letters;
   const selectedLetter = groupLetters[selectedIdx] || groupLetters[0];
-  const [useCustomAudio, setUseCustomAudio] = useState(true);
 
   // Reset selectedIdx if we switch tabs and the current index is out of bounds
   useEffect(() => {
     if (selectedIdx > groupLetters.length - 1) setSelectedIdx(0);
   }, [tab, groupLetters.length, selectedIdx]);
 
-  // Afspil bogstav automatisk hvis API-nøgle er angivet og ikke bruger custom audio
-  useEffect(() => {
-    if (apiKey && !useCustomAudio) {
-      setPlayingIdx(selectedIdx);
-    }
-  }, [selectedIdx, apiKey, useCustomAudio]);
-
   // Function to handle audio playback
   const playAudio = () => {
-    if (hasAudio(selectedLetter) && useCustomAudio) {
-      // We'll use the Audio API directly here since we control the playback manually with a button
+    if (hasAudio(selectedLetter)) {
       const audio = new Audio(AUDIO_FILES[selectedLetter]);
       audio.play();
-    } else if (apiKey) {
-      // Fall back to ElevenLabs if we have an API key
-      setPlayingIdx(selectedIdx);
     } else {
       // Fall back to browser's speech synthesis
       const utter = new window.SpeechSynthesisUtterance(selectedLetter);
@@ -125,15 +110,6 @@ export default function AlphabetListenActivity({ onBack }: Props) {
           </div>
         </TabsContent>
       </Tabs>
-      
-      {/* Text-to-speech component - only render if needed */}
-      {playingIdx !== null && apiKey && !useCustomAudio && (
-        <ElevenLabsTTS
-          text={groupLetters[playingIdx]}
-          apiKey={apiKey}
-          onAudioEnd={() => setPlayingIdx(null)}
-        />
-      )}
     </div>
   );
 }
