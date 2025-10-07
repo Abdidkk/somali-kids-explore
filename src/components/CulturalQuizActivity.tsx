@@ -70,12 +70,37 @@ export default function CulturalQuizActivity({ onBack }: Props) {
     loadScore();
   }, []);
 
+  const playSuccessSound = () => {
+    const audio = new Audio('/feedback/waa-sax.mp3');
+    audio.play().catch(() => {
+      const utterance = new SpeechSynthesisUtterance('Waa sax!');
+      utterance.lang = 'so-SO';
+      utterance.rate = 0.8;
+      window.speechSynthesis.speak(utterance);
+    });
+  };
+
+  const playErrorSound = () => {
+    const audio = new Audio('/feedback/waa-qalad.mp3');
+    audio.play().catch(() => {
+      const utterance = new SpeechSynthesisUtterance('Waa qalad!');
+      utterance.lang = 'so-SO';
+      utterance.rate = 0.8;
+      window.speechSynthesis.speak(utterance);
+    });
+  };
+
   const handleAnswer = (answerIndex: number) => {
     setSelectedAnswer(answerIndex);
     setShowResult(true);
 
-    if (answerIndex === culturalQuestions[currentQuestion].correct) {
+    const isCorrect = answerIndex === culturalQuestions[currentQuestion].correct;
+    
+    if (isCorrect) {
       setCorrectAnswers(prev => prev + 1);
+      playSuccessSound();
+    } else {
+      playErrorSound();
     }
 
     setTimeout(async () => {
