@@ -15,15 +15,15 @@ export const CULTURAL_FACTS: CulturalFact[] = [
     title: "Somalisk te-ceremoni",
     factSomali: "Shaaha waa qayb muhiim ah oo ka mid ah dhaqanka Soomaalida. Waxaa loo sameeyaa shaaha cadays oo lagu daro qorfe iyo xawaash kale sida qarfaha iyo gingir. Shaaha waxa lagu cabbaa marka la kulmayo asxaabta iyo qoysaska.",
     factDanish: "Te er en vigtig del af somalisk kultur. Somalisk te laves med sort te, kardemomme og andre krydderier som kanel og ingefær. Te drikkes ved sociale sammenkomster med venner og familie.",
-    image: "/placeholder.svg",
+    image: "/Kultur/te.png",
     category: "Traditioner"
   },
   {
     id: "nomadic_life",
-    title: "Nomadeliv",
-    factSomali: "Dadka Soomaaliyeed badan waxay asal ahaan ahaayeen reer-guuraa oo xoolo dhaqato ah. Waxa ay guuri jireen meel ka meel raadinta daaq iyo biyo xoolaha. Dhaqanka reer-guuraa ayaa weli jira qaybo ka mid ah Soomaaliya.",
-    factDanish: "Mange somaliere var traditionelt nomader og dyrehold. De flyttede fra sted til sted for at finde græs og vand til deres dyr. Den nomadiske kultur eksisterer stadig i dele af Somalia.",
-    image: "/placeholder.svg",
+    title: "Islam",
+    factSomali: "Ma ogtahay in dadka Soomaaliyeed ay Muslimiin yihiin.",
+    factDanish: "Vidste du at 99% af befolkningen i Somalia er muslimer.",
+    image: "/Kultur/islam.png",
     category: "Historie"
   },
   {
@@ -55,7 +55,7 @@ export const CULTURAL_FACTS: CulturalFact[] = [
     title: "Traditionel mad",
     factSomali: "Cuntada Soomaalidu waxay ku salaysan tahay hilib, bariis, iyo baasto. Cuntooyin caaan ah waxaa ka mid ah canjeero (rooti caato ah), suugo, iyo hilib ari. Xawaashku muhiim bay u yihiin dhadhanka.",
     factDanish: "Somalisk mad er baseret på kød, ris og pasta. Berømte retter inkluderer injera (fladbrød), suugo og fårekød. Krydderier er vigtige for smagen.",
-    image: "/placeholder.svg",
+    image: "/Kultur/mad.png",
     category: "Mad"
   },
   {
@@ -63,7 +63,7 @@ export const CULTURAL_FACTS: CulturalFact[] = [
     title: "Bryllupstraditioner",
     factSomali: "Arooskii Soomaalidu waa munaasabad ballaadhan oo qoys iyo saaxiibba ka qayb qaataan. Waxaa jira dhaqamo gaar ah sida meerishu, habeenka arooskii iyo dhawr maalmood oo dabaaldeg ah. Dhaqanka arooskii wuu kala duwan yahay gobol ka gobol.",
     factDanish: "Somaliske bryllupper er store begivenheder, hvor familie og venner deltager. Der er specielle traditioner som henna-ceremonien, bryllupsnattens fest og flere dage med fejring. Bryllupstraditioner varierer fra region til region.",
-    image: "/placeholder.svg",
+    image: "/Kultur/bryllup.png",
     category: "Traditioner"
   },
   {

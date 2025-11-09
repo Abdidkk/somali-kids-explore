@@ -55,13 +55,13 @@ const CulturalModal: React.FC<CulturalModalProps> = ({
             {/* Facts Activity */}
             <button 
               onClick={() => setActivity("facts")} 
-              className="bg-purple-50 hover:bg-purple-100 border-2 border-purple-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
+              className="bg-pink-50 hover:bg-pink-100 border-2 border-purple-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
             >
-              <div className="bg-purple-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center text-5xl md:text-6xl min-w-28 min-h-28 md:min-w-32 md:min-h-32">
-                💡
+              <div className="bg-pink-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
+                <img src="/kategorier/kultur1.png" alt="Lyt og lær" className="w-20 h-20 md:w-25 md:h-25 rounded-full object-cover" />
               </div>
               <div>
-                <h4 className={`font-bold text-purple-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Vidste du...</h4>
+                <h4 className={`font-bold text-pink-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Vidste du...</h4>
                 <p className={`${isMobile ? 'text-lg' : 'text-xl'} text-gray-600`}>Udforsk somalisk kultur, traditioner og historie</p>
               </div>
             </button>
@@ -69,13 +69,13 @@ const CulturalModal: React.FC<CulturalModalProps> = ({
             {/* Quiz Activity */}
             <button 
               onClick={() => setActivity("quiz")} 
-              className="bg-purple-50 hover:bg-purple-100 border-2 border-purple-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
+              className="bg-red-50 hover:bg-red-100 border-2 border-purple-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
             >
-              <div className="bg-purple-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center text-5xl md:text-6xl min-w-28 min-h-28 md:min-w-32 md:min-h-32">
-                🎭
+              <div className="bg-red-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
+                <img src="/kategorier/kultur2.png" alt="Lyt og lær" className="w-20 h-20 md:w-25 md:h-25 rounded-full object-cover" />
               </div>
               <div>
-                <h4 className={`font-bold text-purple-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Kultur Quiz</h4>
+                <h4 className={`font-bold text-red-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Kultur Quiz</h4>
                 <p className={`${isMobile ? 'text-lg' : 'text-xl'} text-gray-600`}>Test din viden om somalisk kultur</p>
               </div>
             </button>
