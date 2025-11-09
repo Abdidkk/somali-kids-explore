@@ -8,26 +8,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-
-// Subscription pricing interface (matches backend)
-interface SubscriptionPlan {
-  trialDays: number;
-  basePricePerChild: number;
-  extraChildFee: number;
-  includedChildren: number;
-}
-
-const DEFAULT_PLAN: SubscriptionPlan = {
-  trialDays: 24,
-  basePricePerChild: 45,
-  extraChildFee: 15,
-  includedChildren: 1,
-};
-
-function calculateTotal(children: number, plan: SubscriptionPlan = DEFAULT_PLAN): number {
-  const extra = Math.max(0, children - plan.includedChildren);
-  return plan.basePricePerChild + extra * plan.extraChildFee;
-}
+import { SubscriptionPlan, DEFAULT_PLAN, calculateTotal } from "@/types/subscription";
 
 const ChoosePlanPage = () => {
   const [loading, setLoading] = useState(false);
@@ -123,7 +104,7 @@ const ChoosePlanPage = () => {
             Vælg den rigtige plan for din familie
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Start med {DEFAULT_PLAN.trialDays} dages gratis prøveperiode. Kreditkort påkrævet - du betaler først efter prøveperioden.
+            Start med {DEFAULT_PLAN.trialHours} timers gratis prøveperiode. Kreditkort påkrævet - du betaler først efter prøveperioden.
           </p>
         </div>
 
@@ -218,7 +199,7 @@ const ChoosePlanPage = () => {
               </div>
               <div className="flex items-center gap-3">
                 <Check className="text-green-500 flex-shrink-0" size={16} />
-                <span className="text-gray-700">{DEFAULT_PLAN.trialDays} dages gratis prøveperiode</span>
+                <span className="text-gray-700">{DEFAULT_PLAN.trialHours} timers gratis prøveperiode</span>
               </div>
             </CardContent>
 
@@ -236,7 +217,7 @@ const ChoosePlanPage = () => {
 
         <div className="text-center mt-12">
           <p className="text-gray-600">
-            {DEFAULT_PLAN.trialDays} dages gratis prøveperiode. Annuller når som helst.
+            {DEFAULT_PLAN.trialHours} timers gratis prøveperiode. Annuller når som helst.
           </p>
         </div>
       </div>

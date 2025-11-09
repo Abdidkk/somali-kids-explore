@@ -119,7 +119,6 @@ serve(async (req) => {
       recurring: { interval: 'month' },
       product_data: {
         name: `Abonnement - ${numKids} barn${numKids > 1 ? '' : ''}`,
-        description: `${DEFAULT_PLAN.basePricePerChild} kr base + ${Math.max(0, numKids - DEFAULT_PLAN.includedChildren) * DEFAULT_PLAN.extraChildFee} kr ekstra`,
       },
       metadata: {
         num_kids: numKids.toString(),
@@ -127,6 +126,7 @@ serve(async (req) => {
         extra_children: Math.max(0, numKids - DEFAULT_PLAN.includedChildren).toString(),
         extra_child_fee: DEFAULT_PLAN.extraChildFee.toString(),
         unified_pricing: 'true',
+        price_breakdown: `${DEFAULT_PLAN.basePricePerChild} kr base + ${Math.max(0, numKids - DEFAULT_PLAN.includedChildren) * DEFAULT_PLAN.extraChildFee} kr ekstra`,
       },
     });
 
