@@ -215,29 +215,85 @@ const SubscriptionStatus = () => {
   // Fetch trial end date and check if user has existing plan
   useEffect(() => {
     const fetchUserData = async () => {
-      if (!session?.user?.id) return;
+      if (!session?.user?.id) {
+        console.log('[SubscriptionStatus] No session user ID available');
+        return;
+      }
+      
+      console.log('[SubscriptionStatus] Fetching trial data for user:', session.user.id);
+      console.log('[SubscriptionStatus] Current subscription state:', {
+        subscribed,
+        inTrial,
+        status,
+        subscriptionTier,
+        subscriptionEnd
+      });
       
       try {
         const { data, error } = await supabase
           .from('subscribers')
-          .select('trial_end, stripe_customer_id, subscription_tier')
+          .select('trial_end, trial_end_local, stripe_customer_id, subscription_tier, status, subscribed')
           .eq('user_id', session.user.id)
           .single();
         
-        if (data && !error) {
-          if (data.trial_end && inTrial) {
-            setTrialEndDate(new Date(data.trial_end));
+        if (error) {
+          console.error('[SubscriptionStatus] Error fetching subscriber data:', error);
+          
+          // Fallback: Use subscriptionEnd from useSubscription hook if available
+          if (inTrial && subscriptionEnd) {
+            console.log('[SubscriptionStatus] Using fallback subscriptionEnd from hook:', subscriptionEnd);
+            setTrialEndDate(new Date(subscriptionEnd));
           }
+          return;
+        }
+        
+        console.log('[SubscriptionStatus] Subscriber data from DB:', data);
+        
+        if (data) {
+          // Use trial_end_local if available (Danish timezone), otherwise use trial_end
+          const trialEnd = data.trial_end_local || data.trial_end;
+          
+          console.log('[SubscriptionStatus] Trial end dates:', {
+            trial_end_local: data.trial_end_local,
+            trial_end: data.trial_end,
+            selected: trialEnd
+          });
+          
+          // Only set trial end date if user is in trial and not subscribed
+          if (trialEnd && !data.subscribed && data.status === 'trial') {
+            console.log('[SubscriptionStatus] ✅ Setting trial end date:', trialEnd);
+            setTrialEndDate(new Date(trialEnd));
+          } else {
+            console.log('[SubscriptionStatus] ❌ Not setting trial end date:', {
+              has_trial_end: !!trialEnd,
+              subscribed: data.subscribed,
+              status: data.status,
+              reason: !trialEnd ? 'No trial end date' : 
+                      data.subscribed ? 'User is subscribed' : 
+                      data.status !== 'trial' ? 'User not in trial status' : 'Unknown'
+            });
+            // Clear trial end date if conditions not met
+            setTrialEndDate(null);
+          }
+          
           // User has existing plan if they have a customer ID or subscription tier
-          setHasExistingPlan(!!(data.stripe_customer_id || data.subscription_tier));
+          const hasExisting = !!(data.stripe_customer_id || data.subscription_tier);
+          console.log('[SubscriptionStatus] Has existing plan:', hasExisting);
+          setHasExistingPlan(hasExisting);
         }
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error('[SubscriptionStatus] Error in fetchUserData:', error);
+        
+        // Fallback: Use subscriptionEnd from useSubscription hook if available
+        if (inTrial && subscriptionEnd) {
+          console.log('[SubscriptionStatus] Using fallback subscriptionEnd from hook after error:', subscriptionEnd);
+          setTrialEndDate(new Date(subscriptionEnd));
+        }
       }
     };
 
     fetchUserData();
-  }, [session?.user?.id, inTrial, subscriptionTier]);
+  }, [session?.user?.id, inTrial, subscriptionTier, status, subscribed, subscriptionEnd]);
 
   // Update countdown timer every minute using Danish timezone
   useEffect(() => {
