@@ -59,7 +59,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLas
   };
 
   const handleClick = () => {
-    if (!requiresSubscription) {
+    if (requiresSubscription) {
       toast({
         title: "Abonnement påkrævet",
         description: "Du skal have et aktivt abonnement for at få adgang til læringsmodulerne.",
@@ -114,7 +114,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLas
                 {!isEnabled && <Lock className="inline w-4 h-4 ml-1" />}
               </div>
               <div className={`text-center text-sm ${isEnabled ? 'text-gray-700' : 'text-gray-400'}`}>
-                {!requiresSubscription ? 'Kræver abonnement' : 
+                {requiresSubscription ? 'Kræver abonnement' : 
                  !isEnabled ? 'Kategori låst af forældre' : 
                  category.description}
               </div>
@@ -151,7 +151,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLas
               {!isEnabled && <Lock className="inline w-4 h-4 ml-1" />}
             </div>
             <div className={`text-center text-sm ${isEnabled ? 'text-gray-700' : 'text-gray-400'}`}>
-              {!requiresSubscription ? 'Kræver abonnement' : 
+              {requiresSubscription ? 'Kræver abonnement' : 
                !isEnabled ? 'Kategori låst af forældre' : 
                category.description}
             </div>
