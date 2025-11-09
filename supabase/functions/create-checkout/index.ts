@@ -13,6 +13,26 @@ const logStep = (step: string, details?: any) => {
   console.log(`[CREATE-CHECKOUT] ${step}${detailsStr}`);
 };
 
+// Subscription pricing interface
+interface SubscriptionPlan {
+  trialDays: number;
+  basePricePerChild: number;
+  extraChildFee: number;
+  includedChildren: number;
+}
+
+const DEFAULT_PLAN: SubscriptionPlan = {
+  trialDays: 24,
+  basePricePerChild: 45,
+  extraChildFee: 15,
+  includedChildren: 1,
+};
+
+function calculateTotal(children: number, plan: SubscriptionPlan = DEFAULT_PLAN): number {
+  const extra = Math.max(0, children - plan.includedChildren);
+  return plan.basePricePerChild + extra * plan.extraChildFee;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -23,14 +43,12 @@ serve(async (req) => {
     Deno.env.get("SUPABASE_ANON_KEY") ?? ""
   );
 
-  // Service role client for logging and transactions
   const supabaseService = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     { auth: { persistSession: false } }
   );
 
-  // Enhanced logging function
   const logEvent = async (event_type: string, user_id: string, metadata: Record<string, any>) => {
     try {
       await supabaseService.from('event_logs').insert({
@@ -50,40 +68,26 @@ serve(async (req) => {
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      logStep("Authentication failed", { error: "No authorization header provided" });
-      throw new Error("Authentication error: No authorization header provided");
+      throw new Error("No authorization header provided");
     }
     
     const token = authHeader.replace("Bearer ", "");
-    logStep("Authenticating user with token");
-    
     const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
     if (userError) {
-      logStep("Authentication failed", { error: userError.message });
       throw new Error(`Authentication error: ${userError.message}`);
     }
     
     const user = userData.user;
     if (!user?.email) {
-      logStep("No user or email found");
-      throw new Error("Authentication error: User not authenticated or email not available");
+      throw new Error("User not authenticated");
     }
     
     logStep("User authenticated", { userId: user.id, email: user.email });
 
     const requestBody = await req.json();
-    const { priceId, planName, numKids = 0, childrenOnly = false } = requestBody;
+    const { numKids = 1 } = requestBody;
     
-    // FORCE MONTHLY BILLING - ignore any yearly selections from UI
-    const billingInterval = "monthly";
-    logStep("Request data received - FORCING MONTHLY BILLING", { 
-      priceId, 
-      planName, 
-      requestedInterval: requestBody.billingInterval,
-      forcedInterval: billingInterval,
-      numKids, 
-      childrenOnly 
-    });
+    logStep("Request data received", { numKids });
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { 
       apiVersion: "2023-10-16" 
@@ -96,106 +100,93 @@ serve(async (req) => {
       customerId = customers.data[0].id;
       logStep("Found existing customer", { customerId });
     } else {
-      logStep("No existing customer found");
+      const newCustomer = await stripe.customers.create({
+        email: user.email,
+        metadata: { user_id: user.id },
+      });
+      customerId = newCustomer.id;
+      logStep("Created new customer", { customerId });
     }
 
-    // Build line items based on whether this is children only or full subscription
-    let lineItems;
-    if (childrenOnly) {
-      // Only add children profiles, no base subscription
-      lineItems = [{ price: priceId, quantity: numKids }];
-      logStep("Creating children-only checkout", { priceId, quantity: numKids });
-    } else {
-      // Original logic for full subscriptions
-      lineItems = [{ price: priceId, quantity: 1 }];
-      if (numKids > 0) {
-        const kidPriceId = "price_1SF8paHugRjwpvWt4l9nKvv8"; // 15 kr/month extra child
-        lineItems.push({ price: kidPriceId, quantity: numKids });
-      }
-      logStep("Creating full subscription checkout", { basePrice: priceId, kidPrice: numKids > 0 ? "price_1SF8paHugRjwpvWt4l9nKvv8" : null, numKids });
-    }
+    // Calculate total using interface
+    const totalAmount = calculateTotal(numKids, DEFAULT_PLAN);
+    logStep("Calculated price", { numKids, totalAmount });
 
-    // Resolve origin with robust fallback
-    const originUrl =
-      req.headers.get("origin") ||
-      (req.headers.get("x-forwarded-proto") && req.headers.get("x-forwarded-host")
-        ? `${req.headers.get("x-forwarded-proto")}://${req.headers.get("x-forwarded-host")}`
-        : null) ||
-      "https://preview--dugsi.lovable.app";
-    logStep("Resolved origin for checkout URLs", { origin: originUrl });
+    // Create ONE unified price (cannot be partially cancelled)
+    const price = await stripe.prices.create({
+      unit_amount: totalAmount * 100, // Convert to øre
+      currency: 'dkk',
+      recurring: { interval: 'month' },
+      product_data: {
+        name: `Abonnement - ${numKids} barn${numKids > 1 ? '' : ''}`,
+        description: `${DEFAULT_PLAN.basePricePerChild} kr base + ${Math.max(0, numKids - DEFAULT_PLAN.includedChildren) * DEFAULT_PLAN.extraChildFee} kr ekstra`,
+      },
+      metadata: {
+        num_kids: numKids.toString(),
+        base_price: DEFAULT_PLAN.basePricePerChild.toString(),
+        extra_children: Math.max(0, numKids - DEFAULT_PLAN.includedChildren).toString(),
+        extra_child_fee: DEFAULT_PLAN.extraChildFee.toString(),
+        unified_pricing: 'true',
+      },
+    });
 
-    // Build session configuration for SETUP MODE (not subscription mode)
-    const sessionConfig: any = {
+    logStep('Created unified price', { priceId: price.id, amount: totalAmount });
+
+    const originUrl = req.headers.get("origin") || "https://www.laerdansk.dk";
+
+    // Create subscription checkout with 24-day trial
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      payment_method_types: ['card'],
       customer: customerId,
-      customer_email: customerId ? undefined : user.email,
-      mode: "setup",
-      payment_method_types: ["card"],
       success_url: `${originUrl}/payment-success`,
       cancel_url: `${originUrl}/payment-cancel`,
-      metadata: {
-        plan_name: planName,
-        user_id: user.id,
-        billing_interval: billingInterval,
-        num_kids: numKids.toString(),
-        children_only: childrenOnly.toString(),
-        price_id: priceId, // Store for webhook to create subscription later
-        kid_price_id: numKids > 0 ? "price_1SF8paHugRjwpvWt4l9nKvv8" : "",
+      subscription_data: {
+        trial_period_days: DEFAULT_PLAN.trialDays,
+        metadata: {
+          user_id: user.id,
+          num_kids: numKids.toString(),
+          unified_pricing: 'true',
+        },
       },
-    };
-
-    // Setup mode doesn't create subscription immediately - webhook will handle it
-    // For now, just store metadata to indicate trial setup
-    if (!childrenOnly) {
-      logStep("SETUP MODE - Subscription will be created by webhook with 24-hour trial");
-    } else {
-      logStep("Skipping trial period for children-only purchase");
-    }
-
-    const session = await stripe.checkout.sessions.create(sessionConfig);
+      metadata: {
+        user_id: user.id,
+        num_kids: numKids.toString(),
+        unified_pricing: 'true',
+      },
+      line_items: [
+        {
+          price: price.id,
+          quantity: 1,
+        },
+      ],
+    });
 
     logStep("Checkout session created", { sessionId: session.id, url: session.url });
 
-    // Calculate total amount from line items (for logging)
-    let totalAmount = 0;
-    for (const item of lineItems) {
-      try {
-        const price = await stripe.prices.retrieve(item.price);
-        totalAmount += (price.unit_amount || 0) * item.quantity;
-      } catch (priceError) {
-        console.error('Failed to retrieve price for amount calculation:', priceError);
-      }
-    }
+    // Log transaction
+    await supabaseService.from('transactions').insert({
+      user_id: user.id,
+      stripe_session_id: session.id,
+      amount: totalAmount,
+      currency: 'DKK',
+      status: 'pending',
+      num_kids: numKids,
+      subscription_tier: 'standard',
+      billing_interval: 'monthly',
+      metadata: {
+        unified_pricing: true,
+        children_count: numKids,
+        base_price: DEFAULT_PLAN.basePricePerChild,
+        extra_child_fee: DEFAULT_PLAN.extraChildFee,
+      },
+    });
 
-    // Log transaction creation
-    try {
-      await supabaseService.from('transactions').insert({
-        user_id: user.id,
-        stripe_session_id: session.id,
-        amount: totalAmount / 100, // Convert from cents to currency units
-        currency: 'DKK',
-        status: 'pending',
-        subscription_tier: planName,
-        billing_interval: billingInterval,
-        num_kids: numKids,
-        metadata: {
-          children_only: childrenOnly,
-          line_items: lineItems,
-          stripe_metadata: sessionConfig.metadata
-        }
-      });
-      logStep("Transaction logged", { sessionId: session.id, amount: totalAmount / 100 });
-    } catch (transactionError) {
-      console.error('Transaction logging failed:', transactionError);
-    }
-
-    // Log checkout event
     await logEvent('checkout_session_created', user.id, {
       session_id: session.id,
-      plan_name: planName,
-      billing_interval: billingInterval,
       num_kids: numKids,
-      children_only: childrenOnly,
-      amount: totalAmount / 100
+      total_amount: totalAmount,
+      unified_pricing: true,
     });
 
     return new Response(JSON.stringify({ url: session.url }), {
@@ -206,30 +197,8 @@ serve(async (req) => {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR in create-checkout", { message: errorMessage });
     
-    // Check if this is an authentication error
-    if (errorMessage.includes('Authentication error') || errorMessage.includes('Session')) {
-      return new Response(JSON.stringify({ 
-        error: "Session udløbet. Prøv at logge ind igen.",
-        details: errorMessage 
-      }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
-    }
-    
-    // Handle specific Stripe errors with Danish messages
-    let userMessage = errorMessage;
-    if (errorMessage.includes("set an account or business name")) {
-      userMessage = "Du skal indstille et firmanavn i din Stripe-konto før du kan oprette betalinger. Gå til https://dashboard.stripe.com/account og udfyld 'Business Information'.";
-    } else if (errorMessage.includes('No such price') || errorMessage.includes('Invalid price')) {
-      userMessage = "FEJL: Ugyldig Stripe pris ID. Test price IDs skal opdateres til korrekte værdier fra Stripe dashboard.";
-    } else if (errorMessage.includes('price_test_')) {
-      userMessage = "TEST MODE FEJL: Placeholder price IDs skal erstattes med faktiske Stripe test price IDs.";
-    }
-    
     return new Response(JSON.stringify({ 
-      error: userMessage,
-      details: errorMessage 
+      error: errorMessage,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

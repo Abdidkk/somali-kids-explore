@@ -75,11 +75,11 @@ serve(async (req) => {
     }
 
     if (!existing) {
-      logStep('No subscriber row found, creating 24-hour trial');
+      logStep('No subscriber row found, creating 24-day trial');
       
-      // Create 24-hour trial for new users
+      // Create 24-day trial for new users
       const trialEnd = new Date();
-      trialEnd.setHours(trialEnd.getHours() + 24);
+      trialEnd.setDate(trialEnd.getDate() + 24);
       
       await supabaseService.from('subscribers').upsert({
         email: user.email,

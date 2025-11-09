@@ -9,58 +9,41 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
+// Subscription pricing interface (matches backend)
+interface SubscriptionPlan {
+  trialDays: number;
+  basePricePerChild: number;
+  extraChildFee: number;
+  includedChildren: number;
+}
+
+const DEFAULT_PLAN: SubscriptionPlan = {
+  trialDays: 24,
+  basePricePerChild: 45,
+  extraChildFee: 15,
+  includedChildren: 1,
+};
+
+function calculateTotal(children: number, plan: SubscriptionPlan = DEFAULT_PLAN): number {
+  const extra = Math.max(0, children - plan.includedChildren);
+  return plan.basePricePerChild + extra * plan.extraChildFee;
+}
+
 const ChoosePlanPage = () => {
-  const [loading, setLoading] = useState<string | null>(null);
-  const [numKids, setNumKids] = useState(0);
-  const { user, session } = useAuth();
-  const { subscribed, billingInterval } = useSubscription();
+  const [loading, setLoading] = useState(false);
+  const [numKids, setNumKids] = useState(1); // Default to 1 child (included)
+  const { user } = useAuth();
+  const { subscribed } = useSubscription();
   const navigate = useNavigate();
 
-  const allPlans = [
-    {
-      name: "Månedlig",
-      price: 45,
-      priceId: "price_1SF8neHugRjwpvWtZIsZXtIC",
-      description: "Perfekt for familier der ønsker fleksibilitet",
-      features: [
-        "Fuld adgang til alle funktioner",
-        "Ubegrænsede profiler",
-        "Prioriteret support",
-        "Børneprofiler: 15 kr/måned ekstra",
-      ],
-      popular: false,
-      billingInterval: "monthly",
-    },
-    {
-      name: "Årlig",
-      price: 405,
-      priceId: "price_1RlZKXHugRjwpvWtRzuNYmYq",
-      description: "Spar 135 kr/år med årlig betaling",
-      features: [
-        "Fuld adgang til alle funktioner",
-        "Ubegrænsede profiler", 
-        "Prioriteret support",
-        "Børneprofiler: 135 kr/år ekstra",
-        "25% rabat på årsbasis",
-      ],
-      popular: true,
-      billingInterval: "yearly",
-      savings: 135,
-    },
-  ];
-
-  // Only show monthly plan
-  const plans = allPlans.filter(plan => plan.billingInterval === "monthly");
-
-  const handleSubscribe = async (priceId: string, planName: string, billingInterval: string) => {
+  const handleSubscribe = async () => {
     if (!user) {
-      navigate('/login');
+      navigate('/auth');
       return;
     }
 
-    setLoading(priceId);
+    setLoading(true);
     try {
-      // Ensure we have a fresh session token
       const { data: { session: freshSession } } = await supabase.auth.getSession();
       if (!freshSession?.access_token) {
         toast({
@@ -68,18 +51,12 @@ const ChoosePlanPage = () => {
           description: "Prøv at logge ind igen.",
           variant: "destructive",
         });
-        navigate('/login');
+        navigate('/auth');
         return;
       }
 
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { 
-          priceId, 
-          planName, 
-          billingInterval,
-          numKids,
-          childrenOnly: false
-        },
+        body: { numKids },
         headers: {
           Authorization: `Bearer ${freshSession.access_token}`,
         },
@@ -87,33 +64,18 @@ const ChoosePlanPage = () => {
 
       if (error) {
         console.error('Error creating checkout:', error);
-        
-        // Handle authentication errors specifically
-        if (error.message?.includes('authentication') || error.message?.includes('Session')) {
-          toast({
-            title: "Session udløbet",
-            description: "Prøv at logge ind igen.",
-            variant: "destructive",
-          });
-          navigate('/login');
-        } else {
-          toast({
-            title: "Fejl",
-            description: "Kunne ikke oprette betalingssession. Prøv igen.",
-            variant: "destructive",
-          });
-        }
+        toast({
+          title: "Fejl",
+          description: "Kunne ikke oprette betalingssession. Prøv igen.",
+          variant: "destructive",
+        });
         return;
       }
 
       if (data?.url) {
-        // Gem det antal børn der er betalt for (basic plan inkluderer 1 barn + ekstra børn)
-        localStorage.setItem("maxChildrenPaid", (1 + numKids).toString());
-      
-        // Open Stripe Checkout in a new tab (fixes redirect inside iframes like Lovable preview)
+        localStorage.setItem("paid_children_count", numKids.toString());
         const newTab = window.open(data.url, '_blank', 'noopener,noreferrer');
         if (!newTab) {
-          // Fallback: same-tab navigation
           window.location.href = data.url;
         }
       }
@@ -126,7 +88,7 @@ const ChoosePlanPage = () => {
         variant: "destructive",
       });
     } finally {
-      setLoading(null);
+      setLoading(false);
     }
   };
 
@@ -141,7 +103,7 @@ const ChoosePlanPage = () => {
             Du skal være logget ind for at vælge en plan
           </p>
           <Button 
-            onClick={() => navigate('/login')}
+            onClick={() => navigate('/auth')}
             className="bg-[#4CA6FE] hover:bg-[#3b95e9]"
           >
             Log ind
@@ -151,6 +113,8 @@ const ChoosePlanPage = () => {
     );
   }
 
+  const totalPrice = calculateTotal(numKids);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-20 px-4">
       <div className="max-w-7xl mx-auto">
@@ -159,7 +123,7 @@ const ChoosePlanPage = () => {
             Vælg den rigtige plan for din familie
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Start med 24 timers gratis prøveperiode. Kreditkort påkrævet - du betaler først efter prøveperioden.
+            Start med {DEFAULT_PLAN.trialDays} dages gratis prøveperiode. Kreditkort påkrævet - du betaler først efter prøveperioden.
           </p>
         </div>
 
@@ -171,15 +135,15 @@ const ChoosePlanPage = () => {
                 Hvor mange børneprofiler har du brug for?
               </h3>
               <p className="text-sm text-gray-600">
-                Du kan altid tilføje flere profiler senere
+                {DEFAULT_PLAN.includedChildren} barn inkluderet, {DEFAULT_PLAN.extraChildFee} kr/måned pr. ekstra barn
               </p>
             </div>
             <div className="flex items-center justify-center gap-4">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setNumKids(Math.max(0, numKids - 1))}
-                disabled={numKids === 0}
+                onClick={() => setNumKids(Math.max(1, numKids - 1))}
+                disabled={numKids === 1}
               >
                 <Minus size={16} />
               </Button>
@@ -194,11 +158,11 @@ const ChoosePlanPage = () => {
                 <Plus size={16} />
               </Button>
             </div>
-            {numKids > 0 && (
+            {numKids > DEFAULT_PLAN.includedChildren && (
               <div className="mt-4 text-center">
                 <p className="text-sm text-gray-600">
                   Ekstra omkostning: <span className="font-semibold">
-                    {numKids * 15} kr/måned
+                    {(numKids - DEFAULT_PLAN.includedChildren) * DEFAULT_PLAN.extraChildFee} kr/måned
                   </span>
                 </p>
               </div>
@@ -207,98 +171,72 @@ const ChoosePlanPage = () => {
         </div>
 
         <div className="flex justify-center max-w-2xl mx-auto">
-          {plans.map((plan) => (
-            <Card 
-              key={plan.name} 
-              className={`relative ${plan.popular ? 'border-[#4CA6FE] shadow-lg scale-105' : ''}`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-[#4CA6FE] text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
-                    <Crown size={14} />
-                    Mest populær
-                  </div>
-                </div>
-              )}
-              
-              <CardHeader className="text-center pb-8">
-                <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
-                <CardDescription className="text-gray-600">
-                  {plan.description}
-                </CardDescription>
-                {'savings' in plan && (
-                  <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 mt-2">
-                    Spar {plan.savings} kr/år
+          <Card className="relative border-[#4CA6FE] shadow-lg">
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+              <div className="bg-[#4CA6FE] text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
+                <Crown size={14} />
+                Mest populær
+              </div>
+            </div>
+            
+            <CardHeader className="text-center pb-8">
+              <CardTitle className="text-2xl font-bold">Månedlig Plan</CardTitle>
+              <CardDescription className="text-gray-600">
+                Perfekt for familier der ønsker fleksibilitet
+              </CardDescription>
+              <div className="mt-4">
+                <span className="text-4xl font-bold">
+                  {totalPrice} kr
+                </span>
+                <span className="text-gray-600">
+                  /måned
+                </span>
+                {numKids > DEFAULT_PLAN.includedChildren && (
+                  <div className="text-sm text-gray-500 mt-2">
+                    Base: {DEFAULT_PLAN.basePricePerChild} kr + {numKids - DEFAULT_PLAN.includedChildren} ekstra: {(numKids - DEFAULT_PLAN.includedChildren) * DEFAULT_PLAN.extraChildFee} kr
                   </div>
                 )}
-                <div className="mt-4">
-                  <span className="text-4xl font-bold">
-                    {plan.price + (numKids * (plan.billingInterval === "monthly" ? 15 : 135))} kr
-                  </span>
-                  <span className="text-gray-600">
-                    {plan.billingInterval === "monthly" ? "/måned" : "/år"}
-                  </span>
-                  {plan.billingInterval === "yearly" && (
-                    <div className="text-sm text-green-600 font-medium mt-1">
-                      ({Math.round((plan.price + (numKids * 135)) / 12)} kr/måned)
-                    </div>
-                  )}
-                  {numKids > 0 && (
-                    <div className="text-sm text-gray-500 mt-2">
-                      Base: {plan.price} kr + {numKids} børn: {numKids * (plan.billingInterval === "monthly" ? 15 : 135)} kr
-                    </div>
-                  )}
-                </div>
-              </CardHeader>
+              </div>
+            </CardHeader>
 
-              <CardContent className="space-y-4">
-                {plan.features.map((feature, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <Check className="text-green-500 flex-shrink-0" size={16} />
-                    <span className="text-gray-700">{feature}</span>
-                  </div>
-                ))}
-              </CardContent>
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Check className="text-green-500 flex-shrink-0" size={16} />
+                <span className="text-gray-700">Fuld adgang til alle funktioner</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="text-green-500 flex-shrink-0" size={16} />
+                <span className="text-gray-700">{DEFAULT_PLAN.includedChildren} barn inkluderet</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="text-green-500 flex-shrink-0" size={16} />
+                <span className="text-gray-700">Prioriteret support</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="text-green-500 flex-shrink-0" size={16} />
+                <span className="text-gray-700">Ekstra børneprofiler: {DEFAULT_PLAN.extraChildFee} kr/måned</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="text-green-500 flex-shrink-0" size={16} />
+                <span className="text-gray-700">{DEFAULT_PLAN.trialDays} dages gratis prøveperiode</span>
+              </div>
+            </CardContent>
 
-              <CardFooter>
-                {(() => {
-                  // Fix the current plan detection logic
-                  const isCurrentPlan = subscribed && 
-                    ((billingInterval === 'monthly' && plan.billingInterval === 'monthly') ||
-                     (billingInterval === 'yearly' && plan.billingInterval === 'yearly'));
-                  
-                  /* Debug log removed to prevent noisy console during renders */
-
-                  return (
-                    <Button
-                      className={`w-full ${
-                        isCurrentPlan
-                          ? 'bg-green-600 hover:bg-green-700'
-                          : plan.popular
-                          ? 'bg-[#4CA6FE] hover:bg-[#3b95e9]'
-                          : 'bg-gray-800 hover:bg-gray-700'
-                      } text-white font-semibold py-3`}
-                      disabled={loading === plan.priceId || isCurrentPlan}
-                      onClick={() => handleSubscribe(plan.priceId, plan.name, plan.billingInterval)}
-                    >
-                      {loading === plan.priceId ? (
-                        'Opretter...'
-                      ) : isCurrentPlan ? (
-                        'Nuværende plan'
-                      ) : (
-                        'Vælg denne plan'
-                      )}
-                    </Button>
-                  );
-                })()}
-              </CardFooter>
-            </Card>
-          ))}
+            <CardFooter>
+              <Button
+                className="w-full bg-[#4CA6FE] hover:bg-[#3b95e9] text-white font-semibold py-3"
+                disabled={loading || subscribed}
+                onClick={handleSubscribe}
+              >
+                {loading ? 'Opretter...' : subscribed ? 'Nuværende plan' : 'Vælg denne plan'}
+              </Button>
+            </CardFooter>
+          </Card>
         </div>
 
         <div className="text-center mt-12">
           <p className="text-gray-600">
-            Alle planer inkluderer 24 timers gratis prøveperiode. Annuller når som helst.
+            {DEFAULT_PLAN.trialDays} dages gratis prøveperiode. Annuller når som helst.
           </p>
         </div>
       </div>
