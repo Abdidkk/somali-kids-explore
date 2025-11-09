@@ -303,15 +303,15 @@ async function handleCheckoutCompleted(supabase: any, stripe: Stripe, session: S
       const subscription = await stripe.subscriptions.retrieve(subscriptionId);
       console.log(`[CHECKOUT-DEBUG] Subscription: ${subscription.id}, Status: ${subscription.status}`);
 
-      // Calculate trial end (24 days)
+      // Calculate trial end (24 hours) - managed manually since Stripe only supports whole days
       const trialEnd = new Date();
-      if (subscription.trial_end) {
-        trialEnd.setTime(subscription.trial_end * 1000);
-      } else {
-        trialEnd.setDate(trialEnd.getDate() + 24);
-      }
+      trialEnd.setHours(trialEnd.getHours() + 24);
+      
+      // Calculate Danish timezone version
+      const trialEndDanish = new Date(trialEnd.toLocaleString("en-US", {timeZone: "Europe/Copenhagen"}));
 
-      console.log(`[CHECKOUT-DEBUG] Trial end: ${trialEnd.toISOString()}`);
+      console.log(`[CHECKOUT-DEBUG] Trial end (UTC): ${trialEnd.toISOString()}`);
+      console.log(`[CHECKOUT-DEBUG] Trial end (Danish): ${trialEndDanish.toISOString()}`);
 
       // Get subscription amount
       let subscriptionAmount = 0;
@@ -327,7 +327,7 @@ async function handleCheckoutCompleted(supabase: any, stripe: Stripe, session: S
         subscribed: false, // Will be true after first payment
         status: 'trial',
         trial_end: trialEnd.toISOString(),
-        trial_end_local: trialEnd.toISOString(),
+        trial_end_local: trialEndDanish.toISOString(),
         subscription_tier: 'standard',
         billing_interval: 'monthly',
         num_kids: parseInt(num_kids || '1', 10),
@@ -371,18 +371,20 @@ async function handleCheckoutCompleted(supabase: any, stripe: Stripe, session: S
         },
       });
       
-      console.log(`[CHECKOUT-DEBUG] ✅ 24-day trial activated successfully`);
+      console.log(`[CHECKOUT-DEBUG] ✅ 24-hour trial activated successfully`);
       
       // Log event
       await supabase.rpc('log_event', {
-        p_event_type: 'stripe_24d_trial_started',
+        p_event_type: 'stripe_24h_trial_started',
         p_user_id: user_id || null,
         p_metadata: {
           session_id: session.id,
           subscription_id: subscriptionId,
-          trial_end: trialEnd.toISOString(),
+          trial_end_utc: trialEnd.toISOString(),
+          trial_end_danish: trialEndDanish.toISOString(),
           num_kids: num_kids,
           unified_pricing: true,
+          trial_hours: 24,
         },
         p_severity: 'INFO'
       });

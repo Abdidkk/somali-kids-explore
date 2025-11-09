@@ -31,7 +31,7 @@ import QuizModal from "@/components/QuizModal";
 export default function LearnCategoriesPage() {
   const { user } = useAuth();
   const { childProfiles, loading: childProfilesLoading } = useChildProfiles();
-  const { subscribed, status } = useSubscription();
+  const { subscribed, inTrial, status } = useSubscription();
   const navigate = useNavigate();
   const [categorySettings, setCategorySettings] = useState(new Map());
   const [loading, setLoading] = useState(true);
@@ -328,7 +328,7 @@ export default function LearnCategoriesPage() {
         finishedCategories={childData.finishedCategories}
         lastCategory={childData.lastCategory}
         onCategorySelect={handleCategorySelect}
-        requiresSubscription={subscribed && status !== 'cancelled'}
+        requiresSubscription={!subscribed && !inTrial}
       />
       
       <AlphabetModal 

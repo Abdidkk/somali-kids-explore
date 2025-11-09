@@ -15,14 +15,14 @@ const logStep = (step: string, details?: any) => {
 
 // Subscription pricing interface
 interface SubscriptionPlan {
-  trialDays: number;
+  trialHours: number;
   basePricePerChild: number;
   extraChildFee: number;
   includedChildren: number;
 }
 
 const DEFAULT_PLAN: SubscriptionPlan = {
-  trialDays: 24,
+  trialHours: 24,
   basePricePerChild: 45,
   extraChildFee: 15,
   includedChildren: 1,
@@ -134,7 +134,8 @@ serve(async (req) => {
 
     const originUrl = req.headers.get("origin") || "https://www.laerdansk.dk";
 
-    // Create subscription checkout with 24-day trial
+    // Create subscription checkout (trial managed manually in database - 24 hours)
+    // Stripe only supports whole days for trial_period_days, so we manage the exact 24-hour trial in our database
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
@@ -142,17 +143,19 @@ serve(async (req) => {
       success_url: `${originUrl}/payment-success`,
       cancel_url: `${originUrl}/payment-cancel`,
       subscription_data: {
-        trial_period_days: DEFAULT_PLAN.trialDays,
         metadata: {
           user_id: user.id,
           num_kids: numKids.toString(),
           unified_pricing: 'true',
+          trial_managed_manually: 'true',
+          trial_hours: DEFAULT_PLAN.trialHours.toString(),
         },
       },
       metadata: {
         user_id: user.id,
         num_kids: numKids.toString(),
         unified_pricing: 'true',
+        trial_managed_manually: 'true',
       },
       line_items: [
         {

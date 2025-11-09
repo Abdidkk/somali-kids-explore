@@ -3,7 +3,7 @@
  * Defines the structure for subscription pricing
  */
 export interface SubscriptionPlan {
-  trialDays: number;           // 24 dages gratis prøve
+  trialHours: number;          // 24 timers gratis prøve
   basePricePerChild: number;   // 45 kr pr. barn
   extraChildFee: number;       // 15 kr pr. ekstra barn
   includedChildren: number;    // 1 barn inkluderet
@@ -13,11 +13,22 @@ export interface SubscriptionPlan {
  * Default subscription plan
  */
 export const DEFAULT_PLAN: SubscriptionPlan = {
-  trialDays: 24,
+  trialHours: 24,
   basePricePerChild: 45,
   extraChildFee: 15,
   includedChildren: 1,
 };
+
+/**
+ * Calculate trial end time
+ * @param hours Number of hours for trial period
+ * @returns Date object representing trial end time
+ */
+export function calculateTrialEnd(hours: number): Date {
+  const trialEnd = new Date();
+  trialEnd.setHours(trialEnd.getHours() + hours);
+  return trialEnd;
+}
 
 /**
  * Calculate total subscription price based on number of children

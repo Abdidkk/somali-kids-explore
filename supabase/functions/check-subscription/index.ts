@@ -75,11 +75,14 @@ serve(async (req) => {
     }
 
     if (!existing) {
-      logStep('No subscriber row found, creating 24-day trial');
+      logStep('No subscriber row found, creating 24-hour trial');
       
-      // Create 24-day trial for new users
+      // Create 24-hour trial for new users
       const trialEnd = new Date();
-      trialEnd.setDate(trialEnd.getDate() + 24);
+      trialEnd.setHours(trialEnd.getHours() + 24);
+      
+      // Calculate Danish timezone version
+      const trialEndDanish = new Date(trialEnd.toLocaleString("en-US", {timeZone: "Europe/Copenhagen"}));
       
       await supabaseService.from('subscribers').upsert({
         email: user.email,
@@ -87,7 +90,7 @@ serve(async (req) => {
         subscribed: false,
         status: 'trial',
         trial_end: trialEnd.toISOString(),
-        trial_end_local: trialEnd.toISOString(),
+        trial_end_local: trialEndDanish.toISOString(),
         subscription_tier: null,
         subscription_end: null,
         billing_interval: 'monthly',
