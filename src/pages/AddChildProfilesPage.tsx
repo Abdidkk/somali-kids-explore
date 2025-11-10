@@ -51,13 +51,7 @@ export default function AddChildProfilesPage() {
       setShowPaymentSuccess(true);
       toast.success('Betaling gennemført! Du kan nu oprette flere børneprofiler.');
       
-      // Update max children from localStorage or refresh subscription
-      const currentMax = localStorage.getItem("maxChildrenPaid");
-      if (currentMax) {
-        const newMax = parseInt(currentMax) + 1;
-        localStorage.setItem("maxChildrenPaid", newMax.toString());
-        setMaxChildrenPaid(newMax);
-      }
+
       
       // Remove payment parameter from URL
       const newParams = new URLSearchParams(searchParams);
@@ -73,19 +67,40 @@ export default function AddChildProfilesPage() {
     }
   }, [searchParams, navigate]);
 
-  // Hent det betalte antal børn fra localStorage og håndter eksisterende børn
-  useEffect(() => {
-    const stored = localStorage.getItem("maxChildrenPaid");
-    const storedValue = stored ? parseInt(stored) : 0;
+  // Hent det betalte antal børn fra databasen
+useEffect(() => {
+  const fetchMaxChildren = async () => {
+    if (!user) return;
     
-    // Hvis brugeren ikke har betalt (0), tillad kun 0 børn gratis
-    // Basic plan (45 kr) inkluderer allerede 1 barn + ekstra børn
-    if (storedValue === 0) {
+    try {
+      const { data, error } = await supabase
+        .from('subscribers')
+        .select('num_kids')
+        .eq('user_id', user.id)
+        .single();
+      
+      if (error) {
+        console.error('Error fetching num_kids:', error);
+        setMaxChildrenPaid(0);
+        return;
+      }
+      
+      // num_kids fra databasen inkluderer 1 barn for Basic plan (45 kr) + ekstra børn
+      // Hvis brugeren har købt Basic plan for 1 barn, er num_kids = 1
+      // Hvis de tilføjer 1 ekstra barn, bliver num_kids = 2, osv.
+      const numKids = data?.num_kids ?? 0;
+      setMaxChildrenPaid(numKids);
+      
+      console.log('[AddChildProfilesPage] Max children from DB:', numKids);
+    } catch (error) {
+      console.error('Error fetching max children:', error);
       setMaxChildrenPaid(0);
-    } else {
-      setMaxChildrenPaid(storedValue);
     }
-  }, [children]);
+  };
+  
+  fetchMaxChildren();
+}, [user, children]);
+
 
   const addForm = () => {
     // Tjek om vi har nået grænsen for betalte børneprofiler
@@ -222,14 +237,15 @@ export default function AddChildProfilesPage() {
             Opret personlige profiler for dine børn så de kan lære på deres eget niveau
           </p>
           {maxChildrenPaid !== null && (
-            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
-              {maxChildrenPaid === 0 ? (
-                <span>Du skal købe en plan for at oprette børneprofiler. <strong>Basic planen inkluderer 1 barn.</strong></span>
-              ) : (
-                <span>Du har betalt for <strong>{maxChildrenPaid}</strong> børneprofiler. Du har allerede oprettet <strong>{children.length}</strong>.</span>
-              )}
-            </div>
-          )}
+  <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
+    {maxChildrenPaid === 0 ? (
+      <span>Du skal købe en plan for at oprette børneprofiler. <strong>Basic planen (45 kr/måned) inkluderer 1 barn.</strong></span>
+    ) : (
+      <span>Du kan oprette op til <strong>{maxChildrenPaid}</strong> børneprofiler. Du har allerede oprettet <strong>{children.length}</strong>.</span>
+    )}
+  </div>
+)}
+
         </div>
 
         <div className="bg-card rounded-xl shadow-lg p-6 border">
