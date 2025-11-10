@@ -70,6 +70,7 @@ async function findAndUpdateSubscriber(
       // Update with both the data and the stripe_customer_id if we have it
       const finalUpdateData = { ...updateData };
       if (customerId) finalUpdateData.stripe_customer_id = customerId;
+      if (userId) finalUpdateData.user_id = userId; // Auto-heal user_id
       
       const { error: updateError } = await supabase
         .from('subscribers')
@@ -268,13 +269,14 @@ serve(async (req) => {
 });
 
 async function handleCheckoutCompleted(supabase: any, stripe: Stripe, session: Stripe.Checkout.Session) {
-  const { user_id, num_kids, unified_pricing } = (session.metadata || {}) as any;
+  const { user_id, num_kids, unified_pricing, type } = (session.metadata || {}) as any;
 
   console.log(`[CHECKOUT-DEBUG] 🛒 Processing checkout session: ${session.id}`);
   console.log(`[CHECKOUT-DEBUG] Mode: ${session.mode}`);
   console.log(`[CHECKOUT-DEBUG] Customer ID: ${session.customer}`);
   console.log(`[CHECKOUT-DEBUG] User ID: ${user_id}`);
   console.log(`[CHECKOUT-DEBUG] Unified pricing: ${unified_pricing}`);
+  console.log(`[CHECKOUT-DEBUG] Type: ${type}`);
 
   const customerId = (session.customer as string) || null;
   let email = session.customer_email || session.customer_details?.email || null;
@@ -287,6 +289,63 @@ async function handleCheckoutCompleted(supabase: any, stripe: Stripe, session: S
   if (!user_id && !email && !customerId) {
     console.error('[CHECKOUT-DEBUG] ❌ Missing all identifiers - cannot process');
     return;
+  }
+
+  // Handle "add_child" type - one-time purchase to increase num_kids
+  if (type === 'add_child') {
+    console.log(`[CHECKOUT-DEBUG] 🧒 ADD CHILD MODE - incrementing num_kids`);
+    
+    try {
+      // Find the subscriber
+      const { data: subscriber, error: findError } = await supabase
+        .from('subscribers')
+        .select('id, num_kids, email, user_id')
+        .or(`stripe_customer_id.eq.${customerId},email.eq.${email},user_id.eq.${user_id}`)
+        .maybeSingle();
+      
+      if (findError || !subscriber) {
+        console.error('[CHECKOUT-DEBUG] ❌ Could not find subscriber for add_child');
+        return;
+      }
+      
+      const currentNumKids = subscriber.num_kids ?? 0;
+      const newNumKids = currentNumKids + 1;
+      
+      console.log(`[CHECKOUT-DEBUG] Current num_kids: ${currentNumKids}, New num_kids: ${newNumKids}`);
+      
+      // Update num_kids
+      const { error: updateError } = await supabase
+        .from('subscribers')
+        .update({ 
+          num_kids: newNumKids,
+          updated_at: new Date().toISOString() 
+        })
+        .eq('id', subscriber.id);
+      
+      if (updateError) {
+        console.error('[CHECKOUT-DEBUG] ❌ Failed to update num_kids:', updateError);
+        return;
+      }
+      
+      console.log(`[CHECKOUT-DEBUG] ✅ Successfully increased num_kids to ${newNumKids}`);
+      
+      // Log event
+      await supabase.rpc('log_event', {
+        p_event_type: 'add_child_granted',
+        p_user_id: user_id || null,
+        p_metadata: {
+          session_id: session.id,
+          previous_num_kids: currentNumKids,
+          new_num_kids: newNumKids,
+        },
+        p_severity: 'INFO'
+      });
+      
+    } catch (error) {
+      console.error('[CHECKOUT-DEBUG] ❌ Error in add_child handler:', error);
+    }
+    
+    return; // Exit early for add_child
   }
 
   // Handle subscription mode with unified pricing

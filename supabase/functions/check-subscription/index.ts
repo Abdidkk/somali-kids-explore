@@ -110,6 +110,21 @@ serve(async (req) => {
         status: 200,
       });
     }
+    
+    // Auto-healing: Hvis user_id mangler eller er forkert, opdater den
+    if (!existing.user_id || existing.user_id !== user.id) {
+      logStep('Auto-healing: Updating user_id', { 
+        current_user_id: existing.user_id, 
+        new_user_id: user.id 
+      });
+      
+      await supabaseService.from('subscribers')
+        .update({ 
+          user_id: user.id,
+          updated_at: new Date().toISOString() 
+        })
+        .eq('id', existing.id);
+    }
 
     // Return the current DB state
     logStep('Returning subscriber state from DB', { subscribed: existing.subscribed, tier: existing.subscription_tier });

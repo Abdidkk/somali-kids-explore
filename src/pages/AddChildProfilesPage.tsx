@@ -67,39 +67,69 @@ export default function AddChildProfilesPage() {
     }
   }, [searchParams, navigate]);
 
-  // Hent det betalte antal børn fra databasen
-useEffect(() => {
-  const fetchMaxChildren = async () => {
-    if (!user) return;
-    
-    try {
-      const { data, error } = await supabase
-        .from('subscribers')
-        .select('num_kids')
-        .eq('user_id', user.id)
-        .single();
+  // Hent det betalte antal børn fra databasen - robust fetch med auto-healing
+  useEffect(() => {
+    const fetchMaxChildren = async () => {
+      if (!user?.email) return;
       
-      if (error) {
-        console.error('Error fetching num_kids:', error);
+      try {
+        console.log('[AddChildProfilesPage] Fetching num_kids for user:', user.id, user.email);
+        
+        // Strategi 1: Hent via user_id
+        const { data: byUser, error: e1 } = await supabase
+          .from('subscribers')
+          .select('id, user_id, email, num_kids')
+          .eq('user_id', user.id)
+          .maybeSingle();
+        
+        if (byUser) {
+          console.log('[AddChildProfilesPage] ✅ Found by user_id:', byUser);
+          setMaxChildrenPaid(byUser.num_kids ?? 0);
+          return;
+        }
+        
+        // Strategi 2: Hvis ikke fundet via user_id, prøv via email (fallback)
+        console.log('[AddChildProfilesPage] Not found by user_id, trying email...');
+        const { data: byEmail, error: e2 } = await supabase
+          .from('subscribers')
+          .select('id, user_id, email, num_kids')
+          .eq('email', user.email)
+          .maybeSingle();
+        
+        if (byEmail) {
+          console.log('[AddChildProfilesPage] ✅ Found by email:', byEmail);
+          
+          // Auto-healing: Hvis vi fandt via email men user_id er forkert, opdater den
+          if (byEmail.user_id !== user.id) {
+            console.log('[AddChildProfilesPage] 🔧 Auto-healing: Updating user_id from', byEmail.user_id, 'to', user.id);
+            const { error: updateError } = await supabase
+              .from('subscribers')
+              .update({ user_id: user.id, updated_at: new Date().toISOString() })
+              .eq('id', byEmail.id);
+            
+            if (updateError) {
+              console.error('[AddChildProfilesPage] Failed to update user_id:', updateError);
+            } else {
+              console.log('[AddChildProfilesPage] ✅ user_id updated successfully');
+            }
+          }
+          
+          setMaxChildrenPaid(byEmail.num_kids ?? 0);
+          return;
+        }
+        
+        // Ingen subscriber row fundet - sæt til 0
+        console.log('[AddChildProfilesPage] No subscriber found - setting maxChildrenPaid to 0');
         setMaxChildrenPaid(0);
-        return;
+        
+      } catch (error) {
+        console.error('[AddChildProfilesPage] Error fetching num_kids:', error);
+        setMaxChildrenPaid(0);
       }
-      
-      // num_kids fra databasen inkluderer 1 barn for Basic plan (45 kr) + ekstra børn
-      // Hvis brugeren har købt Basic plan for 1 barn, er num_kids = 1
-      // Hvis de tilføjer 1 ekstra barn, bliver num_kids = 2, osv.
-      const numKids = data?.num_kids ?? 0;
-      setMaxChildrenPaid(numKids);
-      
-      console.log('[AddChildProfilesPage] Max children from DB:', numKids);
-    } catch (error) {
-      console.error('Error fetching max children:', error);
-      setMaxChildrenPaid(0);
-    }
-  };
-  
-  fetchMaxChildren();
-}, [user, children]);
+    };
+    
+    fetchMaxChildren();
+  }, [user, children]);
 
 
   const addForm = () => {
