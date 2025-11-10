@@ -2,6 +2,19 @@ import Stripe from 'https://esm.sh/stripe@14.21.0';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 import { serve } from 'https://deno.land/std@0.190.0/http/server.ts';
 
+// Sanitize update data to only include allowed fields
+function sanitizeSubscriberUpdate(data: any): any {
+  const allowedFields = [
+    'subscribed', 'status', 'trial_end', 'trial_end_local', 
+    'subscription_tier', 'billing_interval', 'num_kids', 
+    'updated_at', 'stripe_customer_id', 'user_id', 'email',
+    'subscription_end'
+  ];
+  return Object.fromEntries(
+    Object.entries(data).filter(([key]) => allowedFields.includes(key))
+  );
+}
+
 // Helper function to get customer email from Stripe
 async function getCustomerEmail(stripe: Stripe, customerId: string): Promise<string | null> {
   try {
@@ -39,7 +52,7 @@ async function findAndUpdateSubscriber(
       console.log(`[SUBSCRIBER-DEBUG] ✅ Found subscriber by customer_id:`, subscriber);
       const { error: updateError } = await supabase
         .from('subscribers')
-        .update(updateData)
+        .update(sanitizeSubscriberUpdate(updateData))
         .eq('stripe_customer_id', customerId);
       
       if (updateError) {
@@ -74,7 +87,7 @@ async function findAndUpdateSubscriber(
       
       const { error: updateError } = await supabase
         .from('subscribers')
-        .update(finalUpdateData)
+        .update(sanitizeSubscriberUpdate(finalUpdateData))
         .eq('email', resolvedEmail);
       
       if (updateError) {
@@ -104,7 +117,7 @@ async function findAndUpdateSubscriber(
       
       const { error: updateError } = await supabase
         .from('subscribers')
-        .update(finalUpdateData)
+        .update(sanitizeSubscriberUpdate(finalUpdateData))
         .eq('user_id', userId);
       
       if (updateError) {
@@ -390,7 +403,6 @@ async function handleCheckoutCompleted(supabase: any, stripe: Stripe, session: S
         subscription_tier: 'standard',
         billing_interval: 'monthly',
         num_kids: parseInt(num_kids || '1', 10),
-        stripe_subscription_id: subscription.id,
         updated_at: new Date().toISOString(),
       };
 
@@ -405,12 +417,16 @@ async function handleCheckoutCompleted(supabase: any, stripe: Stripe, session: S
 
       if (!updateSuccess && email) {
         console.log(`[CHECKOUT-DEBUG] 🆕 Creating new subscriber for trial`);
-        await supabase.from('subscribers').upsert({
+        const newSubscriberData = {
           email,
           user_id: user_id || null,
           stripe_customer_id: customerId,
           ...subscriberUpdateData
-        }, { onConflict: 'email' });
+        };
+        await supabase.from('subscribers').upsert(
+          sanitizeSubscriberUpdate(newSubscriberData), 
+          { onConflict: 'email' }
+        );
       }
 
       // Insert transaction
@@ -514,6 +530,37 @@ async function handlePaymentSucceeded(supabase: any, stripe: Stripe, invoice: St
 
       if (updateSuccess) {
         console.log(`[PAYMENT-DEBUG] ✅ Subscriber activated via payment succeeded`);
+        
+        // Check if num_kids is missing or 0 - fallback to fetch from Stripe subscription
+        const { data: subscriber } = await supabase
+          .from('subscribers')
+          .select('id, num_kids')
+          .eq('stripe_customer_id', customerId)
+          .maybeSingle();
+        
+        if (subscriber && (!subscriber.num_kids || subscriber.num_kids === 0) && invoice.subscription) {
+          console.log(`[PAYMENT-DEBUG] ⚠️ num_kids is ${subscriber.num_kids}, fetching from Stripe subscription`);
+          try {
+            const subscription = await stripe.subscriptions.retrieve(invoice.subscription as string);
+            const numKidsFromPrice = parseInt(
+              (subscription.items.data[0]?.price?.metadata?.num_kids as string) || '1', 
+              10
+            );
+            console.log(`[PAYMENT-DEBUG] Found num_kids in Stripe metadata: ${numKidsFromPrice}`);
+            
+            await supabase
+              .from('subscribers')
+              .update({ 
+                num_kids: numKidsFromPrice, 
+                updated_at: new Date().toISOString() 
+              })
+              .eq('id', subscriber.id);
+            
+            console.log(`[PAYMENT-DEBUG] ✅ Updated num_kids to ${numKidsFromPrice}`);
+          } catch (error) {
+            console.error(`[PAYMENT-DEBUG] ❌ Failed to fetch/update num_kids:`, error);
+          }
+        }
         
         // Log the activation
         await supabase.rpc('log_event', {
