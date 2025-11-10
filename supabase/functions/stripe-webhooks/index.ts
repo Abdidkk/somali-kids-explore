@@ -342,6 +342,27 @@ async function handleCheckoutCompleted(supabase: any, stripe: Stripe, session: S
       
       console.log(`[CHECKOUT-DEBUG] ✅ Successfully increased num_kids to ${newNumKids}`);
       
+      // Log transaction for add_child payment
+      const addChildAmount = session.amount_total ? session.amount_total / 100 : 15;
+      await supabase.from('transactions').insert({
+        user_id: subscriber.user_id || user_id || null,
+        stripe_session_id: session.id,
+        stripe_transaction_id: null,
+        amount: addChildAmount,
+        currency: 'DKK',
+        status: 'completed',
+        num_kids: newNumKids,
+        subscription_tier: 'extra_child',
+        billing_interval: null,
+        metadata: {
+          type: 'add_child',
+          previous_num_kids: currentNumKids,
+          new_num_kids: newNumKids,
+        },
+      });
+      
+      console.log(`[CHECKOUT-DEBUG] ✅ Transaction logged for add_child: ${addChildAmount} kr`);
+      
       // Log event
       await supabase.rpc('log_event', {
         p_event_type: 'add_child_granted',
@@ -350,6 +371,7 @@ async function handleCheckoutCompleted(supabase: any, stripe: Stripe, session: S
           session_id: session.id,
           previous_num_kids: currentNumKids,
           new_num_kids: newNumKids,
+          amount: addChildAmount,
         },
         p_severity: 'INFO'
       });
