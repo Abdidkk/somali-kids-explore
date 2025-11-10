@@ -451,22 +451,61 @@ async function handleCheckoutCompleted(supabase: any, stripe: Stripe, session: S
         );
       }
 
-      // Insert transaction
-      await supabase.from('transactions').insert({
-        user_id: user_id || null,
-        stripe_session_id: session.id,
-        stripe_transaction_id: subscriptionId,
-        amount: subscriptionAmount,
-        currency: 'DKK',
-        status: 'completed',
-        num_kids: parseInt(num_kids || '1', 10),
-        subscription_tier: 'standard',
-        billing_interval: 'monthly',
-        metadata: {
-          unified_pricing: true,
-          subscription_id: subscriptionId,
-        },
-      });
+      // Try to update existing pending transaction first
+      const { data: existingTransaction } = await supabase
+        .from('transactions')
+        .select('id, status, amount')
+        .eq('stripe_session_id', session.id)
+        .eq('status', 'pending')
+        .maybeSingle();
+
+      if (existingTransaction) {
+        // Update existing pending transaction to completed
+        const { error: updateError } = await supabase
+          .from('transactions')
+          .update({
+            stripe_transaction_id: subscriptionId,
+            status: 'completed',
+            amount: subscriptionAmount,
+            updated_at: new Date().toISOString(),
+            metadata: {
+              unified_pricing: true,
+              subscription_id: subscriptionId,
+              updated_from_pending: true,
+            },
+          })
+          .eq('id', existingTransaction.id);
+        
+        if (updateError) {
+          console.error(`[CHECKOUT-DEBUG] ❌ Failed to update transaction:`, updateError);
+        } else {
+          console.log(`[CHECKOUT-DEBUG] ✅ Updated existing transaction ${existingTransaction.id} from pending to completed`);
+        }
+      } else {
+        // No pending transaction found, create new one (fallback for old sessions)
+        const { error: insertError } = await supabase.from('transactions').insert({
+          user_id: user_id || null,
+          stripe_session_id: session.id,
+          stripe_transaction_id: subscriptionId,
+          amount: subscriptionAmount,
+          currency: 'DKK',
+          status: 'completed',
+          num_kids: parseInt(num_kids || '1', 10),
+          subscription_tier: 'standard',
+          billing_interval: 'monthly',
+          metadata: {
+            unified_pricing: true,
+            subscription_id: subscriptionId,
+            created_without_pending: true,
+          },
+        });
+        
+        if (insertError) {
+          console.error(`[CHECKOUT-DEBUG] ❌ Failed to insert transaction:`, insertError);
+        } else {
+          console.log(`[CHECKOUT-DEBUG] ✅ Created new completed transaction (no pending found)`);
+        }
+      }
       
       console.log(`[CHECKOUT-DEBUG] ✅ 24-hour trial activated successfully`);
       
