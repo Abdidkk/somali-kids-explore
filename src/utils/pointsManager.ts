@@ -408,6 +408,7 @@ export class PointsManager {
       }
     } catch (error) {
       console.error('Error toggling category:', error);
+      throw error;
     }
   }
 
