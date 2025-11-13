@@ -154,8 +154,43 @@ const DashboardPage = () => {
         async (payload) => {
           console.log('Real-time progress update:', payload);
           refreshData(); // Refresh all children data
+        
+          // Genindlæs categories for valgt barn
+          if (user && selectedChild) {
+            const childId = selectedChildId ?? (await resolveChildProfileIdByName(user.id, selectedChild));
+            let progressRowsQuery = supabase
+              .from('progress')
+              .select('*')
+              .eq('user_id', user.id);
+        
+            if (childId) {
+              progressRowsQuery = progressRowsQuery.eq('child_profile_id', childId);
+            } else {
+              progressRowsQuery = progressRowsQuery.eq('child_name', selectedChild);
+            }
+        
+            const { data: progressRows } = await progressRowsQuery;
+        
+            const categoryMap = new Map();
+            progressRows?.forEach((row: any) => {
+              categoryMap.set(row.category, {
+                ...row,
+                enabled: row.category_enabled
+              });
+            });
+        
+            const allCategories = learningCategories.map(cat => cat.name);
+            const categoryList = allCategories.map(cat => ({
+              name: cat,
+              enabled: categoryMap.get(cat)?.enabled ?? true,
+              points: categoryMap.get(cat)?.total_points ?? 0,
+              activities: categoryMap.get(cat)?.activities_completed ?? 0
+            }));
+        
+            setCategories(categoryList);
+          }
         }
-      )
+      )        
       .subscribe();
 
     const quizResultsChannel = supabase
@@ -182,21 +217,61 @@ const DashboardPage = () => {
   }, [user, refreshData]);
 
   const handleCategoryToggle = async (categoryName: string, enabled: boolean) => {
+    const prevCategories = categories; // Gem backup til rollback
+    
     try {
-      await PointsManager.toggleCategory(categoryName, enabled);
-      
+      // Optimistisk UI opdatering
       setCategories(prev => 
         prev.map(cat => 
           cat.name === categoryName ? { ...cat, enabled } : cat
         )
       );
-
+  
+      await PointsManager.toggleCategory(categoryName, enabled);
+  
+      // Genindlæs fra DB for at være 100% sikker
+      if (user) {
+        const childId = selectedChildId ?? (await resolveChildProfileIdByName(user.id, selectedChild));
+        let progressRowsQuery = supabase
+          .from('progress')
+          .select('*')
+          .eq('user_id', user.id);
+  
+        if (childId) {
+          progressRowsQuery = progressRowsQuery.eq('child_profile_id', childId);
+        } else {
+          progressRowsQuery = progressRowsQuery.eq('child_name', selectedChild);
+        }
+  
+        const { data: progressRows } = await progressRowsQuery;
+  
+        const categoryMap = new Map();
+        progressRows?.forEach((row: any) => {
+          categoryMap.set(row.category, {
+            ...row,
+            enabled: row.category_enabled
+          });
+        });
+  
+        const allCategories = learningCategories.map(cat => cat.name);
+        const categoryList = allCategories.map(cat => ({
+          name: cat,
+          enabled: categoryMap.get(cat)?.enabled ?? true,
+          points: categoryMap.get(cat)?.total_points ?? 0,
+          activities: categoryMap.get(cat)?.activities_completed ?? 0
+        }));
+  
+        setCategories(categoryList);
+      }
+  
       toast({
         title: enabled ? "Kategori aktiveret" : "Kategori deaktiveret", 
         description: `${categoryName} er nu ${enabled ? 'tilgængelig' : 'skjult'} for ${selectedChild}`,
       });
     } catch (error) {
       console.error('Error toggling category:', error);
+      // Rollback til tidligere state
+      setCategories(prevCategories);
       toast({
         title: "Fejl",
         description: "Kunne ikke opdatere kategori-indstillinger",
@@ -204,6 +279,7 @@ const DashboardPage = () => {
       });
     }
   };
+  
 
   const handleChildSelect = (childName: string) => {
     setSelectedChild(childName);
