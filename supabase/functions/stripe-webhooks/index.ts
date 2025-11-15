@@ -376,6 +376,30 @@ async function handleCheckoutCompleted(supabase: any, stripe: Stripe, session: S
         p_severity: 'INFO'
       });
       
+      // Activate children based on new num_kids count
+      if (subscriber.user_id) {
+        const totalAllowedKids = newNumKids + 1; // +1 for base subscription
+        
+        const { data: children } = await supabase
+          .from('child_profiles')
+          .select('id')
+          .eq('parent_user_id', subscriber.user_id)
+          .order('created_at', { ascending: true });
+        
+        if (children) {
+          const activeChildIds = children.slice(0, totalAllowedKids).map((c: any) => c.id);
+          
+          if (activeChildIds.length > 0) {
+            await supabase
+              .from('child_profiles')
+              .update({ is_active: true })
+              .in('id', activeChildIds);
+            
+            console.log(`[CHECKOUT-DEBUG] ✅ Activated ${activeChildIds.length} children after payment`);
+          }
+        }
+      }
+      
     } catch (error) {
       console.error('[CHECKOUT-DEBUG] ❌ Error in add_child handler:', error);
     }
@@ -702,7 +726,7 @@ async function handleSubscriptionUpdated(supabase: any, subscription: Stripe.Sub
   const subscriptionEnd = subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null;
 
   // Update subscribers row for this customer
-  await supabase.from('subscribers')
+  const { data: subscriberData } = await supabase.from('subscribers')
     .update({
       stripe_customer_id: customerId,
       subscribed: isActive,
@@ -712,7 +736,43 @@ async function handleSubscriptionUpdated(supabase: any, subscription: Stripe.Sub
       num_kids: numKids,
       updated_at: new Date().toISOString(),
     })
-    .eq('stripe_customer_id', customerId);
+    .eq('stripe_customer_id', customerId)
+    .select('user_id, num_kids')
+    .single();
+
+  // Update children activation status based on num_kids
+  if (subscriberData?.user_id) {
+    const totalAllowedKids = (subscriberData.num_kids || 0) + 1; // +1 for base subscription
+    
+    // Fetch all children sorted by created_at (oldest first)
+    const { data: children } = await supabase
+      .from('child_profiles')
+      .select('id')
+      .eq('parent_user_id', subscriberData.user_id)
+      .order('created_at', { ascending: true });
+    
+    if (children) {
+      // Activate the first N children
+      const activeChildIds = children.slice(0, totalAllowedKids).map((c: any) => c.id);
+      const inactiveChildIds = children.slice(totalAllowedKids).map((c: any) => c.id);
+      
+      if (activeChildIds.length > 0) {
+        await supabase
+          .from('child_profiles')
+          .update({ is_active: true })
+          .in('id', activeChildIds);
+      }
+      
+      if (inactiveChildIds.length > 0) {
+        await supabase
+          .from('child_profiles')
+          .update({ is_active: false })
+          .in('id', inactiveChildIds);
+      }
+      
+      console.log(`[SUBSCRIPTION-UPDATE] Activated ${activeChildIds.length} children, deactivated ${inactiveChildIds.length}`);
+    }
+  }
 
   await supabase.rpc('log_event', {
     p_event_type: 'stripe_subscription_updated',
@@ -764,6 +824,36 @@ async function handleSubscriptionDeleted(supabase: any, subscription: Stripe.Sub
       console.error(`[SUBSCRIPTION-DELETE] Failed to update subscriber:`, updateError);
     } else {
       console.log(`[SUBSCRIPTION-DELETE] Subscriber status updated to cancelled`);
+    }
+
+    // Deactivate all children except the first one (base subscription includes 1 child)
+    if (subscriber.user_id) {
+      const { data: children } = await supabase
+        .from('child_profiles')
+        .select('id')
+        .eq('parent_user_id', subscriber.user_id)
+        .order('created_at', { ascending: true });
+      
+      if (children && children.length > 0) {
+        const firstChild = children[0].id;
+        const otherChildren = children.slice(1).map((c: any) => c.id);
+        
+        // First child remains active
+        await supabase
+          .from('child_profiles')
+          .update({ is_active: true })
+          .eq('id', firstChild);
+        
+        // All other children are deactivated
+        if (otherChildren.length > 0) {
+          await supabase
+            .from('child_profiles')
+            .update({ is_active: false })
+            .in('id', otherChildren);
+          
+          console.log(`[SUBSCRIPTION-DELETE] Deactivated ${otherChildren.length} extra children`);
+        }
+      }
     }
 
     await supabase.rpc('log_event', {

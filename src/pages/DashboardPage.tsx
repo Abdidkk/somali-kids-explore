@@ -7,13 +7,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import SubscriptionStatus from "@/components/SubscriptionStatus";
 import FamilyProgressOverview from "@/components/dashboard/FamilyProgressOverview";
 import ChildProgressChart from "@/components/dashboard/ChildProgressChart";
 import ChildSelector from "@/components/dashboard/ChildSelector";
 import { useMultiChildProgress } from "@/hooks/useMultiChildProgress";
 import { ChildrenDisplay } from "@/components/kids/ChildrenDisplay";
-import { BookOpen, Users, Settings, Activity, Award, Clock } from "lucide-react";
+import { BookOpen, Users, Settings, Activity, Award, Clock, AlertCircle, Lock } from "lucide-react";
 import { PointsManager } from "@/utils/pointsManager";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -34,6 +35,11 @@ const DashboardPage = () => {
   const [selectedChild, setSelectedChild] = useState<string>("");
   const [selectedChildId, setSelectedChildId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isPaymentLoading, setIsPaymentLoading] = useState(false);
+
+  // Get selected child data including is_active status
+  const selectedChildData = childProfiles.find(c => c.name === selectedChild);
+  const isChildActive = selectedChildData?.is_active ?? true;
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -285,6 +291,37 @@ const DashboardPage = () => {
     setSelectedChild(childName);
   };
 
+  const handleReactivateChild = async () => {
+    try {
+      setIsPaymentLoading(true);
+      
+      // Call the existing add-child-payment edge function
+      const { data: sessionData } = await supabase.auth.getSession();
+      const { data, error } = await supabase.functions.invoke('add-child-payment', {
+        body: { billingInterval: 'month' },
+        headers: {
+          Authorization: `Bearer ${sessionData.session?.access_token}`,
+        },
+      });
+
+      if (error) throw error;
+
+      // Redirect to Stripe checkout
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error('Error reactivating child:', error);
+      toast({
+        title: "Fejl",
+        description: "Der opstod en fejl ved aktivering af barnet. Prøv igen.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsPaymentLoading(false);
+    }
+  };
+
   if (authLoading || loading || childrenLoading || childProfilesLoading || !selectedChild) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -475,15 +512,47 @@ const DashboardPage = () => {
                 Gå til læringsmodulet og start lektioner
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
+              {!isChildActive && selectedChildData && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>{selectedChildData.name} er inaktiv</AlertTitle>
+                  <AlertDescription className="space-y-3">
+                    <p>Dette barn er sat i bero, da der ikke længere betales for det ekstra abonnement.</p>
+                    <Button 
+                      onClick={handleReactivateChild}
+                      disabled={isPaymentLoading}
+                      variant="outline"
+                      size="sm"
+                    >
+                      {isPaymentLoading ? "Behandler..." : `Aktiver ${selectedChildData.name} igen (15 kr/måned)`}
+                    </Button>
+                  </AlertDescription>
+                </Alert>
+              )}
+              
               <Button 
                 onClick={() => navigate('/learning')}
                 variant="outline"
                 className="w-full"
-                disabled={!subscribed && !inTrial}
+                disabled={(!subscribed && !inTrial) || !isChildActive}
               >
-                <BookOpen className="mr-2 h-4 w-4" />
-                {!subscribed && !inTrial ? "Kræver abonnement" : "Start læring"}
+                {!isChildActive ? (
+                  <>
+                    <Lock className="mr-2 h-4 w-4" />
+                    Barn inaktivt
+                  </>
+                ) : (!subscribed && !inTrial) ? (
+                  <>
+                    <Lock className="mr-2 h-4 w-4" />
+                    Kræver abonnement
+                  </>
+                ) : (
+                  <>
+                    <BookOpen className="mr-2 h-4 w-4" />
+                    Start læring
+                  </>
+                )}
               </Button>
             </CardContent>
           </Card>
