@@ -65,7 +65,7 @@ export type Database = {
           created_at: string
           event_type: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           metadata: Json | null
           severity: string | null
           user_agent: string | null
@@ -76,7 +76,7 @@ export type Database = {
           created_at?: string
           event_type: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           severity?: string | null
           user_agent?: string | null
@@ -87,7 +87,7 @@ export type Database = {
           created_at?: string
           event_type?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           severity?: string | null
           user_agent?: string | null
@@ -407,10 +407,7 @@ export type Database = {
         Args: { p_required_permission: string }
         Returns: boolean
       }
-      danish_now: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      danish_now: { Args: never; Returns: string }
       is_trial_expired_danish: {
         Args: { trial_end_time: string }
         Returns: boolean
