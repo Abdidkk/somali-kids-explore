@@ -9,6 +9,7 @@ export interface Child {
   avatar_color: string;
   created_at: string;
   updated_at: string;
+  is_active: boolean;
 }
 
 export function useChildren() {

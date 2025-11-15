@@ -13,6 +13,7 @@ export interface ChildProfile {
   avatar_url?: string;
   special_needs?: string;
   preferred_learning_style: 'visuel' | 'auditiv' | 'kinæstetisk' | 'læse/skrive';
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }

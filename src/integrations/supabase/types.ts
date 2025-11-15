@@ -22,6 +22,7 @@ export type Database = {
           created_at: string | null
           id: string
           interests: string[] | null
+          is_active: boolean | null
           learning_level: string | null
           name: string
           parent_user_id: string
@@ -36,6 +37,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           interests?: string[] | null
+          is_active?: boolean | null
           learning_level?: string | null
           name: string
           parent_user_id: string
@@ -50,6 +52,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           interests?: string[] | null
+          is_active?: boolean | null
           learning_level?: string | null
           name?: string
           parent_user_id?: string
