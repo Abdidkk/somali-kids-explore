@@ -15,7 +15,9 @@ interface SocialAuthButtonsProps {
 export function SocialAuthButtons({ mode }: SocialAuthButtonsProps) {
   const { handleSocialAuth } = useAuthOperations();
 
-  const redirectPath = mode === 'signup' ? '/choose-plan' : '/dashboard';
+  // Always redirect to choose-plan for social auth
+  // RouteGuard will handle existing paid users
+  const redirectPath = '/choose-plan';
 
   return (
     <div className="flex flex-col gap-3">

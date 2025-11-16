@@ -36,14 +36,17 @@ export function RouteGuard({
         
       case 'authenticated':
       case 'needs_payment':
-        // Allow onboarding pages even if payment is not completed yet
-        if (requirePayment) {
+        // Users who haven't paid should be redirected to choose-plan
+        if (requirePayment || requireOnboarding) {
           navigate('/choose-plan');
         }
         break;
         
       case 'paid':
-        // Fully onboarded and paid - allow access
+        // Fully paid but not onboarded (no children) - redirect to add children
+        if (requireOnboarding) {
+          navigate('/add-children');
+        }
         break;
         
       case 'onboarding':
