@@ -1,10 +1,10 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Crown, Plus, Minus } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useChildren } from "@/hooks/useChildren";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,19 @@ const ChoosePlanPage = () => {
   const [numKids, setNumKids] = useState(1); // Default to 1 child (included)
   const { user } = useAuth();
   const { subscribed } = useSubscription();
+  const { children } = useChildren();
   const navigate = useNavigate();
+
+  // Redirect subscribed users away from this page
+  useEffect(() => {
+    if (subscribed) {
+      if (children.length === 0) {
+        navigate('/add-children');
+      } else {
+        navigate('/dashboard');
+      }
+    }
+  }, [subscribed, children, navigate]);
 
   const handleSubscribe = async () => {
     if (!user) {
