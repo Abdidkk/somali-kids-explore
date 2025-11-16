@@ -48,7 +48,7 @@ const App = () => (
               <Route path="/email-confirmation" element={<EmailConfirmationPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/choose-plan" element={
-                <RouteGuard requireAuth>
+                <RouteGuard requireAuth requirePayment>
                   <ChoosePlanPage />
                 </RouteGuard>
               } />
