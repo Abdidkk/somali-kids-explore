@@ -29,12 +29,12 @@ export default function AuthPage() {
     }
   }, [searchParams]);
 
-  // Redirect if already logged in
+  // Redirect if already logged in - but respect OAuth flow
   useEffect(() => {
-    if (user) {
+    if (user && !searchParams.get('from_oauth')) {
       navigate('/dashboard');
     }
-  }, [user, navigate]);
+  }, [user, navigate, searchParams]);
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-b from-blue-50 via-white to-white px-4 py-12 animate-fade-in">
