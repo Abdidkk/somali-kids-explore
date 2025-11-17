@@ -18,16 +18,13 @@ const ChoosePlanPage = () => {
   const { children } = useChildren();
   const navigate = useNavigate();
 
-  // Redirect subscribed users away from this page
+  // Backup redirect for subscribed users (RouteGuard should handle this)
   useEffect(() => {
-    if (subscribed) {
-      if (children.length === 0) {
-        navigate('/add-children');
-      } else {
-        navigate('/dashboard');
-      }
-    }
-  }, [subscribed, children, navigate]);
+    if (!subscribed) return;
+    if (window.location.pathname !== '/choose-plan') return;
+    const hasChildren = (children?.length || 0) > 0;
+    navigate(hasChildren ? '/dashboard' : '/add-children', { replace: true });
+  }, [subscribed, children?.length, navigate]);
 
   const handleSubscribe = async () => {
     if (!user) {
