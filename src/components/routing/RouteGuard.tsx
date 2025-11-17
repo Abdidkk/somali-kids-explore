@@ -38,19 +38,25 @@ export function RouteGuard({
       case 'needs_payment':
         // Users who haven't paid should be redirected to choose-plan
         if (requirePayment || requireOnboarding) {
-          navigate('/choose-plan');
+          navigate('/choose-plan', { replace: true });
         }
         break;
         
       case 'paid':
-        // Fully paid but not onboarded (no children) - redirect to add children
-        if (requireOnboarding) {
-          navigate('/add-children');
+        // Paid users should never see choose-plan
+        if (currentPath === '/choose-plan') {
+          navigate('/dashboard', { replace: true });
         }
         break;
         
       case 'onboarding':
-        // User is completing onboarding - allow access to learning page
+        // Users completing onboarding should be on add-children
+        if (requireOnboarding && currentPath !== '/add-children') {
+          navigate('/add-children', { replace: true });
+        }
+        if (currentPath === '/choose-plan') {
+          navigate('/add-children', { replace: true });
+        }
         break;
     }
 
