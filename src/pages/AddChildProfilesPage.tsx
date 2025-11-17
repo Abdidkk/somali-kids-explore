@@ -36,6 +36,10 @@ export default function AddChildProfilesPage() {
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [maxChildrenPaid, setMaxChildrenPaid] = useState<number | null>(null);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
+  const [isPollingPlan, setIsPollingPlan] = useState(false);
+
+  // Calculate allowed children: 1 base child + extra paid slots
+  const allowedChildren = maxChildrenPaid === null ? null : 1 + (maxChildrenPaid || 0);
 
   useEffect(() => {
     if (!user) {
@@ -44,14 +48,65 @@ export default function AddChildProfilesPage() {
     }
   }, [user, navigate]);
 
-  // Handle payment success from URL parameter
+  // Handle payment success from URL parameter with polling for num_kids update
   useEffect(() => {
     const paymentStatus = searchParams.get('payment');
     if (paymentStatus === 'success') {
       setShowPaymentSuccess(true);
-      toast.success('Betaling gennemført! Du kan nu oprette flere børneprofiler.');
+      toast.success('Betaling gennemført! Opdaterer din plan...');
       
-
+      // Start polling for num_kids update from webhook
+      const startPolling = async () => {
+        if (!user?.email) return;
+        
+        setIsPollingPlan(true);
+        const startTime = Date.now();
+        const maxPollTime = 45000; // 45 seconds max
+        const pollInterval = 2000; // 2 seconds between polls
+        
+        const originalNumKids = maxChildrenPaid;
+        
+        const poll = async (): Promise<void> => {
+          try {
+            const { data, error } = await supabase
+              .from('subscribers')
+              .select('num_kids')
+              .or(`user_id.eq.${user.id},email.eq.${user.email}`)
+              .maybeSingle();
+            
+            if (data && data.num_kids !== null && data.num_kids > (originalNumKids || 0)) {
+              // Success! num_kids has increased
+              setMaxChildrenPaid(data.num_kids);
+              setIsPollingPlan(false);
+              toast.success(`Din plan er opdateret! Du kan nu oprette op til ${1 + data.num_kids} børneprofiler.`);
+              return;
+            }
+            
+            // Continue polling if we haven't exceeded max time
+            if (Date.now() - startTime < maxPollTime) {
+              setTimeout(() => poll(), pollInterval);
+            } else {
+              // Timeout - webhook might have failed
+              setIsPollingPlan(false);
+              toast.error('Din plan opdateres i baggrunden. Prøv at opdatere siden om et øjeblik.', {
+                duration: 6000,
+                action: {
+                  label: 'Opdater side',
+                  onClick: () => window.location.reload()
+                }
+              });
+            }
+          } catch (error) {
+            console.error('Polling error:', error);
+            setIsPollingPlan(false);
+          }
+        };
+        
+        // Start first poll
+        await poll();
+      };
+      
+      startPolling();
       
       // Remove payment parameter from URL
       const newParams = new URLSearchParams(searchParams);
@@ -65,7 +120,7 @@ export default function AddChildProfilesPage() {
       newParams.delete('payment');
       navigate({ search: newParams.toString() }, { replace: true });
     }
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, user, maxChildrenPaid]);
 
   // Hent det betalte antal børn fra databasen - robust fetch med auto-healing
   useEffect(() => {
@@ -134,14 +189,14 @@ export default function AddChildProfilesPage() {
 
   const addForm = () => {
     // Tjek om vi har nået grænsen for betalte børneprofiler
-    if (maxChildrenPaid !== null && (children.length + forms.length) >= maxChildrenPaid) {
-      const message = maxChildrenPaid === 0 
+    if (allowedChildren !== null && (children.length + forms.length) >= allowedChildren) {
+      const message = allowedChildren === 1 
         ? "Du skal købe en plan for at oprette børneprofiler. Basic planen (45 kr/måned) inkluderer 1 barn."
-        : `Du har nået grænsen på ${maxChildrenPaid} børneprofiler. Opgradér dit abonnement for at tilføje flere børn.`;
+        : `Du har nået grænsen på ${allowedChildren} børneprofiler. Opgradér dit abonnement for at tilføje flere børn.`;
       
       toast.error(message, {
         action: {
-          label: maxChildrenPaid === 0 ? "Køb plan" : "Opgradér",
+          label: allowedChildren === 1 ? "Køb plan" : "Opgradér",
           onClick: () => navigate('/choose-plan')
         }
       });
@@ -173,14 +228,14 @@ export default function AddChildProfilesPage() {
     }
 
     // Tjek om vi overskride grænsen for betalte børneprofiler
-    if (maxChildrenPaid !== null && (children.length + validForms.length) > maxChildrenPaid) {
-      const message = maxChildrenPaid === 0
+    if (allowedChildren !== null && (children.length + validForms.length) > allowedChildren) {
+      const message = allowedChildren === 1
         ? "Du skal købe en plan for at oprette børneprofiler. Basic planen (45 kr/måned) inkluderer 1 barn."
-        : `Du kan ikke tilføje ${validForms.length} børn. Du har nået grænsen på ${maxChildrenPaid} børneprofiler.`;
+        : `Du kan ikke tilføje ${validForms.length} børn. Du har nået grænsen på ${allowedChildren} børneprofiler.`;
       
       toast.error(message, {
         action: {
-          label: maxChildrenPaid === 0 ? "Køb plan" : "Opgradér plan",
+          label: allowedChildren === 1 ? "Køb plan" : "Opgradér plan",
           onClick: () => navigate('/choose-plan')
         }
       });
@@ -242,7 +297,8 @@ export default function AddChildProfilesPage() {
     }
   };
 
-  if (childrenLoading) {
+  // Show minimal loading for initial data fetch only
+  if (childrenLoading && maxChildrenPaid === null) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -266,15 +322,21 @@ export default function AddChildProfilesPage() {
           <p className="text-muted-foreground max-w-md mx-auto">
             Opret personlige profiler for dine børn så de kan lære på deres eget niveau
           </p>
-          {maxChildrenPaid !== null && (
-  <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
-    {maxChildrenPaid === 0 ? (
-      <span>Du skal købe en plan for at oprette børneprofiler. <strong>Basic planen (45 kr/måned) inkluderer 1 barn.</strong></span>
-    ) : (
-      <span>Du kan oprette op til <strong>{maxChildrenPaid}</strong> børneprofiler. Du har allerede oprettet <strong>{children.length}</strong>.</span>
-    )}
-  </div>
-)}
+          {isPollingPlan && (
+            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-700 flex items-center gap-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-yellow-600"></div>
+              <span>Opdaterer din plan...</span>
+            </div>
+          )}
+          {!isPollingPlan && allowedChildren !== null && (
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
+              {allowedChildren === 1 ? (
+                <span>Du skal købe en plan for at oprette børneprofiler. <strong>Basic planen (45 kr/måned) inkluderer 1 barn.</strong></span>
+              ) : (
+                <span>Du kan oprette op til <strong>{allowedChildren}</strong> børneprofiler. Du har allerede oprettet <strong>{children.length}</strong>.</span>
+              )}
+            </div>
+          )}
 
         </div>
 
@@ -356,7 +418,7 @@ export default function AddChildProfilesPage() {
               type="button"
               variant="outline"
               onClick={addForm}
-              disabled={maxChildrenPaid !== null && (children.length + forms.length) >= maxChildrenPaid}
+              disabled={isPollingPlan || (allowedChildren !== null && (children.length + forms.length) >= allowedChildren)}
               className="w-full flex items-center justify-center gap-2"
             >
               <Plus className="w-4 h-4" />
@@ -365,11 +427,12 @@ export default function AddChildProfilesPage() {
           </div>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-4">
-            {maxChildrenPaid === 0 ? (
+            {allowedChildren === 1 ? (
               <Button
                 variant="outline"
                 onClick={() => navigate('/choose-plan')}
                 className="flex-1"
+                disabled={isPollingPlan}
               >
                 Køb Basic plan
               </Button>
@@ -377,7 +440,7 @@ export default function AddChildProfilesPage() {
               <Button
                 variant="outline"
                 onClick={handleAddChildPayment}
-                disabled={isPaymentLoading}
+                disabled={isPaymentLoading || isPollingPlan}
                 className="flex-1"
               >
                 {isPaymentLoading ? (
@@ -395,7 +458,7 @@ export default function AddChildProfilesPage() {
             )}
             <Button
               onClick={handleSubmit}
-              disabled={isSubmitting}
+              disabled={isSubmitting || isPollingPlan}
               className="flex-1 bg-primary hover:bg-primary/90"
             >
               {isSubmitting ? (
