@@ -41,12 +41,15 @@ const App = () => (
           <BrowserRouter>
             <MainNavbar />
             <Routes>
+              {/* Offentlige routes - ingen guard */}
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/login" element={<AuthPage />} />
               <Route path="/signup" element={<AuthPage />} />
               <Route path="/email-confirmation" element={<EmailConfirmationPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
+              
+              {/* Payment flow - kræver auth, men IKKE betaling endnu */}
               <Route path="/choose-plan" element={
                 <RouteGuard requireAuth>
                   <ChoosePlanPage />
@@ -54,22 +57,28 @@ const App = () => (
               } />
               <Route path="/payment-success" element={<PaymentSuccessPage />} />
               <Route path="/payment-cancel" element={<PaymentCancelPage />} />
+              
+              {/* Onboarding - kræver auth OG betaling */}
               <Route path="/add-children" element={
-                <RouteGuard requireAuth requireOnboarding>
+                <RouteGuard requireAuth requirePayment>
                   <AddChildProfilesPage />
                 </RouteGuard>
               } />
+              
+              {/* Fuldt beskyttede routes - kræver auth, betaling OG onboarding */}
               <Route path="/dashboard" element={
-                <RouteGuard requireAuth requireOnboarding>
+                <RouteGuard requireAuth requirePayment requireOnboarding>
                   <DashboardPage />
                 </RouteGuard>
               } />
-              <Route path="/system-test" element={<SystemTestPage />} />
               <Route path="/learning" element={
-                <RouteGuard requireAuth requireOnboarding>
+                <RouteGuard requireAuth requirePayment requireOnboarding>
                   <LearnCategoriesPage />
                 </RouteGuard>
               } />
+              
+              {/* Andre offentlige routes */}
+              <Route path="/system-test" element={<SystemTestPage />} />
               <Route path="/laer" element={<Navigate to="/learning" replace />} />
               <Route path="/kontakt" element={<ContactPage />} />
               <Route path="/om-os" element={<AboutPage />} />
@@ -88,3 +97,4 @@ const App = () => (
 );
 
 export default App;
+
