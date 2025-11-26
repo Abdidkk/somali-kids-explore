@@ -46,9 +46,7 @@ const AboutPage = () => {
         <h2 className="text-3xl font-bold mb-6 text-blue-600">Min Historie</h2>
         <p className="text-lg mb-8">
         Dugsi startede som en idé i 2022, da jeg så, hvor svært det var for somaliske børn at lære deres sprog gennem sjove og tilgængelige metoder. Jeg besluttede at skabe noget selv – en platform, hvor børn kan lære somalisk på en måde, der er legende, visuel og tilpasset deres hverdag i Danmark.        </p>
-        <Button size="lg" className="bg-blue-500 hover:bg-blue-600 transition-colors">
-          Læs mere om vores rejse
-        </Button>
+
       </div>
     </div>
   );

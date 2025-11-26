@@ -20,7 +20,7 @@ export default function MereOmPriserPage() {
               Start med <span className="font-semibold text-blue-600">24 timers gratis adgang</span> til hele platformen – du skal ikke oplyse kreditkort.
             </p>
             <p className="mt-2 text-sm text-gray-700">
-              Efter prøveperioden vælger du selv, om du vil abonnere månedligt eller årligt.
+              Efter prøveperioden vælger du selv, om du vil abonnere månedligt.
             </p>
           </CardContent>
         </Card>
@@ -28,7 +28,7 @@ export default function MereOmPriserPage() {
         <Card className="bg-white/60 border-0 shadow mb-6">
           <CardHeader>
             <CardTitle className="text-blue-700">Abonnementsvalg</CardTitle>
-            <CardDescription>Vælg mellem månedlig eller årlig betaling</CardDescription>
+            <CardDescription>Månedlig  betaling</CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">
@@ -36,10 +36,7 @@ export default function MereOmPriserPage() {
                 <span className="font-bold">Månedlig:</span> <span className="text-blue-600">45 kr/md</span> (ingen binding)
               </li>
               <li>
-                <span className="font-bold">Årlig:</span> <span className="text-blue-600">405 kr/år</span> (svarende til 33,75 kr/md) - du sparer 25%
-              </li>
-              <li>
-                <span className="font-bold">Ekstra børneprofiler:</span> 15 kr/md. eller 135 kr/år for hver ekstra barn.
+                <span className="font-bold">Ekstra børneprofiler:</span> 15 kr/md.
               </li>
             </ul>
           </CardContent>
