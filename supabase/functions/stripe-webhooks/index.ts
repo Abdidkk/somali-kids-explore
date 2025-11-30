@@ -834,27 +834,18 @@ async function handleSubscriptionDeleted(supabase: any, subscription: Stripe.Sub
         .eq('parent_user_id', subscriber.user_id)
         .order('created_at', { ascending: true });
       
-      if (children && children.length > 0) {
-        const firstChild = children[0].id;
-        const otherChildren = children.slice(1).map((c: any) => c.id);
-        
-        // First child remains active
-        await supabase
-          .from('child_profiles')
-          .update({ is_active: true })
-          .eq('id', firstChild);
-        
-        // All other children are deactivated
-        if (otherChildren.length > 0) {
+        if (children && children.length > 0) {
+          const allChildIds = children.map((c: any) => c.id);
+          
           await supabase
             .from('child_profiles')
             .update({ is_active: false })
-            .in('id', otherChildren);
+            .in('id', allChildIds);
           
-          console.log(`[SUBSCRIPTION-DELETE] Deactivated ${otherChildren.length} extra children`);
+          console.log(`[SUBSCRIPTION-DELETE] Deactivated ALL ${allChildIds.length} children`);
         }
-      }
-    }
+        
+
 
     await supabase.rpc('log_event', {
       p_event_type: 'stripe_subscription_deleted',

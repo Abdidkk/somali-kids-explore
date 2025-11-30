@@ -39,7 +39,7 @@ export default function AddChildProfilesPage() {
   const [isPollingPlan, setIsPollingPlan] = useState(false);
 
   // Calculate allowed children: 1 base child + extra paid slots
-  const allowedChildren = maxChildrenPaid === null ? null : 1 + (maxChildrenPaid || 0);
+  const allowedChildren = maxChildrenPaid;
 
   useEffect(() => {
     if (!user) {

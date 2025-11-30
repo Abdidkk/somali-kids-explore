@@ -513,23 +513,20 @@ const DashboardPage = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {!isChildActive && selectedChildData && (
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertTitle>{selectedChildData.name} er inaktiv</AlertTitle>
-                  <AlertDescription className="space-y-3">
-                    <p>Dette barn er sat i bero, da der ikke længere betales for det ekstra abonnement.</p>
-                    <Button 
-                      onClick={handleReactivateChild}
-                      disabled={isPaymentLoading}
-                      variant="outline"
-                      size="sm"
-                    >
-                      {isPaymentLoading ? "Behandler..." : `Aktiver ${selectedChildData.name} igen (15 kr/måned)`}
-                    </Button>
-                  </AlertDescription>
-                </Alert>
-              )}
+          {/* Global alert når abonnement er sat i bero */}
+          {!subscribed && !inTrial && (
+          <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Abonnement sat i bero</AlertTitle>
+          <AlertDescription>
+          <p>Dit abonnement er ikke aktivt. Alle børneprofiler er sat i bero.</p>
+          <p className="mt-2 text-sm">
+            Gå til "Administrer abonnement" ovenfor for at genaktivere via Stripe kundeportal.
+              </p>
+          </AlertDescription>
+        </Alert>
+                )}
+
               
               <Button 
                 onClick={() => navigate('/learning')}

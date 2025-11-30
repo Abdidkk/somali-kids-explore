@@ -25,7 +25,7 @@ const CategoryGrid: React.FC<CategoryGridProps> = ({
       {categories.map((category, idx) => {
         const isFinished = finishedCategories.includes(category.name);
         const isLastCat = category.name === lastCategory;
-        const isEnabled = !requiresSubscription || (categorySettings.get(category.name) !== false); // Enable if subscription/trial OR category enabled
+        const isEnabled = !requiresSubscription && (categorySettings.get(category.name) !== false); // Enable if subscription/trial OR category enabled
         
         return (
           <CategoryCard 

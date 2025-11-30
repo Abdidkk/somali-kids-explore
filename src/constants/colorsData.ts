@@ -53,7 +53,7 @@ export const COLORS_DATA: ColorData[] = [
   },
   {
     name: "pink",
-    somali: "Basli",
+    somali: "Basali",
     danish: "lyserød",
     hex: "#FFC0CB",
     audioPath:"/Farver/Lyserød.mp3",
@@ -67,14 +67,14 @@ export const COLORS_DATA: ColorData[] = [
   },
   {
     name: "black",
-    somali: "Madow",
+    somali: "Madoow",
     danish: "Sort",
     hex: "#000000",
     audioPath:"/Farver/Madow.mp3",
   },
   {
     name: "white",
-    somali: "Caddaan",
+    somali: "Cadaan",
     danish: "Hvid",
     hex: "#FFFFFF",
     audioPath:"/Farver/Hvid.mp3",

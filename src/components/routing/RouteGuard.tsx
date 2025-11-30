@@ -1,6 +1,5 @@
-// src/components/routing/RouteGuard.tsx
-
-import { Navigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
@@ -20,10 +19,58 @@ export function RouteGuard({
   redirectTo 
 }: RouteGuardProps) {
   const { userState, loading } = useAuth();
-  const location = useLocation();
-  const currentPath = location.pathname;
+  const navigate = useNavigate();
 
-  // Vis loading spinner mens auth-state indlæses
+  useEffect(() => {
+    if (loading) return;
+
+    const currentPath = window.location.pathname;
+
+    // Define navigation logic based on user state and requirements
+    switch (userState) {
+      case 'unauthenticated':
+        if (requireAuth || requirePayment || requireOnboarding) {
+          navigate('/auth');
+        }
+        break;
+
+      case 'authenticated':
+        // authenticated users should NOT be redirected to choose-plan
+        if (requireOnboarding && currentPath !== '/dashboard') {
+          navigate('/add-children');
+        }
+        break;
+
+      case 'needs_payment':
+        if (requirePayment) {
+          navigate('/choose-plan');
+        }
+        break;
+        
+      case 'paid':
+        // Paid users should never see choose-plan
+        if (currentPath === '/choose-plan') {
+          navigate('/dashboard', { replace: true });
+        }
+        break;
+        
+      case 'onboarding':
+        // Users completing onboarding should be on add-children
+        if (requireOnboarding && currentPath !== '/add-children') {
+          navigate('/add-children', { replace: true });
+        }
+        if (currentPath === '/choose-plan') {
+          navigate('/add-children', { replace: true });
+        }
+        break;
+    }
+
+    // Handle specific redirects
+    if (redirectTo) {
+      navigate(redirectTo);
+    }
+  }, [userState, loading, navigate, requireAuth, requirePayment, requireOnboarding, redirectTo]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -32,47 +79,5 @@ export function RouteGuard({
     );
   }
 
-  // Deklarative redirects baseret på userState
-  switch (userState) {
-    case 'unauthenticated':
-      // Hvis brugeren ikke er logget ind og siden kræver auth
-      if ((requireAuth || requirePayment || requireOnboarding) && currentPath !== '/auth') {
-        return <Navigate to="/auth" replace />;
-      }
-      break;
-      
-    case 'authenticated':
-    case 'needs_payment':
-      // Brugere der ikke har betalt skal til choose-plan
-      if ((requirePayment || requireOnboarding) && currentPath !== '/choose-plan') {
-        return <Navigate to="/choose-plan" replace />;
-      }
-      break;
-      
-    case 'paid':
-      // Betalte brugere skal aldrig se choose-plan
-      if (currentPath === '/choose-plan') {
-        return <Navigate to="/dashboard" replace />;
-      }
-      break;
-      
-    case 'onboarding':
-      // Brugere i onboarding skal være på add-children
-      if (requireOnboarding && currentPath !== '/add-children') {
-        return <Navigate to="/add-children" replace />;
-      }
-      // Hvis de prøver at gå til choose-plan under onboarding
-      if (currentPath === '/choose-plan') {
-        return <Navigate to="/add-children" replace />;
-      }
-      break;
-  }
-
-  // Håndter specifik redirectTo prop
-  if (redirectTo && currentPath !== redirectTo) {
-    return <Navigate to={redirectTo} replace />;
-  }
-
-  // Alt er OK - vis children
   return <>{children}</>;
 }

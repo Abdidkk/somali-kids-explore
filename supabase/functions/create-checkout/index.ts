@@ -143,19 +143,17 @@ serve(async (req) => {
       success_url: `${originUrl}/payment-success`,
       cancel_url: `${originUrl}/payment-cancel`,
       subscription_data: {
+        trial_period_days: 1,  // ✅ Stripe's 24-timers gratis trial
         metadata: {
           user_id: user.id,
           num_kids: numKids.toString(),
           unified_pricing: 'true',
-          trial_managed_manually: 'true',
-          trial_hours: DEFAULT_PLAN.trialHours.toString(),
         },
       },
       metadata: {
         user_id: user.id,
         num_kids: numKids.toString(),
         unified_pricing: 'true',
-        trial_managed_manually: 'true',
       },
       line_items: [
         {
