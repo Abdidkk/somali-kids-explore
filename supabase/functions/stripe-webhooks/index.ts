@@ -722,23 +722,25 @@ async function handleSubscriptionUpdated(supabase: any, subscription: Stripe.Sub
   const status = subscription.status;
   const isActive = ['active', 'trialing'].includes(status as any);
   const billingInterval = subscription.items.data[0].price.recurring?.interval === 'year' ? 'yearly' : 'monthly';
-  const numKids = subscription.items.data.length > 1 ? (subscription.items.data[1].quantity || 0) : 0;
   const subscriptionEnd = subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null;
 
-  // Update subscribers row for this customer
+  // VIGTIGT: Opdater UDEN at overskrive num_kids (den er sat korrekt ved checkout)
   const { data: subscriberData } = await supabase.from('subscribers')
     .update({
       stripe_customer_id: customerId,
       subscribed: isActive,
+      status: isActive ? 'active' : status,
       subscription_tier: billingInterval === 'monthly' ? 'Månedlig' : 'Årlig',
       subscription_end: subscriptionEnd,
       billing_interval: billingInterval,
-      num_kids: numKids,
+      // num_kids FJERNET - bevares fra checkout
       updated_at: new Date().toISOString(),
     })
     .eq('stripe_customer_id', customerId)
     .select('user_id, num_kids')
     .single();
+  
+  console.log(`[SUBSCRIPTION-UPDATE] Customer: ${customerId}, Status: ${status}, num_kids from DB: ${subscriberData?.num_kids}`);
 
   // Update children activation status based on num_kids
   if (subscriberData?.user_id) {
@@ -834,17 +836,17 @@ async function handleSubscriptionDeleted(supabase: any, subscription: Stripe.Sub
         .eq('parent_user_id', subscriber.user_id)
         .order('created_at', { ascending: true });
       
-        if (children && children.length > 0) {
-          const allChildIds = children.map((c: any) => c.id);
-          
-          await supabase
-            .from('child_profiles')
-            .update({ is_active: false })
-            .in('id', allChildIds);
-          
-          console.log(`[SUBSCRIPTION-DELETE] Deactivated ALL ${allChildIds.length} children`);
-        }
+      if (children && children.length > 0) {
+        const allChildIds = children.map((c: any) => c.id);
         
+        await supabase
+          .from('child_profiles')
+          .update({ is_active: false })
+          .in('id', allChildIds);
+        
+        console.log(`[SUBSCRIPTION-DELETE] Deactivated ALL ${allChildIds.length} children`);
+      }
+    }
 
 
     await supabase.rpc('log_event', {
