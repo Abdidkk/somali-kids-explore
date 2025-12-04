@@ -3,17 +3,16 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, User } from "lucide-react";
+import { User, HelpCircle } from "lucide-react";
 import { useChildren } from "@/hooks/useChildren";
-import { useSubscription } from "@/hooks/useSubscription";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import UserGuideModal from "@/components/UserGuideModal";
 
 interface ChildrenDisplayProps {
   onChildSelect?: (childName: string) => void;
   selectedChild?: string;
 }
 
+// AVATAR_COLORS skal være UDENFOR komponenten
 const AVATAR_COLORS = [
   'bg-purple-500',
   'bg-blue-500',
@@ -25,11 +24,13 @@ const AVATAR_COLORS = [
   'bg-teal-500'
 ];
 
+// KUN ÉN export function
 export function ChildrenDisplay({ onChildSelect, selectedChild }: ChildrenDisplayProps) {
+  // HOOKS først
   const { children, loading } = useChildren();
-  const { subscribed, billingInterval } = useSubscription();
-  const [isPaymentLoading, setIsPaymentLoading] = useState(false);
+  const [showGuideModal, setShowGuideModal] = useState(false);
 
+  // HELPER FUNCTIONS
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   };
@@ -38,37 +39,7 @@ export function ChildrenDisplay({ onChildSelect, selectedChild }: ChildrenDispla
     return AVATAR_COLORS[index % AVATAR_COLORS.length];
   };
 
-  const handleAddChildPayment = async () => {
-    setIsPaymentLoading(true);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        toast.error('Du skal være logget ind');
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke('add-child-payment', {
-        body: { billingInterval: billingInterval || 'month' },
-      });
-
-      if (error) {
-        console.error('Payment error:', error);
-        toast.error('Der opstod en fejl ved oprettelse af betalingslink');
-        return;
-      }
-
-      if (data?.url) {
-        window.open(data.url, '_blank');
-      }
-    } catch (error) {
-      console.error('Payment error:', error);
-      toast.error('Der opstod en fejl');
-    } finally {
-      setIsPaymentLoading(false);
-    }
-  };
-
+  // LOADING STATE
   if (loading) {
     return (
       <Card>
@@ -85,6 +56,7 @@ export function ChildrenDisplay({ onChildSelect, selectedChild }: ChildrenDispla
     );
   }
 
+  // MAIN RETURN
   return (
     <Card>
       <CardHeader>
@@ -138,30 +110,23 @@ export function ChildrenDisplay({ onChildSelect, selectedChild }: ChildrenDispla
           </div>
         )}
 
-        {subscribed && (
-          <Button
-            onClick={handleAddChildPayment}
-            className="w-full"
-            variant="outline"
-            disabled={isPaymentLoading}
-          >
-            {isPaymentLoading ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary mr-2" />
-                Opretter betalingslink...
-              </>
-            ) : (
-              <>
-                <Plus className="h-4 w-4 mr-2" />
-                Tilføj ekstra barn
-                <span className="text-xs text-muted-foreground ml-1">
-                  ({billingInterval === 'year' ? '135 kr./årligt' : '15 kr/måned'})
-                </span>
-              </>
-            )}
-          </Button>
-        )}
+        {/* NY BRUGSANVISNING KNAP - erstatter den gamle "Tilføj ekstra barn" */}
+        <Button
+          onClick={() => setShowGuideModal(true)}
+          className="w-full"
+          variant="outline"
+        >
+          <HelpCircle className="h-4 w-4 mr-2" />
+          Brugsanvisning
+        </Button>
+
+        {/* MODAL KOMPONENT */}
+        <UserGuideModal 
+          open={showGuideModal} 
+          onClose={() => setShowGuideModal(false)} 
+        />
       </CardContent>
     </Card>
   );
 }
+

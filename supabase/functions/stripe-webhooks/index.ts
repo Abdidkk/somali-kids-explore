@@ -828,7 +828,7 @@ async function handleSubscriptionDeleted(supabase: any, subscription: Stripe.Sub
       console.log(`[SUBSCRIPTION-DELETE] Subscriber status updated to cancelled`);
     }
 
-    // Deactivate all children except the first one (base subscription includes 1 child)
+    // Deactivate all children (base subscription)
     if (subscriber.user_id) {
       const { data: children } = await supabase
         .from('child_profiles')

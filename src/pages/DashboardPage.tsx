@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { learningCategories } from "@/data/learningCategories";
 import { resolveChildProfileIdByName } from "@/utils/childProfile";
 
+
 const DashboardPage = () => {
   const { user, loading: authLoading } = useAuth();
   const { subscribed, inTrial, subscriptionTier } = useSubscription();
