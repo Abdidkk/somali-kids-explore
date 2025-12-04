@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Mail, Lock, LogIn, Facebook } from "lucide-react";
 import SomaliFlag from "@/components/landing/SomaliFlag";
 import { Link, useNavigate } from "react-router-dom";
 import SocialLoginButton from "@/components/SocialLoginButton";
@@ -57,10 +56,10 @@ export default function LogInPage() {
     }
   };
 
-  const handleFacebookLogin = async () => {
-    const result = await authService.signInWithProvider('facebook', '/dashboard');
+  const handleazureLogin = async () => {
+    const result = await authService.signInWithProvider('azure', '/dashboard');
     if (!result.success) {
-      toast.error(result.error || "Der opstod en fejl ved Facebook login");
+      toast.error(result.error || "Der opstod en fejl ved Azure login");
     }
   };
 
@@ -126,10 +125,10 @@ export default function LogInPage() {
             onClick={handleGoogleLogin}
           />
           <SocialLoginButton
-            icon={Facebook}
+            icon={Mail}
             label="Fortsæt med Facebook"
-            colorClass="border-[#1877f3] text-[#1877f3] hover:border-[#1557b8]/90"
-            onClick={handleFacebookLogin}
+            colorClass="border-[#1877f3] text-[#0078D4] hover:border-[#1557b8]/90"
+            onClick={handleMicrosoftLogin}
           />
         </div>
         <div className="mt-3 flex flex-col items-center space-y-1">

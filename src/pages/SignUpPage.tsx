@@ -82,9 +82,9 @@ export default function SignUpPage() {
   };
 
   const handleFacebookSignup = async () => {
-    const result = await authService.signInWithProvider('facebook', '/choose-plan');
+    const result = await authService.signInWithProvider('azure', '/choose-plan');
     if (!result.success) {
-      toast.error(result.error || "Der opstod en fejl ved Facebook signup");
+      toast.error(result.error || "Der opstod en fejl ved Azure signup");
     }
   };
 

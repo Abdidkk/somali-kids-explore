@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ArrowLeft, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { USER_GUIDE_DATA, GuideItem } from "@/constants/userGuideData";
 
 
 interface UserGuideModalProps {
@@ -10,7 +11,7 @@ interface UserGuideModalProps {
 }
 
 const UserGuideModal: React.FC<UserGuideModalProps> = ({ open, onClose }) => {
-  const [selectedVideo, setSelectedVideo] = useState<GuideItem | null>(null);
+    const [selectedVideo, setSelectedVideo] = useState<GuideItem | null>(null);
   const isMobile = useIsMobile();
 
   if (!open) return null;
@@ -65,18 +66,17 @@ const UserGuideModal: React.FC<UserGuideModalProps> = ({ open, onClose }) => {
           // Video afspiller
           <div className="py-4">
             <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden mb-4">
-              {selectedVideo.video ? (
-                <iframe
-                  src={selectedVideo.video}
-                  className="w-full h-full"
-                  allowFullScreen
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                />
+            <video
+  src={selectedVideo.video}
+  className="w-full h-full"
+  controls
+  autoPlay
+/>
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-400">
                   Video kommer snart...
                 </div>
-              )}
+              )
             </div>
             <p className={`text-center font-medium text-gray-700 ${isMobile ? 'text-lg' : 'text-xl'}`}>
               {selectedVideo.description}

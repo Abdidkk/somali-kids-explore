@@ -64,19 +64,19 @@ export function useAuthOperations() {
     }
   };
 
-  const handleSocialAuth = async (provider: 'google' | 'facebook', redirectPath?: string) => {
+  const handleSocialAuth = async (provider: 'google' | 'azure', redirectPath?: string) => {
     try {
       const result = await authService.signInWithProvider(provider, redirectPath);
       
       if (!result.success) {
-        const providerName = provider === 'google' ? 'Google' : 'Facebook';
+        const providerName = provider === 'google' ? 'Google' : 'azure';
         toast.error(result.error || `Der opstod en fejl ved ${providerName} login`);
       }
 
       return result;
     } catch (error) {
       console.error(`${provider} auth operation error:`, error);
-      const providerName = provider === 'google' ? 'Google' : 'Facebook';
+      const providerName = provider === 'google' ? 'Google' : 'azure';
       toast.error(`Der opstod en fejl ved ${providerName} login`);
       return { success: false, error: `Der opstod en fejl ved ${providerName} login` };
     }
