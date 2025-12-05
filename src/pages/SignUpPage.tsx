@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Mail, Lock, LogIn } from "lucide-react";
+import { Mail, Lock, LogIn, User } from "lucide-react";
 import SomaliFlag from "@/components/landing/SomaliFlag";
 import { Link, useNavigate } from "react-router-dom";
 import SocialLoginButton from "@/components/SocialLoginButton";
@@ -81,7 +81,7 @@ export default function SignUpPage() {
     }
   };
 
-  const handleFacebookSignup = async () => {
+  const handleAzureSignup = async () => {
     const result = await authService.signInWithProvider('azure', '/choose-plan');
     if (!result.success) {
       toast.error(result.error || "Der opstod en fejl ved Azure signup");
@@ -129,7 +129,7 @@ export default function SignUpPage() {
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Lock size={20} className="text-gray-400" Lock>/>
+              <Lock size={20} className="text-gray-400" />
               <span className="text-base font-medium">Adgangskode</span>
             </div>
             <Input
@@ -173,19 +173,11 @@ export default function SignUpPage() {
             colorClass="border-[#ea384c] text-[#ea384c] hover:border-[#d32e22]/90"
             onClick={handleGoogleSignup}
           />
-        <div className="flex flex-col gap-3 mb-2">
-          <SocialLoginButton
-            icon={Mail}
-            label="Fortsæt med Gmail"
-            colorClass="border-[#ea384c] text-[#ea384c] hover:border-[#d32e22]/90"
-            onClick={handleGoogleSignup}
-          />
-          <div className="flex flex-col gap-3 mb-2">
           <SocialLoginButton
             icon={Mail}
             label="Fortsæt med Microsoft"
             colorClass="border-[#00a4ef] text-[#00a4ef] hover:border-[#0078d4]/90"
-            onClick={handleazureLogin}
+            onClick={handleAzureSignup}
           />
         </div>
         <div className="mt-3 flex flex-col items-center space-y-1">
@@ -198,4 +190,5 @@ export default function SignUpPage() {
     </div>
   );
 }
+
 
