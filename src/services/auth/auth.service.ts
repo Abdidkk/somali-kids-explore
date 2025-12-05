@@ -78,7 +78,7 @@ class AuthService {
     }
   }
 
-  async signInWithProvider(provider: 'google' | 'facebook', redirectPath: string = '/dashboard'): Promise<AuthResult> {
+  async signInWithProvider(provider: 'google' | 'azure', redirectPath: string = '/dashboard'): Promise<AuthResult> {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
