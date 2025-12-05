@@ -4,7 +4,7 @@
  * Handles Google and Facebook authentication
  */
 
-import { Mail, Facebook } from "lucide-react";
+import { Mail } from "lucide-react";
 import SocialLoginButton from "@/components/SocialLoginButton";
 import { useAuthOperations } from "@/hooks/auth/useAuthOperations";
 
@@ -27,12 +27,13 @@ export function SocialAuthButtons({ mode }: SocialAuthButtonsProps) {
         colorClass="border-[#ea384c] text-[#ea384c] hover:border-[#d32e22]/90"
         onClick={() => handleSocialAuth('google', redirectPath)}
       />
-      <SocialLoginButton
-        icon={Facebook}
-        label="Fortsæt med Facebook"
-        colorClass="border-[#1877f3] text-[#1877f3] hover:border-[#1557b8]/90"
-        onClick={() => handleSocialAuth('facebook', redirectPath)}
-      />
+<SocialLoginButton
+  icon={Mail}
+  label="Fortsæt med Microsoft"
+  colorClass="border-[#00a4ef] text-[#00a4ef] hover:border-[#0078d4]/90"
+  onClick={() => handleSocialAuth('azure', redirectPath)}
+/>
+
     </div>
   );
 }
