@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import type { LucideIcon } from "lucide-react";
 import React from "react";
+import { Mail } from "lucide-react";
 
 interface SocialLoginButtonProps {
   icon: LucideIcon;

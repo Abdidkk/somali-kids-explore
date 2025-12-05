@@ -174,13 +174,12 @@ export default function SignUpPage() {
             onClick={handleGoogleSignup}
           />
           <SocialLoginButton
-            icon={Facebook}
-            label="Fortsæt med Facebook"
-            colorClass="border-[#1877f3] text-[#1877f3] hover:border-[#1557b8]/90"
+            icon={Mail}
+            label="Fortsæt med Microsoft"
+            colorClass="border-[#00a4ef] text-[#00a4ef] hover:border-[#0078d4]/90"
             onClick={handleFacebookSignup}
-          />
-        </div>
-        <div className="mt-3 flex flex-col items-center space-y-1">
+           div>
+            <div className="mt-3 flex flex-col items-center space-y-1">
           <span className="text-xs text-gray-400">Har du allerede en konto?</span>
           <Link to="/login" className="text-sm text-[#4CA6FE] hover:underline">
             Log ind

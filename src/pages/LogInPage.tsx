@@ -8,6 +8,7 @@ import SocialLoginButton from "@/components/SocialLoginButton";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { authService } from "@/services/auth.service";
+import { Mail, Lock, LogIn } from "lucide-react";
 
 const HERO_BLUE = "#4CA6FE";
 const VIVID_PURPLE = "#8B5CF6";
@@ -124,12 +125,12 @@ export default function LogInPage() {
             colorClass="border-[#ea384c] text-[#ea384c] hover:border-[#d32e22]/90"
             onClick={handleGoogleLogin}
           />
-          <SocialLoginButton
-            icon={Mail}
-            label="Fortsæt med Facebook"
-            colorClass="border-[#1877f3] text-[#0078D4] hover:border-[#1557b8]/90"
-            onClick={handleMicrosoftLogin}
-          />
+<SocialLoginButton
+  icon={Mail}
+  label="Fortsæt med Microsoft"
+  colorClass="border-[#00a4ef] text-[#00a4ef] hover:border-[#0078d4]/90"
+  onClick={() => handleSocialAuth('azure', redirectPath)}
+/>
         </div>
         <div className="mt-3 flex flex-col items-center space-y-1">
           <span className="text-xs text-gray-400">Har du ikke en konto?</span>
