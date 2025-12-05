@@ -125,11 +125,12 @@ export default function LogInPage() {
             colorClass="border-[#ea384c] text-[#ea384c] hover:border-[#d32e22]/90"
             onClick={handleGoogleLogin}
           />
-<SocialLoginButton
-  icon={Mail}
-  label="Fortsæt med Microsoft"
-  colorClass="border-[#00a4ef] text-[#00a4ef] hover:border-[#0078d4]/90"
-  onClick={() => handleSocialAuth('azure', redirectPath)}
+          <SocialLoginButton
+          icon={Mail}
+          label="Fortsæt med Microsoft"
+          colorClass="border-[#00a4ef] text-[#00a4ef] hover:border-[#0078d4]/90"
+          onClick={handleazureLogin}
+
 />
         </div>
         <div className="mt-3 flex flex-col items-center space-y-1">
