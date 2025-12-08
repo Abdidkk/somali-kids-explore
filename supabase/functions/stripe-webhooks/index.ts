@@ -1,6 +1,7 @@
 import Stripe from 'https://esm.sh/stripe@14.21.0';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 import { serve } from 'https://deno.land/std@0.190.0/http/server.ts';
+import { Resend } from 'npm:resend@2.0.0';
 
 // Sanitize update data to only include allowed fields
 function sanitizeSubscriberUpdate(data: any): any {
@@ -233,7 +234,7 @@ serve(async (req) => {
         break;
 
       case 'invoice.payment_failed':
-        await handlePaymentFailed(supabase, event.data.object as Stripe.Invoice);
+        await handlePaymentFailed(supabase, stripe, event.data.object as Stripe.Invoice);
         break;
 
       case 'customer.subscription.updated':
@@ -701,20 +702,156 @@ async function handlePaymentSucceeded(supabase: any, stripe: Stripe, invoice: St
   }
 }
 
-async function handlePaymentFailed(supabase: any, invoice: Stripe.Invoice) {
+async function handlePaymentFailed(supabase: any, stripe: Stripe, invoice: Stripe.Invoice) {
   const customerId = invoice.customer as string;
+  const amount = (invoice.amount_due || 0) / 100;
+  const failureReason = invoice.last_finalization_error?.message || 'Ukendt årsag';
   
+  console.log(`[PAYMENT-FAILED] 💳 Processing failed payment for customer: ${customerId}`);
+  console.log(`[PAYMENT-FAILED] Amount: ${amount} kr, Reason: ${failureReason}`);
+  
+  // Log the event first
   await supabase.rpc('log_event', {
     p_event_type: 'stripe_payment_failed',
     p_user_id: null,
     p_metadata: {
       invoice_id: invoice.id,
       customer_id: customerId,
-      amount: (invoice.amount_due || 0) / 100,
-      failure_reason: invoice.last_finalization_error?.message
+      amount: amount,
+      failure_reason: failureReason
     },
     p_severity: 'WARNING'
   });
+  
+  // Get customer email from Stripe
+  const customerEmail = await getCustomerEmail(stripe, customerId);
+  
+  if (!customerEmail) {
+    console.log(`[PAYMENT-FAILED] ❌ Could not get customer email - skipping email notification`);
+    return;
+  }
+  
+  console.log(`[PAYMENT-FAILED] 📧 Sending payment failed email to: ${customerEmail}`);
+  
+  // Initialize Resend
+  const resendApiKey = Deno.env.get('RESEND_API_KEY');
+  if (!resendApiKey) {
+    console.log(`[PAYMENT-FAILED] ❌ RESEND_API_KEY not configured - skipping email`);
+    return;
+  }
+  
+  const resend = new Resend(resendApiKey);
+  
+  // Get Stripe billing portal URL
+  let billingPortalUrl = 'https://billing.stripe.com/p/login/test';
+  try {
+    const portalSession = await stripe.billingPortal.sessions.create({
+      customer: customerId,
+      return_url: 'https://dugsi.dk/dashboard',
+    });
+    billingPortalUrl = portalSession.url;
+    console.log(`[PAYMENT-FAILED] ✅ Created billing portal session: ${billingPortalUrl}`);
+  } catch (portalError) {
+    console.log(`[PAYMENT-FAILED] ⚠️ Could not create billing portal session:`, (portalError as any).message);
+  }
+  
+  // Send email notification
+  try {
+    const emailResponse = await resend.emails.send({
+      from: 'Dugsi <onboarding@resend.dev>',
+      to: [customerEmail],
+      subject: '⚠️ Din betaling til Dugsi kunne ikke gennemføres',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+            <h1 style="color: white; margin: 0; font-size: 24px;">Betalingspåmindelse</h1>
+          </div>
+          
+          <div style="background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px;">
+            <p style="font-size: 16px;">Kære bruger,</p>
+            
+            <p style="font-size: 16px;">Vi kunne desværre ikke gennemføre din betaling på <strong>${amount} kr</strong> til Dugsi.</p>
+            
+            <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 15px; margin: 20px 0;">
+              <strong style="color: #856404;">📌 Hvad sker der nu?</strong>
+              <ul style="margin: 10px 0 0 0; padding-left: 20px; color: #856404;">
+                <li>Stripe vil automatisk forsøge at trække beløbet igen om et par dage</li>
+                <li>Dit abonnement forbliver aktivt indtil videre</li>
+                <li>Dine børns profiler er stadig aktive</li>
+              </ul>
+            </div>
+            
+            <div style="background: #d4edda; border: 1px solid #28a745; border-radius: 8px; padding: 15px; margin: 20px 0;">
+              <strong style="color: #155724;">✅ Hvad kan du gøre?</strong>
+              <p style="margin: 10px 0 0 0; color: #155724;">Opdater din betalingsmetode for at sikre uafbrudt adgang:</p>
+            </div>
+            
+            <div style="text-align: center; margin: 25px 0;">
+              <a href="${billingPortalUrl}" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
+                Opdater betalingsmetode
+              </a>
+            </div>
+            
+            <div style="background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; padding: 15px; margin: 20px 0;">
+              <strong style="color: #721c24;">⚠️ Vigtigt</strong>
+              <p style="margin: 10px 0 0 0; color: #721c24;">Hvis betalingen ikke lykkes efter flere forsøg, vil dit abonnement blive sat i bero og dine børns profiler deaktiveres midlertidigt.</p>
+            </div>
+            
+            <p style="font-size: 14px; color: #666; margin-top: 30px;">
+              Har du spørgsmål? Svar på denne email, så hjælper vi dig gerne.
+            </p>
+            
+            <p style="font-size: 16px; margin-top: 20px;">
+              Venlig hilsen,<br>
+              <strong>Dugsi Team</strong>
+            </p>
+          </div>
+          
+          <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
+            <p>© ${new Date().getFullYear()} Dugsi. Alle rettigheder forbeholdes.</p>
+          </div>
+        </body>
+        </html>
+      `,
+    });
+    
+    console.log(`[PAYMENT-FAILED] ✅ Email sent successfully:`, emailResponse);
+    
+    // Log email sent event
+    await supabase.rpc('log_event', {
+      p_event_type: 'payment_failed_email_sent',
+      p_user_id: null,
+      p_metadata: {
+        customer_id: customerId,
+        email: customerEmail,
+        invoice_id: invoice.id,
+        amount: amount,
+        resend_id: emailResponse.id
+      },
+      p_severity: 'INFO'
+    });
+    
+  } catch (emailError) {
+    console.error(`[PAYMENT-FAILED] ❌ Failed to send email:`, emailError);
+    
+    // Log email failure
+    await supabase.rpc('log_event', {
+      p_event_type: 'payment_failed_email_error',
+      p_user_id: null,
+      p_metadata: {
+        customer_id: customerId,
+        email: customerEmail,
+        error: (emailError as any).message
+      },
+      p_severity: 'ERROR'
+    });
+  }
 }
 
 async function handleSubscriptionUpdated(supabase: any, subscription: Stripe.Subscription) {
