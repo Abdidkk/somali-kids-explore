@@ -63,6 +63,19 @@ export function RouteGuard({
           navigate('/add-children', { replace: true });
         }
         break;
+
+        case 'subscription_expired':
+          // Udløbne brugere med børn kan SE dashboard med "sat i bero" alert
+          // Men de kan IKKE tilgå /learning (kræver aktivt abonnement)
+          if (currentPath === '/choose-plan') {
+            // De må gerne besøge choose-plan for at genaktivere
+            break;
+          }
+          if (currentPath === '/learning' || currentPath.startsWith('/learning')) {
+            navigate('/dashboard', { replace: true });
+          }
+          break;
+
     }
 
     // Handle specific redirects

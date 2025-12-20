@@ -84,12 +84,14 @@ class AuthService {
         provider,
         options: {
           redirectTo: this.getRedirectUrl(redirectPath),
+          scopes: provider === 'azure' ? 'email openid profile' : undefined,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent'
           }
         }
       });
+      
 
       if (error) {
         console.error(`${provider} signin error:`, error);

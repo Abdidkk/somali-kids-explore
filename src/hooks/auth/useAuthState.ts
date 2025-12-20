@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
-export type UserState = 'loading' | 'unauthenticated' | 'authenticated' | 'needs_payment' | 'paid' | 'onboarding';
+export type UserState = 'loading' | 'unauthenticated' | 'authenticated' | 'needs_payment' | 'paid' | 'onboarding'| 'subscription_expired';;
 
 export interface AuthState {
   user: User | null;
@@ -70,20 +70,32 @@ export function useAuthState() {
           }
 
           if (subscriptionData?.subscribed) {
-            // Check if user has completed onboarding (has children profiles)
+            // Aktivt abonnement
             const { data: childrenData } = await supabase
               .from('child_profiles')
               .select('id')
               .eq('parent_user_id', currentUser.id)
               .limit(1);
-
+          
             if (childrenData && childrenData.length > 0) {
               setUserState('paid');
             } else {
               setUserState('onboarding');
             }
           } else {
-            setUserState('needs_payment');
+            // IKKE aktivt - men tjek om det er udløbet vs. aldrig betalt
+            const { data: childrenData } = await supabase
+              .from('child_profiles')
+              .select('id')
+              .eq('parent_user_id', currentUser.id)
+              .limit(1);
+          
+            // Hvis bruger har børneprofiler, har de været betalende kunde før
+            if (childrenData && childrenData.length > 0) {
+              setUserState('subscription_expired');  // ⬅️ NY STATE
+            } else {
+              setUserState('needs_payment');  // Aldrig betalt
+            }
           }
         } catch (subscriptionError) {
           console.error('Subscription check failed:', subscriptionError);

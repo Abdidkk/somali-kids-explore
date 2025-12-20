@@ -190,7 +190,7 @@ export default function AddChildProfilesPage() {
   const addForm = () => {
     // Tjek om vi har nået grænsen for betalte børneprofiler
     if (allowedChildren !== null && (children.length + forms.length) >= allowedChildren) {
-      const message = allowedChildren === 1 
+      const message = allowedChildren === 0 
         ? "Du skal købe en plan for at oprette børneprofiler. Basic planen (45 kr/måned) inkluderer 1 barn."
         : `Du har nået grænsen på ${allowedChildren} børneprofiler. Opgradér dit abonnement for at tilføje flere børn.`;
       
@@ -229,7 +229,7 @@ export default function AddChildProfilesPage() {
 
     // Tjek om vi overskride grænsen for betalte børneprofiler
     if (allowedChildren !== null && (children.length + validForms.length) > allowedChildren) {
-      const message = allowedChildren === 1
+      const message = allowedChildren === 0
         ? "Du skal købe en plan for at oprette børneprofiler. Basic planen (45 kr/måned) inkluderer 1 barn."
         : `Du kan ikke tilføje ${validForms.length} børn. Du har nået grænsen på ${allowedChildren} børneprofiler.`;
       
@@ -330,7 +330,7 @@ export default function AddChildProfilesPage() {
           )}
           {!isPollingPlan && allowedChildren !== null && (
             <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
-              {allowedChildren === 1 ? (
+              {allowedChildren === 0 ? (
                 <span>Du skal købe en plan for at oprette børneprofiler. <strong>Basic planen (45 kr/måned) inkluderer 1 barn.</strong></span>
               ) : (
                 <span>Du kan oprette op til <strong>{allowedChildren}</strong> børneprofiler. Du har allerede oprettet <strong>{children.length}</strong>.</span>
@@ -426,36 +426,8 @@ export default function AddChildProfilesPage() {
             </Button>
           </div>
 
-          <div className="mt-8 flex flex-col sm:flex-row gap-4">
-            {allowedChildren === 1 ? (
-              <Button
-                variant="outline"
-                onClick={() => navigate('/choose-plan')}
-                className="flex-1"
-                disabled={isPollingPlan}
-              >
-                Køb Basic plan
-              </Button>
-            ) : (
-              <Button
-                variant="outline"
-                onClick={handleAddChildPayment}
-                disabled={isPaymentLoading || isPollingPlan}
-                className="flex-1"
-              >
-                {isPaymentLoading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current" />
-                    Indlæser...
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <CreditCard className="w-4 h-4" />
-                    Tilføj 1 barn ({billingInterval === 'year' ? '135 kr/år' : '15 kr/måned'})
-                  </div>
-                )}
-              </Button>
-            )}
+
+
             <Button
               onClick={handleSubmit}
               disabled={isSubmitting || isPollingPlan}
@@ -476,6 +448,6 @@ export default function AddChildProfilesPage() {
           </div>
         </div>
       </div>
-    </div>
+   
   );
 }
