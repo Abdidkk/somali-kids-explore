@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
 import { COLORS_DATA } from "@/constants/colorsData";
 import { recordQuizResultAuto } from "@/utils/quizRecorder";
+import MultipleChoiceQuiz, { MCQuestion } from "@/components/quiz/MultipleChoiceQuiz";
 
 interface ColorsQuizActivityProps {
   onBack: () => void;
