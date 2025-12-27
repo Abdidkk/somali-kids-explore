@@ -18,27 +18,23 @@ const HERO_BLUE = "#4CA6FE";
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState("login");
   const navigate = useNavigate();
-  const { user, userState, loading } = useAuth();
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
 
   // Check for tab parameter in URL
   useEffect(() => {
-    if (loading || !user) return;
-    if (searchParams.get('from_oauth')) return;
-    
-    switch (userState) {
-      case 'needs_payment':
-        navigate('/choose-plan', { replace: true });
-        break;
-      case 'onboarding':
-        navigate('/add-children', { replace: true });
-        break;
-      case 'paid':
-      case 'subscription_expired':
-        navigate('/dashboard', { replace: true });
-        break;
+    const tab = searchParams.get('tab');
+    if (tab === 'signup') {
+      setActiveTab('signup');
     }
-  }, [user, userState, loading, navigate, searchParams]);
+  }, [searchParams]);
+
+  // Redirect if already logged in - but respect OAuth flow
+  useEffect(() => {
+    if (user && !searchParams.get('from_oauth')) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate, searchParams]);
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-b from-blue-50 via-white to-white px-4 py-12 animate-fade-in">

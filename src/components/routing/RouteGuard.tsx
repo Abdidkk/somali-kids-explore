@@ -41,12 +41,11 @@ export function RouteGuard({
         }
         break;
 
-        case 'needs_payment':
-          // Altid redirect til choose-plan MEDMINDRE de allerede er der eller på auth
-          if (currentPath !== '/choose-plan' && currentPath !== '/auth' && currentPath !== '/') {
-            navigate('/choose-plan', { replace: true });
-          }
-          break;
+      case 'needs_payment':
+        if (requirePayment) {
+          navigate('/choose-plan');
+        }
+        break;
         
       case 'paid':
         // Paid users should never see choose-plan
