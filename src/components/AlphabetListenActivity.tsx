@@ -30,15 +30,6 @@ export default function AlphabetListenActivity({ onBack }: Props) {
     if (hasAudio(selectedLetter)) {
       const audio = new Audio(AUDIO_FILES[selectedLetter]);
       audio.play();
-    } else {
-      // Fall back to browser's speech synthesis
-      const utter = new window.SpeechSynthesisUtterance(selectedLetter);
-      utter.lang = "so-SO";
-      utter.rate = 0.7;
-      const hasSomali = window.speechSynthesis.getVoices().some(v => v.lang === "so-SO");
-      if (!hasSomali) utter.lang = "en-US";
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utter);
     }
   };
 
