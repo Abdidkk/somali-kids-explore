@@ -16,14 +16,14 @@ export const GROUPS = {
 // Audio file mappings - Fixed path inconsistency
 export const AUDIO_FILES: Record<string, string> = {
   // Korte vokaler
-  "A": "/alfabet/A.MP3",
-  "E": "/alfabet/E.mp3",
-  "I": "/alfabet/I.mp3",
-  "O": "/alfabet/O.mp3",
-  "U": "/alfabet/U.mp3",
+  "A": "/Alfabet/A.MP3",
+  "E": "/Alfabet/E.MP3",
+  "I": "/Alfabet/I.MP3",
+  "O": "/Alfabet/O.MP3",
+  "U": "/Alfabet/U.MP3",
   // Lange vokaler
-  "AA": "/alfabet/AA.mp3",
-  "EE": "/alfabet/EE.mp3",
+  "AA": "/Alfabet/AA.MP3",
+  "EE": "/Alfabet/EE.Mp3",
   "II": "/alfabet/II.mp3",
   "OO": "/alfabet/OO.mp3",
   "UU": "/alfabet/UU.mp3",

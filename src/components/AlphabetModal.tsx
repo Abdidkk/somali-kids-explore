@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,8 @@ import AlphabetListenActivity from "./AlphabetListenActivity";
 import AlphabetTraceActivity from "./AlphabetTraceActivity";
 import AlphabetGuessActivity from "./AlphabetGuessActivity";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+
 
 interface AlphabetModalProps {
   open: boolean;
