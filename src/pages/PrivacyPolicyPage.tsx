@@ -20,7 +20,7 @@ export default function PrivacyPolicyPage() {
           <strong>2. Hvilke data?</strong> Vi indsamler kun nødvendige oplysninger til oprettelse af konto, brug af platformen og løbende forbedringer.<br /><br />
           <strong>3. Brug:</strong> Data bruges kun til interne formål og deles aldrig med tredjepart.<br /><br />
           <strong>4. Sletning:</strong> Kontakt os for sletning af dine oplysninger.<br /><br />
-          For spørgsmål eller indsigt i dine data – skriv til: kontakt@dugsi.dk
+          For spørgsmål eller indsigt i dine data – skriv til: kontakt@dugsii.dk
         </div>
       </div>
     </div>

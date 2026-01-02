@@ -61,7 +61,7 @@ export default function PricingPage() {
             Hver ekstra børneprofil koster <b>15 kr/md.</b>
           </div>
           <div className="text-xs text-gray-500 mt-2">
-            Kontakt os på kontakt@dugsi.dk hvis du har brug for at tilføje mange børn eller har særlige behov.
+            Kontakt os på kontakt@dugsii.dk hvis du har brug for at tilføje mange børn eller har særlige behov.
           </div>
         </CardContent>
       </Card>

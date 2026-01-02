@@ -54,7 +54,7 @@ export default function MereOmPriserPage() {
               <li>Kontakt os for institutioner eller specielle løsninger</li>
             </ul>
             <p className="mt-4 text-xs text-gray-600">
-              Spørgsmål? Skriv til <a className="text-blue-600 underline" href="mailto:kontakt@dugsi.dk">kontakt@dugsi.dk</a>
+              Spørgsmål? Skriv til <a className="text-blue-600 underline" href="mailto:kontakt@dugsi.dk">kontakt@dugsii.dk</a>
             </p>
           </CardContent>
         </Card>

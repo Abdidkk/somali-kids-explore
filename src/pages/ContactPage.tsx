@@ -29,7 +29,7 @@ export default function ContactPage() {
           <CardContent className="flex flex-col gap-6 py-8 px-8">
             <div className="flex items-center gap-3">
               <Mail className="text-blue-500 w-6 h-6" />
-              <span className="text-base text-gray-700">kontakt@dugsi.dk</span>
+              <span className="text-base text-gray-700">kontakt@dugsii.dk</span>
             </div>
             <div className="flex items-center gap-3">
               <Phone className="text-blue-500 w-6 h-6" />
