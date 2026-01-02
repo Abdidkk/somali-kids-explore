@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-
+// Sæt til true for at aktivere sprogvalg-modal igen
+const LANGUAGE_MODAL_ENABLED = false;
 const languages = [
   {
     id: "da-so",
@@ -138,11 +139,11 @@ export function useLanguageSelection() {
     const stored = window.localStorage.getItem(LOCAL_STORAGE_KEY);
     if (stored) {
       setSelectedLang(stored);
-      setShowModal(false);
-    } else {
-      setShowModal(true);
     }
+    // Modal vises kun hvis LANGUAGE_MODAL_ENABLED er true OG der ikke er gemt et sprog
+    setShowModal(LANGUAGE_MODAL_ENABLED && !stored);
   }, []);
+  
 
   const selectLanguage = (langId: string) => {
     window.localStorage.setItem(LOCAL_STORAGE_KEY, langId);
