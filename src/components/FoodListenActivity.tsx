@@ -17,7 +17,17 @@ export default function FoodListenActivity({ onBack }: FoodListenActivityProps) 
   const speakFood = (audioPath?: string, fallbackText?: string) => {
     if (audioPath) {
       const audio = new Audio(audioPath);
-      audio.play().catch((err) => console.error("Lydfejl:", err));
+      audio.play().catch((error) => {
+        console.error("Fejl ved afspilning", error);
+  
+        // Hvis mp3 fejler, brug fallback text-to-speech
+        if (fallbackText) {
+          const utterance = new SpeechSynthesisUtterance(fallbackText);
+          utterance.lang = "so-SO";
+          utterance.rate = 0.7;
+          speechSynthesis.speak(utterance);
+        }
+      });
     } else if (fallbackText) {
       const utterance = new SpeechSynthesisUtterance(fallbackText);
       utterance.lang = "so-SO";
