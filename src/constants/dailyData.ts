@@ -43,33 +43,6 @@ export const DAILY_ACTIVITIES: DailyItem[] = [
     category: "morgen",
   },
 
-  {
-    id: 5,
-    danish: "Jeg spise mad",
-    somali: "Waxaan cunayaa cunto.",
-    audio: "/daglig/jegspisermad.mp3",
-    image: "/daglig/jegspiser.png",
-    category: "morgen",
-  },
-
-  {
-    id: 6,
-    danish: "Jeg tager sko på",
-    somali: "Waxaan xiranayaa kabo",
-    audio: "/daglig/jegtagerskopå.mp3",
-    image: "/daglig/jegtagerskopå.png",
-    category: "morgen",
-  },  
-
-  {
-    id: 7,
-    danish: "Jeg går til skole",
-    somali: "Waxaan aadaa dugsiga.",
-    audio: "/daglig/jegskaliskole.mp3",
-    image: "/daglig/jeggårskole.png",
-    category: "morgen",
-  },  
-
   // Eftermiddag aktiviteter
   {
     id: 8,
