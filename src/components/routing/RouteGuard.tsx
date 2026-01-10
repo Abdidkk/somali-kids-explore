@@ -37,7 +37,7 @@ export function RouteGuard({
       case 'authenticated':
         // authenticated users should NOT be redirected to choose-plan
         if (requireOnboarding && currentPath !== '/dashboard') {
-          navigate('/add-children');
+          navigate('/learning');
         }
         break;
 

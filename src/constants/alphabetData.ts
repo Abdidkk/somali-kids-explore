@@ -36,7 +36,7 @@ export const AUDIO_FILES: Record<string, string> = {
   "D": "/Alfabet/D.mp3",
   "R": "/Alfabet/R.mp3",
   "S": "/Alfabet/S.mp3",
-  "SH": "/A/alfabet/SH.mp3",
+  "SH": "/Alfabet/SH.mp3",
   "DH": "/Alfabet/DH.mp3",
   "C": "/Alfabet/C.mp3",
   "G": "/Alfabet/G.mp3",
