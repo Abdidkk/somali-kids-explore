@@ -32,17 +32,17 @@ export const COLORS_DATA: ColorData[] = [
   },
   {
     name: "yellow",
-    somali: "Jaalle",
+    somali: "Jaale",
     danish: "Gul",
     hex: "#FFFF00",
     audioPath:"/Farver/Jaalle.mp3",
   },
   {
     name: "orange",
-    somali: "Oranji",
+    somali: "Dahabi",
     danish: "Orange",
     hex: "#FFA500",
-    audioPath:"/Farver/oranji.mp3",
+    audioPath:"/Farver/Dahabi.mp3",
   },
   {
     name: "purple",

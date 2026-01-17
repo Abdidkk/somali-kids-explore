@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Flame } from "lucide-react";
+import { Flame } from "lucide-react";
 
 interface Child {
   name: string;
@@ -55,10 +55,6 @@ export default function ChildSelector({ children, selectedChild, onChildSelect }
                     {getDisplayName(child.name)}
                   </div>
                   <div className="flex items-center gap-2 mt-1">
-                    <Badge variant="secondary" className="text-xs">
-                      <Trophy className="w-3 h-3 mr-1" />
-                      {child.totalPoints}
-                    </Badge>
                     {child.streak > 0 && (
                       <Badge variant="secondary" className="text-xs">
                         <Flame className="w-3 h-3 mr-1" />

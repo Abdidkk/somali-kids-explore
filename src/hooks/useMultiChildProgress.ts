@@ -5,6 +5,70 @@ import { useAuth } from "@/hooks/useAuth";
 import { useChildren } from "@/hooks/useChildren";
 import { resolveChildProfileIdByName } from "@/utils/childProfile";
 
+// Beregn streak baseret på sammenhængende aktivitetsdage
+async function calculateStreak(
+  userId: string, 
+  childId: string | null, 
+  childName: string
+): Promise<number> {
+  let query = supabase
+    .from('quiz_results')
+    .select('created_at')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (childId) {
+    query = query.eq('child_profile_id', childId);
+  } else {
+    query = query.eq('child_name', childName);
+  }
+
+  const { data: activities } = await query;
+  
+  if (!activities || activities.length === 0) return 0;
+
+  // Konverter til unikke datoer (kun dato-delen)
+  const uniqueDates = [...new Set(
+    activities.map(a => new Date(a.created_at).toISOString().split('T')[0])
+  )].sort().reverse();
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const todayStr = today.toISOString().split('T')[0];
+  const yesterdayStr = yesterday.toISOString().split('T')[0];
+  
+  const hasActivityToday = uniqueDates.includes(todayStr);
+  const hasActivityYesterday = uniqueDates.includes(yesterdayStr);
+
+  // Hvis ingen aktivitet i dag eller i går, streak = 0
+  if (!hasActivityToday && !hasActivityYesterday) {
+    return 0;
+  }
+
+  // Start fra i dag eller i går
+  let checkDate = hasActivityToday ? new Date(today) : new Date(yesterday);
+  let streak = 0;
+
+  // Tæl sammenhængende dage
+  for (const dateStr of uniqueDates) {
+    const checkDateStr = checkDate.toISOString().split('T')[0];
+    
+    if (dateStr === checkDateStr) {
+      streak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else if (dateStr < checkDateStr) {
+      break; // Hul i aktivitet - streak stopper
+    }
+  }
+
+  return streak;
+}
+
+
 export interface ChildProgressData {
   name: string;
   totalPoints: number;
@@ -74,8 +138,8 @@ export function useMultiChildProgress() {
 
         const { data: recentActivity } = await recentQuery;
 
-        // Calculate streak (placeholder)
-        const streak = Math.floor(Math.random() * 10);
+        // Calculate streak 
+        const streak = await calculateStreak(user.id, childId, childName);
 
         // Get last activity date
         const lastActivity = recentActivity && recentActivity.length > 0 
