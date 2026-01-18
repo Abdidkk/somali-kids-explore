@@ -8,9 +8,9 @@ export interface calendarItem {
 export const WEEKDAYS = [
   { danish: "Mandag", somali: "Isniin", audio: "/kalender/mandag.mp3" },
   { danish: "Tirsdag", somali: "Talaado", audio: "/kalender/tirsdag.mp3" },
-  { danish: "Onsdag", somali: "Arbaco", audio: "/kalender/onsdag.mp3" },
+  { danish: "Onsdag", somali: "Arboco", audio: "/kalender/arboco.mp3" },
   { danish: "Torsdag", somali: "Khamiis", audio: "/kalender/torsdag.mp3" },
-  { danish: "Fredag", somali: "Jimce", audio: "/kalender/fredag.mp3" },
+  { danish: "Fredag", somali: "Jimco", audio: "/kalender/jimco.mp3" },
   { danish: "Lørdag", somali: "Sabti", audio: "/kalender/lordag.mp3" },
   { danish: "Søndag", somali: "Axad", audio: "/kalender/sondag.mp3" }
 ];
@@ -21,8 +21,8 @@ export const MONTHS = [
   { danish: "Marts", somali: "Maarso", audio: "/kalender/mar.mp3" },
   { danish: "April", somali: "Abriil", audio: "/kalender/apr.mp3" },
   { danish: "Maj", somali: "Maajo", audio: "/kalender/maj.mp3" },
-  { danish: "Juni", somali: "Juun", audio: "/kalender/juni.mp3" },
-  { danish: "Juli", somali: "Luuliyo", audio: "/kalender/juli.mp3" },
+  { danish: "Juni", somali: "Juuno", audio: "/kalender/juuno.mp3" },
+  { danish: "Juli", somali: "Luulyo", audio: "/kalender/juli.mp3" },
   { danish: "August", somali: "Agoosto", audio: "/kalender/aug.mp3" },
   { danish: "September", somali: "Sebteembar", audio: "/kalender/sep.mp3" },
   { danish: "Oktober", somali: "Oktoobar", audio: "/kalender/okt.mp3" },
@@ -31,10 +31,10 @@ export const MONTHS = [
 ];
 
 export const SEASONS = [
-  { danish: "Forår", somali: "Guga", audio: "/kalender/forar.mp3" },
-  { danish: "Sommer", somali: "Xagaaga", audio: "/kalender/sommer.mp3" },
-  { danish: "Efterår", somali: "Dayrta", audio: "/kalender/efterar.mp3" },
-  { danish: "Vinter", somali: "Jiilaalka", audio: "/kalender/vinter.mp3" }
+  { danish: "Forår", somali: "Gu'", audio: "/kalender/gu.mp3" },
+  { danish: "Sommer", somali: "Xagaa", audio: "/kalender/xagaa.mp3" },
+  { danish: "Efterår", somali: "Deyr", audio: "/kalender/deyr.mp3" },
+  { danish: "Vinter", somali: "Jiilaal", audio: "/kalender/jiilaal.mp3" }
 ];
 
 export const CALENDAR_GROUPS = {

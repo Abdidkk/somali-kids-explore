@@ -17,13 +17,13 @@ export const CONTINENTS: continentItem[] = [
   { danish: "Nordamerika", somali: "Waqooyiga Ameerika", audio: "/geografi/na.mp3" },
   { danish: "Sydamerika", somali: "Koonfurta Ameerika" , audio: "/geografi/sa.mp3" },
   { danish: "Australien", somali: "Awstaraaliya" , audio: "/geografi/Australien.mp3" },
-  { danish: "Antarktis", somali: "Antaarktika" , audio: "/geografi/Antarktis.mp3" }
+  { danish: "Antarktis", somali: "Antaartika" , audio: "/geografi/Antarktis.mp3" }
 ];
 
 export const COUNTRIES: countryItem[] = [
   { danish: "Somalia", somali: "Soomaaliya", audio: "/geografi/somalia.mp3", flag: "🇸🇴", },
-  { danish: "Kenya", somali: "Kenya", audio: "/geografi/kenya.mp3", flag: "🇰🇪" },
-  { danish: "Sydafrika", somali: "Koonfur Afrika", audio: "/geografi/sa.mp3", flag: "🇿🇦" },
+  { danish: "Kenya", somali: "Keenya", audio: "/geografi/kenya.mp3", flag: "🇰🇪" },
+  { danish: "Sydafrika", somali: "Koonfur Afrika", audio: "/geografi/koonfur.mp3", flag: "🇿🇦" },
   { danish: "Egypten", somali: "Masar", audio: "/geografi/egypten.mp3", flag: "🇪🇬" },
   { danish: "Nigeria", somali: "Nayjeeriya", audio: "/geografi/nigera.mp3", flag: "🇳🇬" },
   { danish: "Etiopien", somali: "Itoobiya", audio: "/geografi/etiopien.mp3", flag: "🇪🇹" },
@@ -35,7 +35,7 @@ export const COUNTRIES: countryItem[] = [
   { danish: "Senegal", somali: "Sinigal", audio: "/geografi/senegal.mp3", flag: "🇸🇳" },
   { danish: "Danmark", somali: "Denmark", audio: "/geografi/danmark.mp3", flag: "🇩🇰" },
   { danish: "Norge", somali: "Noorwey", audio: "/geografi/norg.mp3", flag: "🇳🇴" },
-  { danish: "Sverige", somali: "Iswidhan", audio: "/geografi/sverige.mp3", flag: "🇸🇪" },
+  { danish: "Sverige", somali: "Iswiidhan", audio: "/geografi/sverige.mp3", flag: "🇸🇪" },
   { danish: "Finland", somali: "Fiinland", audio: "/geografi/finland.mp3", flag: "🇫🇮" },
   { danish: "Tyskland", somali: "Jarmal", audio: "/geografi/tyskland.mp3", flag: "🇩🇪" },
   { danish: "Frankrig", somali: "Faransiis", audio: "/geografi/frankrig.mp3", flag: "🇫🇷" },
@@ -43,16 +43,16 @@ export const COUNTRIES: countryItem[] = [
   { danish: "Italien", somali: "Talyaani", audio: "/geografi/italien.mp3", flag: "🇮🇹" },
   { danish: "Portugal", somali: "Boortaqiis", audio: "/geografi/portugal.mp3", flag: "🇵🇹" },
   { danish: "Holland", somali: "Holand", audio: "/geografi/holland.mp3", flag: "🇳🇱" },
-  { danish: "Belgien", somali: "Beljam", audio: "/geografi/belgien.mp3", flag: "🇧🇪" },
-  { danish: "Østrig", somali: "Oostriya", audio: "/geografi/ostrig.mp3", flag: "🇦🇹" },
-  { danish: "Polen", somali: "Booland", audio: "/geografi/polen.mp3", flag: "🇵🇱" },
+  { danish: "Belgien", somali: "Biljam", audio: "/geografi/belgien.mp3", flag: "🇧🇪" },
+  { danish: "Østrig", somali: "Oostariya", audio: "/geografi/ostrig.mp3", flag: "🇦🇹" },
+  { danish: "Polen", somali: "Boolan", audio: "/geografi/polen.mp3", flag: "🇵🇱" },
   { danish: "Grækenland", somali: "Giriig", audio: "/geografi/grækenland.mp3", flag: "🇬🇷" },
   { danish: "Tyrkiet", somali: "Turki", audio: "/geografi/tyrkiet.mp3", flag: "🇹🇷" },
   { danish: "Rusland", somali: "Ruush", audio: "/geografi/rusland.mp3", flag: "🇷🇺" },
   { danish: "England", somali: "Ingiriis", audio: "/geografi/england.mp3", flag: "🇬🇧" },
   { danish: "Irland", somali: "Ayrlaan", audio: "/geografi/irland.mp3", flag: "🇮🇪" },
   { danish: "Canada", somali: "Kanada", audio: "/geografi/canada.mp3", flag: "🇨🇦" },
-  { danish: "USA", somali: "Maraykanka", audio: "/geografi/amerika.mp3", flag: "🇺🇸" },
+  { danish: "USA", somali: "Maraykan", audio: "/geografi/maraycan.mp3", flag: "🇺🇸" },
   { danish: "Mexico", somali: "Meksiko", audio: "/geografi/mexico.mp3", flag: "🇲🇽" },
   { danish: "Brasilien", somali: "Baraasiil", audio: "/geografi/brasilien.mp3", flag: "🇧🇷" },
   { danish: "Argentina", somali: "Arjantiin", audio: "/geografi/argentina.mp3", flag: "🇦🇷" },
@@ -61,15 +61,15 @@ export const COUNTRIES: countryItem[] = [
 ];
 
 export const NATURE_LANDSCAPES = [
-  { danish: "Bjerg", somali: "Buuro", audio: "/geografi/bjerg.mp3", emoji: "🏔️" },
-  { danish: "strand", somali: "Badda", audio: "/geografi/strand.mp3", emoji: "🌊" },
+  { danish: "Bjerg", somali: "Buur", audio: "/geografi/buur.mp3", emoji: "🏔️" },
+  { danish: "Havet", somali: "Badda", audio: "/geografi/strand.mp3", emoji: "🌊" },
   { danish: "Sø", somali: "Haro", audio: "/geografi/haro.mp3", emoji: "🏞️" },
-  { danish: "Flod", somali: "Webi", audio: "/geografi/flod.mp3", emoji: "🏞️" },
+  { danish: "Flod", somali: "Wabi", audio: "/geografi/wabi.mp3", emoji: "🏞️" },
   { danish: "Skov", somali: "Kaynta", audio: "/geografi/skov.mp3", emoji: "🌲" },
   { danish: "Ørken", somali: "Saxaraha", audio: "/geografi/orken.mp3", emoji: "🏜️" },
   { danish: "Ø", somali: "Jasiirad", audio: "/geografi/o.mp3", emoji: "🏝️" },
   { danish: "By", somali: "Magaalo", audio: "/geografi/by.mp3", emoji: "🏙️" },
-  { danish: "Land", somali: "Tuulo", audio: "/geografi/land.mp3", emoji: "🌾" }
+  { danish: "Landsby", somali: "Tuulo", audio: "/geografi/land.mp3", emoji: "🌾" }
 ];
 
 export const GEOGRAPHY_GROUPS = {
