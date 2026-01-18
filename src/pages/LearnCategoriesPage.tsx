@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
 import { PointsManager } from "@/utils/pointsManager";
 import { resolveChildProfileIdByName } from "@/utils/childProfile";
+import { calculateStreak } from "@/hooks/useMultiChildProgress";
 import AlphabetModal from "@/components/AlphabetModal";
 import ColorsModal from "@/components/ColorsModal";
 import NumbersModal from "@/components/NumbersModal";
@@ -27,6 +28,7 @@ import SentencesModal from "@/components/SentencesModal";
 import ReadBooksModal from "@/components/ReadBooksModal";
 import CulturalModal from "@/components/CulturalModal";
 import QuizModal from "@/components/QuizModal";
+
 
 export default function LearnCategoriesPage() {
   const { user } = useAuth();
@@ -103,7 +105,7 @@ export default function LearnCategoriesPage() {
       setChildData({
         name: selectedChild,
         progress: Math.min(Math.round(progressData.totalPoints / 10), 100), // Convert points to percentage
-        streak: 0, // Would need to calculate from daily activity
+        streak: await calculateStreak(user.id, childId, selectedChild),
         badges,
         lastCategory,
         lastPercent,

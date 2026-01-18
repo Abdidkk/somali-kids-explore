@@ -23,7 +23,7 @@ export const NUMBERS_1_19: NumberData[] = [
   { number: 14, somali: "Afar iyo toban", danish: "fjorten", audioPath: "/Tal/14.mp3" },
   { number: 15, somali: "Shan iyo toban", danish: "femten", audioPath: "/Tal/15.mp3" },
   { number: 16, somali: "Lix iyo toban", danish: "seksten", audioPath: "/Tal/16.mp3" },
-  { number: 17, somali: "Todobaad iyo toban", danish: "sytten", audioPath: "/Tal/17.mp3" },
+  { number: 17, somali: "Todobo iyo toban", danish: "sytten", audioPath: "/Tal/17.mp3" },
   { number: 18, somali: "Sideed iyo toban", danish: "atten", audioPath: "/Tal/18.mp3" },
   { number: 19, somali: "Sagaal iyo toban", danish: "nitten", audioPath: "/Tal/19.mp3" },
 ];
@@ -34,8 +34,8 @@ export const NUMBERS_20_90: NumberData[] = [
   { number: 40, somali: "Afartan", danish: "fyrre", audioPath: "/Tal/40.mp3" },
   { number: 50, somali: "Konton", danish: "halvtreds", audioPath: "/Tal/50.mp3" },
   { number: 60, somali: "Lixdan", danish: "tres", audioPath: "/Tal/60.mp3" },
-  { number: 70, somali: "Todobaatan", danish: "halvfjerds", audioPath: "/Tal/70.mp3" },
-  { number: 80, somali: "Sideedatan", danish: "firs", audioPath: "/Tal/80.mp3" },
+  { number: 70, somali: "Todobatan", danish: "halvfjerds", audioPath: "/Tal/70.mp3" },
+  { number: 80, somali: "Sideetan", danish: "firs", audioPath: "/Tal/80.mp3" },
   { number: 90, somali: "Sagaashan", danish: "halvfems", audioPath: "/Tal/90.mp3" },
 ];
 
@@ -46,7 +46,7 @@ export const NUMBERS_100_1000: NumberData[] = [
   { number: 400, somali: "Afar boqol", danish: "fire hundrede", audioPath: "/Tal/400.mp3" },
   { number: 500, somali: "Shan boqol", danish: "fem hundrede", audioPath: "/Tal/500.mp3" },
   { number: 600, somali: "Lix boqol", danish: "seks hundrede", audioPath: "/Tal/600.mp3" },
-  { number: 700, somali: "Todobaad boqol", danish: "syv hundrede", audioPath: "/Tal/700.mp3" },
+  { number: 700, somali: "Todobo boqol", danish: "syv hundrede", audioPath: "/Tal/700.mp3" },
   { number: 800, somali: "Sideed boqol", danish: "otte hundrede", audioPath: "/Tal/800.mp3" },
   { number: 900, somali: "Sagaal boqol", danish: "ni hundrede", audioPath: "/Tal/900.mp3" },
   { number: 1000, somali: "Kun", danish: "tusind", audioPath: "/Tal/1000.mp3" },

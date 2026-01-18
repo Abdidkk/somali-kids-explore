@@ -25,10 +25,10 @@ export interface FoodItem {
     // Frugter (Fruits)
     { id: "apple", danish: "æble", somali: "Tufaax", image: "/billeder/æble.png", audio: "/Mad/Tufaax.mp3", category: "frugter" },
     { id: "mango", danish: "mango", somali: "Cambe", image: "/billeder/mango.png", audio: "/Mad/Cambe.mp3", category: "frugter" },
-    { id: "banana", danish: "banan", somali: "Muus", image: "/billeder/banan.png", audio: "/Mad/Muus.mp3", category: "frugter" },
-    { id: "orange", danish: "appelsin", somali: "oorenji", image: "/billeder/orange.png", audio: "/Mad/Oorenji.mp3", category: "frugter" },
+    { id: "banana", danish: "banan", somali: "Moos", image: "/billeder/banan.png", audio: "/Mad/Moos.mp3", category: "frugter" },
+    { id: "orange", danish: "appelsin", somali: "Liin macaan", image: "/billeder/orange.png", audio: "/Mad/Liinmacaan.mp3", category: "frugter" },
     { id: "grapes", danish: "druer", somali: "Canab", image: "/billeder/druer.png", audio: "/Mad/Canab.mp3", category: "frugter" },
-    { id: "watermelon", danish: "vandmelon", somali: "Qarax", image: "/billeder/melon.png", audio: "/Mad/Qarax.mp3", category: "frugter" },
+    { id: "watermelon", danish: "vandmelon", somali: "Qare", image: "/billeder/melon.png", audio: "/Mad/Qare.mp3", category: "frugter" },
     { id: "ananas", danish: "ananas", somali: "Cananaas", image: "/billeder/ananas.png", audio: "/Mad/Cananaas.mp3", category: "frugter" },
     
     // Grøntsager (Vegetables)
@@ -36,7 +36,7 @@ export interface FoodItem {
     { id: "onion", danish: "løg", somali: "Basal", image: "/billeder/løg.png", audio: "/Mad/Basal.mp3", category: "grøntsager" },
     { id: "cucumber", danish: "agurk", somali: "Qajaar", image: "/billeder/agurk.png", audio: "/Mad/Qajaar.mp3", category: "grøntsager" },
     { id: "carrot", danish: "gulerod", somali: "Karooto", image: "/billeder/gulerød.png", audio: "/Mad/Karooto.mp3", category: "grøntsager" },
-    { id: "lettuce", danish: "salat", somali: "Khudaar", image: "/billeder/salat.png", audio: "/Mad/Khudaar.mp3", category: "grøntsager" },
+    { id: "lettuce", danish: "grønsager", somali: "Khudaar", image: "/billeder/salat.png", audio: "/Mad/Khudaar.mp3", category: "grøntsager" },
     { id: "potato", danish: "kartoffel", somali: "Bataati", image: "/billeder/kartofel.png", audio: "/Mad/Bataati.mp3", category: "grøntsager" },
     { id: "chili", danish: "chili", somali: "Bisbaas", image: "/billeder/chili.png", audio: "/Mad/Bisbass.mp3", category: "grøntsager" },
   ];

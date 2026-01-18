@@ -5,8 +5,17 @@ import { useAuth } from "@/hooks/useAuth";
 import { useChildren } from "@/hooks/useChildren";
 import { resolveChildProfileIdByName } from "@/utils/childProfile";
 
+// Helper: Lav lokal dato-nøgle (YYYY-MM-DD)
+function localDateKey(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+
 // Beregn streak baseret på sammenhængende aktivitetsdage
-async function calculateStreak(
+export async function calculateStreak(
   userId: string, 
   childId: string | null, 
   childName: string
@@ -29,7 +38,7 @@ async function calculateStreak(
 
   // Konverter til unikke datoer (kun dato-delen)
   const uniqueDates = [...new Set(
-    activities.map(a => new Date(a.created_at).toISOString().split('T')[0])
+    activities.map(a => localDateKey(new Date(a.created_at)))
   )].sort().reverse();
 
   const today = new Date();
@@ -38,8 +47,9 @@ async function calculateStreak(
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
 
-  const todayStr = today.toISOString().split('T')[0];
-  const yesterdayStr = yesterday.toISOString().split('T')[0];
+  const todayStr = localDateKey(today);
+  const yesterdayStr = localDateKey(yesterday);
+  
   
   const hasActivityToday = uniqueDates.includes(todayStr);
   const hasActivityYesterday = uniqueDates.includes(yesterdayStr);
@@ -55,7 +65,8 @@ async function calculateStreak(
 
   // Tæl sammenhængende dage
   for (const dateStr of uniqueDates) {
-    const checkDateStr = checkDate.toISOString().split('T')[0];
+    const checkDateStr = localDateKey(checkDate);
+
     
     if (dateStr === checkDateStr) {
       streak++;
