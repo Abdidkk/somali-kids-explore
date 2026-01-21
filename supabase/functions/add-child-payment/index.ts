@@ -53,13 +53,14 @@ serve(async (req) => {
     const originUrl = req.headers.get("origin") || "http://localhost:5173";
     
     // Use fixed Price ID for extra child monthly subscription
-    const priceId = 'price_1SF8paHugRjwpvWt4l9nKvv8'; // 15 kr/måned
+    const priceId = 'price_1Ss1xLHugRjwpvWtZKLW2Dty'; // 15 kr/måned
     
     logStep("Creating checkout session", { priceId, interval });
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
+      automatic_tax: { enabled: true },
       line_items: [
         {
           price: priceId,

@@ -117,6 +117,7 @@ serve(async (req) => {
       unit_amount: totalAmount * 100, // Convert to øre
       currency: 'dkk',
       recurring: { interval: 'month' },
+      tax_behavior: 'exclusive',
       product_data: {
         name: `Abonnement - ${numKids} barn${numKids > 1 ? '' : ''}`,
       },
@@ -140,6 +141,7 @@ serve(async (req) => {
       mode: 'subscription',
       payment_method_types: ['card'],
       customer: customerId,
+      automatic_tax: { enabled: true },
       success_url: `${originUrl}/payment-success`,
       cancel_url: `${originUrl}/payment-cancel`,
       subscription_data: {

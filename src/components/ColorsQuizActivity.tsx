@@ -104,9 +104,6 @@ export default function ColorsQuizActivity({ onBack }: ColorsQuizActivityProps) 
     setSelectedAnswer(answer);
     setShowResult(true);
 
-    if (answer === q.correctAnswer) {
-      setScore((prev) => prev + 1); // funktionel update
-    }
 
     if (answer === q.correctAnswer) {
       setScore((prev) => prev + 1);
@@ -115,13 +112,16 @@ export default function ColorsQuizActivity({ onBack }: ColorsQuizActivityProps) 
       playErrorSound(); // <-- Tilføj her
     }    
 
-    // Gå videre efter 1.5s
     if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
-    timeoutRef.current = window.setTimeout(() => {
-      setSelectedAnswer(null);
-      setShowResult(false);
-      setCurrentQuestion((prev) => Math.min(prev + 1, questions.length - 1));
-    }, 1500);
+
+    const isLast = currentQuestion === questions.length - 1;
+    if (!isLast) {
+      timeoutRef.current = window.setTimeout(() => {
+        setSelectedAnswer(null);
+        setShowResult(false);
+        setCurrentQuestion((prev) => prev + 1);
+      }, 1500);
+    }
   };
 
   const resetQuiz = () => {
