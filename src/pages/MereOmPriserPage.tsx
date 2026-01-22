@@ -2,8 +2,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { addVat, formatPrice } from "@/types/subscription";
 
 export default function MereOmPriserPage() {
+  const basePriceIncl = formatPrice(addVat(45));
+  const extraChildPriceIncl = formatPrice(addVat(15));
+
   return (
     <div className="bg-gradient-to-b from-blue-50 via-white to-white min-h-screen py-12 px-4 flex flex-col items-center animate-fade-in">
       <div className="w-full max-w-2xl mb-8">
@@ -28,15 +32,16 @@ export default function MereOmPriserPage() {
         <Card className="bg-white/60 border-0 shadow mb-6">
           <CardHeader>
             <CardTitle className="text-blue-700">Abonnementsvalg</CardTitle>
-            <CardDescription>Månedlig  betaling</CardDescription>
+            <CardDescription>Månedlig betaling</CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">
               <li>
-                <span className="font-bold">Månedlig:</span> <span className="text-blue-600">45 kr/md</span> (ingen binding)
+                <span className="font-bold">Månedlig:</span> <span className="text-blue-600">{basePriceIncl} kr/md inkl. moms</span> (ingen binding)
+                <span className="text-sm text-gray-500 ml-1">(45 kr ekskl. moms)</span>
               </li>
               <li>
-                <span className="font-bold">Ekstra børneprofiler:</span> 15 kr/md.
+                <span className="font-bold">Ekstra børneprofiler:</span> {extraChildPriceIncl} kr/md inkl. moms
               </li>
             </ul>
           </CardContent>

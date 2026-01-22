@@ -3,8 +3,12 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { CalendarCheck } from "lucide-react";
 import { Link } from "react-router-dom";
+import { addVat, formatPrice } from "@/types/subscription";
 
 export default function PricingPage() {
+  const basePriceIncl = formatPrice(addVat(45));
+  const extraChildPriceIncl = formatPrice(addVat(15));
+
   return <div className="bg-gradient-to-b from-blue-50 via-white to-white min-h-screen py-12 px-4 flex flex-col items-center animate-fade-in">
     <div className="w-full max-w-xl mb-8">
       <Link to="/" className="text-blue-600 hover:underline flex items-center gap-1">&larr; Til forsiden</Link>
@@ -28,9 +32,10 @@ export default function PricingPage() {
             <CardTitle className="text-xl font-semibold">Månedlig betaling</CardTitle>
           </div>
           <div className="mt-3">
-            <span className="text-3xl font-bold">45 kr</span>
-            <span className="text-lg text-gray-600 ml-1">/måned</span>
+            <span className="text-3xl font-bold">{basePriceIncl} kr</span>
+            <span className="text-lg text-gray-600 ml-1">/måned inkl. moms</span>
           </div>
+          <div className="text-sm text-gray-500">(45 kr ekskl. moms)</div>
           <CardDescription className="mt-2">Fuld adgang for 1 barn. Ingen binding.</CardDescription>
         </CardHeader>
         <CardContent className="flex-1">
@@ -38,7 +43,7 @@ export default function PricingPage() {
             <li>✔️ 24 timers gratis prøveperiode</li>
             <li>✔️ Ubegrænset adgang til alle fag, lektioner & aktiviteter</li>
             <li>✔️ Inkluderer 1 børneprofil</li>
-            <li>➕ Ekstra børneprofil: <b>15 kr/md.</b></li>
+            <li>➕ Ekstra børneprofil: <b>{extraChildPriceIncl} kr/md inkl. moms</b></li>
             <li>✔️ Opsig når som helst</li>
             <li>✔️ Nye opdateringer og indhold</li>
           </ul>
@@ -58,7 +63,7 @@ export default function PricingPage() {
             <b>Bemærk:</b> Alle abonnementer starter med 24 timers gratis prøveperiode uden kreditkort.
           </div>
           <div>
-            Hver ekstra børneprofil koster <b>15 kr/md.</b>
+            Hver ekstra børneprofil koster <b>{extraChildPriceIncl} kr/md inkl. moms</b>
           </div>
           <div className="text-xs text-gray-500 mt-2">
             Kontakt os på kontakt@dugsii.dk hvis du har brug for at tilføje mange børn eller har særlige behov.
