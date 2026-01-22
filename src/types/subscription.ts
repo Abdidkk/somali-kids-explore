@@ -40,3 +40,40 @@ export function calculateTotal(children: number, plan: SubscriptionPlan = DEFAUL
   const extra = Math.max(0, children - plan.includedChildren);
   return plan.basePricePerChild + extra * plan.extraChildFee;
 }
+
+/**
+ * Danish VAT rate (25%)
+ */
+export const VAT_RATE = 0.25;
+
+/**
+ * Add VAT to a price
+ * @param priceExclVat Price excluding VAT
+ * @returns Price including 25% VAT
+ */
+export function addVat(priceExclVat: number): number {
+  return Math.round(priceExclVat * (1 + VAT_RATE) * 100) / 100;
+}
+
+/**
+ * Calculate total subscription price with VAT
+ * @param children Number of children
+ * @param plan Subscription plan (defaults to DEFAULT_PLAN)
+ * @returns Total price including 25% VAT
+ */
+export function calculateTotalWithVat(
+  children: number,
+  plan: SubscriptionPlan = DEFAULT_PLAN
+): number {
+  const exclVat = calculateTotal(children, plan);
+  return addVat(exclVat);
+}
+
+/**
+ * Format price for display (Danish comma notation)
+ * @param price Price to format
+ * @returns Formatted price string with comma as decimal separator
+ */
+export function formatPrice(price: number): string {
+  return price.toFixed(2).replace('.', ',');
+}
