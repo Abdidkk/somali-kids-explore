@@ -60,6 +60,8 @@ serve(async (req) => {
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
+      customer_update: customerId ? { address: 'auto' } : undefined,
+      billing_address_collection: 'required',
       automatic_tax: { enabled: true },
       line_items: [
         {
