@@ -8,7 +8,7 @@ import { useChildren } from "@/hooks/useChildren";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { DEFAULT_PLAN, calculateTotal, calculateTotalWithVat, addVat, formatPrice } from "@/types/subscription";
+import { DEFAULT_PLAN, calculateTotal } from "@/types/subscription";
 
 const ChoosePlanPage = () => {
   const [loading, setLoading] = useState(false);
@@ -104,8 +104,7 @@ const ChoosePlanPage = () => {
   }
 
   const totalPriceExcl = calculateTotal(numKids);
-  const totalPriceIncl = calculateTotalWithVat(numKids);
-  const extraChildPriceIncl = formatPrice(addVat(DEFAULT_PLAN.extraChildFee));
+  const extraChildPrice = DEFAULT_PLAN.extraChildFee; // 15 kr ekskl. moms
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-20 px-4">
@@ -127,7 +126,7 @@ const ChoosePlanPage = () => {
                 Hvor mange børneprofiler har du brug for?
               </h3>
               <p className="text-sm text-gray-600">
-                {DEFAULT_PLAN.includedChildren} barn inkluderet, {extraChildPriceIncl} kr/md inkl. moms pr. ekstra barn
+                {DEFAULT_PLAN.includedChildren} barn inkluderet, {extraChildPrice} kr/md ekskl. moms pr. ekstra barn
               </p>
             </div>
             <div className="flex items-center justify-center gap-4">
@@ -154,7 +153,7 @@ const ChoosePlanPage = () => {
               <div className="mt-4 text-center">
                 <p className="text-sm text-gray-600">
                   Ekstra omkostning: <span className="font-semibold">
-                    {formatPrice(addVat((numKids - DEFAULT_PLAN.includedChildren) * DEFAULT_PLAN.extraChildFee))} kr/md inkl. moms
+                    {(numKids - DEFAULT_PLAN.includedChildren) * DEFAULT_PLAN.extraChildFee} kr/md ekskl. moms
                   </span>
                 </p>
               </div>
@@ -178,17 +177,14 @@ const ChoosePlanPage = () => {
               </CardDescription>
               <div className="mt-4">
                 <span className="text-4xl font-bold">
-                  {formatPrice(totalPriceIncl)} kr
+                  {totalPriceExcl} kr
                 </span>
                 <span className="text-gray-600">
-                  /måned inkl. moms
+                  /måned ekskl. moms
                 </span>
-                <div className="text-sm text-gray-500 mt-2">
-                  ({totalPriceExcl} kr ekskl. moms)
-                </div>
                 {numKids > DEFAULT_PLAN.includedChildren && (
-                  <div className="text-xs text-gray-400 mt-1">
-                    Base: {formatPrice(addVat(DEFAULT_PLAN.basePricePerChild))} kr + {numKids - DEFAULT_PLAN.includedChildren} ekstra barn
+                  <div className="text-xs text-gray-400 mt-2">
+                    Base: {DEFAULT_PLAN.basePricePerChild} kr + {numKids - DEFAULT_PLAN.includedChildren} ekstra barn à {extraChildPrice} kr
                   </div>
                 )}
               </div>
@@ -209,7 +205,7 @@ const ChoosePlanPage = () => {
               </div>
               <div className="flex items-center gap-3">
                 <Check className="text-green-500 flex-shrink-0" size={16} />
-                <span className="text-gray-700">Ekstra børneprofiler: {extraChildPriceIncl} kr/md inkl. moms</span>
+                <span className="text-gray-700">Ekstra børneprofiler: {extraChildPrice} kr/md ekskl. moms</span>
               </div>
               <div className="flex items-center gap-3">
                 <Check className="text-green-500 flex-shrink-0" size={16} />

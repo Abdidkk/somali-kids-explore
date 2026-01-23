@@ -18,8 +18,8 @@ const PricingSection = () => {
             <CardHeader>
               <CardTitle className="text-2xl">Månedlig Plan</CardTitle>
               <div className="mt-4">
-                <span className="text-4xl font-bold">79 kr</span>
-                <span className="text-gray-500 ml-2">/måned</span>
+                <span className="text-4xl font-bold">45 kr</span>
+                <span className="text-gray-500 ml-2">/måned ekskl. moms</span>
               </div>
               <CardDescription className="mt-2">Perfekt til kortvarig læring</CardDescription>
             </CardHeader>
@@ -36,10 +36,10 @@ const PricingSection = () => {
               </div>
               <CardTitle className="text-2xl">Årlig Plan</CardTitle>
               <div className="mt-4">
-                <span className="text-4xl font-bold">699 kr</span>
-                <span className="text-gray-500 ml-2">/år</span>
+                <span className="text-4xl font-bold">450 kr</span>
+                <span className="text-gray-500 ml-2">/år ekskl. moms</span>
               </div>
-              <CardDescription className="mt-2">Spar 25% i forhold til månedlig</CardDescription>
+              <CardDescription className="mt-2">Spar 17% i forhold til månedlig</CardDescription>
             </CardHeader>
             <CardContent>
               <PlanFeatures isYearly />
