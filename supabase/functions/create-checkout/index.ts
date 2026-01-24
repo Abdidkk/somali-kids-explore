@@ -141,8 +141,12 @@ serve(async (req) => {
       mode: 'subscription',
       payment_method_types: ['card'],
       customer: customerId,
+<<<<<<< HEAD
       customer_update: { address: 'auto' },
       billing_address_collection: 'required',
+=======
+      customer_update: { address: 'auto' },  
+>>>>>>> 28c2224 (...)
       automatic_tax: { enabled: true },
       success_url: `${originUrl}/payment-success`,
       cancel_url: `${originUrl}/payment-cancel`,
