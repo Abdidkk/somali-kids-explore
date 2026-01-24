@@ -328,7 +328,7 @@ export interface SentenceItem {
       somali: "saacaddan waa weyn oo buluug ah",
       words: ["waa", "weyn", "saacaddan","ah", "buluug", "oo"],
       correct: ["saacaddan", "waa", "weyn", "oo", "buluug", "ah"],
-      audio: "/sætninger/blåur.mp3",
+      audio: "/sætninger/u8.mp3",
       image: "/sætninger/blaur.png",
       difficulty: "svær",
       theme: "familie"
