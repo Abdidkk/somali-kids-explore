@@ -21,8 +21,8 @@ export const DAILY_ACTIVITIES: DailyItem[] = [
     id: 2,
     danish: "Jeg tager tøj på",
     somali: "Dhar ayaan gashanayaa.",
-    audio: "/daglig/jegtagertøjpå.mp3", 
-    image: "/daglig/jegtagertøjpå.png",
+    audio: "/daglig/2dd.mp3", 
+    image: "/daglig/2d.png",
     category: "morgen",
   },
   {
@@ -38,8 +38,8 @@ export const DAILY_ACTIVITIES: DailyItem[] = [
     id: 4,
     danish: "Jeg børster mit hår",
     somali: "Timaha ayaan iska sifeeyaa.",
-    audio: "/daglig/jegbørsterminhår.mp3",
-    image: "/daglig/jegbørsterhår.png",
+    audio: "/daglig/4dd.mp3",
+    image: "/daglig/4d.png",
     category: "morgen",
   },
 
@@ -80,8 +80,8 @@ export const DAILY_ACTIVITIES: DailyItem[] = [
     id: 12,
     danish: "Jeg går hjem",
     somali: "Waxaan u socdaa guriga",
-    audio: "/daglig/jegerpåvejhjem.mp3",
-    image: "/daglig/jeggårhjem.png",
+    audio: "/daglig/12dd.mp3",
+    image: "/daglig/12d.png",
     category: "eftermiddag",
   },
   {
