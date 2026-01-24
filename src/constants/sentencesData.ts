@@ -99,8 +99,8 @@ export interface SentenceItem {
       incomplete: "Maalin walba ____ baan tagaa",
       options: ["dugsiga", "suuqa", "guriga", "beerta"],
       correct: "dugsiga",
-      audio: "/sætninger/jeggårhverdag.mp3",
-      image: "/daglig/jeggårskole.png",
+      audio: "/sætninger/s55.mp3",
+      image: "/daglig/s5.png",
       difficulty: "mellem",
       theme: "daglig"
     },
@@ -151,8 +151,8 @@ export interface SentenceItem {
       incomplete: "Funaanadeydu waa ____",
       options: ["fiyoole", "buluug", "bunni", "madow"],
       correct: "buluug",
-      audio: "/sætninger/trøjeerblå.mp3",
-      image: "/sætninger/blåtrøje.png", 
+      audio: "/sætninger/s99.mp3",
+      image: "/sætninger/s9.png", 
       difficulty: "mellem",
       theme: "følelser"
     },
@@ -191,8 +191,8 @@ export interface SentenceItem {
       incomplete: "Waxaan ____ ku dhuftay",
       options: ["timo", "farteyda", "ilko", "af"],
       correct: "farteyda",
-      audio: "/sætninger/slåetfinger.mp3",
-      image: "/sætninger/slåetfinger.png", 
+      audio: "/sætninger/s1212.mp3",
+      image: "/sætninger/s12.png", 
       difficulty: "svær",
       theme: "følelser"
     },
