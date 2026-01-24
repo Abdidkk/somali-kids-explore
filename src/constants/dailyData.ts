@@ -13,8 +13,8 @@ export const DAILY_ACTIVITIES: DailyItem[] = [
     id: 1,
     danish: "Jeg er stået op",
     somali: "Waan soo kacay.",
-    audio: "/daglig/jegerståetop.mp3",
-    image: "/daglig/jegerligeståetop.png",
+    audio: "/daglig/1dd.mp3",
+    image: "/daglig/1d.png",
     category: "morgen",
   },
   {
