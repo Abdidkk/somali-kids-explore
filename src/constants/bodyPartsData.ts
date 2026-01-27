@@ -9,6 +9,7 @@ export interface BodyPartItem {
 
 export const BODY_PARTS_DATA: BodyPartItem[] = [
   // Kropsdele
+  { id: "face", danish: "Ansigt", somali: "Waji", audio: "/krop/ansigt.mp3", image: "/krop/waji.png", category: "kropsdele" },
   { id: "head", danish: "Hoved", somali: "Madax", audio: "/krop/hoved.mp3", image: "/billeder/hoved.png", category: "kropsdele" },
   { id: "hair", danish: "Hår", somali: "Timo", audio: "/krop/har.mp3", image: "/billeder/har.png", category: "kropsdele" },
   { id: "eyebrow", danish: "Øjenbryn", somali: "Suniyo", audio: "/krop/suniyo.mp3", image: "/billeder/øjnebryn.png" ,category: "kropsdele" },

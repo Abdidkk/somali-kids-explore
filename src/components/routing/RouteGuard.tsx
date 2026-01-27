@@ -67,7 +67,7 @@ export function RouteGuard({
         case 'subscription_expired':
           // Udløbne brugere med børn kan SE dashboard med "sat i bero" alert
           // Men de kan IKKE tilgå /learning (kræver aktivt abonnement)
-          if (currentPath === '/choose-plan') {
+          if (currentPath === '/dashboard') {
             // De må gerne besøge choose-plan for at genaktivere
             break;
           }
