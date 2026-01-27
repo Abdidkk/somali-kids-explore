@@ -28,7 +28,7 @@ const Footer = () => {
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">Sig endelig til</h3>
-            <p className="text-lg mb-4">Feedback er velkommen. Oplever du fejl i lyd, test eller funktioner, så kontakt os, så vi kan forbedre platformen løbend.</p>
+            <p className="text-lg mb-4">Oplever du fejl i lyd, tekst eller funktioner, så kontakt os, så vi kan forbedre platformen løbende.</p>
           </div>
         </div>
         <div className="border-t border-gray-200 mt-8 pt-8 text-center">

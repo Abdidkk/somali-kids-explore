@@ -28,7 +28,7 @@ export const DAILY_ACTIVITIES: DailyItem[] = [
   {
     id: 3,
     danish: "Jeg børster tænder",
-    somali: "Ilkahayga ayaan iska cadaystaa.",
+    somali: "Waan cadaydaa.",
     audio: "/daglig/jegbørstertænder.mp3",
     image: "/daglig/jegbørstertænder.png",
     category: "morgen",
@@ -37,7 +37,7 @@ export const DAILY_ACTIVITIES: DailyItem[] = [
   {
     id: 4,
     danish: "Jeg børster mit hår",
-    somali: "Timaha ayaan iska sifeeyaa.",
+    somali: "Waan shaleysta",
     audio: "/daglig/4dd.mp3",
     image: "/daglig/4d.png",
     category: "morgen",
@@ -47,7 +47,7 @@ export const DAILY_ACTIVITIES: DailyItem[] = [
   {
     id: 8,
     danish: "Jeg laver lektier",
-    somali: "Waxaan sameynayaa guriga",
+    somali: "Waxaan sameynayaa layli",
     audio: "/daglig/jeglaverlektier.mp3",
     image: "/daglig/jeglaverlektier.png",
     category: "eftermiddag",
@@ -71,7 +71,7 @@ export const DAILY_ACTIVITIES: DailyItem[] = [
   {
     id: 11,
     danish: "Jeg spiller fodbold",
-    somali: "Waxaan ciyaarayaa kubadda",
+    somali: "Waxaan ciyaarayaa kubad",
     audio: "/daglig/jegspillerfodbold.mp3",
     image: "/daglig/jegleger.png",
     category: "eftermiddag",
@@ -97,14 +97,14 @@ export const DAILY_ACTIVITIES: DailyItem[] = [
   {
     id: 7,
     danish: "Jeg ser tv",
-    somali: "Waxaan daawanayaa telefishinka",
+    somali: "Waxaan daawanayaa telefishin",
     audio: "/daglig/jegsertv.mp3",
     image: "/daglig/jegsertv.png",
     category: "aften",
   },
   {
     id: 8,
-    danish: "Jeg leger med bror",
+    danish: "Jeg leger med min bror",
     somali: "Waxaan la ciyarayaa walaalkay",
     audio: "/daglig/legermedlillebror.mp3",
     image: "/daglig/legermedbror.png",
@@ -113,7 +113,7 @@ export const DAILY_ACTIVITIES: DailyItem[] = [
   {
     id: 9,
     danish: "Jeg spiser aftensmad med familien",
-    somali: "Waxaan la cunayaa casho qoyskeyga",
+    somali: "Waxaan la casheynayaa qoyskeyga",
     audio: "/daglig/jegspiserfamilie.mp3",
     image: "/daglig/jegspiserfamilie.png",
     category: "aften",
@@ -121,7 +121,7 @@ export const DAILY_ACTIVITIES: DailyItem[] = [
   {
     id: 10,
     danish: "Jeg rydder op",
-    somali: "Waxaan sameynayaa shaqada guriga",
+    somali: "Gurig ayaan hagaajinaayaa",
     audio: "/daglig/jegrydderop.mp3",
     image: "/daglig/jegrydderop.png",
     category: "aften",
@@ -180,7 +180,7 @@ export const DAILY_SENTENCES: DailySentence[] = [
   },
   {
     id: 5,
-    danish: "Jeg leger med bror",
+    danish: "Jeg leger med min bror",
     somali: "Waxaan la ciyarayaa walaalkay",
     words: ["walaalkay", "ciyarayaa", "la","Waxaan",],
     correctOrder: ["Waxaan", "la", "ciyarayaa","walaalkay",],
