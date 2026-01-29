@@ -10,14 +10,7 @@ export interface CulturalFact {
 }
 
 export const CULTURAL_FACTS: CulturalFact[] = [
-  {
-    id: "tea_ceremony",
-    title: "Somalisk te-ceremoni",
-    factSomali: "Shaaha waa qayb muhiim ah oo ka mid ah dhaqanka Soomaalida. Waxaa loo sameeyaa shaaha cadays oo lagu daro qorfe iyo xawaash kale sida qarfaha iyo gingir. Shaaha waxa lagu cabbaa marka la kulmayo asxaabta iyo qoysaska.",
-    factDanish: "Te er en vigtig del af somalisk kultur. Somalisk te laves med sort te, kardemomme og andre krydderier som kanel og ingefær. Te drikkes ved sociale sammenkomster med venner og familie.",
-    image: "/Kultur/te.png",
-    category: "Traditioner"
-  },
+ 
   {
     id: "nomadic_life",
     title: "Islam",
@@ -35,27 +28,11 @@ export const CULTURAL_FACTS: CulturalFact[] = [
     category: "Traditioner"
   },
   {
-    id: "poetry",
-    title: "Somalisk poesi",
-    factSomali: "Gabaygu waa fanka ugu caansan Soomaaliya. Waxaa jira noocyo badan oo gabay ah, oo loogu isticmaalo sheekooyin, taariikhda iyo xisbiyada siyaasadeed. Gabaygu waa hab looga dhaxlo karo dhaqanka iyo taariikhda.",
-    factDanish: "Poesi er den mest berømte kunstart i Somalia. Der findes mange typer poesi, der bruges til historier, historie og politiske budskaber. Poesi er en måde at videregive kultur og historie på.",
-    image: "/placeholder.svg",
-    category: "Kultur"
-  },
-  {
-    id: "music_dance",
-    title: "Musik og dans",
-    factSomali: "Muusiqa iyo cayaarta Soomaalidu waxay leeyihiin taariikhda dheer. Alaabtii muusikada ee caadiga ahayd waxaa ka mid ah durbaan iyo oud. Cayaartu waxay inta badan la xidhiidhaa dabaaldeggayaasha iyo xafladaha.",
-    factDanish: "Somalisk musik og dans har en lang historie. Traditionelle musikinstrumenter inkluderer trommer og oud. Dans er ofte forbundet med fejringer og festivaler.",
-    image: "/placeholder.svg",
-    category: "Kultur"
-  },
-  {
     id: "traditional_food",
     title: "Traditionel mad",
     factSomali: "Cuntada Soomaalidu waxay ku salaysan tahay hilib, bariis, iyo baasto. Cuntooyin caaan ah waxaa ka mid ah canjeero (rooti caato ah), suugo, iyo hilib ari. Xawaashku muhiim bay u yihiin dhadhanka.",
     factDanish: "Somalisk mad er baseret på kød, ris og pasta. Berømte retter inkluderer injera (fladbrød), suugo og fårekød. Krydderier er vigtige for smagen.",
-    image: "/Kultur/mad.png",
+    image: "/Kultur/maad.png",
     category: "Mad"
   },
   {
@@ -83,19 +60,19 @@ export const CULTURAL_FACTS: CulturalFact[] = [
     category: "Kultur"
   },
   {
-    id: "henna_art",
-    title: "Henna-kunst",
-    factSomali: "Xinnaha waa farshaxan caado ah oo haweenka Soomaaliyeed ay isticmaalaan marka ay jiraan dabaaldegyo sida aroosyada iyo ciidaha. Qaabka xinnaha wuu kala duwan yahay gobolka iyo qofka.",
-    factDanish: "Henna er en traditionel kunstform, som somaliske kvinder bruger ved fejringer som bryllupper og religiøse højtider. Henna-mønstrene varierer efter region og person.",
-    image: "/placeholder.svg",
-    category: "Kunst"
+    id: "music_dance",
+    title: "Musik og dans",
+    factSomali: "Muusiqa iyo cayaarta Soomaalidu waxay leeyihiin taariikhda dheer. Alaabtii muusikada ee caadiga ahayd waxaa ka mid ah durbaan iyo oud. Cayaartu waxay inta badan la xidhiidhaa dabaaldeggayaasha iyo xafladaha.",
+    factDanish: "Somalisk musik og dans har en lang historie. Traditionelle musikinstrumenter inkluderer trommer og oud. Dans er ofte forbundet med fejringer og festivaler.",
+    image: "/Kultur/dans.png",
+    category: "Kultur"
   },
   {
     id: "traditional_clothing",
     title: "Traditionelt tøj",
     factSomali: "Dharka caadiga ah ee Soomaaliyeed wuxuu ka kooban yahay macawiis (marwadii ragga), dirac iyo guntiino (haweenka). Midabada iyo nashqadaha qaarkood waxay calaamad u yihiin dhaqanka iyo gobolka.",
     factDanish: "Traditionelt somalisk tøj består af macawis (mænds sarong), dirac og guntiino (kvinders kjoler). Visse farver og mønstre symboliserer kultur og region.",
-    image: "/placeholder.svg",
+    image: "/Kultur/kultur.png",
     category: "Traditioner"
   },
   {
@@ -103,7 +80,7 @@ export const CULTURAL_FACTS: CulturalFact[] = [
     title: "Respekt for ældre",
     factSomali: "Ixtiraamka dadka waayeelka ah waa qayb muhiim ah oo ka mid ah dhaqanka Soomaalida. Dadka da'da weyn waxaa loo arkaa inay yihiin xero aqoon iyo waayo-aragnimo. Waxaa laga filayaa dadka dhallinyarada ah inay maqlaan talada dadka waayeelka.",
     factDanish: "Respekt for ældre er en vigtig del af somalisk kultur. Ældre mennesker ses som kilder til viden og visdom. Unge mennesker forventes at lytte til de ældres råd.",
-    image: "/placeholder.svg",
+    image: "/Kultur/ældre.png",
     category: "Værdier"
   }
 ];
