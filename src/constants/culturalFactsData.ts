@@ -17,6 +17,8 @@ export const CULTURAL_FACTS: CulturalFact[] = [
     factSomali: "Ma ogtahay in dadka Soomaaliyeed ay Muslimiin yihiin.",
     factDanish: "Vidste du at 99% af befolkningen i Somalia er muslimer.",
     image: "/Kultur/islam.png",
+    audioSomali: "",
+    audioDanish: "",
     category: "Historie"
   },
   {
@@ -24,7 +26,7 @@ export const CULTURAL_FACTS: CulturalFact[] = [
     title: "Somalisk gæstfrihed",
     factSomali: "Martiqaadnimadu waa qayb muhiim ah oo ka mid ah dhaqanka Soomaalida. Martida waxaa loo sameeyaa cunto iyo cabitaan, waxaana loo isticmaalaa shaaha iyo cunno gaar ah. Waa qadarin in martida loo dhoweeyo si fiican.",
     factDanish: "Gæstfrihed er en vigtig del af somalisk kultur. Gæster bliver serveret mad og drikke, herunder te og specielle retter. Det er værdsat at byde gæster velkommen på en varm måde.",
-    image: "/placeholder.svg",
+    image: "/Kultur/gæst.png",
     category: "Traditioner"
   },
   {
@@ -48,23 +50,16 @@ export const CULTURAL_FACTS: CulturalFact[] = [
     title: "Røgelse og parfume",
     factSomali: "Fooxa iyo uunsiga ayaa taariikhda dheer ka leh Soomaaliya. Uunsiga oo ah lubaan waxaa loo isticmaalaa guryaha iyo xafladaha. Cadarku waa qayb ka mid ah dhaqanka haweenka Soomaaliyeed.",
     factDanish: "Røgelse og parfume har en lang historie i Somalia. Røgelse som frankincense bruges i hjem og ved ceremonier. Parfume er en del af somalisk kvindekultur.",
-    image: "/placeholder.svg",
+    image: "/Kultur/parfume.png",
     category: "Traditioner"
   },
-  {
-    id: "oral_tradition",
-    title: "Mundtlig tradition",
-    factSomali: "Dhaqanka afka ah waa hab muhiim ah oo lagu dhaxliyo aqoonta Soomaalida. Sheekooyin, maahmaahyo iyo taariikhda waxaa lagu dhaxlaa afka. Dadka waayeelku door muhiim ah ayay ka ciyaaraan dhaxalka aqoontan.",
-    factDanish: "Mundtlig tradition er en vigtig måde at videregive somalisk viden på. Historier, ordsprog og historie videregives gennem tale. Ældre mennesker spiller en vigtig rolle i at bevare denne viden.",
-    image: "/placeholder.svg",
-    category: "Kultur"
-  },
+
   {
     id: "music_dance",
     title: "Musik og dans",
     factSomali: "Muusiqa iyo cayaarta Soomaalidu waxay leeyihiin taariikhda dheer. Alaabtii muusikada ee caadiga ahayd waxaa ka mid ah durbaan iyo oud. Cayaartu waxay inta badan la xidhiidhaa dabaaldeggayaasha iyo xafladaha.",
     factDanish: "Somalisk musik og dans har en lang historie. Traditionelle musikinstrumenter inkluderer trommer og oud. Dans er ofte forbundet med fejringer og festivaler.",
-    image: "/Kultur/dans.png",
+    image: "/Kultur/fest.png",
     category: "Kultur"
   },
   {
@@ -80,7 +75,7 @@ export const CULTURAL_FACTS: CulturalFact[] = [
     title: "Respekt for ældre",
     factSomali: "Ixtiraamka dadka waayeelka ah waa qayb muhiim ah oo ka mid ah dhaqanka Soomaalida. Dadka da'da weyn waxaa loo arkaa inay yihiin xero aqoon iyo waayo-aragnimo. Waxaa laga filayaa dadka dhallinyarada ah inay maqlaan talada dadka waayeelka.",
     factDanish: "Respekt for ældre er en vigtig del af somalisk kultur. Ældre mennesker ses som kilder til viden og visdom. Unge mennesker forventes at lytte til de ældres råd.",
-    image: "/Kultur/ældre.png",
+    image: "/Kultur/ædrer.png",
     category: "Værdier"
   }
 ];
