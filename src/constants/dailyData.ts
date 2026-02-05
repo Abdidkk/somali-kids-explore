@@ -165,9 +165,9 @@ export const DAILY_SENTENCES: DailySentence[] = [
   {
     id: 3,
     danish: "Jeg laver lektier",
-    somali: "Waxaan u socdaa guriga",
-    words: ["u", "Waxaan", "guriga", "socdaa"],
-    correctOrder: ["Waxaan", "u", "socdaa", "guriga"],
+    somali: "Waxaan sameynayaa layli",
+    words: ["sameynayaa", "Waxaan", "layli",],
+    correctOrder: ["Waxaan", "sameynayaa", "layli",],
     difficulty: "mellem",
   },
   {
@@ -189,9 +189,9 @@ export const DAILY_SENTENCES: DailySentence[] = [
   {
     id: 6,
     danish: "Jeg spiser aftensmad med familien",
-    somali: "Waxaan la cunayaa casho qoyskeyga",
-    words: ["Waxaan", "qoyskeyga", "cunayaa ","la","casho",],
-    correctOrder: ["Waxaan", "la", "cunayaa","casho","qoyskeyga"],
+    somali: "Waxaan la casheynayaa qoyskeyga",
+    words: ["Waxaan", "qoyskeyga", "casheynayaa","la",],
+    correctOrder: ["Waxaan", "la", "casheynayaa","qoyskeyga"],
     difficulty: "svær",
   },
 ];
