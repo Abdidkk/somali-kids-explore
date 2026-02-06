@@ -22,8 +22,9 @@ const AlphabetModal: React.FC<AlphabetModalProps> = ({
   const [activity, setActivity] = useState<ActivityType>(null);
   const isMobile = useIsMobile();
 
-  if (!open) return null;
-
+  if (!open) return null; 
+  
+  
   const handleBackToMenu = () => {
     setActivity(null);
   };

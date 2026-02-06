@@ -249,7 +249,7 @@ export default function LearnCategoriesPage() {
   }, [user]);
 
   const handleBack = () => {
-    window.history.back();
+    navigate('/dashboard');
   };
 
   const handleCategorySelect = (category) => {
