@@ -24,7 +24,6 @@ const AlphabetModal: React.FC<AlphabetModalProps> = ({
 
   if (!open) return null; 
   
-  
   const handleBackToMenu = () => {
     setActivity(null);
   };

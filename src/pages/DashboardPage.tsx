@@ -387,7 +387,7 @@ const DashboardPage = () => {
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="overview">Overblik</TabsTrigger>
             <TabsTrigger value="family">Familie Fremgang</TabsTrigger>
-            <TabsTrigger value="settings">Indstillinger</TabsTrigger>
+            <TabsTrigger value="settings">Kontrol</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
