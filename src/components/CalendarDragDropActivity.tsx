@@ -151,10 +151,20 @@ export default function CalendarDragDropActivity({ onBack, selectedChild }: Prop
     <div className="flex flex-col items-center mt-3 md:mt-5 gap-4 md:gap-5 relative">
       <ScoreDisplay score={score} animate={showScoreAnimation} />
       <Tabs value={tab} onValueChange={v => setTab(v as "weekdays" | "months")} className="w-full flex flex-col items-center">
-        <TabsList className={`mb-3 md:mb-4 bg-violet-50 ${isMobile ? 'text-xs' : ''}`}>
-          <TabsTrigger value="weekdays">Ugedage</TabsTrigger>
-          <TabsTrigger value="months">Måneder</TabsTrigger>
-        </TabsList>
+      <TabsList className="grid w-full grid-cols-3 bg-purple-100 rounded-xl p-1 h-auto">
+  <TabsTrigger 
+    value="weekdays"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    📅Ugedage
+  </TabsTrigger>
+  <TabsTrigger 
+    value="months"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🌅  Måned
+  </TabsTrigger>
+</TabsList>
         
         <TabsContent value={tab} className="w-full flex flex-col items-center gap-4">
           <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-medium text-gray-700 text-center`}>

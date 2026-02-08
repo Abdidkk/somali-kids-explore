@@ -69,13 +69,13 @@ const FamilyListenActivity: React.FC<FamilyListenActivityProps> = ({ onBack }) =
     value="Familie"
     className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-pink-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
   >
-    👨🏾‍🦱👩🏾‍🦱👧🏾👦🏾 Familie
+    👨🏾‍🦱👩🏾‍🦱 Familie
   </TabsTrigger>
   <TabsTrigger 
     value="Mennesker"
     className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-pink-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
   >
-    👨🏾‍⚕️👩🏾‍🏫👨🏾‍🍳 Mennesker
+    👨🏾‍⚕️👩🏾‍🏫 Mennesker
   </TabsTrigger>
   <TabsTrigger 
     value="Følelser"
