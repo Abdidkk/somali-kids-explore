@@ -129,11 +129,26 @@ const SentencesCompleteActivity: React.FC<SentencesCompleteActivityProps> = ({ o
 
       {/* Difficulty Selector */}
       <Tabs value={difficulty} onValueChange={handleDifficultyChange} className="w-full max-w-md mx-auto mb-6">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="let" className="text-xs sm:text-sm">Let</TabsTrigger>
-          <TabsTrigger value="mellem" className="text-xs sm:text-sm">Mellem</TabsTrigger>
-          <TabsTrigger value="svær" className="text-xs sm:text-sm">Svær</TabsTrigger>
-        </TabsList>
+      <TabsList className="grid w-full grid-cols-3 bg-blue-100 rounded-xl p-1 h-auto">
+  <TabsTrigger 
+    value="let"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🟢 Let
+  </TabsTrigger>
+  <TabsTrigger 
+    value="mellem"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🟡 Mellem
+  </TabsTrigger>
+  <TabsTrigger 
+    value="svær"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🔴 Svær
+  </TabsTrigger>
+</TabsList>
       </Tabs>
 
       {/* Progress Bar */}

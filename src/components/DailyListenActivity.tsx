@@ -28,11 +28,26 @@ export default function DailyListenActivity({ onBack }: DailyListenActivityProps
       <h1 className="text-2xl font-bold text-gray-700 mb-4">Lyt og lær daglige aktiviteter</h1>
       
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full max-w-2xl">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="morgen">Morgen</TabsTrigger>
-          <TabsTrigger value="eftermiddag">Eftermiddag</TabsTrigger>
-          <TabsTrigger value="aften">Aften</TabsTrigger>
-        </TabsList>
+      <TabsList className="grid w-full grid-cols-3 bg-gray-100 rounded-xl p-1 h-auto">
+  <TabsTrigger 
+    value="morgen"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-gray-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🌤️ Morgen
+  </TabsTrigger>
+  <TabsTrigger 
+    value="eftermiddag"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-gray-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🌞 Eftermiddag
+  </TabsTrigger>
+  <TabsTrigger 
+    value="aften"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-gray-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🌙 Aften
+  </TabsTrigger>
+</TabsList>
         
         <TabsContent value={activeTab} className="mt-6">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">

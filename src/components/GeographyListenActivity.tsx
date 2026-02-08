@@ -38,11 +38,26 @@ export default function GeographyListenActivity({ onBack }: Props) {
   return (
     <div className="flex flex-col items-center mt-3 md:mt-5 gap-4 md:gap-5">
       <Tabs defaultValue="continents" className="w-full flex flex-col items-center">
-        <TabsList className={`mb-3 md:mb-4 bg-green-50 ${isMobile ? 'text-xs' : ''}`}>
-          <TabsTrigger value="continents">Kontinenter</TabsTrigger>
-          <TabsTrigger value="countries">Lande</TabsTrigger>
-          <TabsTrigger value="nature">Natur</TabsTrigger>
-        </TabsList>
+      <TabsList className="grid w-full grid-cols-3 bg-green-100 rounded-xl p-1 h-auto">
+  <TabsTrigger 
+    value="continents"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🌍 Kontinener
+  </TabsTrigger>
+  <TabsTrigger 
+    value="countries"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🇺🇳 Lande
+  </TabsTrigger>
+  <TabsTrigger 
+    value="nature"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🌿 Natur
+  </TabsTrigger>
+</TabsList>
         
         <TabsContent value="continents" className="w-full flex flex-col items-center gap-4">
           <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-medium text-gray-700 text-center mb-3`}>

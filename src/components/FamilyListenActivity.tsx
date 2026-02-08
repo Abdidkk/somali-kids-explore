@@ -64,11 +64,26 @@ const FamilyListenActivity: React.FC<FamilyListenActivityProps> = ({ onBack }) =
       </h3>
       
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full max-w-2xl mx-auto">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="Familie">Familie</TabsTrigger>
-          <TabsTrigger value="Mennesker">Mennesker</TabsTrigger>
-          <TabsTrigger value="Følelser">Følelser</TabsTrigger>
-        </TabsList>
+      <TabsList className="grid w-full grid-cols-3 bg-pink-100 rounded-xl p-1 h-auto">
+  <TabsTrigger 
+    value="Familie"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-pink-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    👨🏾‍🦱👩🏾‍🦱👧🏾👦🏾 Familie
+  </TabsTrigger>
+  <TabsTrigger 
+    value="Mennesker"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-pink-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    👨🏾‍⚕️👩🏾‍🏫👨🏾‍🍳 Mennesker
+  </TabsTrigger>
+  <TabsTrigger 
+    value="Følelser"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-pink-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    😁 Følelser
+  </TabsTrigger>
+</TabsList>
         
         <TabsContent value="Familie" className="mt-6">
           {renderItemGrid('Familie')}

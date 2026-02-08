@@ -71,11 +71,26 @@ const KropsdeleListenActivity: React.FC<KropsdeleListenActivityProps> = ({ onBac
       </h3>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-6">
-          <TabsTrigger value="kropsdele">Kropsdele</TabsTrigger>
-          <TabsTrigger value="humør">Humør</TabsTrigger>
-          <TabsTrigger value="kropstype">Kropstype</TabsTrigger>
-        </TabsList>
+      <TabsList className="grid w-full grid-cols-3 bg-green-100 rounded-xl p-1 h-auto">
+  <TabsTrigger 
+    value="kropsdele"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    👀 kropsdele
+  </TabsTrigger>
+  <TabsTrigger 
+    value="humør"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    😍 humør
+  </TabsTrigger>
+  <TabsTrigger 
+    value="kropstype"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🏃 kropstype
+  </TabsTrigger>
+</TabsList>
         
         <TabsContent value="kropsdele">
           {renderItemGrid(getItemsForTab("kropsdele"))}

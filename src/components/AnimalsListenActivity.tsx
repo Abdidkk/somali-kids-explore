@@ -45,11 +45,26 @@ export default function AnimalsListenActivity({ onBack }: AnimalsListenActivityP
       <h3 className="text-2xl font-bold text-green-700 mb-4">Lyt og lær dyr</h3>
       
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full max-w-2xl">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="husdyr">Husdyr</TabsTrigger>
-          <TabsTrigger value="savannedyr">Savannedyr</TabsTrigger>
-          <TabsTrigger value="fugle_og_smådyr">Fugle og smådyr</TabsTrigger>
-        </TabsList>
+      <TabsList className="grid w-full grid-cols-3 bg-green-100 rounded-xl p-1 h-auto">
+  <TabsTrigger 
+    value="husdyr"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🐄 Husdyr
+  </TabsTrigger>
+  <TabsTrigger 
+    value="savannedyr"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🦁 Savannedyr
+  </TabsTrigger>
+  <TabsTrigger 
+    value="fugle_og_smådyr"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🐦 Smådyr
+  </TabsTrigger>
+</TabsList>
         
         <TabsContent value={activeTab} className="mt-6">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
