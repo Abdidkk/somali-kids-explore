@@ -49,9 +49,24 @@ export default function AlphabetTraceActivity({ onBack }: Props) {
       {/* Tabs til valg */}
       <Tabs value={tab} onValueChange={v => setTab(v as "alphabet" | "short" | "long")} className="w-full flex flex-col items-center">
         <TabsList className={`mb-2 md:mb-3 bg-violet-50 ${isMobile ? 'text-xs' : ''}`}>
-          <TabsTrigger value="alphabet">{GROUPS.alphabet.label}</TabsTrigger>
-          <TabsTrigger value="short">{GROUPS.short.label}</TabsTrigger>
-          <TabsTrigger value="long">{GROUPS.long.label}</TabsTrigger>
+        <TabsTrigger 
+    value="alphabet"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-purple-700 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+   🅰️ {GROUPS.alphabet.label}
+  </TabsTrigger>
+  <TabsTrigger 
+    value="short"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-purple-700 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🅱️ {GROUPS.short.label}
+  </TabsTrigger>
+  <TabsTrigger 
+    value="long"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-purple-700 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🆎 {GROUPS.long.label}
+  </TabsTrigger>
         </TabsList>
         
         {/* Info-text */}

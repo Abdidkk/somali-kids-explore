@@ -140,11 +140,26 @@ export default function AlphabetGuessActivity({ onBack }: Props) {
     <div className="flex flex-col items-center gap-6 mt-4">
       {/* Tabs for letter groups */}
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full max-w-4xl">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="alfabetet">Alfabetet</TabsTrigger>
-          <TabsTrigger value="korte-vokaler">Korte vokaler</TabsTrigger>
-          <TabsTrigger value="lange-vokaler">Lange vokaler</TabsTrigger>
-        </TabsList>
+      <TabsList className="grid w-full grid-cols-3 bg-purple-100 rounded-xl p-1 h-auto">
+  <TabsTrigger 
+    value="alfabetet"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🅰️ Alfabetet
+  </TabsTrigger>
+  <TabsTrigger 
+    value="korte-vokaler"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🅱️ Korte vokaler
+  </TabsTrigger>
+  <TabsTrigger 
+    value="lange-vokaler"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🆎 Lange vokaler
+  </TabsTrigger>
+</TabsList>
         
         <TabsContent value={activeTab} className="mt-6">
           <MultipleChoiceQuiz

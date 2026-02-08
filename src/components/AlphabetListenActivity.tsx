@@ -37,11 +37,26 @@ export default function AlphabetListenActivity({ onBack }: Props) {
     <div className="flex flex-col items-center mt-3 md:mt-5 gap-4 md:gap-5">
       {/* Tabs */}
       <Tabs value={tab} onValueChange={v => setTab(v as "alphabet" | "short" | "long")} className="w-full flex flex-col items-center">
-        <TabsList className={`mb-3 md:mb-4 bg-violet-50 ${isMobile ? 'text-xs' : ''}`}>
-          <TabsTrigger value="alphabet">{GROUPS.alphabet.label}</TabsTrigger>
-          <TabsTrigger value="short">{GROUPS.short.label}</TabsTrigger>
-          <TabsTrigger value="long">{GROUPS.long.label}</TabsTrigger>
-        </TabsList>
+      <TabsList className={`mb-3 md:mb-4 bg-purple-100 rounded-xl p-1 h-auto ${isMobile ? 'text-xs' : ''}`}>
+  <TabsTrigger 
+    value="alphabet"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-purple-700 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+   🅰️ {GROUPS.alphabet.label}
+  </TabsTrigger>
+  <TabsTrigger 
+    value="short"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-purple-700 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🅱️ {GROUPS.short.label}
+  </TabsTrigger>
+  <TabsTrigger 
+    value="long"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-purple-700 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🆎 {GROUPS.long.label}
+  </TabsTrigger>
+</TabsList>
         
         <TabsContent value={tab} className="w-full flex flex-col items-center">
           {/* Letter display with image and buttons */}
