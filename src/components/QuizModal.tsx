@@ -46,7 +46,7 @@ const QuizModal: React.FC<QuizModalProps> = ({
         </h2>
         
         {activity === null ? (
-          <div className="flex flex-col gap-6 md:gap-8 py-6 md:py-8 px-3 md:px-4 max-w-2xl mx-auto">
+          <div className="flex flex-col gap-4 md:gap-6 py-4 md:py-6 px-3 md:px-4 max-w-3xl mx-auto">
             <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-medium text-gray-700 mb-2 md:mb-3`}>
               Vælg en aktivitet:
             </h3>
@@ -54,13 +54,13 @@ const QuizModal: React.FC<QuizModalProps> = ({
             {/* General Quiz Activity */}
             <button 
               onClick={() => setActivity("general")} 
-              className="bg-indigo-50 hover:bg-indigo-100 border-2 border-indigo-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
+              className="bg-indigo-50 hover:bg-indigo-100 border-2 border-indigo-200 rounded-xl p-4 md:p-6 transition-all text-left flex items-center gap-4 md:gap-5 shadow-sm hover:shadow-md hover:-translate-y-1"
             >
-              <div className="bg-indigo-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
+              <div className="bg-indigo-600 text-white p-3 md:p-4 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
                 <img 
                   src="/kategorier/quiz1.png" 
                   alt="Generel Quiz" 
-                  className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover" 
+                  className="w-20 h-20 md:w-25 md:h-25 rounded-full object-cover" 
                 />
               </div>
               <div>

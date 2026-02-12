@@ -28,7 +28,7 @@ const FamilyModal: React.FC<FamilyModalProps> = ({
 
   return (
     <div className="fixed z-50 inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm overflow-y-auto py-6 md:py-10">
-      <div className={`bg-white rounded-xl shadow-xl ${isMobile ? 'px-4 py-5' : 'px-7 py-6'} w-full max-w-4xl relative animate-in fade-in-50 my-auto mx-2 md:mx-4`}>
+      <div className={`bg-white rounded-xl shadow-xl ${isMobile ? 'px-4 py-5' : 'px-7 py-6'} w-full max-w-2xl relative animate-in fade-in-50 my-auto mx-2 md:mx-4`}>
         {/* Back button */}
         <div className="absolute left-2 md:left-4 top-2 md:top-3 z-20">
           <Button 

@@ -29,8 +29,8 @@ const AlphabetModal: React.FC<AlphabetModalProps> = ({
   };
 
   return (
-    <div className="fixed z-50 inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm overflow-y-auto py-6 md:py-10">
-      <div className={`bg-white rounded-xl shadow-xl ${isMobile ? 'px-4 py-5' : 'px-7 py-6'} w-full max-w-2xl relative animate-in fade-in-50 my-auto mx-2 md:mx-4`}>
+<div className="fixed z-50 inset-0 flex items-start md:items-center justify-center bg-black/20 backdrop-blur-sm overflow-y-auto py-6 md:py-10">
+  <div className="bg-white rounded-xl shadow-xl px-4 py-5 md:px-7 md:py-6 w-full max-w-sm md:max-w-2xl relative animate-in fade-in-50 mx-2 md:mx-4">
         {/* Back button */}
         <div className="absolute left-2 md:left-4 top-2 md:top-3 z-20">
           <Button 
@@ -61,7 +61,7 @@ const AlphabetModal: React.FC<AlphabetModalProps> = ({
               className="bg-purple-50 hover:bg-purple-100 border-2 border-purple-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
             >
               <div className="bg-purple-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
-                <img src="/billeder/lyt.png" alt="Lyt og lær" className="w-20 h-20 md:w-24 md:h-24 rounded-full object-contain" />
+                <img src="/billeder/lyt.png" alt="Lyt og lær" className="w-20 h-20 md:w-25 md:h-25 rounded-full object-cover" />
               </div>
               <div>
                 <h4 className={`font-bold text-purple-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Lyt og lær</h4>
@@ -75,7 +75,7 @@ const AlphabetModal: React.FC<AlphabetModalProps> = ({
               className="bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
             >
               <div className="bg-blue-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
-                <img src="/billeder/tegn.png" alt="Spor og skriv" className="w-20 h-20 md:w-24 md:h-24 rounded-full object-contain" />
+                <img src="/billeder/tegn.png" alt="Spor og skriv" className="w-20 h-20 md:w-25 md:h-25 rounded-full object-cover" />
               </div>
               <div>
                 <h4 className={`font-bold text-blue-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Spor og skriv</h4>
@@ -89,7 +89,7 @@ const AlphabetModal: React.FC<AlphabetModalProps> = ({
               className="bg-green-50 hover:bg-green-100 border-2 border-green-200 rounded-xl p-6 md:p-8 transition-all text-left flex items-center gap-5 md:gap-6 shadow-sm hover:shadow-md hover:-translate-y-1"
             >
               <div className="bg-green-600 text-white p-4 md:p-5 rounded-full flex items-center justify-center min-w-28 min-h-28 md:min-w-32 md:min-h-32">
-                <img src="/billeder/gæt.png" alt="Test din viden" className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover" />
+                <img src="/billeder/gæt.png" alt="Test din viden" className="w-20 h-20 md:w-25 md:h-25 rounded-full object-cover" />
               </div>
               <div>
                 <h4 className={`font-bold text-green-700 ${isMobile ? 'text-2xl' : 'text-3xl'} mb-2`}>Test din viden</h4>
