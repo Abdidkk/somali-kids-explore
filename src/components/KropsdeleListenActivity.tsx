@@ -76,19 +76,19 @@ const KropsdeleListenActivity: React.FC<KropsdeleListenActivityProps> = ({ onBac
     value="kropsdele"
     className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
   >
-    👀 kropsdele
+    👀 Kropsdele
   </TabsTrigger>
   <TabsTrigger 
     value="humør"
     className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
   >
-    😍 humør
+    😍 Humør
   </TabsTrigger>
   <TabsTrigger 
     value="kropstype"
     className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
   >
-    🏃 kropstype
+    🏃 Kroppen
   </TabsTrigger>
 </TabsList>
         

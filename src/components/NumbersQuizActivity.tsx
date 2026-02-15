@@ -51,9 +51,24 @@ export default function NumbersQuizActivity({ onBack }: NumbersQuizActivityProps
     <div className="flex flex-col items-center gap-6 mt-4 w-full">
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full max-w-3xl">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="1-19">1-19</TabsTrigger>
-          <TabsTrigger value="20-90">20-90</TabsTrigger>
-          <TabsTrigger value="100-1000">100-1000</TabsTrigger>
+        <TabsTrigger 
+    value="1-19"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🔢 1-19
+  </TabsTrigger>
+  <TabsTrigger 
+    value="20-90"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    🔢 20-90
+  </TabsTrigger>
+  <TabsTrigger 
+    value="100-1000"
+    className="rounded-lg py-2.5 px-2 text-sm font-semibold data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+  >
+    💯 100-1000
+  </TabsTrigger>
         </TabsList>
 
         <TabsContent value={activeTab} className="mt-6">

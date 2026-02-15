@@ -51,6 +51,11 @@ export const BODY_PARTS_DATA: BodyPartItem[] = [
   { id: "strong", danish: "Stærk", somali: "Xooggan", audio: "/krop/stærk.mp3", image: "/billeder/stark.png" ,category: "kropstype" },
   { id: "weak", danish: "Svag", somali: "Dacif", audio: "/krop/svag.mp3", image: "/billeder/slap.png" ,category: "kropstype" },
   { id: "normal", danish: "Normal", somali: "Cadi ah", audio: "/krop/normal.mp3", image: "/billeder/normal.png" ,category: "kropstype" },
+  { id: "jump", danish: "Hop", somali: "Bood", audio: "/krop/bood.mp3", image: "/krop/bood.png" ,category: "kropstype" },
+  { id: "sitdown", danish: "Sid ned", somali: "Fadhiiso", audio: "/krop/fadhiiso.mp3", image: "/krop/fadhiiso.png" ,category: "kropstype" },
+  { id: "standup", danish: "Stå op", somali: "Istaag", audio: "/krop/istaag.mp3", image: "/krop/istaag.png" ,category: "kropstype" },
+  { id: "walk", danish: "Gå", somali: "Soco", audio: "/krop/soco.mp3", image: "/krop/soco.png" ,category: "kropstype" },
+  { id: "backwards", danish: "Gå baglæns", somali: "Gadaal u soco", audio: "/krop/gadaal.mp3", image: "/krop/gadaal.png" ,category: "kropstype" },
 ];
 
 export function getBodyPartsByCategory(category: "kropsdele" | "humør" | "kropstype"): BodyPartItem[] {
