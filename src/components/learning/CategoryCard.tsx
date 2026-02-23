@@ -113,7 +113,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLas
                 {category.name}
                 {!isEnabled && <Lock className="inline w-4 h-4 ml-1" />}
               </div>
-              <div className={`text-center text-sm ${isEnabled ? 'text-gray-700' : 'text-gray-400'}`}>
+              <div className={`text-sm ${isEnabled ? 'text-gray-700' : 'text-gray-400'}`}>
                 {requiresSubscription ? 'Kræver abonnement' : 
                  !isEnabled ? 'Kategori låst af forældre' : 
                  category.description}
