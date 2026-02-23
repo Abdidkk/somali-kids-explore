@@ -53,15 +53,33 @@ const MainNavbar = () => {
         {!isMobile && (
           <div className="flex gap-2">
             {user ? (
-              <Button
-                onClick={handleLogout}
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                <LogOut className="h-4 w-4" />
-                Log ud
-              </Button>
+              <>
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="sm"
+                  className="text-hero-blue hover:bg-hero-blue/10"
+                >
+                  <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="sm"
+                  className="text-hero-blue hover:bg-hero-blue/10"
+                >
+                  <Link to={ROUTES.LEARNING}>Start læring</Link>
+                </Button>
+                <Button
+                  onClick={handleLogout}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Log ud
+                </Button>
+              </>
             ) : (
               <>
                 <Button
@@ -108,14 +126,32 @@ const MainNavbar = () => {
         <div className="absolute top-full left-0 right-0 w-full bg-card border-b border-border shadow-lg">
           <div className="p-4 space-y-3">
             {user ? (
-              <Button
-                onClick={handleLogout}
-                variant="outline"
-                className="w-full flex items-center justify-center gap-2"
-              >
-                <LogOut className="h-4 w-4" />
-                Log ud
-              </Button>
+              <>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full text-hero-blue hover:bg-hero-blue/10"
+                  onClick={closeMenu}
+                >
+                  <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full text-hero-blue hover:bg-hero-blue/10"
+                  onClick={closeMenu}
+                >
+                  <Link to={ROUTES.LEARNING}>Learning</Link>
+                </Button>
+                <Button
+                  onClick={handleLogout}
+                  variant="outline"
+                  className="w-full flex items-center justify-center gap-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Log ud
+                </Button>
+              </>
             ) : (
               <div className="space-y-2">
                 <Button
