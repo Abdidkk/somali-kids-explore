@@ -76,7 +76,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, isFinished, isLas
     <Card 
       id={`learn-cat-${index}`} 
       className={[
-        "transition-transform border-none shadow-lg animate-fade-in relative",
+        "transition-transform border-none shadow-lg animate-fade-in relative overflow-hidden",
         isEnabled ? "cursor-pointer hover:scale-105 hover:shadow-xl focus:scale-105" : "cursor-not-allowed opacity-60 grayscale",
         isLastCat ? "outline outline-blue-400 outline-2 z-10" : ""
       ].join(" ")} 
