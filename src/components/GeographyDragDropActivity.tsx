@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
+import { DndContext, PointerSensor, TouchSensor, useSensor, useSensors, useDraggable, useDroppable } from "@dnd-kit/core";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
@@ -73,6 +74,11 @@ export default function GeographyDragDropActivity({ onBack, selectedChild }: Pro
     return [...items].sort(() => Math.random() - 0.5);
   }, [items, tab]);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } })
+  );
+
   const playAudio = (item: any) => {
     if (item.audio) {
         const audio = new Audio(item.audio);
@@ -114,24 +120,46 @@ const playSuccessSound = () => {
 };
 
 
-  const handleDragStart = (e: React.DragEvent, item: any) => {
-    e.dataTransfer.setData("text/plain", item.somali);
-  };
+  const handleDragEnd = (event: { active: { id: string | number }; over: { id: string | number } | null }) => {
+    if (!event.over) return;
+    const draggedSomali = String(event.active.id);
+    const targetDanish = String(event.over.id);
 
-  const handleDrop = (e: React.DragEvent, targetDanish: string) => {
-    e.preventDefault();
-    const draggedSomali = e.dataTransfer.getData("text/plain");
-    
-    if (order.find(item => item === draggedSomali)) return; // Already placed
-    
-    const newOrder = [...order];
+    if (order.find(item => item === draggedSomali)) return;
     const targetIndex = items.findIndex(item => item.danish === targetDanish);
+    if (targetIndex === -1) return;
+
+    const newOrder = [...order];
     newOrder[targetIndex] = draggedSomali;
     setOrder(newOrder);
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
+  const DroppableSlot: React.FC<{ id: string; className: string; children: React.ReactNode }> = ({ id, className, children }) => {
+    const { setNodeRef, isOver } = useDroppable({ id });
+    return (
+      <div
+        ref={setNodeRef}
+        className={`${className} ${isOver ? 'ring-2 ring-green-400' : ''}`}
+      >
+        {children}
+      </div>
+    );
+  };
+
+  const DraggableTile: React.FC<{ id: string; disabled: boolean; className: string; style?: React.CSSProperties; children: React.ReactNode }> = ({ id, disabled, className, style, children }) => {
+    const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id, disabled });
+    const dragStyle = transform ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` } : undefined;
+    return (
+      <div
+        ref={setNodeRef}
+        style={{ ...style, ...dragStyle }}
+        className={`${className} ${isDragging ? 'opacity-60' : ''}`}
+        {...listeners}
+        {...attributes}
+      >
+        {children}
+      </div>
+    );
   };
 
   const removeFromOrder = (index: number) => {
@@ -196,106 +224,107 @@ const playSuccessSound = () => {
             Træk det somaliske navn til det rigtige danske navn
           </h3>
           
-          {/* Drop zones - Danish names */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 w-full max-w-5xl">
-            {items.map((item, idx) => (
-              <div
-                key={item.danish}
-                className={`border-2 border-dashed border-gray-300 rounded-lg p-3 md:p-4 min-h-20 md:min-h-24 flex flex-col items-center justify-center text-center ${
-                  order[idx] ? 'bg-green-50 border-green-300' : 'bg-gray-50'
-                }`}
-                onDrop={(e) => handleDrop(e, item.danish)}
-                onDragOver={handleDragOver}
-              >
-                <div className={`font-medium text-gray-700 mb-2 ${isMobile ? 'text-xs' : 'text-sm'}`}>
-                  {tab === "countries" && (item as any).flag && (
-                    <div className="text-2xl mb-1">{(item as any).flag}</div>
-                  )}
-                  {tab === "nature" && (item as any).emoji && (
-                    <div className="text-2xl mb-1">{(item as any).emoji}</div>
-                  )}
-                  {tab === "continents" && <div className="text-xl mb-1">🌍</div>}
-                  {item.danish}
-                </div>
-                {order[idx] ? (
-                  <div className="flex items-center gap-1">
-                    <div
-                      className={`px-2 py-1 rounded text-white font-medium cursor-pointer ${isMobile ? 'text-xs' : 'text-sm'}`}
-                      style={{ backgroundColor: getGeographyItemColor(idx, tab) }}
-                      onClick={() => removeFromOrder(idx)}
-                    >
-                      {order[idx]}
-                    </div>
-                    <Button
-                      onClick={() => playAudio(order[idx])}
-                      variant="outline"
-                      size="sm"
-                      className="p-1 h-6 w-6"
-                    >
-                      <Volume2 className="w-3 h-3" />
-                    </Button>
+          <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+            {/* Drop zones - Danish names */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 w-full max-w-5xl">
+              {items.map((item, idx) => (
+                <DroppableSlot
+                  key={item.danish}
+                  id={item.danish}
+                  className={`border-2 border-dashed border-gray-300 rounded-lg p-3 md:p-4 min-h-20 md:min-h-24 flex flex-col items-center justify-center text-center ${
+                    order[idx] ? 'bg-green-50 border-green-300' : 'bg-gray-50'
+                  }`}
+                >
+                  <div className={`font-medium text-gray-700 mb-2 ${isMobile ? 'text-xs' : 'text-sm'}`}>
+                    {tab === "countries" && (item as any).flag && (
+                      <div className="text-2xl mb-1">{(item as any).flag}</div>
+                    )}
+                    {tab === "nature" && (item as any).emoji && (
+                      <div className="text-2xl mb-1">{(item as any).emoji}</div>
+                    )}
+                    {tab === "continents" && <div className="text-xl mb-1">🌍</div>}
+                    {item.danish}
                   </div>
-                ) : (
-                  <span className="text-gray-400 text-xs">Træk her</span>
-                )}
-              </div>
-            ))}
-          </div>
-          
-          {/* Available items to drag - Somali names */}
-          <div className="w-full max-w-5xl">
-            <h4 className={`${isMobile ? 'text-base' : 'text-lg'} font-medium text-gray-700 mb-3`}>
-              Tilgængelige somaliske navne:
-            </h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-              {shuffledItems.map((item, idx) => {
-                const isUsed = order.includes(item.somali);
-                return (
-                  <div
-                    key={item.somali}
-                    className="flex items-center gap-2"
-                  >
-                    <div
-                      draggable={!isUsed}
-                      onDragStart={(e) => handleDragStart(e, item)}
-                      className={`p-3 rounded-lg text-white font-medium text-center cursor-move transition-all flex-1 ${
-                        isUsed ? 'opacity-30 cursor-not-allowed' : 'hover:scale-105'
-                      } ${isMobile ? 'text-xs' : 'text-sm'}`}
-                      style={{ backgroundColor: getGeographyItemColor(shuffledItems.indexOf(item), tab) }}
-                    >
-                      {item.somali}
+                  {order[idx] ? (
+                    <div className="flex items-center gap-1">
+                      <div
+                        className={`px-2 py-1 rounded text-white font-medium cursor-pointer ${isMobile ? 'text-xs' : 'text-sm'}`}
+                        style={{ backgroundColor: getGeographyItemColor(idx, tab) }}
+                        onClick={() => removeFromOrder(idx)}
+                      >
+                        {order[idx]}
+                      </div>
+                      <Button
+                        onClick={() => playAudio(order[idx])}
+                        variant="outline"
+                        size="sm"
+                        className="p-1 h-6 w-6"
+                      >
+                        <Volume2 className="w-3 h-3" />
+                      </Button>
                     </div>
-                    <Button
-                      onClick={() => playAudio(item)}
-                      variant="outline"
-                      size="sm"
-                      className="p-1 h-8 w-8 flex-shrink-0"
-                      disabled={isUsed}
-                    >
-                      <Volume2 className="w-3 h-3" />
-                    </Button>
-                  </div>
-                );
-              })}
+                  ) : (
+                    <span className="text-gray-400 text-xs">Træk her</span>
+                  )}
+                </DroppableSlot>
+              ))}
             </div>
-          </div>
-          
-          {/* Action buttons */}
-          <div className="flex gap-3 mt-4">
-            <Button 
-              onClick={checkAnswer}
-              disabled={order.filter(Boolean).length !== items.length}
-              className="bg-green-600 hover:bg-green-700"
-            >
-              Tjek svar
-            </Button>
-            <Button 
-              onClick={resetGame}
-              variant="outline"
-            >
-              Start forfra
-            </Button>
-          </div>
+            
+            {/* Available items to drag - Somali names */}
+            <div className="w-full max-w-5xl">
+              <h4 className={`${isMobile ? 'text-base' : 'text-lg'} font-medium text-gray-700 mb-3`}>
+                Tilgængelige somaliske navne:
+              </h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                {shuffledItems.map((item, idx) => {
+                  const isUsed = order.includes(item.somali);
+                  return (
+                    <div
+                      key={item.somali}
+                      className="flex items-center gap-2"
+                    >
+                      <DraggableTile
+                        id={item.somali}
+                        disabled={isUsed}
+                        className={`p-3 rounded-lg text-white font-medium text-center transition-all flex-1 touch-none select-none ${
+                          isUsed ? 'opacity-30 cursor-not-allowed' : 'cursor-grab hover:scale-105'
+                        } ${isMobile ? 'text-xs' : 'text-sm'}`}
+                        style={{ backgroundColor: getGeographyItemColor(shuffledItems.indexOf(item), tab) }}
+                      >
+                        {item.somali}
+                      </DraggableTile>
+                      <Button
+                        onClick={() => playAudio(item)}
+                        variant="outline"
+                        size="sm"
+                        className="p-1 h-8 w-8 flex-shrink-0"
+                        disabled={isUsed}
+                      >
+                        <Volume2 className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            
+            {/* Action buttons */}
+            <div className="flex gap-3 mt-4">
+              <Button 
+                onClick={checkAnswer}
+                disabled={order.filter(Boolean).length !== items.length}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                Tjek svar
+              </Button>
+              <Button 
+                onClick={resetGame}
+                variant="outline"
+              >
+                Start forfra
+              </Button>
+            </div>
+          </DndContext>
         </TabsContent>
       </Tabs>
     </div>
