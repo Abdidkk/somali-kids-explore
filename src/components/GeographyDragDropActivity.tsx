@@ -153,7 +153,7 @@ const playSuccessSound = () => {
       <div
         ref={setNodeRef}
         style={{ ...style, ...dragStyle }}
-        className={`${className} ${isDragging ? 'opacity-60' : ''}`}
+        className={`${className} ${isDragging ? 'opacity-60 transition-none' : 'transition-transform duration-150'}`}
         {...listeners}
         {...attributes}
       >
@@ -286,7 +286,7 @@ const playSuccessSound = () => {
                       <DraggableTile
                         id={item.somali}
                         disabled={isUsed}
-                        className={`p-3 rounded-lg text-white font-medium text-center transition-all flex-1 touch-none select-none ${
+                        className={`p-3 rounded-lg text-white font-medium text-center flex-1 touch-none select-none ${
                           isUsed ? 'opacity-30 cursor-not-allowed' : 'cursor-grab hover:scale-105'
                         } ${isMobile ? 'text-xs' : 'text-sm'}`}
                         style={{ backgroundColor: getGeographyItemColor(shuffledItems.indexOf(item), tab) }}
