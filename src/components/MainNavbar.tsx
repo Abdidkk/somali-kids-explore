@@ -141,7 +141,7 @@ const MainNavbar = () => {
                   className="w-full text-hero-blue hover:bg-hero-blue/10"
                   onClick={closeMenu}
                 >
-                  <Link to={ROUTES.LEARNING}>Learning</Link>
+                  <Link to={ROUTES.LEARNING}>Start læring</Link>
                 </Button>
                 <Button
                   onClick={handleLogout}
