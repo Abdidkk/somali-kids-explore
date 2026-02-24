@@ -63,14 +63,6 @@ const MainNavbar = () => {
                   <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
                 </Button>
                 <Button
-                  asChild
-                  variant="ghost"
-                  size="sm"
-                  className="text-hero-blue hover:bg-hero-blue/10"
-                >
-                  <Link to={ROUTES.LEARNING}>Start læring</Link>
-                </Button>
-                <Button
                   onClick={handleLogout}
                   variant="outline"
                   size="sm"
@@ -134,14 +126,6 @@ const MainNavbar = () => {
                   onClick={closeMenu}
                 >
                   <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="w-full text-hero-blue hover:bg-hero-blue/10"
-                  onClick={closeMenu}
-                >
-                  <Link to={ROUTES.LEARNING}>Start læring</Link>
                 </Button>
                 <Button
                   onClick={handleLogout}
