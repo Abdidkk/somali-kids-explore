@@ -2,11 +2,7 @@ import React from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
-import {
-  CONTINENTS,
-  COUNTRIES,
-  NATURE_LANDSCAPES,
-  getGeographyItemColor,
+import {CONTINENTS, COUNTRIES, NATURE_LANDSCAPES, getGeographyItemColor,
 } from "@/constants/geographyData";
 import { useIsMobile } from "@/hooks/use-mobile";
 
